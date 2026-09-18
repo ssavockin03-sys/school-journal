@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кабинет учителя — Дневник.ру</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; }
+body { background: #F8FAFC; color: #1E293B; min-height: 100vh; font-size: 14px; line-height: 1.4; }
+
+/* ===== ЭКРАН ВХОДА ===== */
+.login-screen { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #2a5298, #3b7dd8); padding: 20px; }
+.login-screen.hidden { display: none; }
+.login-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 420px; width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,0.35); animation: loginAppear 0.4s ease; }
+@keyframes loginAppear { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.login-logo { width: 64px; height: 64px; margin: 0 auto 20px; background: linear-gradient(135deg, #2a5298, #3b7dd8); border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+.login-logo svg { width: 34px; height: 34px; fill: #fff; }
+.login-title { font-size: 24px; font-weight: 700; color: #1a2b4a; text-align: center; margin-bottom: 6px; }
+.login-subtitle { font-size: 14px; color: #7a8aa3; text-align: center; margin-bottom: 28px; }
+.login-form-group { margin-bottom: 16px; }
+.login-form-group label { display: block; font-size: 13px; font-weight: 600; color: #4a5a72; margin-bottom: 7px; }
+.login-form-group input { width: 100%; height: 50px; padding: 0 16px; font-size: 15px; color: #1a2b4a; background: #f7f9fc; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; transition: all 0.25s ease; font-family: inherit; }
+.login-form-group input:focus { border-color: #2a5298; background: #fff; box-shadow: 0 0 0 4px rgba(42,82,152,0.1); }
+.login-btn { width: 100%; height: 52px; margin-top: 8px; background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.25s ease; box-shadow: 0 6px 18px rgba(42,82,152,0.35); font-family: inherit; }
+.login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(42,82,152,0.45); }
+.login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.login-error { background: #fff0f0; color: #d32f2f; padding: 12px 14px; border-radius: 10px; font-size: 13px; font-weight: 500; margin-bottom: 16px; display: none; border: 1px solid #ffd6d6; }
+.login-error.show { display: block; }
+.login-hint { margin-top: 20px; padding: 14px; background: #f0f5ff; border-radius: 12px; font-size: 12px; color: #4a5a72; line-height: 1.5; text-align: center; }
+
+/* ===== ОСНОВНОЙ ИНТЕРФЕЙС ===== */
+.header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: #fff; padding: 0 24px; height: 70px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 16px rgba(30,60,114,0.25); position: sticky; top: 0; z-index: 100; }
+.header-logo { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+.header-logo-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.header-logo-icon svg { width: 22px; height: 22px; fill: #fff; }
+.header-user { display: flex; align-items: center; gap: 16px; }
+.user-badge { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.12); padding: 8px 16px 8px 8px; border-radius: 30px; font-size: 14px; font-weight: 500; }
+.user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #3b7dd8; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+.logout-btn { background: rgba(255,255,255,0.12); border: none; color: #fff; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: background 0.2s ease; font-family: inherit; }
+.logout-btn:hover { background: rgba(255,255,255,0.22); }
+.logout-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+.container { max-width: 1320px; margin: 0 auto; padding: 32px 24px 60px; }
+.page-title { font-size: 26px; font-weight: 700; margin-bottom: 6px; color: #1a2b4a; }
+.page-subtitle { font-size: 14px; color: #7a8aa3; margin-bottom: 28px; }
+
+.year-banner { display: flex; align-items: center; gap: 14px; background: #e8eef5; padding: 14px 20px; border-radius: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.year-banner-text { font-size: 15px; font-weight: 600; color: #2a3a52; }
+.year-badge { display: inline-flex; align-items: center; gap: 6px; background: #00bfa5; color: #fff; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
+.year-badge::before { content: ''; width: 7px; height: 7px; background: #fff; border-radius: 50%; display: inline-block; }
+
+.section-title { font-size: 18px; font-weight: 700; color: #1a2b4a; margin-bottom: 16px; margin-top: 24px; display: flex; align-items: center; gap: 10px; }
+.section-title .count { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 24px; padding: 0 10px; background: #e6efff; color: #2a5298; border-radius: 12px; font-size: 13px; font-weight: 700; }
+
+.classes-list { background: #fff; border-radius: 18px; padding: 32px; box-shadow: 0 4px 20px rgba(30,60,114,0.07); margin-bottom: 24px; }
+.parallels-grid { display: flex; flex-direction: row; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+.parallel-column { display: flex; flex-direction: column; align-items: flex-start; min-width: 90px; }
+.parallel-number { font-size: 56px; font-weight: 800; color: #b8c4d4; line-height: 1; letter-spacing: -2px; margin-bottom: 16px; user-select: none; }
+.parallel-classes { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.class-link { display: inline-block; color: #2a5298; font-size: 17px; font-weight: 600; text-decoration: none; padding: 2px 0; cursor: pointer; transition: color 0.2s ease; background: none; border: none; font-family: inherit; text-align: left; white-space: nowrap; }
+.class-link:hover { color: #1e3c72; text-decoration: underline; }
+
+.empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 18px; box-shadow: 0 4px 20px rgba(30,60,114,0.07); }
+.empty-state svg { width: 64px; height: 64px; fill: #d4dce8; margin-bottom: 16px; }
+.empty-state h3 { font-size: 18px; font-weight: 700; color: #5a6a85; margin-bottom: 8px; }
+.empty-state p { font-size: 14px; color: #8a9bb5; max-width: 400px; margin: 0 auto; line-height: 1.5; }
+
+/* ===== ЖУРНАЛ (совмещённая версия) ===== */
+.journal-screen { display: none; }
+.journal-screen.active { display: block; }
+.journal-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: #f0f4f9; border: none; border-radius: 10px; color: #2a5298; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+.back-btn:hover { background: #e2e8f0; transform: translateX(-2px); }
+.back-btn svg { width: 16px; height: 16px; fill: currentColor; }
+.journal-title { font-size: 22px; font-weight: 700; color: #1a2b4a; flex: 1; }
+.mode-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
+.mode-badge.edit { background: #e6f7ee; color: #22874a; }
+.mode-badge.view { background: #fff4e0; color: #b8720a; }
+.mode-badge svg { width: 14px; height: 14px; fill: currentColor; }
+
+.subject-tabs { display: flex; gap: 6px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 4px 16px rgba(30,60,114,0.08); margin-bottom: 20px; overflow-x: auto; flex-wrap: wrap; }
+.subject-tab { padding: 10px 18px; border: none; background: transparent; color: #5a6a85; font-size: 13px; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; font-family: inherit; white-space: nowrap; }
+.subject-tab:hover { background: #f0f4f9; color: #2a5298; }
+.subject-tab.active { background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff; box-shadow: 0 4px 12px rgba(42,82,152,0.3); }
+
+.journal-table-wrapper { background: #fff; border-radius: 14px; box-shadow: 0 4px 20px rgba(30,60,114,0.07); overflow-x: auto; }
+.journal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.journal-table thead th { background: #E8EEF5; color: #334155; font-weight: 600; padding: 10px 6px; text-align: center; border: 1px solid #CBD5E1; font-size: 11px; white-space: nowrap; }
+.journal-table thead th.student-col { text-align: left; padding-left: 12px; min-width: 180px; }
+.journal-table tbody td { padding: 6px; text-align: center; border: 1px solid #E2E8F0; font-size: 13px; }
+.journal-table tbody td.student-cell { text-align: left; padding: 8px 12px; font-weight: 500; color: #1E293B; background: #FAFCFE; }
+.journal-table tbody tr:nth-child(5n) td { border-bottom: 2px solid #94A3B8; }
+.journal-table tbody tr:hover { background: #F8FAFF; }
+
+.grade-cell { display: flex; justify-content: center; align-items: center; min-height: 26px; position: relative; }
+.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 13px; font-weight: 700; cursor: pointer; padding: 0; font-family: inherit; outline: none; color: #1E293B; }
+.grade-cell input:focus { background: #fff; outline: 2px solid #2563EB; border-radius: 3px; }
+.grade-cell input:disabled { cursor: default; color: #64748B; }
+.grade-cell input::placeholder { color: #CBD5E1; }
+
+.grade-value { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 4px; font-weight: 700; font-size: 13px; }
+.grade-5 { background: #65A30D; color: #fff; }
+.grade-4 { background: #84CC16; color: #fff; }
+.grade-3 { background: #FB923C; color: #fff; }
+.grade-bad { background: #DC2626; color: #fff; }
+.grade-status { background: #94A3B8; color: #fff; }
+.grade-avg { background: #E6EFFF; color: #2a5298; font-weight: 700; }
+.grade-qtr { background: #F0EAFF; color: #6b3fc7; font-weight: 700; }
+
+.lesson-info-row { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #F8FAFC; border-radius: 8px; margin-top: 4px; }
+.lesson-info-label { font-size: 12px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+.lesson-info-value { flex: 1; font-size: 13px; color: #1E293B; }
+
+.journal-actions { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.btn-outline { height: 40px; padding: 0 16px; border: 2px solid #2a5298; background: #fff; color: #2a5298; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; }
+.btn-outline:hover { background: #f0f5ff; transform: translateY(-1px); }
+.btn-outline svg { width: 14px; height: 14px; fill: currentColor; }
+
+/* ===== ПАНЕЛЬ ПОУРОЧНОГО ПЛАНА ===== */
+.lesson-panel { background: #fff; border-radius: 14px; box-shadow: 0 4px 20px rgba(30,60,114,0.07); padding: 20px; margin-top: 24px; }
+.lesson-panel-title { font-size: 16px; font-weight: 700; color: #1a2b4a; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.lesson-panel-title svg { width: 18px; height: 18px; fill: #2a5298; }
+.lesson-row { display: grid; grid-template-columns: 110px 1fr 1fr; gap: 12px; padding: 12px; border-bottom: 1px solid #eef2f8; align-items: start; }
+.lesson-row:last-child { border-bottom: none; }
+.lesson-date { font-weight: 600; color: #0EA5E9; font-size: 13px; padding-top: 8px; }
+.lesson-textarea { width: 100%; min-height: 60px; padding: 8px 10px; font-size: 13px; color: #334155; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; resize: vertical; font-family: inherit; outline: none; }
+.lesson-textarea:focus { border-color: #2a5298; background: #fff; box-shadow: 0 0 0 3px rgba(42,82,152,0.1); }
+.lesson-textarea:disabled { background: #F1F5F9; color: #94A3B8; cursor: not-allowed; }
+.lesson-textarea::placeholder { color: #A8B5C9; font-style: italic; }
+
+.toast { position: fixed; bottom: 30px; right: 30px; background: #1a2b4a; color: #fff; padding: 16px 22px; border-radius: 14px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px; transform: translateY(120px); opacity: 0; transition: all 0.35s cubic-bezier(0.4,0,0.2,1); z-index: 1000; max-width: 380px; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: #22874a; }
+.toast.error { background: #d32f2f; }
+.toast svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
+
+@media (max-width: 900px) {
+    .lesson-row { grid-template-columns: 1fr; }
+    .header { padding: 0 14px; height: 62px; }
+    .header-logo { font-size: 15px; }
+    .header-logo-icon { width: 34px; height: 34px; }
+    .user-badge span { display: none; }
+    .user-badge { padding: 4px; }
+    .container { padding: 20px 14px 40px; }
+    .page-title { font-size: 21px; }
+    .classes-list { padding: 20px 16px; }
+    .parallels-grid { gap: 24px; }
+    .parallel-number { font-size: 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== ЭКРАН ВХОДА ==================== -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <div class="login-logo">
+            <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        <div class="login-title">Кабинет учителя</div>
+        <div class="login-subtitle">Введите логин и пароль</div>
+        <div class="login-error" id="loginError"></div>
+        <form id="loginForm">
+            <div class="login-form-group">
+                <label for="loginInput">Логин</label>
+                <input type="text" id="loginInput" placeholder="Например: ivanov.ivan" autocomplete="username" required>
+            </div>
+            <div class="login-form-group">
+                <label for="passwordInput">Пароль</label>
+                <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="login-btn" id="loginBtn">Войти</button>
+        </form>
+        <div class="login-hint">🔒 Безопасный вход. Сессия — 24 часа.<br>Через 24 часа потребуется войти заново.</div>
+    </div>
+</div>
+
+<!-- ==================== СПИСОК КЛАССОВ ==================== -->
+<div id="classesScreen" style="display:none;">
+    <header class="header">
+        <div class="header-logo">
+            <div class="header-logo-icon"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
+            <span>Дневник.ру · Учитель</span>
+        </div>
+        <div class="header-user">
+            <div class="user-badge">
+                <div class="user-avatar" id="userAvatar">УЧ</div>
+                <span id="userName">Учитель</span>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                Выход
+            </button>
+        </div>
+    </header>
+    <div class="container">
+        <h1 class="page-title">Классы</h1>
+        <p class="page-subtitle">Выберите класс, чтобы открыть журнал. <strong>Свои</strong> предметы можно редактировать, <strong>чужие</strong> — только смотреть.</p>
+        <div class="year-banner">
+            <span class="year-banner-text">2026/2027 учебный год</span>
+            <span class="year-badge">Текущий год</span>
+        </div>
+        <div id="classesContainer"></div>
+    </div>
+</div>
+
+<!-- ==================== ЖУРНАЛ ==================== -->
+<div id="journalScreen" class="journal-screen" style="display:none;">
+    <header class="header">
+        <div class="header-logo">
+            <div class="header-logo-icon"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
+            <span>Дневник.ру · Журнал</span>
+        </div>
+        <div class="header-user">
+            <div class="user-badge">
+                <div class="user-avatar" id="userAvatar2">УЧ</div>
+                <span id="userName2">Учитель</span>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                Выход
+            </button>
+        </div>
+    </header>
+    <div class="container">
+        <div class="journal-header">
+            <button class="back-btn" onclick="backToClasses()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Назад к классам
+            </button>
+            <div class="journal-title" id="journalTitle">Журнал</div>
+            <div class="mode-badge view" id="modeBadge">
+                <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                Просмотр
+            </div>
+        </div>
+        <div class="subject-tabs" id="subjectTabs"></div>
+        <div id="journalContent"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast">
+    <svg id="toastIcon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    <span id="toastText">Готово</span>
+</div>
+
+<script src="supabase-config.js"></script>
+<script>
+// ============================================================
+// КОНСТАНТЫ
+// ============================================================
+const AUTH_EMAIL_DOMAIN = '@school-journal-8f39a.firebaseapp.com';
+const SESSION_KEY = 'dr_teacher_session';
+const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
+
+// ============================================================
+// СОСТОЯНИЕ
+// ============================================================
+let CURRENT_TEACHER = null;
+let ALL_CLASSES = [];
+let ALL_STUDENTS = [];
+let ALL_SUBJECTS = [];
+let ALL_WORKLOADS = [];
+let CURRENT_CLASS = null;
+let CURRENT_SUBJECT = null;
+let CURRENT_JOURNAL = null;
+let CURRENT_IS_OWN = false;
+let CURRENT_SCHEDULE = null;
+
+let toastTimer = null;
+function showToast(message, type) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastText').textContent = message;
+    toast.className = 'toast show ' + (type || 'success');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+}
+
+// ============================================================
+// АВТОРИЗАЦИЯ
+// ============================================================
+function getSession() {
+    try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return null;
+        const s = JSON.parse(raw);
+        if (!s.loggedAt || !s.expiresAt) return null;
+        if (Date.now() > s.expiresAt) { localStorage.removeItem(SESSION_KEY); return null; }
+        return s;
+    } catch (e) { return null; }
+}
+function saveSession(email, teacherId) {
+    const now = Date.now();
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+        email, teacherId, loggedAt: now, expiresAt: now + SESSION_DURATION_MS
+    }));
+}
+function clearSession() { localStorage.removeItem(SESSION_KEY); }
+
+async function handleLogin(login, password) {
+    const fb = await window._fbReady;
+    const fullEmail = login.includes('@') ? login : login + AUTH_EMAIL_DOMAIN;
+    const cred = await fb.signInWithEmailAndPassword(fb.auth, fullEmail, password);
+    // Находим учителя в базе
+    const teachers = await DB.getAll('teachers');
+    const teacher = teachers.find(t => t.login === login || t.email === login);
+    if (!teacher) throw new Error('no-teacher');
+    // Проверяем роль
+    if (teacher.role && teacher.role !== 'teacher') throw new Error('not-teacher');
+    saveSession(fullEmail, teacher.id);
+    return teacher;
+}
+
+async function logout() {
+    if (!confirm('Выйти?')) return;
+    try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
+    clearSession();
+    location.reload();
+}
+
+// ============================================================
+// ЗАПУСК
+// ============================================================
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const login = document.getElementById('loginInput').value.trim();
+    const pwd = document.getElementById('passwordInput').value;
+    const err = document.getElementById('loginError');
+    const btn = document.getElementById('loginBtn');
+    err.classList.remove('show');
+    btn.disabled = true; btn.textContent = 'Проверка...';
+    try {
+        const teacher = await handleLogin(login, pwd);
+        CURRENT_TEACHER = teacher;
+        document.getElementById('loginScreen').classList.add('hidden');
+        await startApp();
+    } catch (e) {
+        console.error(e);
+        let msg = 'Не удалось войти.';
+        if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'Неверный логин или пароль.';
+        if (e.code === 'auth/user-not-found') msg = 'Пользователь не найден.';
+        if (e.message === 'no-teacher') msg = 'В базе нет учителя с таким логином.';
+        if (e.message === 'not-teacher') msg = 'Этот аккаунт не является учителем.';
+        err.textContent = msg; err.classList.add('show');
+    } finally {
+        btn.disabled = false; btn.textContent = 'Войти';
+    }
+});
+
+window.addEventListener('load', async () => {
+    const s = getSession();
+    if (s && s.teacherId) {
+        try {
+            const teachers = await DB.getAll('teachers');
+            const t = teachers.find(x => x.id === s.teacherId);
+            if (t) {
+                CURRENT_TEACHER = t;
+                document.getElementById('loginScreen').classList.add('hidden');
+                await startApp();
+                return;
+            }
+        } catch (e) {}
+        clearSession();
+    }
+    document.getElementById('loginScreen').classList.remove('hidden');
+});
+
+// ============================================================
+// ОСНОВНАЯ ЛОГИКА
+// ============================================================
+async function startApp() {
+    // Имя в шапке
+    const shortName = CURRENT_TEACHER.full_name.split(' ').slice(0, 2).join(' ');
+    document.getElementById('userName').textContent = shortName;
+    document.getElementById('userName2').textContent = shortName;
+    const initials = CURRENT_TEACHER.full_name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    document.getElementById('userAvatar').textContent = initials;
+    document.getElementById('userAvatar2').textContent = initials;
+
+    // Загружаем данные
+    ALL_CLASSES = await DB.getAll('classes');
+    ALL_STUDENTS = await DB.getAll('students');
+    ALL_SUBJECTS = await DB.getAll('subjects');
+    ALL_WORKLOADS = await DB.getAll('workloads');
+
+    document.getElementById('classesScreen').style.display = 'block';
+    document.getElementById('journalScreen').style.display = 'none';
+    renderClassesScreen();
+}
+
+function extractParallel(name) {
+    const m = String(name).match(/^\s*(\d+)/);
+    return m ? parseInt(m[1], 10) : null;
+}
+function normalizeClassName(n) { return String(n).replace(/-/g, '').trim(); }
+
+function renderClassesScreen() {
+    const container = document.getElementById('classesContainer');
+    if (ALL_CLASSES.length === 0) {
+        container.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg><h3>Пока нет классов</h3><p>Обратитесь к администратору, чтобы он создал классы.</p></div>`;
+        return;
+    }
+
+    const groups = {};
+    ALL_CLASSES.forEach(c => {
+        const p = extractParallel(c.name);
+        if (p === null) return;
+        if (!groups[p]) groups[p] = [];
+        groups[p].push(c);
+    });
+    const parallels = Object.keys(groups).map(Number).sort((a, b) => a - b);
+    parallels.forEach(p => groups[p].sort((a, b) => a.name.localeCompare(b.name, 'ru')));
+
+    let html = '<div class="classes-list"><div class="parallels-grid">';
+    parallels.forEach(p => {
+        html += '<div class="parallel-column">';
+        html += `<div class="parallel-number">${p}</div>`;
+        html += '<div class="parallel-classes">';
+        groups[p].forEach(c => {
+            const display = normalizeClassName(c.name);
+            // Считаем — есть ли у учителя свои предметы в этом классе
+            const myWorkloads = ALL_WORKLOADS.filter(w => w.class_id === c.id && w.teacher_id === CURRENT_TEACHER.id);
+            const mark = myWorkloads.length > 0 ? ' ✏️' : '';
+            html += `<button type="button" class="class-link" data-id="${escapeHtml(c.id)}" data-name="${escapeHtml(c.name)}">${escapeHtml(display)}${mark}</button>`;
+        });
+        html += '</div></div>';
+    });
+    html += '</div></div>';
+    container.innerHTML = html;
+
+    container.querySelectorAll('.class-link').forEach(btn => {
+        btn.addEventListener('click', () => openClass(btn.dataset.id, btn.dataset.name));
+    });
+}
+
+async function openClass(classId, className) {
+    CURRENT_CLASS = ALL_CLASSES.find(c => c.id === classId);
+    if (!CURRENT_CLASS) return;
+
+    // Предметы этого класса (все)
+    const classWorkloads = ALL_WORKLOADS.filter(w => w.class_id === classId);
+    const seen = new Set();
+    const subjects = [];
+    classWorkloads.forEach(w => {
+        if (!seen.has(w.subject)) {
+            seen.add(w.subject);
+            const subjObj = ALL_SUBJECTS.find(s => s.name === w.subject);
+            if (subjObj) subjects.push({ id: subjObj.id, name: w.subject });
+        }
+    });
+
+    document.getElementById('journalTitle').textContent = `Класс ${normalizeClassName(CURRENT_CLASS.name)}`;
+    document.getElementById('classesScreen').style.display = 'none';
+    document.getElementById('journalScreen').style.display = 'block';
+    document.getElementById('journalScreen').classList.add('active');
+
+    if (subjects.length === 0) {
+        document.getElementById('subjectTabs').innerHTML = '';
+        document.getElementById('journalContent').innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><h3>Нет предметов у класса</h3><p>Для этого класса не создана нагрузка. Обратитесь к администратору.</p></div>`;
+        return;
+    }
+
+    // Рендерим вкладки предметов
+    const tabs = document.getElementById('subjectTabs');
+    tabs.innerHTML = '';
+    subjects.forEach((s, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'subject-tab' + (idx === 0 ? ' active' : '');
+        btn.textContent = s.name;
+        btn.addEventListener('click', () => {
+            tabs.querySelectorAll('.subject-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            loadJournal(classId, s.id, s.name);
+        });
+        tabs.appendChild(btn);
+    });
+
+    // Загружаем первый предмет
+    await loadJournal(classId, subjects[0].id, subjects[0].name);
+}
+
+async function loadJournal(classId, subjectId, subjectName) {
+    CURRENT_SUBJECT = { id: subjectId, name: subjectName };
+
+    // Проверяем, ведёт ли учитель этот предмет
+    const myWorkload = ALL_WORKLOADS.find(w =>
+        w.class_id === classId && w.subject === subjectName && w.teacher_id === CURRENT_TEACHER.id
+    );
+    CURRENT_IS_OWN = !!myWorkload;
+
+    // Обновляем бейдж режима
+    const badge = document.getElementById('modeBadge');
+    if (CURRENT_IS_OWN) {
+        badge.className = 'mode-badge edit';
+        badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Редактирование';
+    } else {
+        badge.className = 'mode-badge view';
+        badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg> Просмотр';
+    }
+
+    // Загружаем журнал
+    const rec = await DB.getJournal(classId, subjectId);
+    CURRENT_JOURNAL = rec ? {
+        grades: rec.grades || {},
+        lessons: rec.lessons || {},
+        qtrGrades: rec.qtr_grades || {},
+        lessonTypes: rec.lesson_types || {}
+    } : { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
+
+    // Загружаем расписание класса
+    const schedules = await DB.getAll('class_schedules');
+    CURRENT_SCHEDULE = schedules.find(s => s.class_id === classId);
+
+    // Ученики
+    const students = ALL_STUDENTS
+        .filter(s => s.class_id === classId)
+        .sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
+
+    renderJournal(students);
+}
+
+function renderJournal(students) {
+    const content = document.getElementById('journalContent');
+    const canEdit = CURRENT_IS_OWN;
+    const ro = canEdit ? '' : 'disabled';
+
+    if (students.length === 0) {
+        content.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><h3>В классе нет учеников</h3><p>Обратитесь к администратору.</p></div>`;
+        return;
+    }
+
+    // Получаем даты уроков из расписания
+    const dates = getLessonDates();
+
+    let html = '<div class="journal-table-wrapper"><table class="journal-table"><thead><tr>';
+    html += '<th class="student-col">ФИО</th>';
+    dates.forEach(d => { html += `<th title="${d.dateFull}">${d.dateNoYear}</th>`; });
+    html += '<th>Ср.</th><th>Итог</th></tr></thead><tbody>';
+
+    students.forEach(st => {
+        html += `<tr>`;
+        html += `<td class="student-cell">${escapeHtml(st.full_name)}</td>`;
+        dates.forEach(d => {
+            const key = d.gradeKey;
+            const val = (CURRENT_JOURNAL.grades[st.id] || {})[key] || '';
+            html += `<td><div class="grade-cell"><input type="text" value="${escapeHtml(val)}" data-student="${escapeHtml(st.id)}" data-key="${escapeHtml(key)}" placeholder="—" ${ro}></div></td>`;
+        });
+        // Средний балл
+        let sum = 0, cnt = 0;
+        const sg = CURRENT_JOURNAL.grades[st.id] || {};
+        dates.forEach(d => {
+            const v = (sg[d.gradeKey] || '').toString().toUpperCase().trim();
+            if (!v) return;
+            const gp = v.replace(/[НОБП]|СП/g, '').trim();
+            if (!gp) return;
+            if (gp.includes('/')) {
+                gp.split('/').forEach(p => { const n = parseInt(p); if (!isNaN(n)) { sum += n; cnt++; } });
+            } else {
+                const n = parseInt(gp); if (!isNaN(n)) { sum += n; cnt++; }
+            }
+        });
+        const avg = cnt === 0 ? '' : parseFloat((sum / cnt).toFixed(2)).toString();
+        html += `<td><span class="grade-value grade-avg">${avg}</span></td>`;
+        // Итог
+        const qtr = (CURRENT_JOURNAL.qtrGrades[st.id] || {})[0] || '';
+        html += `<td><span class="grade-value grade-qtr">${escapeHtml(qtr)}</span></td>`;
+        html += `</tr>`;
+    });
+
+    html += '</tbody></table></div>';
+
+    // Поурочный план
+    html += '<div class="lesson-panel">';
+    html += '<div class="lesson-panel-title"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>Поурочное планирование</div>';
+    if (dates.length === 0) {
+        html += '<p style="color:#8a9bb5;text-align:center;padding:20px;">В расписании нет уроков по этому предмету.</p>';
+    } else {
+        dates.forEach(d => {
+            const l = CURRENT_JOURNAL.lessons[d.gradeKey] || { t: '', h: '' };
+            html += `<div class="lesson-row">`;
+            html += `<div class="lesson-date">${d.dateFull}</div>`;
+            html += `<textarea class="lesson-textarea" placeholder="Тема урока" data-key="${escapeHtml(d.gradeKey)}" data-type="t" ${ro}>${escapeHtml(l.t || '')}</textarea>`;
+            html += `<textarea class="lesson-textarea" placeholder="Домашнее задание" data-key="${escapeHtml(d.gradeKey)}" data-type="h" ${ro}>${escapeHtml(l.h || '')}</textarea>`;
+            html += `</div>`;
+        });
+    }
+    html += '</div>';
+
+    content.innerHTML = html;
+
+    // Обработчики оценок
+    if (canEdit) {
+        content.querySelectorAll('.grade-cell input').forEach(inp => {
+            inp.addEventListener('change', async () => {
+                const stId = inp.dataset.student;
+                const key = inp.dataset.key;
+                const val = inp.value.trim().toUpperCase();
+                if (!CURRENT_JOURNAL.grades[stId]) CURRENT_JOURNAL.grades[stId] = {};
+                CURRENT_JOURNAL.grades[stId][key] = val;
+                await DB.upsertJournal(CURRENT_CLASS.id, CURRENT_SUBJECT.id, {
+                    grades: CURRENT_JOURNAL.grades,
+                    lessons: CURRENT_JOURNAL.lessons,
+                    qtr_grades: CURRENT_JOURNAL.qtrGrades,
+                    lesson_types: CURRENT_JOURNAL.lessonTypes
+                });
+                showToast('Оценка сохранена');
+            });
+        });
+
+        content.querySelectorAll('.lesson-textarea').forEach(ta => {
+            ta.addEventListener('change', async () => {
+                const key = ta.dataset.key;
+                const type = ta.dataset.type;
+                const val = ta.value.trim();
+                if (!CURRENT_JOURNAL.lessons[key]) CURRENT_JOURNAL.lessons[key] = { t: '', h: '' };
+                CURRENT_JOURNAL.lessons[key][type] = val;
+                await DB.upsertJournal(CURRENT_CLASS.id, CURRENT_SUBJECT.id, {
+                    grades: CURRENT_JOURNAL.grades,
+                    lessons: CURRENT_JOURNAL.lessons,
+                    qtr_grades: CURRENT_JOURNAL.qtrGrades,
+                    lesson_types: CURRENT_JOURNAL.lessonTypes
+                });
+                showToast('Сохранено');
+            });
+        });
+    }
+}
+
+function getLessonDates() {
+    if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) return [];
+    const DAYS_KEYS = ['mon','tue','wed','thu','fri','sat'];
+    const DAYS_JS = { mon:1, tue:2, wed:3, thu:4, fri:5, sat:6 };
+    const grid = CURRENT_SCHEDULE.grid;
+    const result = [];
+    const seen = new Set();
+
+    // Берём текущий учебный год (с 1 сентября по 31 мая)
+    const now = new Date();
+    const startYear = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+    const start = new Date(startYear, 8, 1);
+    const end = new Date(startYear + 1, 4, 31);
+
+    const cursor = new Date(start);
+    while (cursor <= end) {
+        const jsDay = cursor.getDay();
+        const dayKey = DAYS_KEYS.find(k => DAYS_JS[k] === jsDay);
+        if (dayKey && grid[dayKey]) {
+            Object.keys(grid[dayKey]).forEach(numStr => {
+                const lesson = grid[dayKey][numStr];
+                if (lesson && lesson.subject === CURRENT_SUBJECT.name) {
+                    const iso = `${cursor.getFullYear()}-${String(cursor.getMonth()+1).padStart(2,'0')}-${String(cursor.getDate()).padStart(2,'0')}`;
+                    const key = iso + '_' + numStr;
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        result.push({
+                            iso,
+                            dateNoYear: `${String(cursor.getDate()).padStart(2,'0')}.${String(cursor.getMonth()+1).padStart(2,'0')}`,
+                            dateFull: `${String(cursor.getDate()).padStart(2,'0')}.${String(cursor.getMonth()+1).padStart(2,'0')}.${cursor.getFullYear()}`,
+                            gradeKey: key
+                        });
+                    }
+                }
+            });
+        }
+        cursor.setDate(cursor.getDate() + 1);
+    }
+    result.sort((a, b) => a.iso.localeCompare(b.iso));
+    return result;
+}
+
+function backToClasses() {
+    document.getElementById('journalScreen').style.display = 'none';
+    document.getElementById('journalScreen').classList.remove('active');
+    document.getElementById('classesScreen').style.display = 'block';
+    CURRENT_CLASS = null;
+    CURRENT_SUBJECT = null;
+}
+</script>
+</body>
+</html>
