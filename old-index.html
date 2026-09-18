@@ -1,652 +1,325 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Дневник.ру — Вход</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дневник.ру — Вход</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; }
+body { background: linear-gradient(135deg, #1e3c72, #2a5298); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
 
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3b7dd8 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
+/* ===== ЭКРАН ЗАГРУЗКИ ===== */
+.loading-screen { position: fixed; inset: 0; z-index: 10001; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3c72, #2a5298); }
+.loading-screen.hidden { display: none; }
+.loading-box { text-align: center; color: #fff; }
+.spinner { width: 56px; height: 56px; border: 5px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 20px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 16px; font-weight: 500; letter-spacing: 0.3px; opacity: 0.95; }
 
-        /* Декоративные круги на фоне */
-        body::before,
-        body::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
-            pointer-events: none;
-        }
+/* ===== ЭКРАН ВХОДА ===== */
+.login-screen { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; }
+.login-screen.hidden { display: none; }
+.login-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 440px; width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,0.35); animation: appear 0.4s ease; }
+@keyframes appear { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        body::before {
-            width: 500px;
-            height: 500px;
-            top: -200px;
-            right: -150px;
-        }
+.login-logo { width: 72px; height: 72px; margin: 0 auto 22px; background: linear-gradient(135deg, #2a5298, #3b7dd8); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(42,82,152,0.35); }
+.login-logo svg { width: 40px; height: 40px; fill: #fff; }
+.login-title { font-size: 26px; font-weight: 800; color: #1a2b4a; text-align: center; margin-bottom: 8px; letter-spacing: -0.5px; }
+.login-subtitle { font-size: 14px; color: #7a8aa3; text-align: center; margin-bottom: 30px; }
 
-        body::after {
-            width: 400px;
-            height: 400px;
-            bottom: -180px;
-            left: -120px;
-        }
+.login-form-group { margin-bottom: 18px; }
+.login-form-group label { display: block; font-size: 13px; font-weight: 600; color: #4a5a72; margin-bottom: 8px; }
+.login-form-group input { width: 100%; height: 52px; padding: 0 18px; font-size: 15px; color: #1a2b4a; background: #f7f9fc; border: 2px solid #e2e8f0; border-radius: 14px; outline: none; transition: all 0.25s ease; font-family: inherit; }
+.login-form-group input:focus { border-color: #2a5298; background: #fff; box-shadow: 0 0 0 4px rgba(42,82,152,0.1); }
+.login-form-group input::placeholder { color: #a8b5c9; }
 
-        .login-container {
-            width: 100%;
-            max-width: 440px;
-            position: relative;
-            z-index: 1;
-        }
+.login-btn { width: 100%; height: 54px; margin-top: 10px; background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.25s ease; box-shadow: 0 6px 20px rgba(42,82,152,0.4); font-family: inherit; letter-spacing: 0.3px; }
+.login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(42,82,152,0.5); }
+.login-btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
 
-        .login-card {
-            background: #ffffff;
-            border-radius: 32px;
-            padding: 48px 40px 40px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.15);
-            animation: cardAppear 0.6s ease-out;
-        }
+.login-error { background: #fff0f0; color: #d32f2f; padding: 14px 16px; border-radius: 12px; font-size: 13px; font-weight: 500; margin-bottom: 18px; display: none; border: 1px solid #ffd6d6; line-height: 1.4; }
+.login-error.show { display: block; }
 
-        @keyframes cardAppear {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.97);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
+.login-hint { margin-top: 24px; padding: 16px; background: #f0f5ff; border-radius: 14px; font-size: 12px; color: #4a5a72; line-height: 1.6; text-align: center; }
+.login-hint strong { color: #2a5298; font-weight: 700; }
 
-        .logo-section {
-            text-align: center;
-            margin-bottom: 36px;
-        }
+/* ===== ЭКРАН ОШИБКИ ===== */
+.error-screen { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; }
+.error-screen.show { display: flex; }
+.error-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 440px; width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,0.35); text-align: center; animation: appear 0.4s ease; }
+.error-icon { width: 72px; height: 72px; margin: 0 auto 22px; background: linear-gradient(135deg, #ff6b6b, #d32f2f); border-radius: 20px; display: flex; align-items: center; justify-content: center; }
+.error-icon svg { width: 40px; height: 40px; fill: #fff; }
+.error-title { font-size: 22px; font-weight: 800; color: #1a2b4a; margin-bottom: 12px; }
+.error-text { font-size: 14px; color: #7a8aa3; line-height: 1.6; margin-bottom: 24px; }
+.error-btn { width: 100%; height: 50px; background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.25s ease; box-shadow: 0 6px 18px rgba(42,82,152,0.35); font-family: inherit; }
+.error-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(42,82,152,0.45); }
 
-        .logo-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 72px;
-            height: 72px;
-            background: linear-gradient(135deg, #2a5298, #3b7dd8);
-            border-radius: 22px;
-            margin-bottom: 18px;
-            box-shadow: 0 8px 20px rgba(42, 82, 152, 0.35);
-        }
-
-        .logo-icon svg {
-            width: 40px;
-            height: 40px;
-            fill: #ffffff;
-        }
-
-        .logo-section h1 {
-            font-size: 26px;
-            font-weight: 700;
-            color: #1a2b4a;
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
-        }
-
-        .logo-section p {
-            font-size: 14px;
-            color: #8a9bb5;
-            font-weight: 400;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #4a5a72;
-            margin-bottom: 8px;
-            letter-spacing: 0.2px;
-        }
-
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-wrapper .input-icon {
-            position: absolute;
-            left: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #a0aec0;
-            transition: color 0.25s ease;
-            pointer-events: none;
-        }
-
-        .input-wrapper .input-icon svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            height: 52px;
-            padding: 0 16px 0 48px;
-            font-size: 15px;
-            color: #1a2b4a;
-            background: #f7f9fc;
-            border: 2px solid #e2e8f0;
-            border-radius: 14px;
-            outline: none;
-            transition: all 0.25s ease;
-            font-family: inherit;
-        }
-
-        .form-group select {
-            appearance: none;
-            -webkit-appearance: none;
-            cursor: pointer;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a0aec0' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 44px;
-        }
-
-        .form-group input::placeholder {
-            color: #a8b5c9;
-            font-weight: 400;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #2a5298;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
-        }
-
-        .form-group input:focus ~ .input-icon,
-        .form-group select:focus ~ .input-icon {
-            color: #2a5298;
-        }
-
-        .form-group select option {
-            color: #1a2b4a;
-            padding: 10px;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 14px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #a0aec0;
-            transition: color 0.2s ease;
-            border-radius: 8px;
-        }
-
-        .password-toggle:hover {
-            color: #2a5298;
-            background: rgba(42, 82, 152, 0.06);
-        }
-
-        .password-toggle svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        .form-options {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #4a5a72;
-            user-select: none;
-        }
-
-        .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #2a5298;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .forgot-link {
-            font-size: 14px;
-            color: #2a5298;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        .forgot-link:hover {
-            color: #1e3c72;
-            text-decoration: underline;
-        }
-
-        .btn-login {
-            width: 100%;
-            height: 54px;
-            background: linear-gradient(135deg, #2a5298, #3b7dd8);
-            color: #ffffff;
-            border: none;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.35);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(42, 82, 152, 0.45);
-        }
-
-        .btn-login:active {
-            transform: translateY(0);
-            box-shadow: 0 4px 14px rgba(42, 82, 152, 0.35);
-        }
-
-        .btn-login::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .btn-login:hover::after {
-            left: 100%;
-        }
-
-        .btn-login:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .error-message {
-            display: none;
-            background: #fff5f5;
-            color: #c53030;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 13px;
-            margin-bottom: 18px;
-            border: 1px solid #fed7d7;
-            align-items: center;
-            gap: 8px;
-            animation: shake 0.4s ease;
-        }
-
-        .error-message.show {
-            display: flex;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin: 26px 0 22px;
-            color: #b8c4d4;
-            font-size: 13px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e8eef5;
-        }
-
-        .register-link {
-            text-align: center;
-            font-size: 14px;
-            color: #8a9bb5;
-        }
-
-        .register-link a {
-            color: #2a5298;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s ease;
-        }
-
-        .register-link a:hover {
-            color: #1e3c72;
-            text-decoration: underline;
-        }
-
-        .footer-text {
-            text-align: center;
-            margin-top: 28px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.55);
-            letter-spacing: 0.3px;
-        }
-
-        /* Адаптивность */
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 36px 24px 32px;
-                border-radius: 24px;
-            }
-
-            .logo-section h1 {
-                font-size: 22px;
-            }
-
-            .logo-icon {
-                width: 62px;
-                height: 62px;
-                border-radius: 18px;
-            }
-
-            .logo-icon svg {
-                width: 34px;
-                height: 34px;
-            }
-
-            .form-group input,
-            .form-group select {
-                height: 48px;
-                font-size: 14px;
-            }
-
-            .btn-login {
-                height: 50px;
-                font-size: 15px;
-            }
-
-            .form-options {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .login-card {
-                padding: 28px 18px 26px;
-            }
-        }
-    </style>
+@media (max-width: 500px) {
+    .login-box, .error-box { padding: 32px 24px; }
+    .login-title { font-size: 22px; }
+}
+</style>
 </head>
 <body>
 
-    <div class="login-container">
-        <div class="login-card">
-            <!-- Логотип -->
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
-                    </svg>
-                </div>
-                <h1>Дневник.ру</h1>
-                <p>Войдите в свою учётную запись</p>
-            </div>
-
-            <!-- Сообщение об ошибке -->
-            <div class="error-message" id="errorMessage">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                </svg>
-                <span id="errorText">Заполните все поля</span>
-            </div>
-
-            <!-- Форма входа -->
-            <form id="loginForm" autocomplete="on">
-                <!-- Логин -->
-                <div class="form-group">
-                    <label for="login">Логин</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="login" name="login" placeholder="Введите логин" autocomplete="username" required>
-                        <span class="input-icon">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                            </svg>
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Пароль -->
-                <div class="form-group">
-                    <label for="password">Пароль</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="password" name="password" placeholder="Введите пароль" autocomplete="current-password" required>
-                        <span class="input-icon">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-                            </svg>
-                        </span>
-                        <button type="button" class="password-toggle" id="togglePassword" aria-label="Показать пароль">
-                            <svg id="eyeIcon" viewBox="0 0 24 24">
-                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Роль -->
-                <div class="form-group">
-                    <label for="role">Роль</label>
-                    <div class="input-wrapper">
-                        <select id="role" name="role" required>
-                            <option value="" disabled selected>Выберите роль</option>
-                            <option value="admin">Администратор</option>
-                            <option value="teacher">Учитель</option>
-                            <option value="student">Ученик</option>
-                            <option value="parent">Родитель</option>
-                        </select>
-                        <span class="input-icon">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                            </svg>
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Опции -->
-                <div class="form-options">
-                    <label class="remember-me">
-                        <input type="checkbox" id="remember" name="remember">
-                        <span>Запомнить меня</span>
-                    </label>
-                    <a href="#" class="forgot-link">Забыли пароль?</a>
-                </div>
-
-                <!-- Кнопка входа -->
-                <button type="submit" class="btn-login" id="loginBtn">Войти</button>
-            </form>
-
-            <!-- Разделитель -->
-            <div class="divider">или</div>
-
-            <!-- Ссылка на регистрацию -->
-            <div class="register-link">
-                Нет аккаунта? <a href="#">Зарегистрироваться</a>
-            </div>
-        </div>
-
-        <p class="footer-text">© 2025 Дневник.ру — Электронный журнал</p>
+<!-- ==================== ЭКРАН ЗАГРУЗКИ ==================== -->
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-box">
+        <div class="spinner"></div>
+        <div class="loading-text">Загрузка...</div>
     </div>
+</div>
 
-    <script>
-        (function() {
-            const loginForm = document.getElementById('loginForm');
-            const loginInput = document.getElementById('login');
-            const passwordInput = document.getElementById('password');
-            const roleSelect = document.getElementById('role');
-            const togglePassword = document.getElementById('togglePassword');
-            const eyeIcon = document.getElementById('eyeIcon');
-            const errorMessage = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
-            const loginBtn = document.getElementById('loginBtn');
+<!-- ==================== ЭКРАН ВХОДА ==================== -->
+<div class="login-screen hidden" id="loginScreen">
+    <div class="login-box">
+        <div class="login-logo">
+            <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        <div class="login-title">Дневник.ру</div>
+        <div class="login-subtitle">Вход в систему</div>
 
-            // Переключение видимости пароля
-            togglePassword.addEventListener('click', function() {
-                const isPassword = passwordInput.type === 'password';
-                passwordInput.type = isPassword ? 'text' : 'password';
+        <div class="login-error" id="loginError"></div>
 
-                // Меняем иконку
-                if (isPassword) {
-                    eyeIcon.innerHTML = '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>';
-                } else {
-                    eyeIcon.innerHTML = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
-                }
+        <form id="loginForm">
+            <div class="login-form-group">
+                <label for="loginInput">Логин</label>
+                <input type="text" id="loginInput" placeholder="Например: ivanov.ivan" autocomplete="username" required>
+            </div>
+            <div class="login-form-group">
+                <label for="passwordInput">Пароль</label>
+                <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="login-btn" id="loginBtn">Войти</button>
+        </form>
+
+        <div class="login-hint">
+            🔒 <strong>Безопасный вход.</strong> Система автоматически определяет вашу роль.<br>
+            Сессия — 24 часа.
+        </div>
+    </div>
+</div>
+
+<!-- ==================== ЭКРАН ОШИБКИ ==================== -->
+<div class="error-screen" id="errorScreen">
+    <div class="error-box">
+        <div class="error-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        </div>
+        <div class="error-title" id="errorTitle">Доступ запрещён</div>
+        <div class="error-text" id="errorText">Ваш аккаунт не найден в системе. Обратитесь к администратору.</div>
+        <button class="error-btn" onclick="handleLogoutAndReload()">Выйти и попробовать снова</button>
+    </div>
+</div>
+
+<script src="supabase-config.js"></script>
+<script>
+// ============================================================
+// КОНСТАНТЫ
+// ============================================================
+const AUTH_EMAIL_DOMAIN = '@school-journal-8f39a.firebaseapp.com';
+const SESSION_KEY = 'dr_universal_session';
+const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
+
+// ============================================================
+// СЕССИЯ
+// ============================================================
+function getSession() {
+    try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return null;
+        const s = JSON.parse(raw);
+        if (!s.loggedAt || !s.expiresAt) return null;
+        if (Date.now() > s.expiresAt) { localStorage.removeItem(SESSION_KEY); return null; }
+        return s;
+    } catch (e) { return null; }
+}
+function saveSession(email, role, entityId) {
+    const now = Date.now();
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+        email, role, entityId, loggedAt: now, expiresAt: now + SESSION_DURATION_MS
+    }));
+}
+function clearSession() { localStorage.removeItem(SESSION_KEY); }
+
+// ============================================================
+// ЭКРАНЫ
+// ============================================================
+function showLoading() {
+    document.getElementById('loadingScreen').classList.remove('hidden');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('errorScreen').classList.remove('show');
+}
+function showLogin() {
+    document.getElementById('loadingScreen').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('errorScreen').classList.remove('show');
+}
+function showError(title, text) {
+    document.getElementById('loadingScreen').classList.add('hidden');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('errorScreen').classList.add('show');
+    if (title) document.getElementById('errorTitle').textContent = title;
+    if (text) document.getElementById('errorText').textContent = text;
+}
+
+// ============================================================
+// ОПРЕДЕЛЕНИЕ РОЛИ
+// ============================================================
+async function determineRole(user) {
+    // user — объект из Firebase Auth
+    if (!user || !user.uid) return { role: 'unknown' };
+
+    const uid = user.uid;
+    const email = user.email || '';
+    const login = email.split('@')[0];
+
+    // 1. Проверяем — админ ли это? (UID в коллекции admins)
+    try {
+        const admins = await DB.getAll('admins');
+        const isAdmin = admins.some(a => a.id === uid);
+        if (isAdmin) {
+            return { role: 'admin', entityId: uid };
+        }
+    } catch (e) { console.error('Ошибка проверки админа:', e); }
+
+    // 2. Проверяем — учитель ли это? (логин совпадает с полем login в teachers)
+    try {
+        const teachers = await DB.getAll('teachers');
+        const teacher = teachers.find(t =>
+            t.login && t.login.toLowerCase() === login.toLowerCase()
+        );
+        if (teacher) {
+            return { role: 'teacher', entityId: teacher.id, teacher };
+        }
+    } catch (e) { console.error('Ошибка проверки учителя:', e); }
+
+    // 3. Не нашли
+    return { role: 'unknown' };
+}
+
+// ============================================================
+// МАРШРУТИЗАЦИЯ
+// ============================================================
+function redirectTo(role) {
+    if (role === 'admin') {
+        window.location.href = 'admin.html';
+    } else if (role === 'teacher') {
+        window.location.href = 'teacher.html';
+    } else {
+        showError('Доступ запрещён', 'Ваш аккаунт не найден в системе. Обратитесь к администратору школы.');
+    }
+}
+
+// ============================================================
+// ВХОД
+// ============================================================
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const login = document.getElementById('loginInput').value.trim();
+    const pwd = document.getElementById('passwordInput').value;
+    const err = document.getElementById('loginError');
+    const btn = document.getElementById('loginBtn');
+
+    err.classList.remove('show');
+    btn.disabled = true;
+    btn.textContent = 'Проверка...';
+
+    try {
+        const fb = await window._fbReady;
+        const fullEmail = login.includes('@') ? login : login + AUTH_EMAIL_DOMAIN;
+
+        const cred = await fb.signInWithEmailAndPassword(fb.auth, fullEmail, pwd);
+        const user = cred.user;
+
+        showLoading();
+
+        const result = await determineRole(user);
+
+        if (result.role === 'unknown') {
+            // Разлогиниваем
+            try { await fb.signOut(fb.auth); } catch (e) {}
+            clearSession();
+            showError('Доступ запрещён', 'Ваш аккаунт не найден в системе. Обратитесь к администратору школы.');
+            return;
+        }
+
+        saveSession(fullEmail, result.role, result.entityId);
+        redirectTo(result.role);
+
+    } catch (e) {
+        console.error('Ошибка входа:', e);
+        let msg = 'Не удалось войти. Проверьте логин и пароль.';
+        if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'Неверный логин или пароль.';
+        if (e.code === 'auth/user-not-found') msg = 'Пользователь не найден.';
+        if (e.code === 'auth/too-many-requests') msg = 'Слишком много попыток. Попробуйте позже.';
+        if (e.code === 'auth/invalid-email') msg = 'Неверный формат логина.';
+        err.textContent = msg;
+        err.classList.add('show');
+        showLogin();
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Войти';
+    }
+});
+
+// ============================================================
+// АВТОВХОД ПРИ ЗАГРУЗКЕ
+// ============================================================
+window.addEventListener('load', async () => {
+    showLoading();
+
+    try {
+        const fb = await window._fbReady;
+
+        // Ждём восстановления сессии Firebase
+        const user = await new Promise((resolve) => {
+            const unsub = fb.onAuthStateChanged(fb.auth, (u) => {
+                unsub();
+                resolve(u);
             });
+        });
 
-            // Обработка отправки формы
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+        if (!user) {
+            // Не вошёл — показываем экран входа
+            showLogin();
+            return;
+        }
 
-                const login = loginInput.value.trim();
-                const password = passwordInput.value.trim();
-                const role = roleSelect.value;
+        // Вошёл — определяем роль
+        const result = await determineRole(user);
 
-                // Валидация
-                if (!login) {
-                    showError('Введите логин');
-                    loginInput.focus();
-                    return;
-                }
+        if (result.role === 'unknown') {
+            try { await fb.signOut(fb.auth); } catch (e) {}
+            clearSession();
+            showError('Доступ запрещён', 'Ваш аккаунт не найден в системе. Обратитесь к администратору школы.');
+            return;
+        }
 
-                if (!password) {
-                    showError('Введите пароль');
-                    passwordInput.focus();
-                    return;
-                }
+        saveSession(user.email, result.role, result.entityId);
+        redirectTo(result.role);
 
-                if (!role) {
-                    showError('Выберите роль');
-                    roleSelect.focus();
-                    return;
-                }
+    } catch (e) {
+        console.error('Ошибка автовхода:', e);
+        showLogin();
+    }
+});
 
-                // Скрываем ошибку
-                hideError();
-
-                // Блокируем кнопку
-                loginBtn.disabled = true;
-                loginBtn.textContent = 'Вход...';
-
-                // Имитация запроса к серверу
-                setTimeout(function() {
-                    // ===== МАРШРУТИЗАЦИЯ ПО РОЛЯМ =====
-
-                    if (role === 'admin') {
-                        // Администратор → панель администратора
-                        window.location.href = 'admin.html';
-                        return;
-                    }
-
-                    if (role === 'teacher') {
-                        alert('Этот модуль в разработке');
-                        loginBtn.disabled = false;
-                        loginBtn.textContent = 'Войти';
-                        return;
-                    }
-
-                    if (role === 'student') {
-                        alert('Этот модуль в разработке');
-                        loginBtn.disabled = false;
-                        loginBtn.textContent = 'Войти';
-                        return;
-                    }
-
-                    if (role === 'parent') {
-                        alert('Этот модуль в разработке');
-                        loginBtn.disabled = false;
-                        loginBtn.textContent = 'Войти';
-                        return;
-                    }
-
-                }, 600);
-            });
-
-            // Показ ошибки
-            function showError(message) {
-                errorText.textContent = message;
-                errorMessage.classList.add('show');
-
-                // Автоскрытие через 4 секунды
-                clearTimeout(window.errorTimeout);
-                window.errorTimeout = setTimeout(hideError, 4000);
-            }
-
-            // Скрытие ошибки
-            function hideError() {
-                errorMessage.classList.remove('show');
-            }
-
-            // Скрываем ошибку при вводе
-            loginInput.addEventListener('input', hideError);
-            passwordInput.addEventListener('input', hideError);
-            roleSelect.addEventListener('change', hideError);
-
-            // Автофокус на поле логина
-            loginInput.focus();
-
-            // Обработка Enter в полях
-            [loginInput, passwordInput].forEach(function(input) {
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        loginForm.dispatchEvent(new Event('submit'));
-                    }
-                });
-            });
-        })();
-    </script>
+// ============================================================
+// ВЫХОД И ПЕРЕЗАГРУЗКА
+// ============================================================
+async function handleLogoutAndReload() {
+    try {
+        const fb = await window._fbReady;
+        await fb.signOut(fb.auth);
+    } catch (e) {}
+    clearSession();
+    location.reload();
+}
+</script>
 </body>
 </html>
