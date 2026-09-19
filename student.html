@@ -19,11 +19,20 @@
         .logout-btn:hover { background: rgba(255,255,255,0.22); }
         .logout-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px 60px; }
-        .page-title { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
-        .page-subtitle { font-size: 14px; color: #7a8aa3; margin-bottom: 24px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 24px 24px 60px; }
 
-        /* ---- Общее предупреждение ---- */
+        /* ===== Вкладки ===== */
+        .tabs { display: flex; gap: 6px; background: #fff; padding: 6px; border-radius: 16px; box-shadow: 0 4px 16px rgba(30,60,114,0.08); margin-bottom: 24px; }
+        .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; color: #5a6a85; font-size: 14px; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; }
+        .tab-btn svg { width: 16px; height: 16px; fill: currentColor; }
+        .tab-btn:hover { background: #f0f4f9; color: #2a5298; }
+        .tab-btn.active { background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff; box-shadow: 0 6px 16px rgba(42,82,152,0.3); }
+
+        .tab-panel { display: none; animation: fadeIn 0.3s ease; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== Общие предупреждения ===== */
         .warn-box {
             border-radius: 14px;
             padding: 18px 22px;
@@ -43,11 +52,9 @@
         .warn-list { margin: 6px 0 10px 20px; font-size: 14px; line-height: 1.7; color: #2a3a52; }
         .warn-hint { font-size: 14px; color: #2a3a52; line-height: 1.5; }
         .warn-hint b { color: #1a2b4a; }
-
         .warn-box.fails { background: #fff0f0; border: 2px solid #ffd6d6; }
         .warn-box.fails .warn-icon { fill: #d32f2f; }
         .warn-box.fails .warn-title { color: #d32f2f; }
-
         .warn-box.absences { background: #fff8e6; border: 2px solid #ffe4a3; }
         .warn-box.absences .warn-icon { fill: #b8720a; }
         .warn-box.absences .warn-title { color: #b8720a; }
@@ -57,6 +64,45 @@
         .info-banner-label { font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; }
         .info-banner-value { font-size: 15px; font-weight: 600; color: #1a2b4a; }
 
+        /* ===== ДНЕВНИК ===== */
+        .week-header {
+            background: #fff;
+            border-radius: 14px;
+            padding: 18px 24px;
+            box-shadow: 0 4px 16px rgba(30,60,114,0.07);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .week-title { font-size: 18px; font-weight: 700; color: #1a2b4a; }
+        .week-range { font-size: 13px; color: #7a8aa3; margin-top: 2px; }
+        .week-badge { background: #e6efff; color: #2a5298; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
+
+        .day-card { background: #fff; border-radius: 16px; padding: 20px 22px; box-shadow: 0 4px 16px rgba(30,60,114,0.07); margin-bottom: 16px; border-left: 4px solid #2a5298; }
+        .day-card.today { border-left-color: #22874a; }
+        .day-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #eef2f8; flex-wrap: wrap; gap: 8px; }
+        .day-name { font-size: 16px; font-weight: 700; color: #1a2b4a; text-transform: capitalize; }
+        .day-date { font-size: 13px; color: #7a8aa3; }
+        .day-today-badge { background: #e6f7ee; color: #22874a; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+
+        .lesson-list { display: flex; flex-direction: column; gap: 10px; }
+        .lesson-row { display: grid; grid-template-columns: 38px 1fr; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f2f6fb; }
+        .lesson-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .lesson-num { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, #e6efff, #d4e4ff); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #2a5298; flex-shrink: 0; }
+        .lesson-body { min-width: 0; }
+        .lesson-subject { font-size: 15px; font-weight: 700; color: #1a2b4a; margin-bottom: 2px; }
+        .lesson-meta { font-size: 12px; color: #7a8aa3; margin-bottom: 8px; }
+        .lesson-section { margin-top: 6px; }
+        .lesson-label { display: inline-block; font-size: 10px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 6px; }
+        .lesson-value { font-size: 13px; color: #2a3a52; line-height: 1.5; }
+        .lesson-empty { color: #b8c4d4; font-style: italic; font-size: 12px; }
+        .lesson-row.empty .lesson-num { background: #f0f4f9; color: #b8c4d4; }
+        .lesson-row.empty .lesson-body { display: flex; align-items: center; height: 32px; color: #b8c4d4; font-style: italic; font-size: 13px; }
+
+        /* ===== ОЦЕНКИ ===== */
         .subject-card { background: #fff; border-radius: 16px; padding: 22px 24px; box-shadow: 0 4px 16px rgba(30,60,114,0.07); margin-bottom: 16px; border-left: 4px solid #2a5298; }
         .subject-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
         .subject-name { font-size: 18px; font-weight: 700; color: #1a2b4a; }
@@ -72,7 +118,6 @@
         }
         .grade-chip.clickable { cursor: pointer; }
         .grade-chip.clickable:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.15); }
-        .grade-chip.clickable:active { transform: translateY(0); }
 
         .g5 { background: #65A30D; color: #fff; }
         .g4 { background: #84CC16; color: #fff; }
@@ -121,138 +166,27 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { font-size: 15px; color: #5a6a85; }
 
-        /* ===== Модальное окно статистики ===== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(26, 43, 74, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 500;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            animation: fadeIn 0.25s ease;
-        }
+        /* ===== Модалка статистики ===== */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.25s ease; }
         .modal-overlay.show { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .modal {
-            background: #fff;
-            border-radius: 20px;
-            padding: 28px 28px 24px;
-            max-width: 460px;
-            width: 100%;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-            animation: modalAppear 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        @keyframes modalAppear {
-            from { opacity: 0; transform: translateY(20px) scale(0.96); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #eef2f8;
-        }
-        .modal-header-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #e6efff, #d4e4ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .modal { background: #fff; border-radius: 20px; padding: 28px 28px 24px; max-width: 460px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3); animation: modalAppear 0.3s ease; max-height: 90vh; overflow-y: auto; }
+        @keyframes modalAppear { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .modal-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #eef2f8; }
+        .modal-header-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #e6efff, #d4e4ff); display: flex; align-items: center; justify-content: center; }
         .modal-header-icon svg { width: 22px; height: 22px; fill: #2a5298; }
         .modal-title { font-size: 17px; font-weight: 700; color: #1a2b4a; }
         .modal-subtitle { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
-
         .stats-list { display: flex; flex-direction: column; gap: 10px; }
-        .stat-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .stat-badge {
-            width: 34px;
-            height: 34px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            color: #fff;
-            flex-shrink: 0;
-        }
-        .stat-bar-wrap {
-            flex: 1;
-            height: 26px;
-            background: #f0f4f9;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-        .stat-bar {
-            height: 100%;
-            border-radius: 8px;
-            transition: width 0.4s ease;
-            display: flex;
-            align-items: center;
-            padding-left: 10px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #fff;
-            min-width: 24px;
-        }
-        .stat-count {
-            width: 60px;
-            text-align: right;
-            font-size: 13px;
-            font-weight: 600;
-            color: #2a3a52;
-            flex-shrink: 0;
-        }
+        .stat-row { display: flex; align-items: center; gap: 12px; }
+        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0; }
+        .stat-bar-wrap { flex: 1; height: 26px; background: #f0f4f9; border-radius: 8px; overflow: hidden; position: relative; }
+        .stat-bar { height: 100%; border-radius: 8px; transition: width 0.4s ease; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: #fff; min-width: 24px; }
+        .stat-count { width: 60px; text-align: right; font-size: 13px; font-weight: 600; color: #2a3a52; flex-shrink: 0; }
         .stat-count small { color: #7a8aa3; font-weight: 500; }
-
-        .stats-total {
-            margin-top: 18px;
-            padding-top: 14px;
-            border-top: 1px solid #eef2f8;
-            font-size: 13px;
-            color: #7a8aa3;
-            text-align: center;
-        }
-
-        .modal-close {
-            width: 100%;
-            height: 46px;
-            margin-top: 18px;
-            background: #f0f2f5;
-            color: #4a5a72;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            font-family: inherit;
-        }
+        .stats-total { margin-top: 18px; padding-top: 14px; border-top: 1px solid #eef2f8; font-size: 13px; color: #7a8aa3; text-align: center; }
+        .modal-close { width: 100%; height: 46px; margin-top: 18px; background: #f0f2f5; color: #4a5a72; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s ease; font-family: inherit; }
         .modal-close:hover { background: #e2e8f0; }
-
-        .stats-empty {
-            text-align: center;
-            padding: 20px 10px;
-            color: #8a9bb5;
-            font-size: 14px;
-        }
+        .stats-empty { text-align: center; padding: 20px 10px; color: #8a9bb5; font-size: 14px; }
 
         @media (max-width: 700px) {
             .header { padding: 0 14px; height: 62px; }
@@ -261,11 +195,13 @@
             .user-badge span { display: none; }
             .user-badge { padding: 4px; }
             .container { padding: 20px 14px 40px; }
-            .page-title { font-size: 21px; }
             .subject-card { padding: 18px 16px; }
-            .warn-box { padding: 14px 16px; }
+            .day-card { padding: 16px 14px; }
+            .week-header { padding: 14px 16px; }
             .modal { padding: 22px 20px; }
             .stat-count { width: 50px; font-size: 12px; }
+            .tabs { padding: 4px; }
+            .tab-btn { padding: 10px 8px; font-size: 13px; }
         }
     </style>
 </head>
@@ -291,14 +227,33 @@
 <div class="container">
     <div id="loading" class="loading">
         <div class="spinner"></div>
-        <div class="loading-text">Загружаем ваши оценки...</div>
+        <div class="loading-text">Загружаем данные...</div>
     </div>
+
     <div id="content" style="display:none;">
-        <h1 class="page-title">Мои оценки</h1>
-        <p class="page-subtitle">Здесь отображаются только ваши оценки. Редактирование недоступно.</p>
-        <div id="warningContainer"></div>
         <div class="info-banner" id="infoBanner"></div>
-        <div id="subjectsContainer"></div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="diary">
+                <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+                Дневник
+            </button>
+            <button class="tab-btn" data-tab="grades">
+                <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></svg>
+                Оценки
+            </button>
+        </div>
+
+        <!-- ===== ВКЛАДКА ДНЕВНИК ===== -->
+        <div class="tab-panel active" id="panel-diary">
+            <div id="diaryContent"></div>
+        </div>
+
+        <!-- ===== ВКЛАДКА ОЦЕНКИ ===== -->
+        <div class="tab-panel" id="panel-grades">
+            <div id="warningContainer"></div>
+            <div id="subjectsContainer"></div>
+        </div>
     </div>
 </div>
 
@@ -327,6 +282,11 @@
     // ============================================================
     const RECENT_DAYS = 7;
 
+    const DAYS_KEYS   = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const DAYS_RU     = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота' };
+    const DAYS_SHORT  = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
+    const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
+
     // ============================================================
     // СОСТОЯНИЕ
     // ============================================================
@@ -336,8 +296,10 @@
     let ALL_TEACHERS = [];
     let ALL_WORKLOADS = [];
     let ALL_JOURNALS = [];
-    let ALL_STUDENTS = [];        // ← ВСЕ ученики из Firestore
-    let CLASS_STUDENT_IDS = [];   // ← актуальные ID учеников текущего класса
+    let ALL_STUDENTS = [];
+    let CLASS_STUDENT_IDS = [];
+    let CURRENT_SCHEDULE = null;
+    let ALL_ROOMS = [];
 
     // ============================================================
     // УТИЛИТЫ
@@ -348,7 +310,26 @@
         div.textContent = String(text);
         return div.innerHTML;
     }
-
+    function formatDateRu(d) {
+        return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+    }
+    function formatDateShort(d) {
+        return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`;
+    }
+    function isoDate(d) {
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    function parseKey(key) {
+        const parts = String(key).split('_');
+        const datePart = parts[0];
+        const lessonPart = parts[1] || '';
+        const d = new Date(datePart + 'T00:00:00');
+        return {
+            date: isNaN(d.getTime()) ? null : d,
+            dateRu: isNaN(d.getTime()) ? datePart : formatDateRu(d),
+            lesson: lessonPart
+        };
+    }
     function gradeClass(grade) {
         const g = String(grade).trim().replace(/[НОБП]|СП/gi, '').trim();
         if (g === '5') return 'g5';
@@ -358,7 +339,6 @@
         if (g === '1') return 'g1';
         return 'gn';
     }
-
     function calcAverage(gradesMap) {
         let sum = 0, cnt = 0;
         Object.values(gradesMap || {}).forEach(raw => {
@@ -378,25 +358,31 @@
         });
         return cnt === 0 ? null : (sum / cnt).toFixed(2);
     }
-
-    function formatDateRu(d) {
-        return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
-    }
-
-    function parseKey(key) {
-        const parts = String(key).split('_');
-        const datePart = parts[0];
-        const lessonPart = parts[1] || '';
-        const d = new Date(datePart + 'T00:00:00');
-        return {
-            date: isNaN(d.getTime()) ? null : d,
-            dateRu: isNaN(d.getTime()) ? datePart : formatDateRu(d),
-            lesson: lessonPart
-        };
+    function plural(n, forms) {
+        const a = Math.abs(n) % 100;
+        const b = a % 10;
+        if (a > 10 && a < 20) return forms[2];
+        if (b > 1 && b < 5) return forms[1];
+        if (b === 1) return forms[0];
+        return forms[2];
     }
 
     // ============================================================
-    // СВЕЖИЕ «Н» И «2»
+    // ПОНЕДЕЛЬНИК ТЕКУЩЕЙ НЕДЕЛИ
+    // ============================================================
+    function getMondayOfCurrentWeek() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const dow = today.getDay(); // 0=вс, 1=пн, ..., 6=сб
+        // Если сегодня воскресенье — берём понедельник ПРОШЛОЙ недели? Нет — текущей (вс считается за конец недели)
+        const diff = (dow === 0 ? -6 : 1 - dow); // сдвиг к понедельнику
+        const monday = new Date(today);
+        monday.setDate(today.getDate() + diff);
+        return monday;
+    }
+
+    // ============================================================
+    // ПРЕДУПРЕЖДЕНИЯ (двойки / Н)
     // ============================================================
     function findRecentProblems() {
         const cutoff = Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000;
@@ -411,11 +397,9 @@
             Object.entries(studentGrades).forEach(([key, val]) => {
                 const clean = String(val || '').trim().toUpperCase();
                 if (clean !== '2' && clean !== 'Н') return;
-
                 const parsed = parseKey(key);
                 if (!parsed.date) return;
                 if (parsed.date.getTime() < cutoff) return;
-
                 const entry = { subject: subjObj.name, date: parsed.date, dateRu: parsed.dateRu };
                 if (clean === '2') fails.push(entry);
                 else if (clean === 'Н') absences.push(entry);
@@ -427,40 +411,23 @@
         return { fails, absences };
     }
 
-    // ============================================================
-    // ПРЕДУПРЕЖДЕНИЯ
-    // ============================================================
     function renderWarnings() {
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
-
         const { fails, absences } = findRecentProblems();
 
         if (fails.length > 0) {
             const box = document.createElement('div');
             box.className = 'warn-box fails';
             const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
-
             let titleHtml, listHtml = '';
             if (fails.length === 1) {
                 titleHtml = `Тебе поставили <b>2</b> по предмету «${escapeHtml(fails[0].subject)}» (${fails[0].dateRu}).`;
             } else {
                 titleHtml = `Тебе поставили двойки:`;
-                listHtml = `<ul class="warn-list">${
-                    fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${f.dateRu}</li>`).join('')
-                }</ul>`;
+                listHtml = `<ul class="warn-list">${fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${f.dateRu}</li>`).join('')}</ul>`;
             }
-
-            box.innerHTML = `
-                ${iconSvg}
-                <div class="warn-body">
-                    <div class="warn-title">${titleHtml}</div>
-                    ${listHtml}
-                    <div class="warn-hint">
-                        Обычно оценку можно исправить. <b>Спроси учителя, что ты можешь для этого сделать.</b>
-                    </div>
-                </div>
-            `;
+            box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Обычно оценку можно исправить. <b>Спроси учителя, что ты можешь для этого сделать.</b></div></div>`;
             container.appendChild(box);
         }
 
@@ -468,230 +435,167 @@
             const box = document.createElement('div');
             box.className = 'warn-box absences';
             const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M11 7h2v6h-2zm0 8h2v2h-2zm1-13C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>';
-
             let titleHtml, listHtml = '';
             if (absences.length === 1) {
                 titleHtml = `Тебя не было на уроке «${escapeHtml(absences[0].subject)}» (${absences[0].dateRu}).`;
             } else {
                 titleHtml = `Тебя не было на уроках:`;
-                listHtml = `<ul class="warn-list">${
-                    absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> — ${a.dateRu}</li>`).join('')
-                }</ul>`;
+                listHtml = `<ul class="warn-list">${absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> — ${a.dateRu}</li>`).join('')}</ul>`;
             }
-
-            box.innerHTML = `
-                ${iconSvg}
-                <div class="warn-body">
-                    <div class="warn-title">${titleHtml}</div>
-                    ${listHtml}
-                    <div class="warn-hint">
-                        Если есть уважительная причина, <b>обсуди её с учителем.</b>
-                    </div>
-                </div>
-            `;
+            box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Если есть уважительная причина, <b>обсуди её с учителем.</b></div></div>`;
             container.appendChild(box);
         }
     }
 
     // ============================================================
-    // СТАТИСТИКА (только актуальные ученики класса)
+    // ДНЕВНИК
     // ============================================================
-    function showStats(subjectName, lessonKey) {
-        const journal = ALL_JOURNALS.find(j => {
-            const subjObj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
-            return subjObj && subjObj.name === subjectName;
-        });
+    function renderDiary() {
+        const container = document.getElementById('diaryContent');
+        const monday = getMondayOfCurrentWeek();
+        const saturday = new Date(monday);
+        saturday.setDate(monday.getDate() + 5);
 
-        const modal = document.getElementById('statsModal');
-        const title = document.getElementById('statsTitle');
-        const subtitle = document.getElementById('statsSubtitle');
-        const list = document.getElementById('statsList');
-        const total = document.getElementById('statsTotal');
+        const rangeText = `${formatDateShort(monday)} – ${formatDateRu(saturday)}`;
 
-        const parsed = parseKey(lessonKey);
-        title.textContent = subjectName;
-        subtitle.textContent = `${parsed.dateRu} · ${parsed.lesson}-й урок`;
-
-        if (!journal) {
-            list.innerHTML = '<div class="stats-empty">Статистика недоступна.</div>';
-            total.textContent = '';
-            modal.classList.add('show');
+        if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+                    <h3>Расписание ещё не составлено</h3>
+                    <p>Обратитесь к администратору школы.</p>
+                </div>`;
             return;
         }
 
-        const gradesAll = journal.grades || {};
-        const counters = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        // ⬇⬇⬇ ГЛАВНОЕ ИСПРАВЛЕНИЕ ⬇⬇⬇
-        // Считаем только тех учеников, кто СЕЙЧАС учится в нашем классе.
-        // ID удалённых учеников в журнале игнорируются.
-        const validIds = new Set(CLASS_STUDENT_IDS);
+        let html = `
+            <div class="week-header">
+                <div>
+                    <div class="week-title">Текущая неделя</div>
+                    <div class="week-range">${rangeText}</div>
+                </div>
+                <div class="week-badge">Расписание</div>
+            </div>
+        `;
 
-        Object.entries(gradesAll).forEach(([studentId, studentGrades]) => {
-            // Пропускаем удалённых / из другого класса
-            if (!validIds.has(studentId)) return;
+        const grid = CURRENT_SCHEDULE.grid;
 
-            const val = studentGrades && studentGrades[lessonKey];
-            if (val === undefined || val === null) return;
+        // Ищем максимальный номер урока за неделю — чтобы показывать одинаковое количество строк
+        let maxLesson = 7; // по умолчанию 7
+        DAYS_KEYS.forEach(day => {
+            const dayGrid = grid[day] || {};
+            Object.keys(dayGrid).forEach(num => {
+                const n = parseInt(num, 10);
+                if (!isNaN(n) && n > maxLesson) maxLesson = n;
+            });
+        });
 
-            const clean = String(val).trim().toUpperCase();
-            if (counters[clean] !== undefined) {
-                counters[clean]++;
+        // Проходим по дням Пн–Сб
+        DAYS_KEYS.forEach((dayKey, idx) => {
+            const date = new Date(monday);
+            date.setDate(monday.getDate() + idx);
+
+            const isToday = date.getTime() === today.getTime();
+            const dayGrid = grid[dayKey] || {};
+
+            let lessonsHtml = '';
+
+            for (let n = 1; n <= maxLesson; n++) {
+                const lesson = dayGrid[n] || dayGrid[String(n)];
+                if (!lesson || !lesson.subject) {
+                    // пустой урок (нет урока в расписании) — показываем прочерк
+                    lessonsHtml += `
+                        <div class="lesson-row empty">
+                            <div class="lesson-num">${n}</div>
+                            <div class="lesson-body">—</div>
+                        </div>`;
+                    continue;
+                }
+
+                // Находим subject_id
+                const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
+                const subjectId = subjObj ? subjObj.id : null;
+
+                // Находим учителя
+                let teacherName = '';
+                if (lesson.teacherName) teacherName = lesson.teacherName;
+                else if (lesson.teacherId) {
+                    const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId);
+                    if (t) teacherName = t.full_name;
+                }
+
+                // Комната
+                let roomName = '';
+                if (lesson.roomName) roomName = lesson.roomName;
+                else if (lesson.roomId) {
+                    const r = ALL_ROOMS.find(x => x.id === lesson.roomId);
+                    if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : '');
+                }
+
+                // Тема и ДЗ из журнала
+                let topic = '';
+                let homework = '';
+
+                if (subjectId) {
+                    const journal = ALL_JOURNALS.find(j => j.subject_id === subjectId);
+                    if (journal && journal.lessons) {
+                        const key = isoDate(date) + '_' + n;
+                        const lessonData = journal.lessons[key];
+                        if (lessonData) {
+                            topic = lessonData.t || '';
+                            homework = lessonData.h || '';
+                        }
+                    }
+                }
+
+                const metaParts = [];
+                if (teacherName) metaParts.push(teacherName);
+                if (roomName) metaParts.push('каб. ' + roomName);
+                const metaHtml = metaParts.length > 0 ? `<div class="lesson-meta">${escapeHtml(metaParts.join(' · '))}</div>` : '';
+
+                const topicHtml = topic
+                    ? `<div class="lesson-section"><span class="lesson-label">Тема:</span><span class="lesson-value">${escapeHtml(topic)}</span></div>`
+                    : '';
+                const hwHtml = homework
+                    ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value">${escapeHtml(homework)}</span></div>`
+                    : '';
+
+                lessonsHtml += `
+                    <div class="lesson-row">
+                        <div class="lesson-num">${n}</div>
+                        <div class="lesson-body">
+                            <div class="lesson-subject">${escapeHtml(lesson.subject)}</div>
+                            ${metaHtml}
+                            ${topicHtml}
+                            ${hwHtml}
+                        </div>
+                    </div>`;
             }
-        });
-        // ⬆⬆⬆ КОНЕЦ ИСПРАВЛЕНИЯ ⬆⬆⬆
 
-        const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
-
-        if (totalCount === 0) {
-            list.innerHTML = '<div class="stats-empty">Пока нет оценок за этот урок.</div>';
-            total.textContent = '';
-            modal.classList.add('show');
-            return;
-        }
-
-        const colors = {
-            '5': '#65A30D',
-            '4': '#84CC16',
-            '3': '#FB923C',
-            '2': '#DC2626',
-            '1': '#7f1d1d'
-        };
-
-        let html = '';
-        ['5', '4', '3', '2', '1'].forEach(g => {
-            const count = counters[g];
-            const percent = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
-            const barWidth = percent > 0 ? Math.max(percent, 6) : 0;
-            const word = plural(count, ['человек', 'человека', 'человек']);
             html += `
-                <div class="stat-row">
-                    <div class="stat-badge" style="background:${colors[g]}">${g}</div>
-                    <div class="stat-bar-wrap">
-                        <div class="stat-bar" style="width:${barWidth}%;background:${colors[g]}">${percent > 15 ? percent + '%' : ''}</div>
+                <div class="day-card ${isToday ? 'today' : ''}">
+                    <div class="day-header">
+                        <div>
+                            <div class="day-name">${DAYS_RU[dayKey]}</div>
+                            <div class="day-date">${formatDateRu(date)}</div>
+                        </div>
+                        ${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}
                     </div>
-                    <div class="stat-count">${count} <small>${word}</small></div>
+                    <div class="lesson-list">${lessonsHtml}</div>
                 </div>
             `;
         });
 
-        list.innerHTML = html;
-        total.textContent = `Всего оценок за урок: ${totalCount}`;
-        modal.classList.add('show');
+        container.innerHTML = html;
     }
-
-    function closeStats() {
-        document.getElementById('statsModal').classList.remove('show');
-    }
-
-    function plural(n, forms) {
-        const a = Math.abs(n) % 100;
-        const b = a % 10;
-        if (a > 10 && a < 20) return forms[2];
-        if (b > 1 && b < 5) return forms[1];
-        if (b === 1) return forms[0];
-        return forms[2];
-    }
-
-    document.getElementById('statsModal').addEventListener('click', (e) => {
-        if (e.target.id === 'statsModal') closeStats();
-    });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeStats();
-    });
 
     // ============================================================
-    // ИНИЦИАЛИЗАЦИЯ
+    // ОЦЕНКИ
     // ============================================================
-    window.addEventListener('load', async () => {
-        try {
-            const fb = await window._fbReady;
-            const user = await new Promise((resolve) => {
-                const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
-            });
-
-            if (!user) { window.location.replace('index.html'); return; }
-
-            const login = user.email.split('@')[0];
-
-            const students = await DB.getAll('students');
-            const student = students.find(s => s.login === login);
-
-            if (!student) {
-                const admins = await DB.getAll('admins');
-                if (admins.some(a => a.id === user.uid)) {
-                    window.location.replace('admin.html');
-                    return;
-                }
-                const teachers = await DB.getAll('teachers');
-                if (teachers.some(t => t.login === login)) {
-                    window.location.replace('teacher.html');
-                    return;
-                }
-                window.location.replace('index.html');
-                return;
-            }
-
-            CURRENT_STUDENT = student;
-
-            const shortName = student.full_name.split(' ').slice(0, 2).join(' ');
-            document.getElementById('userName').textContent = shortName;
-            const initials = student.full_name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-            document.getElementById('userAvatar').textContent = initials;
-
-            await loadAll();
-            render();
-        } catch (err) {
-            console.error('Ошибка инициализации:', err);
-            document.getElementById('loading').innerHTML =
-                '<div class="loading-text" style="color:#d32f2f;">Ошибка загрузки. Обновите страницу.</div>';
-        }
-    });
-
-    async function loadAll() {
-        const [classes, subjects, teachers, workloads, journals, students] = await Promise.all([
-            DB.getAll('classes'),
-            DB.getAll('subjects'),
-            DB.getAll('teachers'),
-            DB.getAll('workloads'),
-            DB.getAll('journals'),
-            DB.getAll('students')          // ← загружаем ВСЕХ учеников
-        ]);
-
-        ALL_STUDENTS = students;
-        CURRENT_CLASS = classes.find(c => c.id === CURRENT_STUDENT.class_id) || null;
-        ALL_SUBJECTS = subjects;
-        ALL_TEACHERS = teachers;
-        ALL_WORKLOADS = workloads.filter(w => w.class_id === CURRENT_STUDENT.class_id);
-        ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
-
-        // ← актуальные ID учеников ЭТОГО класса (без удалённых)
-        CLASS_STUDENT_IDS = ALL_STUDENTS
-            .filter(s => s.class_id === CURRENT_STUDENT.class_id)
-            .map(s => s.id);
-    }
-
-    function render() {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
-
-        renderWarnings();
-
-        document.getElementById('infoBanner').innerHTML = `
-            <div class="info-banner-item">
-                <div class="info-banner-label">ФИО</div>
-                <div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.full_name)}</div>
-            </div>
-            <div class="info-banner-item">
-                <div class="info-banner-label">Класс</div>
-                <div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div>
-            </div>
-            <div class="info-banner-item">
-                <div class="info-banner-label">Логин</div>
-                <div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.login)}</div>
-            </div>
-        `;
-
+    function renderGrades() {
         const container = document.getElementById('subjectsContainer');
 
         if (ALL_WORKLOADS.length === 0) {
@@ -729,21 +633,13 @@
             const studentGrades = journal && journal.grades
                 ? (journal.grades[CURRENT_STUDENT.id] || {})
                 : {};
-
             const lessonTypes = journal && journal.lesson_types ? journal.lesson_types : {};
 
             const gradesArr = Object.entries(studentGrades)
                 .filter(([k, v]) => v !== '' && v !== null && v !== undefined)
                 .map(([key, grade]) => {
                     const parsed = parseKey(key);
-                    return {
-                        key,
-                        grade: String(grade),
-                        date: parsed.date,
-                        dateRu: parsed.dateRu,
-                        lesson: parsed.lesson,
-                        type: lessonTypes[key] || ''
-                    };
+                    return { key, grade: String(grade), date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson, type: lessonTypes[key] || '' };
                 })
                 .sort((a, b) => a.key.localeCompare(b.key));
 
@@ -763,9 +659,7 @@
                     const tip = g.type ? `${g.dateRu} · ${g.type}` : g.dateRu;
                     const isNumeric = /^[1-5]$/.test(g.grade.trim());
                     const cls = 'grade-chip ' + gradeClass(g.grade) + (isNumeric ? ' clickable' : '');
-                    const attrs = isNumeric
-                        ? `data-subject="${escapeHtml(subject.name)}" data-key="${escapeHtml(g.key)}"`
-                        : '';
+                    const attrs = isNumeric ? `data-subject="${escapeHtml(subject.name)}" data-key="${escapeHtml(g.key)}"` : '';
                     chipsHtml += `<span class="${cls}" data-tip="${escapeHtml(tip)}" ${attrs}>${escapeHtml(g.grade)}</span>`;
                 });
             }
@@ -780,18 +674,9 @@
                     </div>
                     <div class="grades-row">${chipsHtml}</div>
                     <div class="subject-footer">
-                        <div class="stat">
-                            <div class="stat-label">Средний балл</div>
-                            <div class="stat-value">${avg !== null ? avg : '—'}</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-label">Итог за I четверть</div>
-                            <div class="stat-value green">${firstQtr !== null ? escapeHtml(String(firstQtr)) : '—'}</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-label">Всего оценок</div>
-                            <div class="stat-value">${gradesArr.length}</div>
-                        </div>
+                        <div class="stat"><div class="stat-label">Средний балл</div><div class="stat-value">${avg !== null ? avg : '—'}</div></div>
+                        <div class="stat"><div class="stat-label">Итог за I четверть</div><div class="stat-value green">${firstQtr !== null ? escapeHtml(String(firstQtr)) : '—'}</div></div>
+                        <div class="stat"><div class="stat-label">Всего оценок</div><div class="stat-value">${gradesArr.length}</div></div>
                     </div>
                 </div>`;
         });
@@ -799,28 +684,190 @@
         container.innerHTML = html;
 
         if (!anyGrades) {
-            container.insertAdjacentHTML('beforeend', `
-                <div style="text-align:center;padding:20px;color:#8a9bb5;font-size:14px;">
-                    Учителя ещё не выставили ни одной оценки. Загляните позже.
-                </div>
-            `);
+            container.insertAdjacentHTML('beforeend', `<div style="text-align:center;padding:20px;color:#8a9bb5;font-size:14px;">Учителя ещё не выставили ни одной оценки. Загляните позже.</div>`);
         }
 
         container.querySelectorAll('.grade-chip.clickable').forEach(chip => {
             chip.addEventListener('click', () => {
-                const subject = chip.dataset.subject;
-                const key = chip.dataset.key;
-                showStats(subject, key);
+                showStats(chip.dataset.subject, chip.dataset.key);
             });
         });
     }
 
-    async function logout() {
-        if (!confirm('Выйти из кабинета?')) return;
+    // ============================================================
+    // СТАТИСТИКА
+    // ============================================================
+    function showStats(subjectName, lessonKey) {
+        const journal = ALL_JOURNALS.find(j => {
+            const subjObj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
+            return subjObj && subjObj.name === subjectName;
+        });
+
+        const modal = document.getElementById('statsModal');
+        const title = document.getElementById('statsTitle');
+        const subtitle = document.getElementById('statsSubtitle');
+        const list = document.getElementById('statsList');
+        const total = document.getElementById('statsTotal');
+
+        const parsed = parseKey(lessonKey);
+        title.textContent = subjectName;
+        subtitle.textContent = `${parsed.dateRu} · ${parsed.lesson}-й урок`;
+
+        if (!journal) {
+            list.innerHTML = '<div class="stats-empty">Статистика недоступна.</div>';
+            total.textContent = '';
+            modal.classList.add('show');
+            return;
+        }
+
+        const gradesAll = journal.grades || {};
+        const counters = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
+        const validIds = new Set(CLASS_STUDENT_IDS);
+
+        Object.entries(gradesAll).forEach(([studentId, studentGrades]) => {
+            if (!validIds.has(studentId)) return;
+            const val = studentGrades && studentGrades[lessonKey];
+            if (val === undefined || val === null) return;
+            const clean = String(val).trim().toUpperCase();
+            if (counters[clean] !== undefined) counters[clean]++;
+        });
+
+        const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
+
+        if (totalCount === 0) {
+            list.innerHTML = '<div class="stats-empty">Пока нет оценок за этот урок.</div>';
+            total.textContent = '';
+            modal.classList.add('show');
+            return;
+        }
+
+        const colors = { '5': '#65A30D', '4': '#84CC16', '3': '#FB923C', '2': '#DC2626', '1': '#7f1d1d' };
+
+        let html = '';
+        ['5', '4', '3', '2', '1'].forEach(g => {
+            const count = counters[g];
+            const percent = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
+            const barWidth = percent > 0 ? Math.max(percent, 6) : 0;
+            const word = plural(count, ['человек', 'человека', 'человек']);
+            html += `
+                <div class="stat-row">
+                    <div class="stat-badge" style="background:${colors[g]}">${g}</div>
+                    <div class="stat-bar-wrap"><div class="stat-bar" style="width:${barWidth}%;background:${colors[g]}">${percent > 15 ? percent + '%' : ''}</div></div>
+                    <div class="stat-count">${count} <small>${word}</small></div>
+                </div>`;
+        });
+
+        list.innerHTML = html;
+        total.textContent = `Всего оценок за урок: ${totalCount}`;
+        modal.classList.add('show');
+    }
+
+    function closeStats() {
+        document.getElementById('statsModal').classList.remove('show');
+    }
+
+    document.getElementById('statsModal').addEventListener('click', (e) => {
+        if (e.target.id === 'statsModal') closeStats();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeStats();
+    });
+
+    // ============================================================
+    // ВКЛАДКИ
+    // ============================================================
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    // ============================================================
+    // ИНИЦИАЛИЗАЦИЯ
+    // ============================================================
+    window.addEventListener('load', async () => {
         try {
             const fb = await window._fbReady;
-            await fb.signOut(fb.auth);
-        } catch (e) {}
+            const user = await new Promise((resolve) => {
+                const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
+            });
+
+            if (!user) { window.location.replace('index.html'); return; }
+
+            const login = user.email.split('@')[0];
+            const students = await DB.getAll('students');
+            const student = students.find(s => s.login === login);
+
+            if (!student) {
+                const admins = await DB.getAll('admins');
+                if (admins.some(a => a.id === user.uid)) { window.location.replace('admin.html'); return; }
+                const teachers = await DB.getAll('teachers');
+                if (teachers.some(t => t.login === login)) { window.location.replace('teacher.html'); return; }
+                window.location.replace('index.html');
+                return;
+            }
+
+            CURRENT_STUDENT = student;
+
+            const shortName = student.full_name.split(' ').slice(0, 2).join(' ');
+            document.getElementById('userName').textContent = shortName;
+            const initials = student.full_name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+            document.getElementById('userAvatar').textContent = initials;
+
+            await loadAll();
+            render();
+        } catch (err) {
+            console.error('Ошибка инициализации:', err);
+            document.getElementById('loading').innerHTML = '<div class="loading-text" style="color:#d32f2f;">Ошибка загрузки. Обновите страницу.</div>';
+        }
+    });
+
+    async function loadAll() {
+        const [classes, subjects, teachers, workloads, journals, students, schedules, rooms] = await Promise.all([
+            DB.getAll('classes'),
+            DB.getAll('subjects'),
+            DB.getAll('teachers'),
+            DB.getAll('workloads'),
+            DB.getAll('journals'),
+            DB.getAll('students'),
+            DB.getAll('class_schedules'),
+            DB.getAll('rooms')
+        ]);
+
+        ALL_STUDENTS = students;
+        ALL_ROOMS = rooms;
+        CURRENT_CLASS = classes.find(c => c.id === CURRENT_STUDENT.class_id) || null;
+        ALL_SUBJECTS = subjects;
+        ALL_TEACHERS = teachers;
+        ALL_WORKLOADS = workloads.filter(w => w.class_id === CURRENT_STUDENT.class_id);
+        ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
+        CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
+
+        // Расписание класса
+        CURRENT_SCHEDULE = schedules.find(s => s.class_id === CURRENT_STUDENT.class_id) || null;
+    }
+
+    function render() {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+
+        document.getElementById('infoBanner').innerHTML = `
+            <div class="info-banner-item"><div class="info-banner-label">ФИО</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.full_name)}</div></div>
+            <div class="info-banner-item"><div class="info-banner-label">Класс</div><div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>
+            <div class="info-banner-item"><div class="info-banner-label">Логин</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.login)}</div></div>
+        `;
+
+        renderDiary();
+        renderWarnings();
+        renderGrades();
+    }
+
+    async function logout() {
+        if (!confirm('Выйти из кабинета?')) return;
+        try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
         try { localStorage.removeItem('sj_session'); } catch (e) {}
         window.location.replace('index.html');
     }
