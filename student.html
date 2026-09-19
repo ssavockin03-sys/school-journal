@@ -203,9 +203,12 @@
 
         <div class="tab-panel" id="panel-grades">
             <div id="warningContainer"></div>
+
+            <!-- ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ -->
             <div class="period-tabs-wrapper">
                 <div class="period-tabs-group" id="periodTabs"></div>
             </div>
+
             <div id="subjectsContainer"></div>
         </div>
     </div>
@@ -259,7 +262,6 @@
     let CURRENT_SCHEDULE = null;
     let ALL_ROOMS = [];
 
-    // Периоды
     let PERIODS = [];
     let PERIOD_SYSTEM = '';
     let ACTIVE_PERIOD_INDEX = 0;
@@ -330,9 +332,6 @@
         return forms[2];
     }
 
-    // ============================================================
-    // ПОНЕДЕЛЬНИК ТЕКУЩЕЙ НЕДЕЛИ
-    // ============================================================
     function getMondayOfCurrentWeek() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -391,7 +390,7 @@
     }
 
     // ============================================================
-    // ПРЕДУПРЕЖДЕНИЯ (двойки / Н) — без фильтра по датам
+    // ПРЕДУПРЕЖДЕНИЯ (без фильтра по датам)
     // ============================================================
     function findProblems() {
         const fails = [];
@@ -466,27 +465,14 @@
         const rangeText = `${formatDateShort(monday)} – ${formatDateRu(saturday)}`;
 
         if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-                    <h3>Расписание ещё не составлено</h3>
-                    <p>Обратитесь к администратору школы.</p>
-                </div>`;
+            container.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg><h3>Расписание ещё не составлено</h3><p>Обратитесь к администратору школы.</p></div>`;
             return;
         }
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        let html = `
-            <div class="week-header">
-                <div>
-                    <div class="week-title">Текущая неделя</div>
-                    <div class="week-range">${rangeText}</div>
-                </div>
-                <div class="week-badge">Расписание</div>
-            </div>
-        `;
+        let html = `<div class="week-header"><div><div class="week-title">Текущая неделя</div><div class="week-range">${rangeText}</div></div><div class="week-badge">Расписание</div></div>`;
 
         const grid = CURRENT_SCHEDULE.grid;
         let maxLesson = 7;
@@ -604,7 +590,6 @@
             const studentGrades = journal && journal.grades ? (journal.grades[CURRENT_STUDENT.id] || {}) : {};
             const lessonTypes = journal && journal.lesson_types ? journal.lesson_types : {};
 
-            // Фильтруем по периоду
             const gradesArr = Object.entries(studentGrades)
                 .filter(([k, v]) => v !== '' && v !== null && v !== undefined)
                 .map(([key, grade]) => {
@@ -618,14 +603,12 @@
                 })
                 .sort((a, b) => a.key.localeCompare(b.key));
 
-            // Средний балл за период
             const gradesMap = {};
             gradesArr.forEach(g => { gradesMap[g.key] = g.grade; });
             const avg = calcAverage(gradesMap);
 
-            // Итог за выбранный период
             const qtrGrades = journal && journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
-            const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || null;
+            const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
 
             if (gradesArr.length > 0) anyGrades = true;
 
@@ -642,7 +625,9 @@
                 });
             }
 
-            const periodLabel = PERIODS.length > 0 ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Итог') : 'Итог за год';
+            const periodLabel = PERIODS.length > 0
+                ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Итог')
+                : 'Итог за год';
 
             html += `
                 <div class="subject-card">
@@ -729,12 +714,7 @@
             const percent = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
             const barWidth = percent > 0 ? Math.max(percent, 6) : 0;
             const word = plural(count, ['человек', 'человека', 'человек']);
-            html += `
-                <div class="stat-row">
-                    <div class="stat-badge" style="background:${colors[g]}">${g}</div>
-                    <div class="stat-bar-wrap"><div class="stat-bar" style="width:${barWidth}%;background:${colors[g]}">${percent > 15 ? percent + '%' : ''}</div></div>
-                    <div class="stat-count">${count} <small>${word}</small></div>
-                </div>`;
+            html += `<div class="stat-row"><div class="stat-badge" style="background:${colors[g]}">${g}</div><div class="stat-bar-wrap"><div class="stat-bar" style="width:${barWidth}%;background:${colors[g]}">${percent > 15 ? percent + '%' : ''}</div></div><div class="stat-count">${count} <small>${word}</small></div></div>`;
         });
 
         list.innerHTML = html;
@@ -828,11 +808,13 @@
         CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
         CURRENT_SCHEDULE = schedules.find(s => s.class_id === CURRENT_STUDENT.class_id) || null;
 
-        // Периоды
         const periodDoc = periodDocs[0] || null;
         PERIODS = periodDoc ? (periodDoc.periods || []) : [];
         PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
         ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
+
+        // Debug
+        console.log('Периоды:', PERIODS, 'Система:', PERIOD_SYSTEM, 'Активный индекс:', ACTIVE_PERIOD_INDEX);
     }
 
     function render() {
