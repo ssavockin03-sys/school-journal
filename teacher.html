@@ -330,33 +330,8 @@ async function logout() {
 }
 
 // ============================================================
-// ЗАПУСК
+// Форма входа в teacher.html удалена — вход только через index.html
 // ============================================================
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const login = document.getElementById('loginInput').value.trim();
-    const pwd = document.getElementById('passwordInput').value;
-    const err = document.getElementById('loginError');
-    const btn = document.getElementById('loginBtn');
-    err.classList.remove('show');
-    btn.disabled = true; btn.textContent = 'Проверка...';
-    try {
-        const teacher = await handleLogin(login, pwd);
-        CURRENT_TEACHER = teacher;
-        document.getElementById('loginScreen').classList.add('hidden');
-        await startApp();
-    } catch (e) {
-        console.error(e);
-        let msg = 'Не удалось войти.';
-        if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'Неверный логин или пароль.';
-        if (e.code === 'auth/user-not-found') msg = 'Пользователь не найден.';
-        if (e.message === 'no-teacher') msg = 'В базе нет учителя с таким логином.';
-        if (e.message === 'not-teacher') msg = 'Этот аккаунт не является учителем.';
-        err.textContent = msg; err.classList.add('show');
-    } finally {
-        btn.disabled = false; btn.textContent = 'Войти';
-    }
-});
 
 window.addEventListener('load', async () => {
     const s = getSession();
