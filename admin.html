@@ -2323,6 +2323,60 @@ async function init() {
     await refreshJournalsTab();
     await renderPeriods();
 }
+// ============================================================
+// GUARD: доступ только для администратора
+// ============================================================
+(async () => {
+    try {
+        const fb = await window._fbReady;
+
+        // Ждём восстановления сессии Firebase
+        const user = await new Promise((resolve) => {
+            const unsub = fb.onAuthStateChanged(fb.auth, (u) => {
+                unsub();
+                resolve(u);
+            });
+        });
+
+        // Не залогинен — на форму входа
+        if (!user) {
+            window.location.replace('index.html');
+            return;
+        }
+
+        // Проверяем, есть ли документ admins/{uid}
+        const admins = await DB.getAll('admins');
+        const isAdmin = admins.some(a => a.id === user.uid);
+
+        if (isAdmin) {
+            // Это админ — всё ок, ничего не делаем
+            return;
+        }
+
+        // Это не админ — выкидываем по реальной роли
+        const login = user.email.split('@')[0];
+
+        const teachers = await DB.getAll('teachers');
+        if (teachers.some(t => t.login === login)) {
+            window.location.replace('teacher.html');
+            return;
+        }
+
+        const students = await DB.getAll('students');
+        if (students.some(s => s.login === login)) {
+            window.location.replace('journal-view.html');
+            return;
+        }
+
+        // Никто — разлогиниваем
+        try { await fb.signOut(fb.auth); } catch (e) {}
+        window.location.replace('index.html');
+
+    } catch (err) {
+        console.error('Ошибка проверки роли (admin.html):', err);
+        window.location.replace('index.html');
+    }
+})();
 </script>
 </body>
 </html>
