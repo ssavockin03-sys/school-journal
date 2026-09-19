@@ -334,21 +334,55 @@ async function logout() {
 // ============================================================
 
 window.addEventListener('load', async () => {
-    const s = getSession();
-    if (s && s.teacherId) {
-        try {
-            const teachers = await DB.getAll('teachers');
-            const t = teachers.find(x => x.id === s.teacherId);
-            if (t) {
-                CURRENT_TEACHER = t;
-                document.getElementById('loginScreen').classList.add('hidden');
-                await startApp();
+    try {
+        const fb = await window._fbReady;
+
+        // Ждём восстановления сессии Firebase
+        const user = await new Promise((resolve) => {
+            const unsub = fb.onAuthStateChanged(fb.auth, (u) => {
+                unsub();
+                resolve(u);
+            });
+        });
+
+        // Не залогинен — на единую форму входа
+        if (!user) {
+            window.location.replace('index.html');
+            return;
+        }
+
+        const login = user.email.split('@')[0];
+
+        // Проверяем, что это НЕ админ
+        const admins = await DB.getAll('admins');
+        if (admins.some(a => a.id === user.uid)) {
+            window.location.replace('admin.html');
+            return;
+        }
+
+        // Проверяем, что это учитель
+        const teachers = await DB.getAll('teachers');
+        const teacher = teachers.find(t => t.login === login);
+        if (!teacher) {
+            // Не учитель — уводим по реальной роли
+            const students = await DB.getAll('students');
+            if (students.some(s => s.login === login)) {
+                window.location.replace('student.html');
                 return;
             }
-        } catch (e) {}
-        clearSession();
+            try { await fb.signOut(fb.auth); } catch (e) {}
+            window.location.replace('index.html');
+            return;
+        }
+
+        CURRENT_TEACHER = teacher;
+        document.getElementById('loginScreen').classList.add('hidden');
+        await startApp();
+
+    } catch (err) {
+        console.error('Ошибка инициализации teacher.html:', err);
+        window.location.replace('index.html');
     }
-    document.getElementById('loginScreen').classList.remove('hidden');
 });
 
 // ============================================================
