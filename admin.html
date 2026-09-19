@@ -902,57 +902,70 @@ function showApp() {
 }
 
 // ============================================================
-// ИНИЦИАЛИЗАЦИЯ
 // ============================================================
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const loginValue = document.getElementById('loginInput').value.trim();
-    const passwordValue = document.getElementById('passwordInput').value;
-    const errorBox = document.getElementById('loginError');
-    const btn = document.getElementById('loginBtn');
-
-    errorBox.classList.remove('show');
-    btn.disabled = true;
-    btn.textContent = 'Проверка...';
-
-    try {
-        await handleLogin(loginValue, passwordValue);
-        errorBox.classList.remove('show');
-        showApp();
-        init();
-    } catch (err) {
-        console.error('Ошибка входа:', err);
-        let msg = 'Не удалось войти. Проверьте логин и пароль.';
-        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') msg = 'Неверный логин или пароль.';
-        if (err.code === 'auth/user-not-found') msg = 'Пользователь не найден.';
-        if (err.code === 'auth/too-many-requests') msg = 'Слишком много попыток. Попробуйте позже.';
-        errorBox.textContent = msg;
-        errorBox.classList.add('show');
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Войти';
-    }
-});
-
-// Автовход при загрузке страницы
+// ИНИЦИАЛИЗАЦИЯ
+// Единый вход: если не залогинен или не админ — редирект
+// ============================================================
 window.addEventListener('load', async () => {
-    const session = getSession();
-    if (session) {
-        // Проверяем, что Firebase Auth тоже помнит пользователя
-        try {
-            const fb = await window._fbReady;
-            // Ждём восстановления сессии Firebase
-            await new Promise((resolve) => {
-                const unsub = fb.onAuthStateChanged(fb.auth, (user) => {
-                    unsub();
-                    resolve(user);
-                });
+    try {
+        const fb = await window._fbReady;
+
+        // Ждём восстановления сессии Firebase
+        const user = await new Promise((resolve) => {
+            const unsub = fb.onAuthStateChanged(fb.auth, (u) => {
+                unsub();
+                resolve(u);
             });
-        } catch (e) {}
-        showApp();
+        });
+
+        // Не залогинен — на единую форму входа
+        if (!user) {
+            window.location.replace('index.html');
+            return;
+        }
+
+        // Проверяем, что это админ (документ admins/{uid})
+        const adminDoc = await fb.getDocs(
+            fb.query(
+                fb.collection(fb.db, 'admins'),
+                fb.where('__name__', '==', user.uid)
+            )
+        ).catch(() => null);
+
+        // Проще: через DB.getAll('admins')
+        const admins = await DB.getAll('admins');
+        const isAdmin = admins.some(a => a.id === user.uid);
+
+        if (!isAdmin) {
+            // Не админ — уводим по реальной роли
+            const login = user.email.split('@')[0];
+
+            const teachers = await DB.getAll('teachers');
+            if (teachers.some(t => t.login === login)) {
+                window.location.replace('teacher.html');
+                return;
+            }
+
+            const students = await DB.getAll('students');
+            if (students.some(s => s.login === login)) {
+                window.location.replace('student.html');
+                return;
+            }
+
+            // Никто — разлогиниваем и на вход
+            try { await fb.signOut(fb.auth); } catch (e) {}
+            window.location.replace('index.html');
+            return;
+        }
+
+        // Всё ок — показываем панель
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('appContainer').style.display = 'block';
         init();
-    } else {
-        showLogin();
+
+    } catch (err) {
+        console.error('Ошибка инициализации admin.html:', err);
+        window.location.replace('index.html');
     }
 });
 
