@@ -672,10 +672,29 @@ function renderPeriodTabs() {
         const tab = document.createElement('button');
         tab.type = 'button';
         tab.className = 'tab-pill active';
-        tab.textContent = 'Весь год';
+        tab.textContent = 'Периоды не созданы';
+        tab.disabled = true;
+        tab.style.cursor = 'default';
         container.appendChild(tab);
         return;
     }
+
+    const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
+    PERIODS.forEach((p, idx) => {
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = 'tab-pill' + (idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
+        tab.textContent = labels[idx] || ('Период ' + (idx + 1));
+        tab.title = `${p.start} – ${p.end}`;
+        tab.addEventListener('click', async () => {
+            ACTIVE_PERIOD_INDEX = idx;
+            renderPeriodTabs();
+            DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
+            renderMainTable();
+        });
+        container.appendChild(tab);
+    });
+}
 
     PERIODS.forEach((p, idx) => {
         const tab = document.createElement('button');
