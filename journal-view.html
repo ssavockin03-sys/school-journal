@@ -398,6 +398,14 @@ let STUDENTS = [];
 let DATES = [];
 let ACTIVE_PERIOD_INDEX = 0;
 let PERIODS = [];
+let PERIOD_SYSTEM = '';
+
+const PERIOD_LABELS = {
+    'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
+    'Полугодия': ['I полугодие', 'II полугодие'],
+    'Триместры': ['I триместр', 'II триместр', 'III триместр'],
+    'Семестры':  ['I семестр', 'II семестр']
+};
 let JOURNAL = null;
 let ALL_CLASSES = [];
 let ALL_CLASS_SUBJECTS = [];
