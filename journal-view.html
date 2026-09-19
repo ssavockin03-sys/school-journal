@@ -478,7 +478,10 @@ async function init() {
         .filter(s => s.class_id === CLASS_ID)
         .sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
 
-    PERIODS = await DB.getAll('educational_periods');
+    const periodDocs = await DB.getAll('educational_periods');
+const periodDoc = periodDocs[0] || null;
+PERIODS = periodDoc ? (periodDoc.periods || []) : [];
+PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
 
     // Загружаем журнал из Firebase (или создаём пустой)
     const journalRecord = await DB.getJournal(CLASS_ID, SUBJECT_ID);
