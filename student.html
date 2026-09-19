@@ -23,6 +23,29 @@
         .page-title { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
         .page-subtitle { font-size: 14px; color: #7a8aa3; margin-bottom: 24px; }
 
+        /* ---- Предупреждение о двойках ---- */
+        .fails-warning {
+            background: #fff0f0;
+            border: 2px solid #ffd6d6;
+            border-radius: 14px;
+            padding: 18px 22px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            animation: warnAppear 0.4s ease;
+        }
+        @keyframes warnAppear {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fails-warning-icon { width: 28px; height: 28px; fill: #d32f2f; flex-shrink: 0; margin-top: 2px; }
+        .fails-warning-body { flex: 1; }
+        .fails-warning-title { font-size: 15px; color: #d32f2f; font-weight: 700; margin-bottom: 6px; }
+        .fails-warning-list { margin: 6px 0 10px 20px; color: #2a3a52; font-size: 14px; line-height: 1.7; }
+        .fails-warning-hint { font-size: 14px; color: #2a3a52; line-height: 1.5; }
+        .fails-warning-hint b { color: #1a2b4a; }
+
         .info-banner { background: #fff; border-radius: 14px; padding: 16px 20px; box-shadow: 0 4px 16px rgba(30,60,114,0.07); margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 20px; }
         .info-banner-item { display: flex; flex-direction: column; gap: 4px; }
         .info-banner-label { font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -66,6 +89,7 @@
             .container { padding: 20px 14px 40px; }
             .page-title { font-size: 21px; }
             .subject-card { padding: 18px 16px; }
+            .fails-warning { padding: 14px 16px; }
         }
     </style>
 </head>
@@ -96,6 +120,7 @@
     <div id="content" style="display:none;">
         <h1 class="page-title">Мои оценки</h1>
         <p class="page-subtitle">Здесь отображаются только ваши оценки. Редактирование недоступно.</p>
+        <div id="warningContainer"></div>
         <div class="info-banner" id="infoBanner"></div>
         <div id="subjectsContainer"></div>
     </div>
@@ -103,6 +128,11 @@
 
 <script src="supabase-config.js"></script>
 <script>
+    // ============================================================
+    // КОНСТАНТЫ
+    // ============================================================
+    const RECENT_DAYS = 7; // сколько дней назад считается «свежая» двойка
+
     // ============================================================
     // СОСТОЯНИЕ
     // ============================================================
@@ -132,13 +162,11 @@
         return 'gn';
     }
 
-    // Средний балл по массиву оценок
     function calcAverage(gradesMap) {
         let sum = 0, cnt = 0;
         Object.values(gradesMap || {}).forEach(raw => {
             const val = String(raw || '').toUpperCase().trim();
             if (!val) return;
-            // Пропускаем Н, О, Б, П, СП, но парсим цифры
             const cleaned = val.replace(/[НОБП]|СП/g, '').trim();
             if (!cleaned) return;
             if (cleaned.includes('/')) {
@@ -152,6 +180,81 @@
             }
         });
         return cnt === 0 ? null : (sum / cnt).toFixed(2);
+    }
+
+    function formatDateRu(d) {
+        return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+    }
+
+    // ============================================================
+    // ПОИСК СВЕЖИХ ДВОЕК
+    // ============================================================
+    function findRecentFails() {
+        const cutoff = Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000;
+        const result = [];
+
+        ALL_JOURNALS.forEach(journal => {
+            const studentGrades = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
+            const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
+            if (!subjObj) return;
+
+            Object.entries(studentGrades).forEach(([key, val]) => {
+                if (String(val).trim() !== '2') return;
+
+                const datePart = key.split('_')[0];
+                const d = new Date(datePart + 'T00:00:00');
+                if (isNaN(d.getTime())) return;
+
+                if (d.getTime() < cutoff) return;
+
+                result.push({
+                    subject: subjObj.name,
+                    date: d,
+                    dateRu: formatDateRu(d)
+                });
+            });
+        });
+
+        result.sort((a, b) => b.date - a.date);
+        return result;
+    }
+
+    function renderWarning() {
+        const container = document.getElementById('warningContainer');
+        container.innerHTML = '';
+
+        const fails = findRecentFails();
+        if (fails.length === 0) return;
+
+        const warnDiv = document.createElement('div');
+        warnDiv.className = 'fails-warning';
+
+        const iconSvg = '<svg class="fails-warning-icon" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
+
+        let titleHtml = '';
+        let listHtml = '';
+
+        if (fails.length === 1) {
+            titleHtml = `Тебе поставили <b>2</b> по предмету «${escapeHtml(fails[0].subject)}» (${fails[0].dateRu}).`;
+        } else {
+            titleHtml = `Тебе поставили двойки:`;
+            listHtml = `<ul class="fails-warning-list">${
+                fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${f.dateRu}</li>`).join('')
+            }</ul>`;
+        }
+
+        warnDiv.innerHTML = `
+            ${iconSvg}
+            <div class="fails-warning-body">
+                <div class="fails-warning-title">${titleHtml}</div>
+                ${listHtml}
+                <div class="fails-warning-hint">
+                    Обычно оценку можно исправить. <b>Спроси учителя, что ты можешь для этого сделать.</b>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(warnDiv);
     }
 
     // ============================================================
@@ -168,12 +271,10 @@
 
             const login = user.email.split('@')[0];
 
-            // Проверяем, что это ученик
             const students = await DB.getAll('students');
             const student = students.find(s => s.login === login);
 
             if (!student) {
-                // Не ученик — выкидываем по роли
                 const admins = await DB.getAll('admins');
                 if (admins.some(a => a.id === user.uid)) {
                     window.location.replace('admin.html');
@@ -190,7 +291,6 @@
 
             CURRENT_STUDENT = student;
 
-            // Имя в шапке
             const shortName = student.full_name.split(' ').slice(0, 2).join(' ');
             document.getElementById('userName').textContent = shortName;
             const initials = student.full_name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
@@ -225,6 +325,9 @@
         document.getElementById('loading').style.display = 'none';
         document.getElementById('content').style.display = 'block';
 
+        // Предупреждение о свежих двойках
+        renderWarning();
+
         // Информация о ученике
         document.getElementById('infoBanner').innerHTML = `
             <div class="info-banner-item">
@@ -253,17 +356,13 @@
             return;
         }
 
-        // Группируем по предмету
         const seen = new Set();
         const subjects = [];
         ALL_WORKLOADS.forEach(w => {
             if (seen.has(w.subject)) return;
             seen.add(w.subject);
             const subjObj = ALL_SUBJECTS.find(s => s.name === w.subject);
-            subjects.push({
-                name: w.subject,
-                id: subjObj ? subjObj.id : null
-            });
+            subjects.push({ name: w.subject, id: subjObj ? subjObj.id : null });
         });
         subjects.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 
@@ -271,17 +370,14 @@
         let anyGrades = false;
 
         subjects.forEach(subject => {
-            // Найти журнал по этому предмету
             const journal = subject.id
                 ? ALL_JOURNALS.find(j => j.subject_id === subject.id)
                 : null;
 
-            // Учитель
             const workload = ALL_WORKLOADS.find(w => w.subject === subject.name);
             const teacher = workload ? ALL_TEACHERS.find(t => t.id === workload.teacher_id) : null;
             const teacherName = teacher ? teacher.full_name : '—';
 
-            // Оценки ученика
             const studentGrades = journal && journal.grades
                 ? (journal.grades[CURRENT_STUDENT.id] || {})
                 : {};
@@ -291,7 +387,6 @@
                 .sort((a, b) => a[0].localeCompare(b[0]))
                 .map(([k, v]) => v);
 
-            // Итоговая оценка (0-й период — первая четверть)
             const qtrGrades = journal && journal.qtr_grades
                 ? (journal.qtr_grades[CURRENT_STUDENT.id] || {})
                 : {};
