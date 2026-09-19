@@ -23,10 +23,8 @@
         .page-title { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
         .page-subtitle { font-size: 14px; color: #7a8aa3; margin-bottom: 24px; }
 
-        /* ---- Предупреждение о двойках ---- */
-        .fails-warning {
-            background: #fff0f0;
-            border: 2px solid #ffd6d6;
+        /* ---- Общее предупреждение ---- */
+        .warn-box {
             border-radius: 14px;
             padding: 18px 22px;
             margin-bottom: 24px;
@@ -39,12 +37,20 @@
             from { opacity: 0; transform: translateY(-10px); }
             to   { opacity: 1; transform: translateY(0); }
         }
-        .fails-warning-icon { width: 28px; height: 28px; fill: #d32f2f; flex-shrink: 0; margin-top: 2px; }
-        .fails-warning-body { flex: 1; }
-        .fails-warning-title { font-size: 15px; color: #d32f2f; font-weight: 700; margin-bottom: 6px; }
-        .fails-warning-list { margin: 6px 0 10px 20px; color: #2a3a52; font-size: 14px; line-height: 1.7; }
-        .fails-warning-hint { font-size: 14px; color: #2a3a52; line-height: 1.5; }
-        .fails-warning-hint b { color: #1a2b4a; }
+        .warn-icon { width: 28px; height: 28px; flex-shrink: 0; margin-top: 2px; }
+        .warn-body { flex: 1; }
+        .warn-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+        .warn-list { margin: 6px 0 10px 20px; font-size: 14px; line-height: 1.7; color: #2a3a52; }
+        .warn-hint { font-size: 14px; color: #2a3a52; line-height: 1.5; }
+        .warn-hint b { color: #1a2b4a; }
+
+        .warn-box.fails { background: #fff0f0; border: 2px solid #ffd6d6; }
+        .warn-box.fails .warn-icon { fill: #d32f2f; }
+        .warn-box.fails .warn-title { color: #d32f2f; }
+
+        .warn-box.absences { background: #fff8e6; border: 2px solid #ffe4a3; }
+        .warn-box.absences .warn-icon { fill: #b8720a; }
+        .warn-box.absences .warn-title { color: #b8720a; }
 
         .info-banner { background: #fff; border-radius: 14px; padding: 16px 20px; box-shadow: 0 4px 16px rgba(30,60,114,0.07); margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 20px; }
         .info-banner-item { display: flex; flex-direction: column; gap: 4px; }
@@ -57,12 +63,48 @@
         .subject-teacher { font-size: 13px; color: #7a8aa3; margin-top: 4px; }
 
         .grades-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-        .grade-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 34px; padding: 0 10px; border-radius: 10px; font-weight: 700; font-size: 14px; }
+        .grade-chip {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 34px; height: 34px; padding: 0 10px;
+            border-radius: 10px; font-weight: 700; font-size: 14px;
+            position: relative;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .grade-chip.clickable { cursor: pointer; }
+        .grade-chip.clickable:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.15); }
+        .grade-chip.clickable:active { transform: translateY(0); }
+
         .g5 { background: #65A30D; color: #fff; }
         .g4 { background: #84CC16; color: #fff; }
         .g3 { background: #FB923C; color: #fff; }
         .g2 { background: #DC2626; color: #fff; }
+        .g1 { background: #7f1d1d; color: #fff; }
         .gn { background: #94A3B8; color: #fff; }
+
+        /* Кастомная подсказка (не системная) */
+        .grade-chip[data-tip]::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: #1a2b4a;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            z-index: 50;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .grade-chip[data-tip]:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
         .subject-footer { display: flex; gap: 24px; padding-top: 14px; border-top: 1px solid #eef2f8; flex-wrap: wrap; }
         .stat { display: flex; flex-direction: column; gap: 4px; }
@@ -80,6 +122,139 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { font-size: 15px; color: #5a6a85; }
 
+        /* ===== Модальное окно статистики ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 43, 74, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.25s ease;
+        }
+        .modal-overlay.show { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal {
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px 28px 24px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            animation: modalAppear 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @keyframes modalAppear {
+            from { opacity: 0; transform: translateY(20px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eef2f8;
+        }
+        .modal-header-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #e6efff, #d4e4ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-header-icon svg { width: 22px; height: 22px; fill: #2a5298; }
+        .modal-title { font-size: 17px; font-weight: 700; color: #1a2b4a; }
+        .modal-subtitle { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
+
+        .stats-list { display: flex; flex-direction: column; gap: 10px; }
+        .stat-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .stat-badge {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .stat-bar-wrap {
+            flex: 1;
+            height: 26px;
+            background: #f0f4f9;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        .stat-bar {
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.4s ease;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            min-width: 24px;
+        }
+        .stat-count {
+            width: 60px;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2a3a52;
+            flex-shrink: 0;
+        }
+        .stat-count small { color: #7a8aa3; font-weight: 500; }
+
+        .stats-total {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #eef2f8;
+            font-size: 13px;
+            color: #7a8aa3;
+            text-align: center;
+        }
+
+        .modal-close {
+            width: 100%;
+            height: 46px;
+            margin-top: 18px;
+            background: #f0f2f5;
+            color: #4a5a72;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            font-family: inherit;
+        }
+        .modal-close:hover { background: #e2e8f0; }
+
+        .stats-empty {
+            text-align: center;
+            padding: 20px 10px;
+            color: #8a9bb5;
+            font-size: 14px;
+        }
+
         @media (max-width: 700px) {
             .header { padding: 0 14px; height: 62px; }
             .header-logo { font-size: 15px; }
@@ -89,7 +264,9 @@
             .container { padding: 20px 14px 40px; }
             .page-title { font-size: 21px; }
             .subject-card { padding: 18px 16px; }
-            .fails-warning { padding: 14px 16px; }
+            .warn-box { padding: 14px 16px; }
+            .modal { padding: 22px 20px; }
+            .stat-count { width: 50px; font-size: 12px; }
         }
     </style>
 </head>
@@ -126,12 +303,30 @@
     </div>
 </div>
 
+<!-- ===== Модальное окно статистики ===== -->
+<div class="modal-overlay" id="statsModal">
+    <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-header">
+            <div class="modal-header-icon">
+                <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></svg>
+            </div>
+            <div>
+                <div class="modal-title" id="statsTitle">Статистика</div>
+                <div class="modal-subtitle" id="statsSubtitle"></div>
+            </div>
+        </div>
+        <div class="stats-list" id="statsList"></div>
+        <div class="stats-total" id="statsTotal"></div>
+        <button class="modal-close" onclick="closeStats()">Закрыть</button>
+    </div>
+</div>
+
 <script src="supabase-config.js"></script>
 <script>
     // ============================================================
     // КОНСТАНТЫ
     // ============================================================
-    const RECENT_DAYS = 7; // сколько дней назад считается «свежая» двойка
+    const RECENT_DAYS = 7; // сколько дней назад считается «свежая» двойка / пропуск
 
     // ============================================================
     // СОСТОЯНИЕ
@@ -158,7 +353,8 @@
         if (g === '5') return 'g5';
         if (g === '4') return 'g4';
         if (g === '3') return 'g3';
-        if (g === '2' || g === '1') return 'g2';
+        if (g === '2') return 'g2';
+        if (g === '1') return 'g1';
         return 'gn';
     }
 
@@ -186,12 +382,26 @@
         return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
     }
 
+    // Ключ вида "2026-09-19_1" → { date: Date, lesson: 1 }
+    function parseKey(key) {
+        const parts = String(key).split('_');
+        const datePart = parts[0];
+        const lessonPart = parts[1] || '';
+        const d = new Date(datePart + 'T00:00:00');
+        return {
+            date: isNaN(d.getTime()) ? null : d,
+            dateRu: isNaN(d.getTime()) ? datePart : formatDateRu(d),
+            lesson: lessonPart
+        };
+    }
+
     // ============================================================
-    // ПОИСК СВЕЖИХ ДВОЕК
+    // СБОР СВЕЖИХ «Н» И «2»
     // ============================================================
-    function findRecentFails() {
+    function findRecentProblems() {
         const cutoff = Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000;
-        const result = [];
+        const fails = [];
+        const absences = [];
 
         ALL_JOURNALS.forEach(journal => {
             const studentGrades = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
@@ -199,63 +409,193 @@
             if (!subjObj) return;
 
             Object.entries(studentGrades).forEach(([key, val]) => {
-                if (String(val).trim() !== '2') return;
+                const clean = String(val || '').trim().toUpperCase();
+                if (clean !== '2' && clean !== 'Н') return;
 
-                const datePart = key.split('_')[0];
-                const d = new Date(datePart + 'T00:00:00');
-                if (isNaN(d.getTime())) return;
+                const parsed = parseKey(key);
+                if (!parsed.date) return;
+                if (parsed.date.getTime() < cutoff) return;
 
-                if (d.getTime() < cutoff) return;
-
-                result.push({
-                    subject: subjObj.name,
-                    date: d,
-                    dateRu: formatDateRu(d)
-                });
+                const entry = { subject: subjObj.name, date: parsed.date, dateRu: parsed.dateRu };
+                if (clean === '2') fails.push(entry);
+                else if (clean === 'Н') absences.push(entry);
             });
         });
 
-        result.sort((a, b) => b.date - a.date);
-        return result;
+        fails.sort((a, b) => b.date - a.date);
+        absences.sort((a, b) => b.date - a.date);
+        return { fails, absences };
     }
 
-    function renderWarning() {
+    // ============================================================
+    // ПРЕДУПРЕЖДЕНИЯ (двойки + пропуски)
+    // ============================================================
+    function renderWarnings() {
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
 
-        const fails = findRecentFails();
-        if (fails.length === 0) return;
+        const { fails, absences } = findRecentProblems();
 
-        const warnDiv = document.createElement('div');
-        warnDiv.className = 'fails-warning';
+        // --- Двойки ---
+        if (fails.length > 0) {
+            const box = document.createElement('div');
+            box.className = 'warn-box fails';
+            const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
 
-        const iconSvg = '<svg class="fails-warning-icon" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
+            let titleHtml, listHtml = '';
+            if (fails.length === 1) {
+                titleHtml = `Тебе поставили <b>2</b> по предмету «${escapeHtml(fails[0].subject)}» (${fails[0].dateRu}).`;
+            } else {
+                titleHtml = `Тебе поставили двойки:`;
+                listHtml = `<ul class="warn-list">${
+                    fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${f.dateRu}</li>`).join('')
+                }</ul>`;
+            }
 
-        let titleHtml = '';
-        let listHtml = '';
-
-        if (fails.length === 1) {
-            titleHtml = `Тебе поставили <b>2</b> по предмету «${escapeHtml(fails[0].subject)}» (${fails[0].dateRu}).`;
-        } else {
-            titleHtml = `Тебе поставили двойки:`;
-            listHtml = `<ul class="fails-warning-list">${
-                fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${f.dateRu}</li>`).join('')
-            }</ul>`;
+            box.innerHTML = `
+                ${iconSvg}
+                <div class="warn-body">
+                    <div class="warn-title">${titleHtml}</div>
+                    ${listHtml}
+                    <div class="warn-hint">
+                        Обычно оценку можно исправить. <b>Спроси учителя, что ты можешь для этого сделать.</b>
+                    </div>
+                </div>
+            `;
+            container.appendChild(box);
         }
 
-        warnDiv.innerHTML = `
-            ${iconSvg}
-            <div class="fails-warning-body">
-                <div class="fails-warning-title">${titleHtml}</div>
-                ${listHtml}
-                <div class="fails-warning-hint">
-                    Обычно оценку можно исправить. <b>Спроси учителя, что ты можешь для этого сделать.</b>
-                </div>
-            </div>
-        `;
+        // --- Пропуски (Н) ---
+        if (absences.length > 0) {
+            const box = document.createElement('div');
+            box.className = 'warn-box absences';
+            const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M11 7h2v6h-2zm0 8h2v2h-2zm1-13C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>';
 
-        container.appendChild(warnDiv);
+            let titleHtml, listHtml = '';
+            if (absences.length === 1) {
+                titleHtml = `Тебя не было на уроке «${escapeHtml(absences[0].subject)}» (${absences[0].dateRu}).`;
+            } else {
+                titleHtml = `Тебя не было на уроках:`;
+                listHtml = `<ul class="warn-list">${
+                    absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> — ${a.dateRu}</li>`).join('')
+                }</ul>`;
+            }
+
+            box.innerHTML = `
+                ${iconSvg}
+                <div class="warn-body">
+                    <div class="warn-title">${titleHtml}</div>
+                    ${listHtml}
+                    <div class="warn-hint">
+                        Если есть уважительная причина, <b>обсуди её с учителем.</b>
+                    </div>
+                </div>
+            `;
+            container.appendChild(box);
+        }
     }
+
+    // ============================================================
+    // СТАТИСТИКА ПО ОЦЕНКЕ (клик)
+    // ============================================================
+    function showStats(subjectName, lessonKey, myGrade) {
+        // Находим журнал
+        const journal = ALL_JOURNALS.find(j => {
+            const subjObj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
+            return subjObj && subjObj.name === subjectName;
+        });
+
+        const modal = document.getElementById('statsModal');
+        const title = document.getElementById('statsTitle');
+        const subtitle = document.getElementById('statsSubtitle');
+        const list = document.getElementById('statsList');
+        const total = document.getElementById('statsTotal');
+
+        const parsed = parseKey(lessonKey);
+        title.textContent = subjectName;
+        subtitle.textContent = `${parsed.dateRu} · ${parsed.lesson}-й урок`;
+
+        if (!journal) {
+            list.innerHTML = '<div class="stats-empty">Статистика недоступна.</div>';
+            total.textContent = '';
+            modal.classList.add('show');
+            return;
+        }
+
+        // Собираем оценки всех учеников за этот урок
+        const gradesAll = journal.grades || {};
+        const counters = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
+
+        Object.values(gradesAll).forEach(studentGrades => {
+            const val = studentGrades && studentGrades[lessonKey];
+            if (val === undefined || val === null) return;
+            const clean = String(val).trim().toUpperCase();
+            // Только чистые цифры 1-5
+            if (counters[clean] !== undefined) {
+                counters[clean]++;
+            }
+        });
+
+        const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
+
+        if (totalCount === 0) {
+            list.innerHTML = '<div class="stats-empty">Пока нет оценок за этот урок.</div>';
+            total.textContent = '';
+            modal.classList.add('show');
+            return;
+        }
+
+        const colors = {
+            '5': '#65A30D',
+            '4': '#84CC16',
+            '3': '#FB923C',
+            '2': '#DC2626',
+            '1': '#7f1d1d'
+        };
+
+        let html = '';
+        ['5', '4', '3', '2', '1'].forEach(g => {
+            const count = counters[g];
+            const percent = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
+            const barWidth = percent > 0 ? Math.max(percent, 6) : 0; // минимум 6% для читаемости
+            const word = plural(count, ['человек', 'человека', 'человек']);
+            html += `
+                <div class="stat-row">
+                    <div class="stat-badge" style="background:${colors[g]}">${g}</div>
+                    <div class="stat-bar-wrap">
+                        <div class="stat-bar" style="width:${barWidth}%;background:${colors[g]}">${percent > 15 ? percent + '%' : ''}</div>
+                    </div>
+                    <div class="stat-count">${count} <small>${word}</small></div>
+                </div>
+            `;
+        });
+
+        list.innerHTML = html;
+        total.textContent = `Всего оценок за урок: ${totalCount}`;
+        modal.classList.add('show');
+    }
+
+    function closeStats() {
+        document.getElementById('statsModal').classList.remove('show');
+    }
+
+    // Склонение: 1 человек, 2 человека, 5 человек
+    function plural(n, forms) {
+        const a = Math.abs(n) % 100;
+        const b = a % 10;
+        if (a > 10 && a < 20) return forms[2];
+        if (b > 1 && b < 5) return forms[1];
+        if (b === 1) return forms[0];
+        return forms[2];
+    }
+
+    // Закрытие модалки по клику на фон
+    document.getElementById('statsModal').addEventListener('click', (e) => {
+        if (e.target.id === 'statsModal') closeStats();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeStats();
+    });
 
     // ============================================================
     // ИНИЦИАЛИЗАЦИЯ
@@ -325,10 +665,8 @@
         document.getElementById('loading').style.display = 'none';
         document.getElementById('content').style.display = 'block';
 
-        // Предупреждение о свежих двойках
-        renderWarning();
+        renderWarnings();
 
-        // Информация о ученике
         document.getElementById('infoBanner').innerHTML = `
             <div class="info-banner-item">
                 <div class="info-banner-label">ФИО</div>
@@ -356,6 +694,7 @@
             return;
         }
 
+        // Уникальные предметы класса
         const seen = new Set();
         const subjects = [];
         ALL_WORKLOADS.forEach(w => {
@@ -382,10 +721,23 @@
                 ? (journal.grades[CURRENT_STUDENT.id] || {})
                 : {};
 
-            const gradesList = Object.entries(studentGrades)
+            const lessonTypes = journal && journal.lesson_types ? journal.lesson_types : {};
+
+            // Собираем оценки: [ { key, grade, date, dateRu, lesson, type } ]
+            const gradesArr = Object.entries(studentGrades)
                 .filter(([k, v]) => v !== '' && v !== null && v !== undefined)
-                .sort((a, b) => a[0].localeCompare(b[0]))
-                .map(([k, v]) => v);
+                .map(([key, grade]) => {
+                    const parsed = parseKey(key);
+                    return {
+                        key,
+                        grade: String(grade),
+                        date: parsed.date,
+                        dateRu: parsed.dateRu,
+                        lesson: parsed.lesson,
+                        type: lessonTypes[key] || ''
+                    };
+                })
+                .sort((a, b) => a.key.localeCompare(b.key));
 
             const qtrGrades = journal && journal.qtr_grades
                 ? (journal.qtr_grades[CURRENT_STUDENT.id] || {})
@@ -393,11 +745,24 @@
             const firstQtr = qtrGrades[0] || qtrGrades['0'] || null;
 
             const avg = calcAverage(studentGrades);
-            if (gradesList.length > 0) anyGrades = true;
+            if (gradesArr.length > 0) anyGrades = true;
 
-            const chipsHtml = gradesList.length === 0
-                ? '<span style="color:#a8b5c9;font-size:13px;font-style:italic;">Оценок пока нет</span>'
-                : gradesList.map(g => `<span class="grade-chip ${gradeClass(g)}">${escapeHtml(g)}</span>`).join('');
+            let chipsHtml = '';
+            if (gradesArr.length === 0) {
+                chipsHtml = '<span style="color:#a8b5c9;font-size:13px;font-style:italic;">Оценок пока нет</span>';
+            } else {
+                gradesArr.forEach(g => {
+                    // Подсказка: "19.09.2026 · ИК/Р"
+                    const tip = g.type ? `${g.dateRu} · ${g.type}` : g.dateRu;
+                    // Кликабельна только числовая оценка 1-5
+                    const isNumeric = /^[1-5]$/.test(g.grade.trim());
+                    const cls = 'grade-chip ' + gradeClass(g.grade) + (isNumeric ? ' clickable' : '');
+                    const attrs = isNumeric
+                        ? `data-subject="${escapeHtml(subject.name)}" data-key="${escapeHtml(g.key)}"`
+                        : '';
+                    chipsHtml += `<span class="${cls}" data-tip="${escapeHtml(tip)}" ${attrs}>${escapeHtml(g.grade)}</span>`;
+                });
+            }
 
             html += `
                 <div class="subject-card">
@@ -419,7 +784,7 @@
                         </div>
                         <div class="stat">
                             <div class="stat-label">Всего оценок</div>
-                            <div class="stat-value">${gradesList.length}</div>
+                            <div class="stat-value">${gradesArr.length}</div>
                         </div>
                     </div>
                 </div>`;
@@ -434,6 +799,16 @@
                 </div>
             `);
         }
+
+        // Навешиваем клик на числовые оценки
+        container.querySelectorAll('.grade-chip.clickable').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const subject = chip.dataset.subject;
+                const key = chip.dataset.key;
+                const grade = chip.textContent.trim();
+                showStats(subject, key, grade);
+            });
+        });
     }
 
     async function logout() {
