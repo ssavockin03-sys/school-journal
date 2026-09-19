@@ -81,7 +81,6 @@
         .g1 { background: #7f1d1d; color: #fff; }
         .gn { background: #94A3B8; color: #fff; }
 
-        /* Кастомная подсказка (не системная) */
         .grade-chip[data-tip]::after {
             content: attr(data-tip);
             position: absolute;
@@ -326,7 +325,7 @@
     // ============================================================
     // КОНСТАНТЫ
     // ============================================================
-    const RECENT_DAYS = 7; // сколько дней назад считается «свежая» двойка / пропуск
+    const RECENT_DAYS = 7;
 
     // ============================================================
     // СОСТОЯНИЕ
@@ -337,6 +336,8 @@
     let ALL_TEACHERS = [];
     let ALL_WORKLOADS = [];
     let ALL_JOURNALS = [];
+    let ALL_STUDENTS = [];        // ← ВСЕ ученики из Firestore
+    let CLASS_STUDENT_IDS = [];   // ← актуальные ID учеников текущего класса
 
     // ============================================================
     // УТИЛИТЫ
@@ -382,7 +383,6 @@
         return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
     }
 
-    // Ключ вида "2026-09-19_1" → { date: Date, lesson: 1 }
     function parseKey(key) {
         const parts = String(key).split('_');
         const datePart = parts[0];
@@ -396,7 +396,7 @@
     }
 
     // ============================================================
-    // СБОР СВЕЖИХ «Н» И «2»
+    // СВЕЖИЕ «Н» И «2»
     // ============================================================
     function findRecentProblems() {
         const cutoff = Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000;
@@ -428,7 +428,7 @@
     }
 
     // ============================================================
-    // ПРЕДУПРЕЖДЕНИЯ (двойки + пропуски)
+    // ПРЕДУПРЕЖДЕНИЯ
     // ============================================================
     function renderWarnings() {
         const container = document.getElementById('warningContainer');
@@ -436,7 +436,6 @@
 
         const { fails, absences } = findRecentProblems();
 
-        // --- Двойки ---
         if (fails.length > 0) {
             const box = document.createElement('div');
             box.className = 'warn-box fails';
@@ -465,7 +464,6 @@
             container.appendChild(box);
         }
 
-        // --- Пропуски (Н) ---
         if (absences.length > 0) {
             const box = document.createElement('div');
             box.className = 'warn-box absences';
@@ -496,10 +494,9 @@
     }
 
     // ============================================================
-    // СТАТИСТИКА ПО ОЦЕНКЕ (клик)
+    // СТАТИСТИКА (только актуальные ученики класса)
     // ============================================================
-    function showStats(subjectName, lessonKey, myGrade) {
-        // Находим журнал
+    function showStats(subjectName, lessonKey) {
         const journal = ALL_JOURNALS.find(j => {
             const subjObj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
             return subjObj && subjObj.name === subjectName;
@@ -522,19 +519,27 @@
             return;
         }
 
-        // Собираем оценки всех учеников за этот урок
         const gradesAll = journal.grades || {};
         const counters = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
 
-        Object.values(gradesAll).forEach(studentGrades => {
+        // ⬇⬇⬇ ГЛАВНОЕ ИСПРАВЛЕНИЕ ⬇⬇⬇
+        // Считаем только тех учеников, кто СЕЙЧАС учится в нашем классе.
+        // ID удалённых учеников в журнале игнорируются.
+        const validIds = new Set(CLASS_STUDENT_IDS);
+
+        Object.entries(gradesAll).forEach(([studentId, studentGrades]) => {
+            // Пропускаем удалённых / из другого класса
+            if (!validIds.has(studentId)) return;
+
             const val = studentGrades && studentGrades[lessonKey];
             if (val === undefined || val === null) return;
+
             const clean = String(val).trim().toUpperCase();
-            // Только чистые цифры 1-5
             if (counters[clean] !== undefined) {
                 counters[clean]++;
             }
         });
+        // ⬆⬆⬆ КОНЕЦ ИСПРАВЛЕНИЯ ⬆⬆⬆
 
         const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
 
@@ -557,7 +562,7 @@
         ['5', '4', '3', '2', '1'].forEach(g => {
             const count = counters[g];
             const percent = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
-            const barWidth = percent > 0 ? Math.max(percent, 6) : 0; // минимум 6% для читаемости
+            const barWidth = percent > 0 ? Math.max(percent, 6) : 0;
             const word = plural(count, ['человек', 'человека', 'человек']);
             html += `
                 <div class="stat-row">
@@ -579,7 +584,6 @@
         document.getElementById('statsModal').classList.remove('show');
     }
 
-    // Склонение: 1 человек, 2 человека, 5 человек
     function plural(n, forms) {
         const a = Math.abs(n) % 100;
         const b = a % 10;
@@ -589,7 +593,6 @@
         return forms[2];
     }
 
-    // Закрытие модалки по клику на фон
     document.getElementById('statsModal').addEventListener('click', (e) => {
         if (e.target.id === 'statsModal') closeStats();
     });
@@ -646,19 +649,26 @@
     });
 
     async function loadAll() {
-        const [classes, subjects, teachers, workloads, journals] = await Promise.all([
+        const [classes, subjects, teachers, workloads, journals, students] = await Promise.all([
             DB.getAll('classes'),
             DB.getAll('subjects'),
             DB.getAll('teachers'),
             DB.getAll('workloads'),
-            DB.getAll('journals')
+            DB.getAll('journals'),
+            DB.getAll('students')          // ← загружаем ВСЕХ учеников
         ]);
 
+        ALL_STUDENTS = students;
         CURRENT_CLASS = classes.find(c => c.id === CURRENT_STUDENT.class_id) || null;
         ALL_SUBJECTS = subjects;
         ALL_TEACHERS = teachers;
         ALL_WORKLOADS = workloads.filter(w => w.class_id === CURRENT_STUDENT.class_id);
         ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
+
+        // ← актуальные ID учеников ЭТОГО класса (без удалённых)
+        CLASS_STUDENT_IDS = ALL_STUDENTS
+            .filter(s => s.class_id === CURRENT_STUDENT.class_id)
+            .map(s => s.id);
     }
 
     function render() {
@@ -694,7 +704,6 @@
             return;
         }
 
-        // Уникальные предметы класса
         const seen = new Set();
         const subjects = [];
         ALL_WORKLOADS.forEach(w => {
@@ -723,7 +732,6 @@
 
             const lessonTypes = journal && journal.lesson_types ? journal.lesson_types : {};
 
-            // Собираем оценки: [ { key, grade, date, dateRu, lesson, type } ]
             const gradesArr = Object.entries(studentGrades)
                 .filter(([k, v]) => v !== '' && v !== null && v !== undefined)
                 .map(([key, grade]) => {
@@ -752,9 +760,7 @@
                 chipsHtml = '<span style="color:#a8b5c9;font-size:13px;font-style:italic;">Оценок пока нет</span>';
             } else {
                 gradesArr.forEach(g => {
-                    // Подсказка: "19.09.2026 · ИК/Р"
                     const tip = g.type ? `${g.dateRu} · ${g.type}` : g.dateRu;
-                    // Кликабельна только числовая оценка 1-5
                     const isNumeric = /^[1-5]$/.test(g.grade.trim());
                     const cls = 'grade-chip ' + gradeClass(g.grade) + (isNumeric ? ' clickable' : '');
                     const attrs = isNumeric
@@ -800,13 +806,11 @@
             `);
         }
 
-        // Навешиваем клик на числовые оценки
         container.querySelectorAll('.grade-chip.clickable').forEach(chip => {
             chip.addEventListener('click', () => {
                 const subject = chip.dataset.subject;
                 const key = chip.dataset.key;
-                const grade = chip.textContent.trim();
-                showStats(subject, key, grade);
+                showStats(subject, key);
             });
         });
     }
