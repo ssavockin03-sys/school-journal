@@ -12,7 +12,6 @@
             display: flex; align-items: center; justify-content: center;
             padding: 20px;
         }
-
         .login-box {
             background: #fff; border-radius: 24px;
             padding: 44px 40px; max-width: 420px; width: 100%;
@@ -23,7 +22,6 @@
             from { opacity: 0; transform: translateY(20px) scale(0.96); }
             to   { opacity: 1; transform: translateY(0)    scale(1);    }
         }
-
         .logo {
             width: 64px; height: 64px; margin: 0 auto 20px;
             background: linear-gradient(135deg, #2a5298, #3b7dd8);
@@ -31,10 +29,8 @@
             display: flex; align-items: center; justify-content: center;
         }
         .logo svg { width: 34px; height: 34px; fill: #fff; }
-
         .title    { font-size: 24px; font-weight: 700; color: #1a2b4a; text-align: center; margin-bottom: 6px; }
         .subtitle { font-size: 14px; color: #7a8aa3; text-align: center; margin-bottom: 28px; }
-
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; color: #4a5a72; margin-bottom: 7px; }
         .form-group input {
@@ -47,7 +43,6 @@
             border-color: #2a5298; background: #fff;
             box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
         }
-
         .btn {
             width: 100%; height: 52px; margin-top: 8px;
             background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff;
@@ -58,20 +53,17 @@
         }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(42, 82, 152, 0.45); }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
         .error {
             background: #fff0f0; color: #d32f2f; padding: 12px 14px;
             border-radius: 10px; font-size: 13px; font-weight: 500;
             margin-bottom: 16px; display: none; border: 1px solid #ffd6d6;
         }
         .error.show { display: block; }
-
         .hint {
             margin-top: 20px; padding: 14px; background: #f0f5ff;
             border-radius: 12px; font-size: 12px; color: #4a5a72;
             line-height: 1.5; text-align: center;
         }
-
         .status {
             margin-top: 16px; text-align: center;
             font-size: 13px; color: #2a5298; font-weight: 600;
@@ -106,7 +98,8 @@
 
         <div class="hint">
             🔒 Безопасный вход. Сессия — 24 часа.<br>
-            Роль определяется автоматически.
+            Роль определяется автоматически.<br>
+            <span style="font-size:11px;color:#8a9bb5;">Первый вход автоматически создаёт аккаунт.</span>
         </div>
     </div>
 
@@ -140,7 +133,7 @@
     // ============================================================
     const AUTH_EMAIL_DOMAIN = '@school-journal-8f39a.firebaseapp.com';
     const SESSION_KEY = 'sj_session';
-    const SESSION_DURATION_MS = 24 * 60 * 60 * 1000; // 24 часа
+    const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
 
     const ROUTES = {
         admin:   'admin.html',
@@ -173,19 +166,18 @@
     function setStatus(text) {
         statusBox.textContent = text || '';
     }
-
+    function resetButton() {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Войти';
+    }
     function saveSession(user, role) {
         try {
             localStorage.setItem(SESSION_KEY, JSON.stringify({
-                uid: user.uid,
-                email: user.email,
-                role: role,
-                loggedAt: Date.now(),
-                expiresAt: Date.now() + SESSION_DURATION_MS
+                uid: user.uid, email: user.email, role: role,
+                loggedAt: Date.now(), expiresAt: Date.now() + SESSION_DURATION_MS
             }));
         } catch (e) {}
     }
-
     function getSession() {
         try {
             const raw = localStorage.getItem(SESSION_KEY);
@@ -196,11 +188,8 @@
                 return null;
             }
             return s;
-        } catch (e) {
-            return null;
-        }
+        } catch (e) { return null; }
     }
-
     function clearSession() {
         try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
     }
@@ -211,36 +200,25 @@
     async function determineRole(user) {
         if (!user || !user.email) return null;
 
-        // 1. Админ: документ в коллекции admins с ID = uid
         try {
             const adminDoc = await db.collection('admins').doc(user.uid).get();
             if (adminDoc.exists) {
                 const data = adminDoc.data() || {};
                 if (!data.role || data.role === 'admin') return 'admin';
             }
-        } catch (e) {
-            console.warn('Ошибка проверки admins:', e);
-        }
+        } catch (e) { console.warn('Ошибка проверки admins:', e); }
 
         const login = user.email.split('@')[0];
 
-        // 2. Учитель: teachers.where('login','==',login)
         try {
-            const snap = await db.collection('teachers')
-                .where('login', '==', login).limit(1).get();
+            const snap = await db.collection('teachers').where('login', '==', login).limit(1).get();
             if (!snap.empty) return 'teacher';
-        } catch (e) {
-            console.warn('Ошибка проверки teachers:', e);
-        }
+        } catch (e) { console.warn('Ошибка проверки teachers:', e); }
 
-        // 3. Ученик: students.where('login','==',login)
         try {
-            const snap = await db.collection('students')
-                .where('login', '==', login).limit(1).get();
+            const snap = await db.collection('students').where('login', '==', login).limit(1).get();
             if (!snap.empty) return 'student';
-        } catch (e) {
-            console.warn('Ошибка проверки students:', e);
-        }
+        } catch (e) { console.warn('Ошибка проверки students:', e); }
 
         return null;
     }
@@ -250,26 +228,18 @@
     // ============================================================
     function redirectByRole(role) {
         const url = ROUTES[role];
-        if (!url) {
-            showError('Неизвестная роль: ' + role);
-            return false;
-        }
-        // replace — чтобы кнопка "назад" не возвращала на форму входа
+        if (!url) { showError('Неизвестная роль: ' + role); return false; }
         window.location.replace(url);
         return true;
     }
 
     // ============================================================
-    // ВХОД
+    // ВХОД (с автосозданием аккаунта при первом входе)
     // ============================================================
     async function loginFlow(rawLogin, password) {
         clearError();
-
         const login = String(rawLogin || '').trim();
-        if (!login || !password) {
-            showError('Введите логин и пароль');
-            return;
-        }
+        if (!login || !password) { showError('Введите логин и пароль'); return; }
 
         const email = login.includes('@') ? login : login + AUTH_EMAIL_DOMAIN;
 
@@ -277,52 +247,75 @@
         loginBtn.textContent = 'Проверка...';
         setStatus('Авторизация...');
 
+        let user = null;
+
+        // --- 1. Пытаемся войти ---
         try {
             const cred = await auth.signInWithEmailAndPassword(email, password);
-            const user = cred.user;
+            user = cred.user;
+        } catch (err) {
+            const noAccount =
+                err.code === 'auth/user-not-found' ||
+                err.code === 'auth/invalid-credential' ||
+                err.code === 'auth/invalid-login-credentials';
 
-            setStatus('Определяем роль...');
-            const role = await determineRole(user);
-
-            if (!role) {
+            if (noAccount) {
+                // --- 2. Аккаунта нет → создаём его ---
+                setStatus('Первый вход — создаём аккаунт...');
+                try {
+                    const cred = await auth.createUserWithEmailAndPassword(email, password);
+                    user = cred.user;
+                } catch (createErr) {
+                    console.error('Ошибка создания аккаунта:', createErr);
+                    let msg = 'Не удалось создать аккаунт.';
+                    if (createErr.code === 'auth/email-already-in-use') {
+                        msg = 'Аккаунт уже существует, но пароль не подходит. Обратитесь к администратору.';
+                    } else if (createErr.code === 'auth/weak-password') {
+                        msg = 'Пароль слишком слабый (минимум 6 символов).';
+                    } else if (createErr.code === 'auth/invalid-email') {
+                        msg = 'Некорректный логин.';
+                    } else if (createErr.code === 'auth/network-request-failed') {
+                        msg = 'Ошибка сети. Проверьте интернет.';
+                    }
+                    setStatus('');
+                    showError(msg);
+                    resetButton();
+                    return;
+                }
+            } else {
+                console.error('Ошибка входа:', err);
+                let msg = 'Не удалось войти. Проверьте логин и пароль.';
+                switch (err.code) {
+                    case 'auth/wrong-password': msg = 'Неверный пароль.'; break;
+                    case 'auth/too-many-requests': msg = 'Слишком много попыток. Попробуйте позже.'; break;
+                    case 'auth/network-request-failed': msg = 'Ошибка сети. Проверьте интернет.'; break;
+                    case 'auth/invalid-email': msg = 'Некорректный логин.'; break;
+                }
                 setStatus('');
-                showError('Доступ запрещён: роль не найдена. Обратитесь к администратору.');
-                try { await auth.signOut(); } catch (e) {}
-                clearSession();
+                showError(msg);
+                resetButton();
                 return;
             }
-
-            saveSession(user, role);
-            setStatus('Роль: ' + role + '. Переходим...');
-            redirectByRole(role);
-
-        } catch (err) {
-            console.error('Ошибка входа:', err);
-            let msg = 'Не удалось войти. Проверьте логин и пароль.';
-            switch (err.code) {
-                case 'auth/wrong-password':
-                case 'auth/invalid-credential':
-                case 'auth/invalid-login-credentials':
-                    msg = 'Неверный логин или пароль.';
-                    break;
-                case 'auth/user-not-found':
-                    msg = 'Пользователь не найден.';
-                    break;
-                case 'auth/too-many-requests':
-                    msg = 'Слишком много попыток. Попробуйте позже.';
-                    break;
-                case 'auth/network-request-failed':
-                    msg = 'Ошибка сети. Проверьте интернет.';
-                    break;
-                case 'auth/invalid-email':
-                    msg = 'Некорректный логин.';
-                    break;
-            }
-            showError(msg);
-        } finally {
-            loginBtn.disabled = false;
-            loginBtn.textContent = 'Войти';
         }
+
+        if (!user) { showError('Не удалось получить пользователя.'); resetButton(); return; }
+
+        // --- 3. Определяем роль ---
+        setStatus('Определяем роль...');
+        const role = await determineRole(user);
+
+        if (!role) {
+            setStatus('');
+            showError('Доступ запрещён: роль не найдена. Обратитесь к администратору.');
+            try { await auth.signOut(); } catch (e) {}
+            clearSession();
+            resetButton();
+            return;
+        }
+
+        saveSession(user, role);
+        setStatus('Роль: ' + role + '. Переходим...');
+        redirectByRole(role);
     }
 
     form.addEventListener('submit', (e) => {
@@ -334,31 +327,19 @@
     // АВТОВХОД ПРИ ЗАГРУЗКЕ
     // ============================================================
     window.addEventListener('load', async () => {
-        // Ждём восстановления сессии Firebase
         const user = await new Promise((resolve) => {
-            const unsub = auth.onAuthStateChanged((u) => {
-                unsub();
-                resolve(u);
-            });
+            const unsub = auth.onAuthStateChanged((u) => { unsub(); resolve(u); });
         });
 
-        if (!user) {
-            // Нет активной сессии Firebase — показываем форму
-            clearSession();
-            return;
-        }
+        if (!user) { clearSession(); return; }
 
-        // Есть Firebase-пользователь. Проверяем сохранённую сессию.
         const session = getSession();
-
-        // Если сессия валидна и uid совпадает — сразу редиректим
         if (session && session.uid === user.uid && session.role && ROUTES[session.role]) {
             setStatus('Возвращаемся в кабинет...');
             redirectByRole(session.role);
             return;
         }
 
-        // Иначе — определяем роль заново и редиректим
         setStatus('Определяем роль...');
         const role = await determineRole(user);
 
