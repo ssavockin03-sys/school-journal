@@ -6,7 +6,7 @@
     <title>Дневник.ру — Кабинет ученика</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
-        body { min-height: 100vh; background: #f0f4f9; color: #1a2b4a; }
+        body { min-height: 100vh; background: #eef2f8; color: #1a2b4a; }
 
         .header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: #fff; padding: 0 24px; height: 70px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 16px rgba(30,60,114,0.25); position: sticky; top: 0; z-index: 100; }
         .header-logo { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
@@ -19,7 +19,7 @@
         .logout-btn:hover { background: rgba(255,255,255,0.22); }
         .logout-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 24px 24px 60px; }
+        .container { max-width: 1500px; margin: 0 auto; padding: 24px 24px 60px; }
 
         .tabs { display: flex; gap: 6px; background: #fff; padding: 6px; border-radius: 16px; box-shadow: 0 4px 16px rgba(30,60,114,0.08); margin-bottom: 24px; }
         .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; color: #5a6a85; font-size: 14px; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; }
@@ -46,37 +46,86 @@
         .warn-box.absences .warn-icon { fill: #b8720a; }
         .warn-box.absences .warn-title { color: #b8720a; }
 
-        .info-banner { background: #fff; border-radius: 14px; padding: 16px 20px; box-shadow: 0 4px 16px rgba(30,60,114,0.07); margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 20px; }
+        .info-banner { background: #fff; border-radius: 14px; padding: 16px 20px; box-shadow: 0 4px 16px rgba(30,60,114,0.07); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 24px; }
         .info-banner-item { display: flex; flex-direction: column; gap: 4px; }
         .info-banner-label { font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; }
         .info-banner-value { font-size: 15px; font-weight: 600; color: #1a2b4a; }
 
-        .week-header { background: #fff; border-radius: 14px; padding: 18px 24px; box-shadow: 0 4px 16px rgba(30,60,114,0.07); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-        .week-title { font-size: 18px; font-weight: 700; color: #1a2b4a; }
+        /* ===== ДНЕВНИК ===== */
+        .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .week-title { font-size: 20px; font-weight: 700; color: #1a2b4a; }
         .week-range { font-size: 13px; color: #7a8aa3; margin-top: 2px; }
-        .week-badge { background: #e6efff; color: #2a5298; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
+        .week-badge { background: #dbeafe; color: #2563eb; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
 
-        .day-card { background: #fff; border-radius: 16px; padding: 20px 22px; box-shadow: 0 4px 16px rgba(30,60,114,0.07); margin-bottom: 16px; border-left: 4px solid #2a5298; }
-        .day-card.today { border-left-color: #22874a; }
-        .day-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #eef2f8; flex-wrap: wrap; gap: 8px; }
-        .day-name { font-size: 16px; font-weight: 700; color: #1a2b4a; text-transform: capitalize; }
-        .day-date { font-size: 13px; color: #7a8aa3; }
-        .day-today-badge { background: #e6f7ee; color: #22874a; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+        .week-grid {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        .week-grid::-webkit-scrollbar { height: 10px; }
+        .week-grid::-webkit-scrollbar-track { background: #eef2f8; border-radius: 5px; }
+        .week-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
+        .week-grid::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        .lesson-list { display: flex; flex-direction: column; gap: 10px; }
-        .lesson-row { display: grid; grid-template-columns: 38px 1fr; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f2f6fb; }
-        .lesson-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .lesson-num { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, #e6efff, #d4e4ff); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #2a5298; flex-shrink: 0; }
-        .lesson-body { min-width: 0; }
-        .lesson-subject { font-size: 15px; font-weight: 700; color: #1a2b4a; margin-bottom: 2px; }
-        .lesson-meta { font-size: 12px; color: #7a8aa3; margin-bottom: 8px; }
-        .lesson-section { margin-top: 6px; }
-        .lesson-label { display: inline-block; font-size: 10px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 6px; }
-        .lesson-value { font-size: 13px; color: #2a3a52; line-height: 1.5; }
-        .lesson-row.empty .lesson-num { background: #f0f4f9; color: #b8c4d4; }
-        .lesson-row.empty .lesson-body { display: flex; align-items: center; height: 32px; color: #b8c4d4; font-style: italic; font-size: 13px; }
+        .day-column {
+            flex: 0 0 240px;
+            min-width: 240px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(30,60,114,0.07);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            scroll-snap-align: start;
+        }
+        .day-column.today { box-shadow: 0 4px 20px rgba(37,99,235,0.18); border: 2px solid #2563eb; }
 
-        /* ===== Переключатель периодов ===== */
+        .day-header {
+            background: linear-gradient(135deg, #4a7bc8, #5b8fd9);
+            color: #fff;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .day-column.today .day-header { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+        .day-header-left { display: flex; flex-direction: column; gap: 2px; }
+        .day-name { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .day-date { font-size: 11px; color: rgba(255,255,255,0.85); }
+        .day-today-badge { background: #fff; color: #2563eb; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 800; letter-spacing: 0.3px; }
+
+        .day-body { padding: 10px 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+        .lesson-card {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 10px 12px;
+            border-left: 3px solid #93c5fd;
+        }
+        .lesson-card.empty { background: transparent; border-left: 3px dashed #e2e8f0; padding: 6px 12px; }
+        .lesson-card.empty .lesson-subject { color: #cbd5e1; font-weight: 400; font-style: italic; font-size: 12px; }
+
+        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; }
+        .lesson-num {
+            width: 20px; height: 20px;
+            background: #dbeafe; color: #2563eb;
+            border-radius: 6px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 11px;
+            flex-shrink: 0;
+        }
+        .lesson-subject { font-size: 13px; font-weight: 700; color: #1a2b4a; line-height: 1.3; }
+        .lesson-meta { font-size: 11px; color: #7a8aa3; margin-top: 3px; line-height: 1.4; }
+        .lesson-section { margin-top: 6px; font-size: 11.5px; line-height: 1.45; }
+        .lesson-label { font-weight: 700; color: #7a8aa3; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
+        .lesson-value { color: #334155; }
+        .lesson-value.hw { color: #1e40af; }
+
+        /* ===== ОЦЕНКИ ===== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 12px; flex-wrap: wrap; }
         .tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
@@ -149,8 +198,8 @@
             .user-badge { padding: 4px; }
             .container { padding: 20px 14px 40px; }
             .subject-card { padding: 18px 16px; }
-            .day-card { padding: 16px 14px; }
-            .week-header { padding: 14px 16px; }
+            .week-title { font-size: 17px; }
+            .day-column { flex: 0 0 260px; min-width: 260px; }
             .modal { padding: 22px 20px; }
             .stat-count { width: 50px; font-size: 12px; }
             .tabs { padding: 4px; }
@@ -203,12 +252,9 @@
 
         <div class="tab-panel" id="panel-grades">
             <div id="warningContainer"></div>
-
-            <!-- ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ -->
             <div class="period-tabs-wrapper">
                 <div class="period-tabs-group" id="periodTabs"></div>
             </div>
-
             <div id="subjectsContainer"></div>
         </div>
     </div>
@@ -237,8 +283,7 @@
     // КОНСТАНТЫ
     // ============================================================
     const DAYS_KEYS   = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-    const DAYS_RU     = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота' };
-    const DAYS_SHORT  = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
+    const DAYS_RU     = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
 
     const PERIOD_LABELS = {
@@ -331,7 +376,6 @@
         if (b === 1) return forms[0];
         return forms[2];
     }
-
     function getMondayOfCurrentWeek() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -361,7 +405,6 @@
     function renderPeriodTabs() {
         const container = document.getElementById('periodTabs');
         container.innerHTML = '';
-
         if (PERIODS.length === 0) {
             const tab = document.createElement('button');
             tab.type = 'button';
@@ -372,7 +415,6 @@
             container.appendChild(tab);
             return;
         }
-
         const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
         PERIODS.forEach((p, idx) => {
             const tab = document.createElement('button');
@@ -390,17 +432,15 @@
     }
 
     // ============================================================
-    // ПРЕДУПРЕЖДЕНИЯ (без фильтра по датам)
+    // ПРЕДУПРЕЖДЕНИЯ
     // ============================================================
     function findProblems() {
         const fails = [];
         const absences = [];
-
         ALL_JOURNALS.forEach(journal => {
             const studentGrades = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
             const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
             if (!subjObj) return;
-
             Object.entries(studentGrades).forEach(([key, val]) => {
                 const clean = String(val || '').trim().toUpperCase();
                 if (clean !== '2' && clean !== 'Н') return;
@@ -411,7 +451,6 @@
                 else if (clean === 'Н') absences.push(entry);
             });
         });
-
         fails.sort((a, b) => b.date - a.date);
         absences.sort((a, b) => b.date - a.date);
         return { fails, absences };
@@ -421,7 +460,6 @@
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
         const { fails, absences } = findProblems();
-
         if (fails.length > 0) {
             const box = document.createElement('div');
             box.className = 'warn-box fails';
@@ -436,7 +474,6 @@
             box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Обычно оценку можно исправить. <b>Спроси учителя, что ты можешь для этого сделать.</b></div></div>`;
             container.appendChild(box);
         }
-
         if (absences.length > 0) {
             const box = document.createElement('div');
             box.className = 'warn-box absences';
@@ -454,14 +491,13 @@
     }
 
     // ============================================================
-    // ДНЕВНИК
+    // ДНЕВНИК — горизонтальная сетка
     // ============================================================
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         const monday = getMondayOfCurrentWeek();
         const saturday = new Date(monday);
         saturday.setDate(monday.getDate() + 5);
-
         const rangeText = `${formatDateShort(monday)} – ${formatDateRu(saturday)}`;
 
         if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
@@ -472,9 +508,20 @@
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        let html = `<div class="week-header"><div><div class="week-title">Текущая неделя</div><div class="week-range">${rangeText}</div></div><div class="week-badge">Расписание</div></div>`;
+        let html = `
+            <div class="week-title-bar">
+                <div>
+                    <div class="week-title">Текущая неделя</div>
+                    <div class="week-range">${rangeText}</div>
+                </div>
+                <div class="week-badge">Расписание</div>
+            </div>
+            <div class="week-grid">
+        `;
 
         const grid = CURRENT_SCHEDULE.grid;
+
+        // Максимум уроков за неделю
         let maxLesson = 7;
         DAYS_KEYS.forEach(day => {
             const dayGrid = grid[day] || {};
@@ -487,7 +534,6 @@
         DAYS_KEYS.forEach((dayKey, idx) => {
             const date = new Date(monday);
             date.setDate(monday.getDate() + idx);
-
             const isToday = date.getTime() === today.getTime();
             const dayGrid = grid[dayKey] || {};
 
@@ -495,7 +541,7 @@
             for (let n = 1; n <= maxLesson; n++) {
                 const lesson = dayGrid[n] || dayGrid[String(n)];
                 if (!lesson || !lesson.subject) {
-                    lessonsHtml += `<div class="lesson-row empty"><div class="lesson-num">${n}</div><div class="lesson-body">—</div></div>`;
+                    lessonsHtml += `<div class="lesson-card empty"><div class="lesson-subject">Урок ${n} —</div></div>`;
                     continue;
                 }
 
@@ -534,19 +580,41 @@
                 if (roomName) metaParts.push('каб. ' + roomName);
                 const metaHtml = metaParts.length > 0 ? `<div class="lesson-meta">${escapeHtml(metaParts.join(' · '))}</div>` : '';
                 const topicHtml = topic ? `<div class="lesson-section"><span class="lesson-label">Тема:</span><span class="lesson-value">${escapeHtml(topic)}</span></div>` : '';
-                const hwHtml = homework ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value">${escapeHtml(homework)}</span></div>` : '';
+                const hwHtml = homework ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value hw">${escapeHtml(homework)}</span></div>` : '';
 
-                lessonsHtml += `<div class="lesson-row"><div class="lesson-num">${n}</div><div class="lesson-body"><div class="lesson-subject">${escapeHtml(lesson.subject)}</div>${metaHtml}${topicHtml}${hwHtml}</div></div>`;
+                lessonsHtml += `
+                    <div class="lesson-card">
+                        <div class="lesson-row-head">
+                            <div class="lesson-num">${n}</div>
+                            <div class="lesson-subject">${escapeHtml(lesson.subject)}</div>
+                        </div>
+                        ${metaHtml}
+                        ${topicHtml}
+                        ${hwHtml}
+                    </div>
+                `;
             }
 
-            html += `<div class="day-card ${isToday ? 'today' : ''}"><div class="day-header"><div><div class="day-name">${DAYS_RU[dayKey]}</div><div class="day-date">${formatDateRu(date)}</div></div>${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}</div><div class="lesson-list">${lessonsHtml}</div></div>`;
+            html += `
+                <div class="day-column ${isToday ? 'today' : ''}">
+                    <div class="day-header">
+                        <div class="day-header-left">
+                            <div class="day-name">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div>
+                            <div class="day-date">${formatDateRu(date)}</div>
+                        </div>
+                        ${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}
+                    </div>
+                    <div class="day-body">${lessonsHtml}</div>
+                </div>
+            `;
         });
 
+        html += '</div>';
         container.innerHTML = html;
     }
 
     // ============================================================
-    // ОЦЕНКИ (с фильтром по периоду)
+    // ОЦЕНКИ
     // ============================================================
     function getPeriodRange() {
         if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
@@ -559,7 +627,6 @@
 
     function renderGrades() {
         const container = document.getElementById('subjectsContainer');
-
         if (ALL_WORKLOADS.length === 0) {
             container.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><h3>У класса нет предметов</h3><p>Обратитесь к администратору — для вашего класса не создана нагрузка.</p></div>`;
             return;
@@ -582,7 +649,6 @@
 
         subjects.forEach(subject => {
             const journal = subject.id ? ALL_JOURNALS.find(j => j.subject_id === subject.id) : null;
-
             const workload = ALL_WORKLOADS.find(w => w.subject === subject.name);
             const teacher = workload ? ALL_TEACHERS.find(t => t.id === workload.teacher_id) : null;
             const teacherName = teacher ? teacher.full_name : '—';
@@ -667,7 +733,6 @@
             const subjObj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
             return subjObj && subjObj.name === subjectName;
         });
-
         const modal = document.getElementById('statsModal');
         const title = document.getElementById('statsTitle');
         const subtitle = document.getElementById('statsSubtitle');
@@ -698,7 +763,6 @@
         });
 
         const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
-
         if (totalCount === 0) {
             list.innerHTML = '<div class="stats-empty">Пока нет оценок за этот урок.</div>';
             total.textContent = '';
@@ -707,7 +771,6 @@
         }
 
         const colors = { '5': '#65A30D', '4': '#84CC16', '3': '#FB923C', '2': '#DC2626', '1': '#7f1d1d' };
-
         let html = '';
         ['5', '4', '3', '2', '1'].forEach(g => {
             const count = counters[g];
@@ -771,7 +834,6 @@
             }
 
             CURRENT_STUDENT = student;
-
             const shortName = student.full_name.split(' ').slice(0, 2).join(' ');
             document.getElementById('userName').textContent = shortName;
             const initials = student.full_name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
@@ -806,25 +868,12 @@
         ALL_WORKLOADS = workloads.filter(w => w.class_id === CURRENT_STUDENT.class_id);
         ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
         CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
-        // Расписание для текущего периода
-let _sched = schedules.find(s =>
-    s.class_id === CURRENT_STUDENT.class_id && s.period_index === ACTIVE_PERIOD_INDEX
-);
-// Обратная совместимость: старое расписание = I четверть
-if (!_sched && ACTIVE_PERIOD_INDEX === 0) {
-    _sched = schedules.find(s =>
-        s.class_id === CURRENT_STUDENT.class_id && s.period_index === undefined
-    );
-}
-CURRENT_SCHEDULE = _sched || null;
+        CURRENT_SCHEDULE = schedules.find(s => s.class_id === CURRENT_STUDENT.class_id) || null;
 
         const periodDoc = periodDocs[0] || null;
         PERIODS = periodDoc ? (periodDoc.periods || []) : [];
         PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
         ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
-
-        // Debug
-        console.log('Периоды:', PERIODS, 'Система:', PERIOD_SYSTEM, 'Активный индекс:', ACTIVE_PERIOD_INDEX);
     }
 
     function render() {
