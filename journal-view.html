@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
-html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html { -webkit-font-smoothing: antialiased; }
 body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; }
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; background: #FFFFFF; flex-wrap: wrap; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
@@ -529,13 +529,39 @@ function findActivePeriodIndex() {
     return 0;
 }
 
+// ============================================================
+// Загрузка расписания: с учётом периода + fallback
+// ============================================================
 async function buildDatesForPeriod(periodIndex) {
     if (PERIODS.length === 0) return [];
     const subPeriod = PERIODS[periodIndex];
     if (!subPeriod) return [];
 
     const schedules = await DB.getAll('class_schedules');
-    const classSchedule = schedules.find(s => s.class_id === CLASS_ID);
+
+    // 1. Пытаемся найти расписание именно для этого периода
+    let classSchedule = schedules.find(s =>
+        s.class_id === CLASS_ID && s.period_index === periodIndex
+    );
+
+    // 2. Fallback: если нет — берём расписание без period_index (старое)
+    if (!classSchedule) {
+        classSchedule = schedules.find(s =>
+            s.class_id === CLASS_ID && s.period_index === undefined
+        );
+    }
+
+    // 3. Fallback №2: если и такого нет — берём ЛЮБОЕ расписание этого класса
+    if (!classSchedule) {
+        classSchedule = schedules.find(s => s.class_id === CLASS_ID);
+    }
+
+    // 4. Диагностика в консоль
+    console.log('[journal-view] class_schedules:', schedules.map(s => ({
+        id: s.id, class_id: s.class_id, period_index: s.period_index, hasGrid: !!s.grid
+    })));
+    console.log('[journal-view] CLASS_ID:', CLASS_ID, '| periodIndex:', periodIndex, '| найденное расписание:', classSchedule ? classSchedule.id : 'НЕ НАЙДЕНО');
+
     if (!classSchedule || !classSchedule.grid) return [];
 
     const grid = classSchedule.grid;
