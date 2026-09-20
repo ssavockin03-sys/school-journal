@@ -6,7 +6,7 @@
     <title>Дневник.ру — Кабинет ученика</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
-        body { min-height: 100vh; background: #f0f4f9; color: #1a2b4a; }
+        body { min-height: 100vh; background: #fff; color: #1a2b4a; }
 
         /* ===== ЭКРАН ЗАГРУЗКИ ===== */
         .loading-screen { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; }
@@ -16,14 +16,11 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { font-size: 15px; color: #5a6a85; font-weight: 500; }
 
-        /* ============================================================
-           ГЛАВНАЯ ОБЁРТКА — вся страница центрируется по ширине 1400
-           Синий фон идёт под этой обёрткой, а не edge-to-edge
-        ============================================================ */
-        .page-wrapper { max-width: 1400px; margin: 0 auto; background: #fff; min-height: 100vh; box-shadow: 0 0 30px rgba(30,60,114,0.05); }
+        /* ===== ГЛАВНАЯ ОБЁРТКА ===== */
+        .page-wrapper { max-width: 1400px; margin: 0 auto; background: #fff; min-height: 100vh; }
 
         /* ===== ВЕРХНЯЯ ТЁМНО-СИНЯЯ ПОЛОСА ===== */
-        .top-header { background: linear-gradient(135deg, #1565c0, #1976d2); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .top-header { background: linear-gradient(135deg, #1565c0, #1976d2); color: #fff; position: sticky; top: 0; z-index: 100; }
         .top-header-inner { padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 20px; }
         .top-header-nav { display: flex; gap: 0; align-items: center; flex: 1; }
         .top-tab { padding: 18px 22px; border: none; background: transparent; color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; position: relative; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
@@ -288,7 +285,6 @@
 </head>
 <body>
 
-<!-- ===== ЭКРАН ЗАГРУЗКИ ===== -->
 <div class="loading-screen" id="loginScreen">
     <div class="loading-box">
         <div class="loading-spinner"></div>
@@ -296,10 +292,8 @@
     </div>
 </div>
 
-<!-- ===== ВСЯ СТРАНИЦА В ОДНОМ ЦЕНТРИРОВАННОМ КОНТЕЙНЕРЕ ===== -->
 <div id="appContainer" class="page-wrapper" style="display:none;">
 
-    <!-- ===== ВЕРХНЯЯ ТЁМНО-СИНЯЯ ПОЛОСА ===== -->
     <header class="top-header">
         <div class="top-header-inner">
             <nav class="top-header-nav">
@@ -320,18 +314,15 @@
         </div>
     </header>
 
-    <!-- ===== СВЕТЛАЯ ПОЛОСА С ПОДРАЗДЕЛАМИ ===== -->
     <div class="sub-header" id="subHeader">
         <div class="sub-header-inner" id="subHeaderInner"></div>
     </div>
 
-    <!-- ===== ШКОЛА + ЗАГОЛОВОК ===== -->
     <div class="school-bar">
         <div class="school-name">ГОУ ЛНР «АСШ № 6»</div>
         <h1 class="page-title" id="pageTitle">Дневник</h1>
     </div>
 
-    <!-- ===== КОНТЕЙНЕР ===== -->
     <div class="container">
         <div class="info-banner" id="infoBanner"></div>
 
@@ -343,7 +334,6 @@
             <div id="gradesTableContainer"></div>
         </div>
 
-        <!-- Заглушки -->
         <div class="tab-panel" id="panel-chats"><div class="empty-state"><h3>Чаты</h3><p>Раздел в разработке.</p></div></div>
         <div class="tab-panel" id="panel-news"><div class="empty-state"><h3>Новости</h3><p>Раздел в разработке.</p></div></div>
         <div class="tab-panel" id="panel-support"><div class="empty-state"><h3>Поддержка</h3><p>Раздел в разработке.</p></div></div>
@@ -373,9 +363,6 @@
 
 <script src="supabase-config.js"></script>
 <script>
-    // ============================================================
-    // КОНСТАНТЫ
-    // ============================================================
     const DAYS_KEYS   = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     const DAYS_RU     = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
     const DAYS_FULL   = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота', sun: 'Воскресенье' };
@@ -409,9 +396,6 @@
         ]
     };
 
-    // ============================================================
-    // СОСТОЯНИЕ
-    // ============================================================
     let CURRENT_STUDENT = null;
     let CURRENT_CLASS = null;
     let ALL_SUBJECTS = [];
@@ -429,9 +413,6 @@
     let ACTIVE_TOP_TAB = 'education';
     let ACTIVE_SUB_TAB = 'today';
 
-    // ============================================================
-    // УТИЛИТЫ
-    // ============================================================
     function escapeHtml(text) {
         if (text === null || text === undefined) return '';
         const div = document.createElement('div');
@@ -490,9 +471,6 @@
     }
     function showToast(message) { console.log('[toast]', message); }
 
-    // ============================================================
-    // НАВИГАЦИЯ
-    // ============================================================
     function initTopTabs() {
         document.querySelectorAll('.top-tab').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -535,9 +513,6 @@
         if (subTabId === 'grades') { renderWarnings(); renderPeriodTabs(); renderGradesTable(); }
     }
 
-    // ============================================================
-    // АВТОРИЗАЦИЯ
-    // ============================================================
     async function logout() {
         if (!confirm('Выйти из кабинета?')) return;
         try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
@@ -629,9 +604,6 @@
         return 0;
     }
 
-    // ============================================================
-    // ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ
-    // ============================================================
     function renderPeriodTabs() {
         const container = document.getElementById('periodTabs');
         container.innerHTML = '';
@@ -653,9 +625,6 @@
         });
     }
 
-    // ============================================================
-    // СБОР ОЦЕНОК
-    // ============================================================
     function collectAllStudentGrades() {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
@@ -672,9 +641,6 @@
         return result;
     }
 
-    // ============================================================
-    // ПРЕДУПРЕЖДЕНИЯ
-    // ============================================================
     function renderWarnings() {
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
@@ -703,9 +669,6 @@
         }
     }
 
-    // ============================================================
-    // СЕГОДНЯ
-    // ============================================================
     function renderToday() {
         const container = document.getElementById('todayContent');
         const date = TODAY_DATE;
@@ -819,9 +782,6 @@
         renderToday();
     }
 
-    // ============================================================
-    // ДНЕВНИК
-    // ============================================================
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         const monday = getMondayOfCurrentWeek();
@@ -886,9 +846,6 @@
         });
     }
 
-    // ============================================================
-    // ОЦЕНКИ — ТАБЛИЦА
-    // ============================================================
     function getPeriodRange() {
         if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
         const p = PERIODS[ACTIVE_PERIOD_INDEX];
@@ -942,16 +899,12 @@
         });
     }
 
-    // ============================================================
-    // СТРАНИЦА УРОКА
-    // ============================================================
     function openLessonPage(subjectName, lessonKey) {
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
         document.getElementById('lessonPage').style.display = 'block';
         document.getElementById('infoBanner').style.display = 'none';
         document.getElementById('pageTitle').textContent = 'Страница занятия';
-
         const lessonContent = document.getElementById('lessonPageContent');
         const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
         const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
@@ -1013,9 +966,6 @@
         switchSubTab(ACTIVE_SUB_TAB);
     }
 
-    // ============================================================
-    // СТАТИСТИКА
-    // ============================================================
     function openStats(subjectName, lessonKey) {
         const journal = ALL_JOURNALS.find(j => {
             const subjObj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
