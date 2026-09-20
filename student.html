@@ -334,7 +334,7 @@
         .lesson-grade.gn { background: #94A3B8; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
-        /* ====== ОЦЕНКИ — ТАБЛИЦА (как скриншот 4) ====== */
+        /* ====== ОЦЕНКИ — ТАБЛИЦА ====== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 12px; flex-wrap: wrap; }
         .tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
@@ -410,7 +410,6 @@
             font-weight: 400;
         }
 
-        /* Маленькие квадратики с оценками (как на скрине 4) */
         .mini-grade {
             display: inline-flex;
             align-items: center;
@@ -456,7 +455,7 @@
             font-weight: 400;
         }
 
-        /* ====== СТРАНИЦА УРОКА (как скриншот 3) ====== */
+        /* ====== СТРАНИЦА УРОКА ====== */
         .lesson-page {
             background: #fff;
             border-radius: 14px;
@@ -545,7 +544,6 @@
             line-height: 1.3;
         }
 
-        /* Таблица оценок за работу на занятии */
         .lesson-grades-table {
             width: 100%;
             border-collapse: collapse;
@@ -681,7 +679,6 @@
         <div class="loading-text">Загружаем данные...</div>
     </div>
 
-    <!-- ГЛАВНАЯ СТРАНИЦА (с вкладками) -->
     <div id="content" style="display:none;">
         <div class="info-banner" id="infoBanner"></div>
 
@@ -717,13 +714,11 @@
         </div>
     </div>
 
-    <!-- СТРАНИЦА УРОКА (открывается вместо главной) -->
     <div id="lessonPage" style="display:none;">
         <div class="lesson-page" id="lessonPageContent"></div>
     </div>
 </div>
 
-<!-- Модалка статистики (клик по оценке) -->
 <div class="modal-overlay" id="statsModal">
     <div class="modal" role="dialog" aria-modal="true">
         <div class="modal-header">
@@ -907,34 +902,49 @@
     }
 
     // ============================================================
-    // ПРЕДУПРЕЖДЕНИЯ
+    // ПОИСК ВСЕХ ОЦЕНОК УЧЕНИКА (без фильтра периода для warnings)
     // ============================================================
-    function findProblems() {
-        const fails = [];
-        const absences = [];
+    function collectAllStudentGrades() {
+        // Возвращает массив { subject, grade, key, date, dateRu, lesson, type, journalSubjectId }
+        const result = [];
         ALL_JOURNALS.forEach(journal => {
-            const studentGrades = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
+            const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
             const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
             if (!subjObj) return;
-            Object.entries(studentGrades).forEach(([key, val]) => {
-                const clean = String(val || '').trim().toUpperCase();
-                if (clean !== '2' && clean !== 'Н') return;
+            Object.entries(sg).forEach(([key, val]) => {
+                if (val === '' || val === null || val === undefined) return;
                 const parsed = parseKey(key);
-                if (!parsed.date) return;
-                const entry = { subject: subjObj.name, date: parsed.date, dateRu: parsed.dateRu };
-                if (clean === '2') fails.push(entry);
-                else if (clean === 'Н') absences.push(entry);
+                const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
+                result.push({
+                    subject: subjObj.name,
+                    subjectId: subjObj.id,
+                    grade: String(val),
+                    key,
+                    date: parsed.date,
+                    dateRu: parsed.dateRu,
+                    lesson: parsed.lesson,
+                    type,
+                    journalId: journal.id
+                });
             });
         });
-        fails.sort((a, b) => b.date - a.date);
-        absences.sort((a, b) => b.date - a.date);
-        return { fails, absences };
+        return result;
     }
 
+    // ============================================================
+    // ПРЕДУПРЕЖДЕНИЯ
+    // ============================================================
     function renderWarnings() {
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
-        const { fails, absences } = findProblems();
+        const all = collectAllStudentGrades();
+
+        const fails = all.filter(g => g.grade.trim().toUpperCase() === '2');
+        const absences = all.filter(g => g.grade.trim().toUpperCase() === 'Н');
+
+        fails.sort((a, b) => (b.date || 0) - (a.date || 0));
+        absences.sort((a, b) => (b.date || 0) - (a.date || 0));
+
         if (fails.length > 0) {
             const box = document.createElement('div');
             box.className = 'warn-box fails';
@@ -949,6 +959,7 @@
             box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Обычно оценку можно исправить. <b>Спроси учителя, что ты можешь для этого сделать.</b></div></div>`;
             container.appendChild(box);
         }
+
         if (absences.length > 0) {
             const box = document.createElement('div');
             box.className = 'warn-box absences';
@@ -975,7 +986,9 @@
         const dowKey = JS_DAY_MAP[dow] || 'sun';
         const dayName = DAYS_FULL[dowKey] || 'Воскресенье';
 
-        const grades = getGradesForDate(date);
+        const all = collectAllStudentGrades();
+        const grades = all.filter(g => g.date && isoDate(g.date) === isoDate(date));
+
         let gradesHtml = '';
         if (grades.length > 0) {
             gradesHtml = `
@@ -983,12 +996,11 @@
                 <div class="grades-strip">
                     ${grades.map(g => {
                         const cls = gradeClass(g.grade);
-                        const tip = g.type || DEFAULT_LESSON_TYPE;
                         const isNumeric = /^[1-5]$/.test(g.grade.trim());
                         return `<div class="grade-tile ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
                             <div class="grade-tile-box">${escapeHtml(g.grade)}</div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
-                            <div class="grade-tile-type">${escapeHtml(tip)}</div>
+                            <div class="grade-tile-type">${escapeHtml(g.type)}</div>
                         </div>`;
                     }).join('')}
                 </div>
@@ -1072,6 +1084,7 @@
         const nums = Object.keys(dayGrid).map(n => parseInt(n, 10)).filter(n => !isNaN(n));
         if (nums.length === 0) return [];
         const maxNum = Math.max(...nums);
+        const all = collectAllStudentGrades();
         const result = [];
         for (let n = 1; n <= maxNum; n++) {
             const lesson = dayGrid[n] || dayGrid[String(n)];
@@ -1086,22 +1099,21 @@
                 const r = ALL_ROOMS.find(x => x.id === lesson.roomId);
                 if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : '');
             }
+            const key = isoDate(date) + '_' + n;
             let topic = '', homework = '', gradeVal = null;
             const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
             if (subjObj) {
                 const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
                 if (journal) {
-                    const key = isoDate(date) + '_' + n;
                     if (journal.lessons && journal.lessons[key]) {
                         topic = journal.lessons[key].t || '';
                         homework = journal.lessons[key].h || '';
                     }
-                    if (journal.grades && journal.grades[CURRENT_STUDENT.id]) {
-                        const v = journal.grades[CURRENT_STUDENT.id][key];
-                        if (v) gradeVal = String(v).trim();
-                    }
                 }
             }
+            const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key);
+            if (gradeRec) gradeVal = gradeRec.grade;
+
             result.push({ num: n, subject: lesson.subject, teacherName, roomName, topic, homework, grade: gradeVal });
         }
         return result;
@@ -1144,6 +1156,8 @@
             });
         });
 
+        const all = collectAllStudentGrades();
+
         DAYS_KEYS.forEach((dayKey, idx) => {
             const date = new Date(monday);
             date.setDate(monday.getDate() + idx);
@@ -1167,20 +1181,18 @@
                     const r = ALL_ROOMS.find(x => x.id === lesson.roomId);
                     if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : '');
                 }
+                const key = isoDate(date) + '_' + n;
                 let topic = '', homework = '';
                 const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
                 if (subjObj) {
                     const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
-                    if (journal && journal.lessons) {
-                        const key = isoDate(date) + '_' + n;
-                        const lessonData = journal.lessons[key];
-                        if (lessonData) {
-                            topic = lessonData.t || '';
-                            homework = lessonData.h || '';
-                        }
+                    if (journal && journal.lessons && journal.lessons[key]) {
+                        topic = journal.lessons[key].t || '';
+                        homework = journal.lessons[key].h || '';
                     }
                 }
-                const gradeVal = getLessonGrade(date, n, lesson.subject);
+                const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key);
+                const gradeVal = gradeRec ? gradeRec.grade : null;
                 let gradeHtml = '';
                 if (gradeVal) {
                     const cls = gradeClass(gradeVal);
@@ -1228,7 +1240,7 @@
     }
 
     // ============================================================
-    // ОЦЕНКИ — ТАБЛИЦА (как на скрине 4)
+    // ОЦЕНКИ — ТАБЛИЦА
     // ============================================================
     function getPeriodRange() {
         if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
@@ -1247,6 +1259,7 @@
         }
 
         const range = getPeriodRange();
+        const all = collectAllStudentGrades();
 
         // Уникальные предметы
         const seen = new Set();
@@ -1271,20 +1284,11 @@
         html += '</tr></thead><tbody>';
 
         subjects.forEach(subjectName => {
-            const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
-            const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
-
-            // Собираем оценки ученика по этому предмету за период
-            const gradesArr = [];
-            if (journal && journal.grades && journal.grades[CURRENT_STUDENT.id]) {
-                Object.entries(journal.grades[CURRENT_STUDENT.id]).forEach(([key, val]) => {
-                    if (val === '' || val === null || val === undefined) return;
-                    if (range) {
-                        const parsed = parseKey(key);
-                        if (parsed.date && (parsed.date < range.start || parsed.date > range.end)) return;
-                    }
-                    gradesArr.push({ key, grade: String(val) });
-                });
+            // Оценки по этому предмету
+            let gradesArr = all.filter(g => g.subject === subjectName);
+            // Фильтр по периоду
+            if (range) {
+                gradesArr = gradesArr.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
             }
             gradesArr.sort((a, b) => a.key.localeCompare(b.key));
 
@@ -1294,13 +1298,14 @@
             const avg = calcAverage(gradesMap);
 
             // Итог за период
+            const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
+            const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
             const qtrGrades = journal && journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
             const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
 
             html += '<tr>';
             html += `<td class="subject-cell">${escapeHtml(subjectName)}</td>`;
 
-            // Столбец с оценками
             if (gradesArr.length === 0) {
                 html += '<td class="grades-cell"><span class="no-grades-text">Нет выставленных оценок</span></td>';
             } else {
@@ -1308,19 +1313,17 @@
                 gradesArr.forEach(g => {
                     const cls = gradeClass(g.grade);
                     const isNumeric = /^[1-5]$/.test(g.grade.trim());
-                    html += `<span class="mini-grade ${cls}" ${isNumeric ? `data-subject="${escapeHtml(subjectName)}" data-key="${escapeHtml(g.key)}"` : ''}>${escapeHtml(g.grade)}</span>`;
+                    html += `<span class="mini-grade ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>${escapeHtml(g.grade)}</span>`;
                 });
                 html += '</td>';
             }
 
-            // Ср. балл
             if (avg !== null) {
                 html += `<td class="avg-cell">${escapeHtml(String(avg))}</td>`;
             } else {
                 html += '<td class="avg-cell no-grade">-</td>';
             }
 
-            // Итог за период
             if (periodQtr) {
                 const cls = gradeClass(periodQtr);
                 html += `<td class="qtr-cell"><span class="qtr-grade ${cls}">${escapeHtml(String(periodQtr))}</span></td>`;
@@ -1334,7 +1337,6 @@
         html += '</tbody></table></div>';
         container.innerHTML = html;
 
-        // Клик по оценке = статистика
         container.querySelectorAll('.mini-grade[data-subject]').forEach(box => {
             box.addEventListener('click', () => {
                 openStats(box.dataset.subject, box.dataset.key);
@@ -1343,7 +1345,7 @@
     }
 
     // ============================================================
-    // СТРАНИЦА УРОКА (как на скрине 3)
+    // СТРАНИЦА УРОКА
     // ============================================================
     function openLessonPage(subjectName, lessonKey) {
         const mainContent = document.getElementById('content');
@@ -1358,7 +1360,6 @@
         const gradeVal = (journal && journal.grades && journal.grades[CURRENT_STUDENT.id] && journal.grades[CURRENT_STUDENT.id][lessonKey]) || null;
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
 
-        // Учитель
         const workload = ALL_WORKLOADS.find(w => w.subject === subjectName);
         let teacherName = '—';
         if (workload) {
@@ -1366,7 +1367,6 @@
             if (t) teacherName = t.full_name;
         }
 
-        // Аудитория
         let roomName = '';
         if (CURRENT_SCHEDULE && CURRENT_SCHEDULE.grid && parsed.date) {
             const dow = parsed.date.getDay();
@@ -1384,11 +1384,9 @@
             if (r) roomName = r.number + ' каб.';
         }
 
-        // Формируем страницу
         const topic = lessonData ? (lessonData.t || '') : '';
         const homework = lessonData ? (lessonData.h || '') : '';
 
-        // Детали занятия
         let detailRows = '';
         detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Предмет:</div><div class="lesson-detail-value blue">${escapeHtml(subjectName)}</div></div>`;
         detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Дата:</div><div class="lesson-detail-value">${escapeHtml(formatDateLong(parsed.date))}, ${parsed.lesson} занятие</div></div>`;
@@ -1396,7 +1394,6 @@
         detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Аудитория:</div><div class="lesson-detail-value">${escapeHtml(roomName || '—')}</div></div>`;
         detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Тема занятия:</div><div class="lesson-detail-value">${topic ? escapeHtml(topic) : '-'}</div></div>`;
 
-        // Оценки за работу на занятии (таблица как на скрине 3)
         const gradeDisplay = gradeVal ? escapeHtml(String(gradeVal)) : 'нет';
         const gradeTypeFull = getLessonTypeFullName(lessonType);
 
@@ -1419,17 +1416,13 @@
             <div class="lesson-grid">
                 <div>
                     <div class="lesson-section-title" style="margin-top:0;">Детали занятия</div>
-                    <div class="lesson-details-block">
-                        ${detailRows}
-                    </div>
+                    <div class="lesson-details-block">${detailRows}</div>
 
                     <div class="lesson-section-title">Присутствие на уроке и комментарий преподавателя</div>
                     <div class="lesson-empty-block">Данные не введены преподавателем.</div>
 
                     <div class="lesson-section-title">Домашние задания</div>
-                    <div class="lesson-empty-block">
-                        ${homework ? escapeHtml(homework) : 'На это занятие не задано ни одного домашнего задания.'}
-                    </div>
+                    <div class="lesson-empty-block">${homework ? escapeHtml(homework) : 'На это занятие не задано ни одного домашнего задания.'}</div>
 
                     <div class="lesson-section-title">Оценки за работу на занятии</div>
                     ${gradesTable}
@@ -1626,7 +1619,25 @@
         ALL_SUBJECTS = subjects;
         ALL_TEACHERS = teachers;
         ALL_WORKLOADS = workloads.filter(w => w.class_id === CURRENT_STUDENT.class_id);
-        ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
+
+        // ВАЖНО: НЕ фильтруем journals по class_id, потому что там может быть другая структура
+        // Берём все журналы, содержащие оценки нашего ученика
+        ALL_JOURNALS = journals.filter(j => {
+            // Если есть class_id — фильтруем
+            if (j.class_id) return j.class_id === CURRENT_STUDENT.class_id;
+            // Иначе — берём все (пусть будет)
+            return true;
+        });
+
+        // Дополнительно: если после фильтра по class_id ничего не осталось,
+        // но есть журналы с оценками нашего ученика — берём их
+        const journalsWithOurStudent = journals.filter(j =>
+            j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0
+        );
+        if (journalsWithOurStudent.length > 0) {
+            ALL_JOURNALS = journalsWithOurStudent;
+        }
+
         CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
 
         const classSchedules = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
