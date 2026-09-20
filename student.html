@@ -67,53 +67,43 @@
             margin-bottom: 14px;
         }
 
-        /* Обёртка — БЕЗ ФОНА, БЕЗ РАМКИ, БЕЗ ОТСТУПОВ */
-        .grade-tile,
-        .grade-tile * {
-            background: transparent;
-            border: none;
-            outline: none;
-        }
-
+        /* Обёртка — прозрачная, ничего лишнего */
         .grade-tile {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            cursor: pointer;
-            transition: transform 0.15s ease;
+            background: transparent;
+            border: none;
             padding: 0;
             margin: 0;
-            width: auto;
-            max-width: 90px;
+            cursor: pointer;
+            width: 90px;
+            transition: transform 0.15s ease;
         }
         .grade-tile:hover { transform: translateY(-2px); }
-        .grade-tile:not([data-subject]) { cursor: default; }
-        .grade-tile:not([data-subject]):hover { transform: none; }
+        .grade-tile.not-clickable { cursor: default; }
+        .grade-tile.not-clickable:hover { transform: none; }
 
-        /* Квадратик с цифрой — единственный цветной элемент */
-        .grade-tile .grade-tile-box {
-            width: 44px;
-            height: 44px;
+        /* Квадратик — одинаковый размер у всех */
+        .grade-tile-box {
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            font-size: 26px;
+            color: #ffffff;
+            font-size: 22px;
             font-weight: 400;
             line-height: 1;
             box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-            margin: 0 0 6px 0;
+            margin-bottom: 6px;
             flex-shrink: 0;
+            background: #94A3B8;
         }
-        .grade-tile.g5 .grade-tile-box { background: #65A30D !important; }
-        .grade-tile.g4 .grade-tile-box { background: #84CC16 !important; }
-        .grade-tile.g3 .grade-tile-box { background: #FB923C !important; }
-        .grade-tile.g2 .grade-tile-box { background: #DC2626 !important; }
-        .grade-tile.g1 .grade-tile-box { background: #7f1d1d !important; }
-        .grade-tile.gn .grade-tile-box { background: #94A3B8 !important; }
 
-        .grade-tile .grade-tile-subject {
+        /* Текст под квадратом */
+        .grade-tile-subject {
             font-size: 12px;
             font-weight: 600;
             color: #1a2b4a;
@@ -121,23 +111,20 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 88px;
+            max-width: 90px;
             text-align: left;
-            margin: 0;
-            padding: 0;
         }
-        .grade-tile .grade-tile-type {
+        .grade-tile-type {
             font-size: 10.5px;
             font-weight: 400;
             color: #94a3b8;
             line-height: 1.2;
-            margin: 2px 0 0 0;
+            margin-top: 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 88px;
+            max-width: 90px;
             text-align: left;
-            padding: 0;
         }
 
         .grades-hint {
@@ -240,14 +227,9 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.12);
             cursor: pointer;
             transition: transform 0.15s ease;
+            background: #94A3B8;
         }
         .today-lesson-grade:hover { transform: scale(1.08); }
-        .today-lesson-grade.g5 { background: #65A30D; }
-        .today-lesson-grade.g4 { background: #84CC16; }
-        .today-lesson-grade.g3 { background: #FB923C; }
-        .today-lesson-grade.g2 { background: #DC2626; }
-        .today-lesson-grade.g1 { background: #7f1d1d; }
-        .today-lesson-grade.gn { background: #94A3B8; }
         .today-lesson-grade.no-grade {
             background: #e2e8f0;
             color: #94a3b8;
@@ -346,13 +328,8 @@
             font-size: 14px;
             color: #fff;
             box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            background: #94A3B8;
         }
-        .lesson-grade.g5 { background: #65A30D; }
-        .lesson-grade.g4 { background: #84CC16; }
-        .lesson-grade.g3 { background: #FB923C; }
-        .lesson-grade.g2 { background: #DC2626; }
-        .lesson-grade.g1 { background: #7f1d1d; }
-        .lesson-grade.gn { background: #94A3B8; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
         /* ============ ОЦЕНКИ (карточки предметов) ============ */
@@ -369,16 +346,9 @@
         .subject-teacher { font-size: 13px; color: #7a8aa3; margin-top: 4px; }
 
         .grades-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-        .grade-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 34px; padding: 0 10px; border-radius: 10px; font-weight: 400; font-size: 15px; position: relative; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .grade-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 34px; padding: 0 10px; border-radius: 10px; font-weight: 400; font-size: 15px; position: relative; transition: transform 0.15s ease, box-shadow 0.15s ease; color: #fff; background: #94A3B8; }
         .grade-chip.clickable { cursor: pointer; }
         .grade-chip.clickable:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.15); }
-
-        .g5 { background: #65A30D; color: #fff; }
-        .g4 { background: #84CC16; color: #fff; }
-        .g3 { background: #FB923C; color: #fff; }
-        .g2 { background: #DC2626; color: #fff; }
-        .g1 { background: #7f1d1d; color: #fff; }
-        .gn { background: #94A3B8; color: #fff; }
 
         .grade-chip[data-tip]::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); background: #1a2b4a; color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 50; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .grade-chip[data-tip]:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -530,6 +500,16 @@
         'Семестры':  ['I семестр', 'II семестр']
     };
 
+    // Цвета оценок (в JS, чтобы вставить прямо в style — обход CSS-конфликтов)
+    const GRADE_COLORS = {
+        'g5': '#65A30D',
+        'g4': '#84CC16',
+        'g3': '#FB923C',
+        'g2': '#DC2626',
+        'g1': '#7f1d1d',
+        'gn': '#94A3B8'
+    };
+
     let CURRENT_STUDENT = null;
     let CURRENT_CLASS = null;
     let ALL_SUBJECTS = [];
@@ -585,6 +565,9 @@
         if (g === '2') return 'g2';
         if (g === '1') return 'g1';
         return 'gn';
+    }
+    function gradeColor(grade) {
+        return GRADE_COLORS[gradeClass(grade)] || GRADE_COLORS.gn;
     }
     function calcAverage(gradesMap) {
         let sum = 0, cnt = 0;
@@ -721,6 +704,7 @@
         }
     }
 
+    // Возвращает массив оценок с типом урока
     function getGradesForDate(date) {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
@@ -771,13 +755,15 @@
                 <div class="grades-strip-label">${formatDateHuman(date).toUpperCase()}</div>
                 <div class="grades-strip">
                     ${grades.map(g => {
-                        const cls = gradeClass(g.grade);
-                        const tip = g.type || 'Оценка';
+                        const color = gradeColor(g.grade);
+                        const typeLabel = g.type || '—';
                         const isNumeric = /^[1-5]$/.test(g.grade.trim());
-                        return `<div class="grade-tile ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
-                            <div class="grade-tile-box">${escapeHtml(g.grade)}</div>
+                        const clickableClass = isNumeric ? '' : ' not-clickable';
+                        const dataAttrs = isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : '';
+                        return `<div class="grade-tile${clickableClass}" ${dataAttrs}>
+                            <div class="grade-tile-box" style="background:${color};">${escapeHtml(g.grade)}</div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
-                            <div class="grade-tile-type">${escapeHtml(tip)}</div>
+                            <div class="grade-tile-type">${escapeHtml(typeLabel)}</div>
                         </div>`;
                     }).join('')}
                 </div>
@@ -808,9 +794,9 @@
                     const gradeVal = l.grade;
                     let gradeHtml = '';
                     if (gradeVal) {
-                        const cls = gradeClass(gradeVal);
+                        const color = gradeColor(gradeVal);
                         const isNumeric = /^[1-5]$/.test(gradeVal.trim());
-                        gradeHtml = `<div class="today-lesson-grade ${cls}" ${isNumeric ? `data-subject="${escapeHtml(l.subject)}" data-key="${escapeHtml(isoDate(date))}_${l.num}"` : ''}>${escapeHtml(gradeVal)}</div>`;
+                        gradeHtml = `<div class="today-lesson-grade" style="background:${color};" ${isNumeric ? `data-subject="${escapeHtml(l.subject)}" data-key="${escapeHtml(isoDate(date))}_${l.num}"` : ''}>${escapeHtml(gradeVal)}</div>`;
                     } else {
                         gradeHtml = `<div class="today-lesson-grade no-grade">—</div>`;
                     }
@@ -1016,8 +1002,8 @@
                 const gradeVal = getLessonGrade(date, n, lesson.subject);
                 let gradeHtml = '';
                 if (gradeVal) {
-                    const cls = gradeClass(gradeVal);
-                    gradeHtml = `<div class="lesson-grade ${cls}">${escapeHtml(gradeVal)}</div>`;
+                    const color = gradeColor(gradeVal);
+                    gradeHtml = `<div class="lesson-grade" style="background:${color};">${escapeHtml(gradeVal)}</div>`;
                 } else {
                     gradeHtml = `<div class="lesson-grade no-grade">—</div>`;
                 }
@@ -1129,9 +1115,10 @@
                 gradesArr.forEach(g => {
                     const tip = g.type ? `${g.dateRu} · ${g.type}` : g.dateRu;
                     const isNumeric = /^[1-5]$/.test(g.grade.trim());
-                    const cls = 'grade-chip ' + gradeClass(g.grade) + (isNumeric ? ' clickable' : '');
-                    const attrs = isNumeric ? `data-subject="${escapeHtml(subject.name)}" data-key="${escapeHtml(g.key)}"` : '';
-                    chipsHtml += `<span class="${cls}" data-tip="${escapeHtml(tip)}" ${attrs}>${escapeHtml(g.grade)}</span>`;
+                    const color = gradeColor(g.grade);
+                    const clickClass = isNumeric ? ' clickable' : '';
+                    const dataAttrs = isNumeric ? `data-subject="${escapeHtml(subject.name)}" data-key="${escapeHtml(g.key)}"` : '';
+                    chipsHtml += `<span class="grade-chip${clickClass}" style="background:${color};" data-tip="${escapeHtml(tip)}" ${dataAttrs}>${escapeHtml(g.grade)}</span>`;
                 });
             }
 
