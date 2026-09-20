@@ -806,7 +806,17 @@
         ALL_WORKLOADS = workloads.filter(w => w.class_id === CURRENT_STUDENT.class_id);
         ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
         CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
-        CURRENT_SCHEDULE = schedules.find(s => s.class_id === CURRENT_STUDENT.class_id) || null;
+        // Расписание для текущего периода
+let _sched = schedules.find(s =>
+    s.class_id === CURRENT_STUDENT.class_id && s.period_index === ACTIVE_PERIOD_INDEX
+);
+// Обратная совместимость: старое расписание = I четверть
+if (!_sched && ACTIVE_PERIOD_INDEX === 0) {
+    _sched = schedules.find(s =>
+        s.class_id === CURRENT_STUDENT.class_id && s.period_index === undefined
+    );
+}
+CURRENT_SCHEDULE = _sched || null;
 
         const periodDoc = periodDocs[0] || null;
         PERIODS = periodDoc ? (periodDoc.periods || []) : [];
