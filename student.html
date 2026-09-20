@@ -75,8 +75,10 @@
 
         .day-body { padding: 10px 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
 
-        .lesson-card { background: #f8fafc; border-radius: 10px; padding: 10px 12px; border-left: 3px solid #93c5fd; position: relative; }
-        .lesson-card.empty { background: transparent; border-left: 3px dashed #e2e8f0; padding: 6px 12px; }
+        .lesson-card { background: #f8fafc; border-radius: 10px; padding: 10px 12px; border-left: 3px solid #93c5fd; position: relative; cursor: pointer; transition: background 0.15s ease, transform 0.15s ease; }
+        .lesson-card:hover { background: #eff6ff; transform: translateY(-1px); }
+        .lesson-card.empty { background: transparent; border-left: 3px dashed #e2e8f0; padding: 6px 12px; cursor: default; }
+        .lesson-card.empty:hover { background: transparent; transform: none; }
         .lesson-card.empty .lesson-subject { color: #cbd5e1; font-weight: 400; font-style: italic; font-size: 12px; }
 
         .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 34px; }
@@ -97,7 +99,7 @@
         .lesson-grade.gn { background: #94A3B8; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
-        /* ===== ОЦЕНКИ (таблица) ===== */
+        /* ===== ОЦЕНКИ — ТАБЛИЦА ===== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 12px; flex-wrap: wrap; }
         .tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
@@ -107,45 +109,15 @@
 
         .grades-table-wrapper { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(30,60,114,0.07); overflow: hidden; }
         .grades-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        .grades-table thead th {
-            background: #f8fafc;
-            color: #64748b;
-            font-weight: 600;
-            padding: 14px 20px;
-            text-align: left;
-            font-size: 12px;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #e2e8f0;
-            white-space: nowrap;
-        }
+        .grades-table thead th { background: #f8fafc; color: #64748b; font-weight: 600; padding: 14px 20px; text-align: left; font-size: 12px; letter-spacing: 0.4px; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
         .grades-table thead th.col-center { text-align: center; width: 110px; }
-        .grades-table tbody td {
-            padding: 16px 20px;
-            border-bottom: 1px solid #eef2f8;
-            vertical-align: middle;
-            color: #1e293b;
-        }
+        .grades-table tbody td { padding: 16px 20px; border-bottom: 1px solid #eef2f8; vertical-align: middle; color: #1e293b; }
         .grades-table tbody tr:last-child td { border-bottom: none; }
         .grades-table tbody tr:hover { background: #f8faff; }
-
         .subject-name-cell { font-size: 15px; font-weight: 600; color: #1a2b4a; }
 
         .grades-cell { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-        .grade-box {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 32px;
-            height: 32px;
-            padding: 0 10px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 15px;
-            color: #fff;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            position: relative;
-        }
+        .grade-box { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 10px; border-radius: 8px; font-weight: 700; font-size: 15px; color: #fff; transition: transform 0.15s ease, box-shadow 0.15s ease; position: relative; }
         .grade-box.clickable { cursor: pointer; }
         .grade-box.clickable:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
         .grade-box.g5 { background: #4CAF50; }
@@ -154,63 +126,18 @@
         .grade-box.g2 { background: #F44336; }
         .grade-box.g1 { background: #7f1d1d; }
         .grade-box.gn { background: #B0BEC5; }
-        .grade-box[data-tip]::after {
-            content: attr(data-tip);
-            position: absolute;
-            bottom: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%) translateY(4px);
-            background: #1a2b4a;
-            color: #fff;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 500;
-            white-space: nowrap;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.15s ease, transform 0.15s ease;
-            z-index: 50;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
+        .grade-box[data-tip]::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); background: #1a2b4a; color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 50; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .grade-box[data-tip]:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
-
         .no-grades-text { font-size: 13px; color: #94a3b8; font-style: italic; }
-
         .avg-cell { text-align: center; }
-        .avg-value {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 40px;
-            height: 34px;
-            padding: 0 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 16px;
-            color: #fff;
-            background: #4CAF50;
-        }
+        .avg-value { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 34px; padding: 0 12px; border-radius: 8px; font-weight: 700; font-size: 16px; color: #fff; background: #4CAF50; }
         .avg-value.g5 { background: #4CAF50; }
         .avg-value.g4 { background: #8BC34A; }
         .avg-value.g3 { background: #FF9800; }
         .avg-value.g2 { background: #F44336; }
         .avg-value.empty { background: transparent; color: #cbd5e1; font-weight: 400; }
-
         .qtr-cell { text-align: center; }
-        .qtr-value {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 36px;
-            height: 34px;
-            padding: 0 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 16px;
-            color: #2563eb;
-            background: #dbeafe;
-        }
+        .qtr-value { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; height: 34px; padding: 0 12px; border-radius: 8px; font-weight: 700; font-size: 16px; color: #2563eb; background: #dbeafe; }
         .qtr-value.empty { color: #cbd5e1; background: transparent; font-weight: 400; }
 
         .empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 18px; box-shadow: 0 4px 20px rgba(30,60,114,0.07); }
@@ -223,6 +150,7 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { font-size: 15px; color: #5a6a85; }
 
+        /* ===== МОДАЛКА СТАТИСТИКИ ===== */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.25s ease; }
         .modal-overlay.show { display: flex; }
         .modal { background: #fff; border-radius: 20px; padding: 28px 28px 24px; max-width: 460px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3); animation: modalAppear 0.3s ease; max-height: 90vh; overflow-y: auto; }
@@ -243,6 +171,134 @@
         .modal-close { width: 100%; height: 46px; margin-top: 18px; background: #f0f2f5; color: #4a5a72; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s ease; font-family: inherit; }
         .modal-close:hover { background: #e2e8f0; }
         .stats-empty { text-align: center; padding: 20px 10px; color: #8a9bb5; font-size: 14px; }
+
+        /* ===== МОДАЛКА «СТРАНИЦА ЗАНЯТИЯ» ===== */
+        .lesson-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); backdrop-filter: blur(4px); z-index: 600; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.25s ease; }
+        .lesson-modal-overlay.show { display: flex; }
+        .lesson-modal {
+            background: #fff;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            animation: modalAppear 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px 32px 24px;
+        }
+        .lesson-modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #5b3ea8;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eef2f8;
+        }
+        .lesson-modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 24px;
+            margin-bottom: 24px;
+            align-items: start;
+        }
+        .lesson-modal-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+        .lesson-modal-details {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px 18px;
+        }
+        .lesson-detail-row {
+            display: grid;
+            grid-template-columns: 130px 1fr;
+            gap: 12px;
+            padding: 6px 0;
+            font-size: 13px;
+            align-items: baseline;
+        }
+        .lesson-detail-label { color: #64748b; }
+        .lesson-detail-value { color: #1e293b; font-weight: 600; }
+        .lesson-detail-value.link { color: #2563eb; cursor: pointer; }
+        .lesson-detail-value.link:hover { text-decoration: underline; }
+        .lesson-detail-value.muted { font-weight: 400; color: #94a3b8; }
+
+        .teacher-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #fff;
+        }
+        .teacher-avatar {
+            width: 52px; height: 52px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #e6efff, #d4e4ff);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .teacher-avatar svg { width: 30px; height: 30px; fill: #93c5fd; }
+        .teacher-name { font-size: 14px; font-weight: 600; color: #5b8f2e; line-height: 1.35; }
+
+        .lesson-modal-block {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f8fafc;
+            padding: 24px 20px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .lesson-modal-block.solid { background: #fff; text-align: left; padding: 16px 18px; color: #334155; font-size: 13.5px; line-height: 1.5; white-space: pre-wrap; }
+
+        .lesson-modal-section { margin-bottom: 20px; }
+
+        .grades-mini-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 13.5px;
+        }
+        .grades-mini-table thead th {
+            background: #f8fafc;
+            padding: 10px 14px;
+            text-align: left;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .grades-mini-table thead th:last-child { text-align: right; width: 90px; }
+        .grades-mini-table tbody td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+        }
+        .grades-mini-table tbody td:last-child { text-align: right; font-weight: 700; }
+        .grades-mini-table tbody tr:last-child td { border-bottom: none; }
+        .grades-mini-table .grade-value-inline { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 28px; padding: 0 10px; border-radius: 6px; color: #fff; font-weight: 700; font-size: 14px; }
+        .grades-mini-table .grade-value-inline.g5 { background: #65A30D; }
+        .grades-mini-table .grade-value-inline.g4 { background: #84CC16; }
+        .grades-mini-table .grade-value-inline.g3 { background: #FB923C; }
+        .grades-mini-table .grade-value-inline.g2 { background: #DC2626; }
+        .grades-mini-table .grade-value-inline.g1 { background: #7f1d1d; }
+        .grades-mini-table .grade-value-inline.gn { background: #94A3B8; }
+        .grades-mini-table .grade-value-inline.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; }
+
+        @media (max-width: 800px) {
+            .lesson-modal { padding: 22px 18px 18px; }
+            .lesson-modal-grid { grid-template-columns: 1fr; gap: 16px; }
+            .lesson-detail-row { grid-template-columns: 110px 1fr; font-size: 12.5px; }
+        }
 
         @media (max-width: 700px) {
             .header { padding: 0 14px; height: 62px; }
@@ -319,6 +375,7 @@
     </div>
 </div>
 
+<!-- ===== МОДАЛКА СТАТИСТИКИ ===== -->
 <div class="modal-overlay" id="statsModal">
     <div class="modal" role="dialog" aria-modal="true">
         <div class="modal-header">
@@ -336,6 +393,15 @@
     </div>
 </div>
 
+<!-- ===== МОДАЛКА «СТРАНИЦА ЗАНЯТИЯ» ===== -->
+<div class="lesson-modal-overlay" id="lessonModal">
+    <div class="lesson-modal" role="dialog" aria-modal="true">
+        <div class="lesson-modal-title">Страница занятия</div>
+        <div id="lessonModalContent"></div>
+        <button class="modal-close" onclick="closeLessonModal()">Закрыть</button>
+    </div>
+</div>
+
 <script src="supabase-config.js"></script>
 <script>
     // ============================================================
@@ -343,7 +409,7 @@
     // ============================================================
     const DAYS_KEYS   = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     const DAYS_RU     = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
-    const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
+    const DAYS_RU_FULL = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота' };
 
     const PERIOD_LABELS = {
         'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
@@ -659,7 +725,7 @@
                 const hwHtml = homework ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value hw">${escapeHtml(homework)}</span></div>` : '';
 
                 lessonsHtml += `
-                    <div class="lesson-card">
+                    <div class="lesson-card" data-date="${escapeHtml(isoDate(date))}" data-lesson="${n}" data-day="${dayKey}" data-subject="${escapeHtml(lesson.subject)}">
                         ${gradeHtml}
                         <div class="lesson-row-head">
                             <div class="lesson-num">${n}</div>
@@ -688,7 +754,162 @@
 
         html += '</div>';
         container.innerHTML = html;
+
+        // Клик по уроку → страница занятия
+        container.querySelectorAll('.lesson-card:not(.empty)').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.lesson-grade')) return; // не мешать клику по оценке
+                const date = card.dataset.date;
+                const lessonNum = card.dataset.lesson;
+                const dayKey = card.dataset.day;
+                const subject = card.dataset.subject;
+                openLessonModal(date, lessonNum, dayKey, subject);
+            });
+        });
     }
+
+    // ============================================================
+    // МОДАЛКА «СТРАНИЦА ЗАНЯТИЯ»
+    // ============================================================
+    function openLessonModal(dateIso, lessonNum, dayKey, subjectName) {
+        const date = new Date(dateIso + 'T00:00:00');
+        const dateFull = formatDateRu(date);
+        const dayRu = DAYS_RU_FULL[dayKey] || '';
+
+        // Ищем урок в расписании
+        const dayGrid = (CURRENT_SCHEDULE && CURRENT_SCHEDULE.grid && CURRENT_SCHEDULE.grid[dayKey]) || {};
+        const lesson = dayGrid[lessonNum] || dayGrid[String(lessonNum)] || {};
+
+        // Учитель
+        let teacherName = '';
+        if (lesson.teacherName) teacherName = lesson.teacherName;
+        else if (lesson.teacherId) {
+            const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId);
+            if (t) teacherName = t.full_name;
+        }
+
+        // Кабинет
+        let roomName = lesson.roomName || '';
+        if (!roomName && lesson.roomId) {
+            const r = ALL_ROOMS.find(x => x.id === lesson.roomId);
+            if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : '');
+        }
+
+        // Журнал
+        const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
+        const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
+        const key = dateIso + '_' + lessonNum;
+
+        let topic = '', homework = '', lessonType = '', gradeVal = null;
+        if (journal) {
+            if (journal.lessons && journal.lessons[key]) {
+                topic = journal.lessons[key].t || '';
+                homework = journal.lessons[key].h || '';
+            }
+            if (journal.lesson_types && journal.lesson_types[key]) {
+                lessonType = journal.lesson_types[key];
+            }
+            if (journal.grades && journal.grades[CURRENT_STUDENT.id]) {
+                gradeVal = journal.grades[CURRENT_STUDENT.id][key] || null;
+            }
+        }
+
+        const noTopic = !topic;
+        const noHw = !homework;
+        const noGrade = !gradeVal;
+        const noType = !lessonType;
+
+        let content = `
+            <div class="lesson-modal-grid">
+                <div>
+                    <div class="lesson-modal-section-title">Детали занятия</div>
+                    <div class="lesson-modal-details">
+                        <div class="lesson-detail-row">
+                            <div class="lesson-detail-label">Предмет:</div>
+                            <div class="lesson-detail-value link">${escapeHtml(subjectName)}</div>
+                        </div>
+                        <div class="lesson-detail-row">
+                            <div class="lesson-detail-label">Дата:</div>
+                            <div class="lesson-detail-value">${dateFull}, ${lessonNum}-й урок</div>
+                        </div>
+                        <div class="lesson-detail-row">
+                            <div class="lesson-detail-label">Группа:</div>
+                            <div class="lesson-detail-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div>
+                        </div>
+                        <div class="lesson-detail-row">
+                            <div class="lesson-detail-label">Аудитория:</div>
+                            <div class="lesson-detail-value">${escapeHtml(roomName || '—')}</div>
+                        </div>
+                        <div class="lesson-detail-row">
+                            <div class="lesson-detail-label">Тема занятия:</div>
+                            <div class="lesson-detail-value ${noTopic ? 'muted' : ''}">${noTopic ? '-' : escapeHtml(topic)}</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="lesson-modal-section-title">Преподаватель</div>
+                    <div class="teacher-card">
+                        <div class="teacher-avatar">
+                            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        </div>
+                        <div class="teacher-name">${escapeHtml(teacherName || '—')}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lesson-modal-section">
+                <div class="lesson-modal-section-title">Присутствие на уроке и комментарий преподавателя</div>
+                <div class="lesson-modal-block">
+                    Данные не введены преподавателем.
+                </div>
+            </div>
+
+            <div class="lesson-modal-section">
+                <div class="lesson-modal-section-title">Домашние задания</div>
+                ${noHw
+                    ? `<div class="lesson-modal-block">На это занятие не задано ни одного домашнего задания.</div>`
+                    : `<div class="lesson-modal-block solid">${escapeHtml(homework)}</div>`
+                }
+            </div>
+
+            <div class="lesson-modal-section">
+                <div class="lesson-modal-section-title">Оценки за работу на занятии</div>
+                <table class="grades-mini-table">
+                    <thead>
+                        <tr>
+                            <th>${escapeHtml(lessonType || 'Работа на занятии')}</th>
+                            <th>Оценка</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${escapeHtml(lessonType || 'Ответ на уроке')}</td>
+                            <td>
+                                ${noGrade
+                                    ? '<span class="no-grades-text">нет</span>'
+                                    : `<span class="grade-value-inline ${gradeClass(gradeVal)}">${escapeHtml(gradeVal)}</span>`
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        document.getElementById('lessonModalContent').innerHTML = content;
+        document.getElementById('lessonModal').classList.add('show');
+    }
+
+    function closeLessonModal() {
+        document.getElementById('lessonModal').classList.remove('show');
+    }
+
+    document.getElementById('lessonModal').addEventListener('click', (e) => {
+        if (e.target.id === 'lessonModal') closeLessonModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLessonModal();
+    });
 
     // ============================================================
     // ОЦЕНКИ — ТАБЛИЦА
@@ -704,7 +925,6 @@
 
     function renderGrades() {
         const container = document.getElementById('subjectsContainer');
-
         if (ALL_WORKLOADS.length === 0) {
             container.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><h3>У класса нет предметов</h3><p>Обратитесь к администратору — для вашего класса не создана нагрузка.</p></div>`;
             return;
@@ -743,7 +963,6 @@
 
         subjects.forEach(subject => {
             const journal = subject.id ? ALL_JOURNALS.find(j => j.subject_id === subject.id) : null;
-
             const studentGrades = journal && journal.grades ? (journal.grades[CURRENT_STUDENT.id] || {}) : {};
             const lessonTypes = journal && journal.lesson_types ? journal.lesson_types : {};
 
@@ -769,7 +988,6 @@
 
             if (gradesArr.length > 0) anyGrades = true;
 
-            // Оценки
             let gradesHtml;
             if (gradesArr.length === 0) {
                 gradesHtml = `<span class="no-grades-text">Нет выставленных оценок</span>`;
@@ -779,15 +997,12 @@
                     const tip = g.type ? `${g.dateRu} · ${g.type}` : g.dateRu;
                     const isNumeric = /^[1-5]$/.test(g.grade.trim());
                     const cls = 'grade-box ' + gradeClass(g.grade) + (isNumeric ? ' clickable' : '');
-                    const attrs = isNumeric
-                        ? `data-subject="${escapeHtml(subject.name)}" data-key="${escapeHtml(g.key)}"`
-                        : '';
+                    const attrs = isNumeric ? `data-subject="${escapeHtml(subject.name)}" data-key="${escapeHtml(g.key)}"` : '';
                     gradesHtml += `<span class="${cls}" data-tip="${escapeHtml(tip)}" ${attrs}>${escapeHtml(g.grade)}</span>`;
                 });
                 gradesHtml += '</div>';
             }
 
-            // Средний балл
             let avgHtml;
             if (avg !== null) {
                 const a = parseFloat(avg);
@@ -801,7 +1016,6 @@
                 avgHtml = `<span class="avg-value empty">—</span>`;
             }
 
-            // Итог за период
             const qtrHtml = periodQtr
                 ? `<span class="qtr-value">${escapeHtml(String(periodQtr))}</span>`
                 : `<span class="qtr-value empty">—</span>`;
@@ -816,19 +1030,12 @@
             `;
         });
 
-        html += `
-                    </tbody>
-                </table>
-            </div>
-        `;
-
+        html += `</tbody></table></div>`;
         if (!anyGrades) {
             html += `<div style="text-align:center;padding:20px;color:#8a9bb5;font-size:14px;margin-top:12px;">Учителя ещё не выставили ни одной оценки за этот период. Загляните позже.</div>`;
         }
-
         container.innerHTML = html;
 
-        // Обработчики клика по оценкам
         container.querySelectorAll('.grade-box.clickable').forEach(chip => {
             chip.addEventListener('click', () => {
                 showStats(chip.dataset.subject, chip.dataset.key);
@@ -980,7 +1187,6 @@
         ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
         CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
 
-        // Мерж всех class_schedules этого класса
         const classSchedules = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
         const mergedGrid = {};
         classSchedules.forEach(s => {
