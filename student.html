@@ -327,6 +327,7 @@
             font-size: 14px;
             color: #fff;
             box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            line-height: 1;
         }
         .lesson-grade.g5, .lesson-grade.g4 { background: #65A30D; }
         .lesson-grade.g3 { background: #FB923C; }
@@ -334,7 +335,7 @@
         .lesson-grade.gn { background: #94A3B8; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
-        /* ====== ОЦЕНКИ — ТАБЛИЦА ====== */
+        /* ====== ОЦЕНКИ — ТАБЛИЦА (исправлено) ====== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 12px; flex-wrap: wrap; }
         .tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
@@ -352,44 +353,45 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13.5px;
+            table-layout: fixed;
         }
         .grades-table th {
             background: #f8fafc;
             color: #475569;
             font-weight: 700;
             font-size: 11px;
-            padding: 12px 16px;
+            padding: 14px 16px;
             text-align: left;
             border-bottom: 1px solid #e2e8f0;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
         .grades-table th.center { text-align: center; }
-        .grades-table th.col-subject { width: 34%; padding-left: 22px; }
-        .grades-table th.col-grades { width: 46%; }
-        .grades-table th.col-avg { width: 10%; text-align: center; }
-        .grades-table th.col-qtr { width: 10%; text-align: center; }
 
         .grades-table td {
-            padding: 14px 16px;
+            padding: 16px;
             border-bottom: 1px solid #f1f5f9;
             vertical-align: middle;
+            font-size: 13.5px;
         }
-        .grades-table tbody tr:hover { background: #fafcff; }
         .grades-table tbody tr:last-child td { border-bottom: none; }
+        .grades-table tbody tr:hover { background: #fafcff; }
 
         .grades-table td.subject-cell {
-            padding-left: 22px;
             font-weight: 700;
             color: #1e293b;
             font-size: 14px;
         }
-        .grades-table td.grades-cell {
+
+        /* Оценки — обёртка flex ВНУТРИ td, а td — обычный */
+        .grades-flex-inner {
             display: flex;
             flex-wrap: wrap;
             gap: 4px;
             align-items: center;
+            justify-content: flex-start;
         }
+
         .grades-table td.avg-cell {
             text-align: center;
             font-weight: 700;
@@ -410,20 +412,23 @@
             font-weight: 400;
         }
 
+        /* Квадратик с оценкой — строго центрирован */
         .mini-grade {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 22px;
-            height: 22px;
-            padding: 0 5px;
+            width: 24px;
+            height: 24px;
             border-radius: 5px;
             font-weight: 500;
             font-size: 13px;
             color: #fff;
             cursor: pointer;
             transition: transform 0.12s ease;
-            margin-right: 2px;
+            line-height: 1;
+            padding: 0;
+            text-align: center;
+            font-family: inherit;
         }
         .mini-grade:hover { transform: scale(1.12); }
         .mini-grade.g5, .mini-grade.g4 { background: #65A30D; }
@@ -444,6 +449,7 @@
             font-weight: 500;
             font-size: 15px;
             color: #fff;
+            line-height: 1;
         }
         .qtr-grade.g5, .qtr-grade.g4 { background: #65A30D; }
         .qtr-grade.g3 { background: #FB923C; }
@@ -604,7 +610,7 @@
 
         .stats-list { display: flex; flex-direction: column; gap: 10px; }
         .stat-row { display: flex; align-items: center; gap: 12px; }
-        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; color: #fff; flex-shrink: 0; }
+        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; color: #fff; flex-shrink: 0; line-height: 1; }
         .stat-badge.g5, .stat-badge.g4 { background: #65A30D; }
         .stat-badge.g3 { background: #FB923C; }
         .stat-badge.g2, .stat-badge.g1 { background: #DC2626; }
@@ -651,6 +657,7 @@
             .lesson-page { padding: 20px 16px; }
             .lesson-page-title { font-size: 20px; }
             .lesson-detail-row { grid-template-columns: 110px 1fr; font-size: 13px; }
+            .grades-table th, .grades-table td { padding: 12px 10px; font-size: 12px; }
         }
     </style>
 </head>
@@ -902,10 +909,9 @@
     }
 
     // ============================================================
-    // ПОИСК ВСЕХ ОЦЕНОК УЧЕНИКА (без фильтра периода для warnings)
+    // СБОР ВСЕХ ОЦЕНОК УЧЕНИКА
     // ============================================================
     function collectAllStudentGrades() {
-        // Возвращает массив { subject, grade, key, date, dateRu, lesson, type, journalSubjectId }
         const result = [];
         ALL_JOURNALS.forEach(journal => {
             const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
@@ -1104,11 +1110,9 @@
             const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
             if (subjObj) {
                 const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
-                if (journal) {
-                    if (journal.lessons && journal.lessons[key]) {
-                        topic = journal.lessons[key].t || '';
-                        homework = journal.lessons[key].h || '';
-                    }
+                if (journal && journal.lessons && journal.lessons[key]) {
+                    topic = journal.lessons[key].t || '';
+                    homework = journal.lessons[key].h || '';
                 }
             }
             const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key);
@@ -1127,7 +1131,7 @@
     }
 
     // ============================================================
-    // ДНЕВНИК (сетка) — клик по уроку = страница урока
+    // ДНЕВНИК
     // ============================================================
     function renderDiary() {
         const container = document.getElementById('diaryContent');
@@ -1240,7 +1244,7 @@
     }
 
     // ============================================================
-    // ОЦЕНКИ — ТАБЛИЦА
+    // ОЦЕНКИ — ТАБЛИЦА (исправленная разметка)
     // ============================================================
     function getPeriodRange() {
         if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
@@ -1261,7 +1265,6 @@
         const range = getPeriodRange();
         const all = collectAllStudentGrades();
 
-        // Уникальные предметы
         const seen = new Set();
         const subjects = [];
         ALL_WORKLOADS.forEach(w => {
@@ -1276,28 +1279,25 @@
             : 'Итог';
 
         let html = '<div class="grades-table-wrapper"><table class="grades-table">';
+        html += '<colgroup><col style="width:34%"><col style="width:46%"><col style="width:10%"><col style="width:10%"></colgroup>';
         html += '<thead><tr>';
-        html += '<th class="col-subject">Предмет</th>';
-        html += '<th class="col-grades">Оценки</th>';
-        html += '<th class="col-avg center">Ср. балл</th>';
-        html += `<th class="col-qtr center">${escapeHtml(periodLabel)}</th>`;
+        html += '<th>Предмет</th>';
+        html += '<th>Оценки</th>';
+        html += '<th class="center">Ср. балл</th>';
+        html += `<th class="center">${escapeHtml(periodLabel)}</th>`;
         html += '</tr></thead><tbody>';
 
         subjects.forEach(subjectName => {
-            // Оценки по этому предмету
             let gradesArr = all.filter(g => g.subject === subjectName);
-            // Фильтр по периоду
             if (range) {
                 gradesArr = gradesArr.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
             }
             gradesArr.sort((a, b) => a.key.localeCompare(b.key));
 
-            // Средний балл
             const gradesMap = {};
             gradesArr.forEach(g => { gradesMap[g.key] = g.grade; });
             const avg = calcAverage(gradesMap);
 
-            // Итог за период
             const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
             const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
             const qtrGrades = journal && journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
@@ -1306,16 +1306,17 @@
             html += '<tr>';
             html += `<td class="subject-cell">${escapeHtml(subjectName)}</td>`;
 
+            // ВАЖНО: обёртка .grades-flex-inner ВНУТРИ td, сам td — обычный
             if (gradesArr.length === 0) {
-                html += '<td class="grades-cell"><span class="no-grades-text">Нет выставленных оценок</span></td>';
+                html += '<td><span class="no-grades-text">Нет выставленных оценок</span></td>';
             } else {
-                html += '<td class="grades-cell">';
+                html += '<td><div class="grades-flex-inner">';
                 gradesArr.forEach(g => {
                     const cls = gradeClass(g.grade);
                     const isNumeric = /^[1-5]$/.test(g.grade.trim());
                     html += `<span class="mini-grade ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>${escapeHtml(g.grade)}</span>`;
                 });
-                html += '</td>';
+                html += '</div></td>';
             }
 
             if (avg !== null) {
@@ -1620,17 +1621,7 @@
         ALL_TEACHERS = teachers;
         ALL_WORKLOADS = workloads.filter(w => w.class_id === CURRENT_STUDENT.class_id);
 
-        // ВАЖНО: НЕ фильтруем journals по class_id, потому что там может быть другая структура
-        // Берём все журналы, содержащие оценки нашего ученика
-        ALL_JOURNALS = journals.filter(j => {
-            // Если есть class_id — фильтруем
-            if (j.class_id) return j.class_id === CURRENT_STUDENT.class_id;
-            // Иначе — берём все (пусть будет)
-            return true;
-        });
-
-        // Дополнительно: если после фильтра по class_id ничего не осталось,
-        // но есть журналы с оценками нашего ученика — берём их
+        ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
         const journalsWithOurStudent = journals.filter(j =>
             j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0
         );
