@@ -51,7 +51,7 @@
         .info-banner-label { font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; }
         .info-banner-value { font-size: 15px; font-weight: 600; color: #1a2b4a; }
 
-        /* ====== КАРТОЧКИ ОЦЕНОК ====== */
+        /* ============ КАРТОЧКИ ОЦЕНОК ============ */
         .grades-strip-label {
             font-size: 12px;
             font-weight: 700;
@@ -63,25 +63,35 @@
         .grades-strip {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 14px;
             margin-bottom: 14px;
         }
+
+        /* Обёртка — БЕЗ ФОНА, БЕЗ РАМКИ, БЕЗ ОТСТУПОВ */
+        .grade-tile,
+        .grade-tile * {
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
         .grade-tile {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             cursor: pointer;
             transition: transform 0.15s ease;
-            background: transparent;
             padding: 0;
-            border: none;
+            margin: 0;
+            width: auto;
+            max-width: 90px;
         }
         .grade-tile:hover { transform: translateY(-2px); }
         .grade-tile:not([data-subject]) { cursor: default; }
         .grade-tile:not([data-subject]):hover { transform: none; }
 
-        /* Цветной квадратик с цифрой */
-        .grade-tile-box {
+        /* Квадратик с цифрой — единственный цветной элемент */
+        .grade-tile .grade-tile-box {
             width: 44px;
             height: 44px;
             border-radius: 10px;
@@ -93,17 +103,17 @@
             font-weight: 400;
             line-height: 1;
             box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-            margin-bottom: 6px;
+            margin: 0 0 6px 0;
             flex-shrink: 0;
         }
-        .grade-tile.g5 .grade-tile-box { background: #65A30D; }
-        .grade-tile.g4 .grade-tile-box { background: #84CC16; }
-        .grade-tile.g3 .grade-tile-box { background: #FB923C; }
-        .grade-tile.g2 .grade-tile-box { background: #DC2626; }
-        .grade-tile.g1 .grade-tile-box { background: #7f1d1d; }
-        .grade-tile.gn .grade-tile-box { background: #94A3B8; }
+        .grade-tile.g5 .grade-tile-box { background: #65A30D !important; }
+        .grade-tile.g4 .grade-tile-box { background: #84CC16 !important; }
+        .grade-tile.g3 .grade-tile-box { background: #FB923C !important; }
+        .grade-tile.g2 .grade-tile-box { background: #DC2626 !important; }
+        .grade-tile.g1 .grade-tile-box { background: #7f1d1d !important; }
+        .grade-tile.gn .grade-tile-box { background: #94A3B8 !important; }
 
-        .grade-tile-subject {
+        .grade-tile .grade-tile-subject {
             font-size: 12px;
             font-weight: 600;
             color: #1a2b4a;
@@ -111,22 +121,23 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 80px;
+            max-width: 88px;
             text-align: left;
-            background: transparent;
+            margin: 0;
+            padding: 0;
         }
-        .grade-tile-type {
+        .grade-tile .grade-tile-type {
             font-size: 10.5px;
             font-weight: 400;
             color: #94a3b8;
             line-height: 1.2;
-            margin-top: 2px;
+            margin: 2px 0 0 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 80px;
+            max-width: 88px;
             text-align: left;
-            background: transparent;
+            padding: 0;
         }
 
         .grades-hint {
@@ -139,7 +150,7 @@
         }
         .grades-hint::before { content: '👉'; }
 
-        /* ====== КАРТОЧКА "СЕГОДНЯ" ====== */
+        /* ============ КАРТОЧКА "СЕГОДНЯ" ============ */
         .today-card {
             background: #fff;
             border-radius: 16px;
@@ -245,7 +256,7 @@
         }
         .today-lesson-grade.no-grade:hover { transform: none; }
 
-        /* ====== ДНЕВНИК ====== */
+        /* ============ ДНЕВНИК ============ */
         .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
         .week-title { font-size: 20px; font-weight: 700; color: #1a2b4a; }
         .week-range { font-size: 13px; color: #7a8aa3; margin-top: 2px; }
@@ -344,7 +355,7 @@
         .lesson-grade.gn { background: #94A3B8; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
-        /* ====== ОЦЕНКИ (карточки предметов) ====== */
+        /* ============ ОЦЕНКИ (карточки предметов) ============ */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 12px; flex-wrap: wrap; }
         .tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
@@ -423,9 +434,6 @@
             .stat-count { width: 50px; font-size: 12px; }
             .tabs { padding: 4px; }
             .tab-btn { padding: 10px 8px; font-size: 13px; }
-            .grade-tile-box { width: 40px; height: 40px; font-size: 22px; }
-            .grade-tile-subject { max-width: 70px; font-size: 11px; }
-            .grade-tile-type { max-width: 70px; font-size: 10px; }
         }
     </style>
 </head>
