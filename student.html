@@ -51,7 +51,7 @@
         .info-banner-label { font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; }
         .info-banner-value { font-size: 15px; font-weight: 600; color: #1a2b4a; }
 
-        /* ====== КАРТОЧКИ ОЦЕНОК (как на скрине) ====== */
+        /* ====== КАРТОЧКИ ОЦЕНОК ====== */
         .grades-strip-label {
             font-size: 12px;
             font-weight: 700;
@@ -63,56 +63,63 @@
         .grades-strip {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 14px;
         }
         .grade-tile {
-            width: 84px;
-            border-radius: 14px;
-            overflow: hidden;
-            background: #fff;
-            box-shadow: 0 2px 8px rgba(30,60,114,0.08);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            cursor: pointer;
+            width: 76px;
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
+            cursor: pointer;
+            transition: transform 0.15s ease;
         }
-        .grade-tile:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30,60,114,0.15); }
+        .grade-tile:hover { transform: translateY(-2px); }
+        .grade-tile:not([data-subject]) { cursor: default; }
+        .grade-tile:not([data-subject]):hover { transform: none; }
 
-        .grade-tile-top {
-            height: 62px;
+        /* Цветной квадратик */
+        .grade-tile-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            font-weight: 800;
             color: #fff;
+            font-size: 26px;
+            font-weight: 400;
             line-height: 1;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            margin-bottom: 6px;
         }
-        .grade-tile.g5 .grade-tile-top { background: #65A30D; }
-        .grade-tile.g4 .grade-tile-top { background: #84CC16; }
-        .grade-tile.g3 .grade-tile-top { background: #FB923C; }
-        .grade-tile.g2 .grade-tile-top { background: #DC2626; }
-        .grade-tile.g1 .grade-tile-top { background: #7f1d1d; }
-        .grade-tile.gn .grade-tile-top { background: #94A3B8; }
+        .grade-tile.g5 .grade-tile-box { background: #65A30D; }
+        .grade-tile.g4 .grade-tile-box { background: #84CC16; }
+        .grade-tile.g3 .grade-tile-box { background: #FB923C; }
+        .grade-tile.g2 .grade-tile-box { background: #DC2626; }
+        .grade-tile.g1 .grade-tile-box { background: #7f1d1d; }
+        .grade-tile.gn .grade-tile-box { background: #94A3B8; }
 
         .grade-tile-subject {
-            padding: 6px 8px 0;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             color: #1a2b4a;
+            line-height: 1.2;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            max-width: 76px;
             text-align: left;
         }
         .grade-tile-type {
-            padding: 1px 8px 8px;
-            font-size: 10px;
-            color: #7a8aa3;
+            font-size: 10.5px;
+            color: #94a3b8;
+            line-height: 1.2;
+            margin-top: 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            max-width: 76px;
             text-align: left;
         }
 
@@ -216,8 +223,8 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 15px;
+            font-weight: 400;
+            font-size: 17px;
             color: #fff;
             box-shadow: 0 2px 6px rgba(0,0,0,0.12);
             cursor: pointer;
@@ -324,8 +331,8 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
+            font-weight: 400;
+            font-size: 14px;
             color: #fff;
             box-shadow: 0 2px 6px rgba(0,0,0,0.12);
         }
@@ -351,7 +358,7 @@
         .subject-teacher { font-size: 13px; color: #7a8aa3; margin-top: 4px; }
 
         .grades-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-        .grade-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 34px; padding: 0 10px; border-radius: 10px; font-weight: 700; font-size: 14px; position: relative; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .grade-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 34px; padding: 0 10px; border-radius: 10px; font-weight: 400; font-size: 15px; position: relative; transition: transform 0.15s ease, box-shadow 0.15s ease; }
         .grade-chip.clickable { cursor: pointer; }
         .grade-chip.clickable:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.15); }
 
@@ -392,7 +399,7 @@
         .modal-subtitle { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
         .stats-list { display: flex; flex-direction: column; gap: 10px; }
         .stat-row { display: flex; align-items: center; gap: 12px; }
-        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0; }
+        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 400; font-size: 15px; color: #fff; flex-shrink: 0; }
         .stat-bar-wrap { flex: 1; height: 26px; background: #f0f4f9; border-radius: 8px; overflow: hidden; position: relative; }
         .stat-bar { height: 100%; border-radius: 8px; transition: width 0.4s ease; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: #fff; min-width: 24px; }
         .stat-count { width: 60px; text-align: right; font-size: 13px; font-weight: 600; color: #2a3a52; flex-shrink: 0; }
@@ -416,8 +423,10 @@
             .stat-count { width: 50px; font-size: 12px; }
             .tabs { padding: 4px; }
             .tab-btn { padding: 10px 8px; font-size: 13px; }
-            .grade-tile { width: 76px; }
-            .grade-tile-top { height: 56px; font-size: 26px; }
+            .grade-tile { width: 70px; }
+            .grade-tile-box { width: 38px; height: 38px; font-size: 22px; }
+            .grade-tile-subject { max-width: 70px; font-size: 11px; }
+            .grade-tile-type { max-width: 70px; font-size: 10px; }
         }
     </style>
 </head>
@@ -464,17 +473,14 @@
             </button>
         </div>
 
-        <!-- ВКЛАДКА СЕГОДНЯ -->
         <div class="tab-panel active" id="panel-today">
             <div id="todayContent"></div>
         </div>
 
-        <!-- ВКЛАДКА ДНЕВНИК -->
         <div class="tab-panel" id="panel-diary">
             <div id="diaryContent"></div>
         </div>
 
-        <!-- ВКЛАДКА ОЦЕНКИ -->
         <div class="tab-panel" id="panel-grades">
             <div id="warningContainer"></div>
             <div class="period-tabs-wrapper">
@@ -727,7 +733,6 @@
     // ПОИСК ОЦЕНОК ЗА ДЕНЬ
     // ============================================================
     function getGradesForDate(date) {
-        // Возвращает массив { subject, grade, key, lessonNum, type }
         const result = [];
         ALL_JOURNALS.forEach(journal => {
             const studentGrades = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
@@ -769,12 +774,10 @@
         const container = document.getElementById('todayContent');
         const date = TODAY_DATE;
 
-        // Заголовок дня
         const dow = date.getDay();
         const dowKey = JS_DAY_MAP[dow] || 'sun';
         const dayName = DAYS_FULL[dowKey] || 'Воскресенье';
 
-        // Оценки за день
         const grades = getGradesForDate(date);
         let gradesHtml = '';
         if (grades.length > 0) {
@@ -786,7 +789,7 @@
                         const tip = g.type || 'Оценка';
                         const isNumeric = /^[1-5]$/.test(g.grade.trim());
                         return `<div class="grade-tile ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
-                            <div class="grade-tile-top">${escapeHtml(g.grade)}</div>
+                            <div class="grade-tile-box">${escapeHtml(g.grade)}</div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
                             <div class="grade-tile-type">${escapeHtml(tip)}</div>
                         </div>`;
@@ -801,12 +804,10 @@
             `;
         }
 
-        // Уроки на день
         const dayLessons = getLessonsForDate(date);
 
         let lessonsHtml = '';
         if (dayLessons.length === 0) {
-            // Выходной или нет уроков
             const isWeekend = dow === 0;
             lessonsHtml = `
                 <div class="day-empty">
@@ -850,7 +851,6 @@
             </div>`;
         }
 
-        // Дата + навигация
         const dateLabel = `${date.getDate()} ${MONTHS_GEN[date.getMonth()]}, ${dayName.toLowerCase()}`;
         const isToday = isoDate(date) === isoDate(new Date());
 
@@ -876,7 +876,6 @@
             </div>
         `;
 
-        // Клики по карточкам оценок
         container.querySelectorAll('.grade-tile[data-subject]').forEach(tile => {
             tile.addEventListener('click', () => {
                 showStats(tile.dataset.subject, tile.dataset.key);
@@ -896,7 +895,6 @@
         if (!dowKey) return [];
         const dayGrid = CURRENT_SCHEDULE.grid[dowKey] || {};
 
-        // Найти max урок для этого дня
         const nums = Object.keys(dayGrid).map(n => parseInt(n, 10)).filter(n => !isNaN(n));
         if (nums.length === 0) return [];
         const maxNum = Math.max(...nums);
@@ -917,7 +915,6 @@
                 if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : '');
             }
 
-            // Тема/ДЗ/оценка
             let topic = '', homework = '', gradeVal = null;
             const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
             if (subjObj) {
@@ -1336,7 +1333,6 @@
         ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
         CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
 
-        // МЕРЖ расписаний
         const classSchedules = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
         const mergedGrid = {};
         classSchedules.forEach(s => {
