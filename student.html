@@ -57,41 +57,16 @@
         .week-range { font-size: 13px; color: #7a8aa3; margin-top: 2px; }
         .week-badge { background: #dbeafe; color: #2563eb; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
 
-        .week-grid {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding-bottom: 12px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
+        .week-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
         .week-grid::-webkit-scrollbar { height: 10px; }
         .week-grid::-webkit-scrollbar-track { background: #eef2f8; border-radius: 5px; }
         .week-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
         .week-grid::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        .day-column {
-            flex: 0 0 250px;
-            min-width: 250px;
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 4px 16px rgba(30,60,114,0.07);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            scroll-snap-align: start;
-        }
+        .day-column { flex: 0 0 250px; min-width: 250px; background: #fff; border-radius: 14px; box-shadow: 0 4px 16px rgba(30,60,114,0.07); overflow: hidden; display: flex; flex-direction: column; scroll-snap-align: start; }
         .day-column.today { box-shadow: 0 4px 20px rgba(37,99,235,0.18); border: 2px solid #2563eb; }
 
-        .day-header {
-            background: linear-gradient(135deg, #4a7bc8, #5b8fd9);
-            color: #fff;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
+        .day-header { background: linear-gradient(135deg, #4a7bc8, #5b8fd9); color: #fff; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
         .day-column.today .day-header { background: linear-gradient(135deg, #2563eb, #3b82f6); }
         .day-header-left { display: flex; flex-direction: column; gap: 2px; }
         .day-name { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -100,25 +75,12 @@
 
         .day-body { padding: 10px 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
 
-        .lesson-card {
-            background: #f8fafc;
-            border-radius: 10px;
-            padding: 10px 12px;
-            border-left: 3px solid #93c5fd;
-            position: relative;
-        }
+        .lesson-card { background: #f8fafc; border-radius: 10px; padding: 10px 12px; border-left: 3px solid #93c5fd; position: relative; }
         .lesson-card.empty { background: transparent; border-left: 3px dashed #e2e8f0; padding: 6px 12px; }
         .lesson-card.empty .lesson-subject { color: #cbd5e1; font-weight: 400; font-style: italic; font-size: 12px; }
 
         .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 34px; }
-        .lesson-num {
-            width: 20px; height: 20px;
-            background: #dbeafe; color: #2563eb;
-            border-radius: 6px;
-            display: inline-flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 11px;
-            flex-shrink: 0;
-        }
+        .lesson-num { width: 20px; height: 20px; background: #dbeafe; color: #2563eb; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; flex-shrink: 0; }
         .lesson-subject { font-size: 13px; font-weight: 700; color: #1a2b4a; line-height: 1.3; }
         .lesson-meta { font-size: 11px; color: #7a8aa3; margin-top: 3px; line-height: 1.4; }
         .lesson-section { margin-top: 6px; font-size: 11.5px; line-height: 1.45; }
@@ -126,38 +88,16 @@
         .lesson-value { color: #334155; }
         .lesson-value.hw { color: #1e40af; }
 
-        /* Оценка в дневнике */
-        .lesson-grade {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            min-width: 26px;
-            height: 26px;
-            padding: 0 7px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
-            color: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-        }
+        .lesson-grade { position: absolute; top: 8px; right: 8px; min-width: 26px; height: 26px; padding: 0 7px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
         .lesson-grade.g5 { background: #65A30D; }
         .lesson-grade.g4 { background: #84CC16; }
         .lesson-grade.g3 { background: #FB923C; }
         .lesson-grade.g2 { background: #DC2626; }
         .lesson-grade.g1 { background: #7f1d1d; }
         .lesson-grade.gn { background: #94A3B8; }
-        .lesson-grade.no-grade {
-            background: #e2e8f0;
-            color: #94a3b8;
-            font-weight: 400;
-            font-size: 12px;
-            box-shadow: none;
-        }
+        .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
-        /* ===== ОЦЕНКИ ===== */
+        /* ===== ОЦЕНКИ (таблица) ===== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 12px; flex-wrap: wrap; }
         .tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
@@ -165,31 +105,113 @@
         .tab-pill.active { background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff; box-shadow: 0 2px 8px rgba(42,82,152,0.3); }
         .tab-pill:disabled { cursor: default; opacity: 0.7; }
 
-        .subject-card { background: #fff; border-radius: 16px; padding: 22px 24px; box-shadow: 0 4px 16px rgba(30,60,114,0.07); margin-bottom: 16px; border-left: 4px solid #2a5298; }
-        .subject-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
-        .subject-name { font-size: 18px; font-weight: 700; color: #1a2b4a; }
-        .subject-teacher { font-size: 13px; color: #7a8aa3; margin-top: 4px; }
+        .grades-table-wrapper { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(30,60,114,0.07); overflow: hidden; }
+        .grades-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .grades-table thead th {
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            padding: 14px 20px;
+            text-align: left;
+            font-size: 12px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        .grades-table thead th.col-center { text-align: center; width: 110px; }
+        .grades-table tbody td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eef2f8;
+            vertical-align: middle;
+            color: #1e293b;
+        }
+        .grades-table tbody tr:last-child td { border-bottom: none; }
+        .grades-table tbody tr:hover { background: #f8faff; }
 
-        .grades-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-        .grade-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 34px; padding: 0 10px; border-radius: 10px; font-weight: 700; font-size: 14px; position: relative; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-        .grade-chip.clickable { cursor: pointer; }
-        .grade-chip.clickable:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.15); }
+        .subject-name-cell { font-size: 15px; font-weight: 600; color: #1a2b4a; }
 
-        .g5 { background: #65A30D; color: #fff; }
-        .g4 { background: #84CC16; color: #fff; }
-        .g3 { background: #FB923C; color: #fff; }
-        .g2 { background: #DC2626; color: #fff; }
-        .g1 { background: #7f1d1d; color: #fff; }
-        .gn { background: #94A3B8; color: #fff; }
+        .grades-cell { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .grade-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            color: #fff;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            position: relative;
+        }
+        .grade-box.clickable { cursor: pointer; }
+        .grade-box.clickable:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
+        .grade-box.g5 { background: #4CAF50; }
+        .grade-box.g4 { background: #8BC34A; }
+        .grade-box.g3 { background: #FF9800; }
+        .grade-box.g2 { background: #F44336; }
+        .grade-box.g1 { background: #7f1d1d; }
+        .grade-box.gn { background: #B0BEC5; }
+        .grade-box[data-tip]::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: #1a2b4a;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            z-index: 50;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .grade-box[data-tip]:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        .grade-chip[data-tip]::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); background: #1a2b4a; color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 50; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .grade-chip[data-tip]:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .no-grades-text { font-size: 13px; color: #94a3b8; font-style: italic; }
 
-        .subject-footer { display: flex; gap: 24px; padding-top: 14px; border-top: 1px solid #eef2f8; flex-wrap: wrap; }
-        .stat { display: flex; flex-direction: column; gap: 4px; }
-        .stat-label { font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-value { font-size: 18px; font-weight: 700; color: #2a5298; }
-        .stat-value.green { color: #22874a; }
+        .avg-cell { text-align: center; }
+        .avg-value {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 34px;
+            padding: 0 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            color: #fff;
+            background: #4CAF50;
+        }
+        .avg-value.g5 { background: #4CAF50; }
+        .avg-value.g4 { background: #8BC34A; }
+        .avg-value.g3 { background: #FF9800; }
+        .avg-value.g2 { background: #F44336; }
+        .avg-value.empty { background: transparent; color: #cbd5e1; font-weight: 400; }
+
+        .qtr-cell { text-align: center; }
+        .qtr-value {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 34px;
+            padding: 0 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            color: #2563eb;
+            background: #dbeafe;
+        }
+        .qtr-value.empty { color: #cbd5e1; background: transparent; font-weight: 400; }
 
         .empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 18px; box-shadow: 0 4px 20px rgba(30,60,114,0.07); }
         .empty-state svg { width: 64px; height: 64px; fill: #d4dce8; margin-bottom: 16px; }
@@ -229,13 +251,18 @@
             .user-badge span { display: none; }
             .user-badge { padding: 4px; }
             .container { padding: 20px 14px 40px; }
-            .subject-card { padding: 18px 16px; }
             .week-title { font-size: 17px; }
             .day-column { flex: 0 0 260px; min-width: 260px; }
             .modal { padding: 22px 20px; }
             .stat-count { width: 50px; font-size: 12px; }
             .tabs { padding: 4px; }
             .tab-btn { padding: 10px 8px; font-size: 13px; }
+            .grades-table thead th { padding: 10px 8px; font-size: 10px; }
+            .grades-table tbody td { padding: 12px 8px; font-size: 13px; }
+            .subject-name-cell { font-size: 13px; }
+            .grade-box { min-width: 26px; height: 26px; padding: 0 6px; font-size: 13px; border-radius: 6px; }
+            .avg-value, .qtr-value { min-width: 32px; height: 28px; font-size: 14px; padding: 0 8px; }
+            .grades-table thead th.col-center { width: 70px; }
         }
     </style>
 </head>
@@ -526,12 +553,10 @@
     // ДНЕВНИК
     // ============================================================
     function getLessonGrade(date, lessonNum, subjectName) {
-        // Ищем журнал по этому предмету
         const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
         if (!subjObj) return null;
         const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
         if (!journal || !journal.grades) return null;
-
         const studentGrades = journal.grades[CURRENT_STUDENT.id] || {};
         const key = isoDate(date) + '_' + lessonNum;
         const val = studentGrades[key];
@@ -617,7 +642,6 @@
                     }
                 }
 
-                // Оценка
                 const gradeVal = getLessonGrade(date, n, lesson.subject);
                 let gradeHtml = '';
                 if (gradeVal) {
@@ -667,7 +691,7 @@
     }
 
     // ============================================================
-    // ОЦЕНКИ
+    // ОЦЕНКИ — ТАБЛИЦА
     // ============================================================
     function getPeriodRange() {
         if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
@@ -680,6 +704,7 @@
 
     function renderGrades() {
         const container = document.getElementById('subjectsContainer');
+
         if (ALL_WORKLOADS.length === 0) {
             container.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><h3>У класса нет предметов</h3><p>Обратитесь к администратору — для вашего класса не создана нагрузка.</p></div>`;
             return;
@@ -696,14 +721,28 @@
         });
         subjects.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 
-        let html = '';
+        const periodLabel = PERIODS.length > 0
+            ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Итог')
+            : 'Итог за год';
+
+        let html = `
+            <div class="grades-table-wrapper">
+                <table class="grades-table">
+                    <thead>
+                        <tr>
+                            <th>Предмет</th>
+                            <th>Оценки</th>
+                            <th class="col-center">Ср. балл</th>
+                            <th class="col-center">${escapeHtml(periodLabel)}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
         let anyGrades = false;
 
         subjects.forEach(subject => {
             const journal = subject.id ? ALL_JOURNALS.find(j => j.subject_id === subject.id) : null;
-            const workload = ALL_WORKLOADS.find(w => w.subject === subject.name);
-            const teacher = workload ? ALL_TEACHERS.find(t => t.id === workload.teacher_id) : null;
-            const teacherName = teacher ? teacher.full_name : '—';
 
             const studentGrades = journal && journal.grades ? (journal.grades[CURRENT_STUDENT.id] || {}) : {};
             const lessonTypes = journal && journal.lesson_types ? journal.lesson_types : {};
@@ -712,7 +751,7 @@
                 .filter(([k, v]) => v !== '' && v !== null && v !== undefined)
                 .map(([key, grade]) => {
                     const parsed = parseKey(key);
-                    return { key, grade: String(grade), date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson, type: lessonTypes[key] || '' };
+                    return { key, grade: String(grade), date: parsed.date, dateRu: parsed.dateRu, type: lessonTypes[key] || '' };
                 })
                 .filter(g => {
                     if (!range) return true;
@@ -730,47 +769,67 @@
 
             if (gradesArr.length > 0) anyGrades = true;
 
-            let chipsHtml = '';
+            // Оценки
+            let gradesHtml;
             if (gradesArr.length === 0) {
-                chipsHtml = '<span style="color:#a8b5c9;font-size:13px;font-style:italic;">Оценок пока нет</span>';
+                gradesHtml = `<span class="no-grades-text">Нет выставленных оценок</span>`;
             } else {
+                gradesHtml = '<div class="grades-cell">';
                 gradesArr.forEach(g => {
                     const tip = g.type ? `${g.dateRu} · ${g.type}` : g.dateRu;
                     const isNumeric = /^[1-5]$/.test(g.grade.trim());
-                    const cls = 'grade-chip ' + gradeClass(g.grade) + (isNumeric ? ' clickable' : '');
-                    const attrs = isNumeric ? `data-subject="${escapeHtml(subject.name)}" data-key="${escapeHtml(g.key)}"` : '';
-                    chipsHtml += `<span class="${cls}" data-tip="${escapeHtml(tip)}" ${attrs}>${escapeHtml(g.grade)}</span>`;
+                    const cls = 'grade-box ' + gradeClass(g.grade) + (isNumeric ? ' clickable' : '');
+                    const attrs = isNumeric
+                        ? `data-subject="${escapeHtml(subject.name)}" data-key="${escapeHtml(g.key)}"`
+                        : '';
+                    gradesHtml += `<span class="${cls}" data-tip="${escapeHtml(tip)}" ${attrs}>${escapeHtml(g.grade)}</span>`;
                 });
+                gradesHtml += '</div>';
             }
 
-            const periodLabel = PERIODS.length > 0
-                ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Итог')
-                : 'Итог за год';
+            // Средний балл
+            let avgHtml;
+            if (avg !== null) {
+                const a = parseFloat(avg);
+                let avgCls = 'avg-value';
+                if (a >= 4.5) avgCls += ' g5';
+                else if (a >= 3.5) avgCls += ' g4';
+                else if (a >= 2.5) avgCls += ' g3';
+                else avgCls += ' g2';
+                avgHtml = `<span class="${avgCls}">${avg}</span>`;
+            } else {
+                avgHtml = `<span class="avg-value empty">—</span>`;
+            }
+
+            // Итог за период
+            const qtrHtml = periodQtr
+                ? `<span class="qtr-value">${escapeHtml(String(periodQtr))}</span>`
+                : `<span class="qtr-value empty">—</span>`;
 
             html += `
-                <div class="subject-card">
-                    <div class="subject-header">
-                        <div>
-                            <div class="subject-name">${escapeHtml(subject.name)}</div>
-                            <div class="subject-teacher">Учитель: ${escapeHtml(teacherName)}</div>
-                        </div>
-                    </div>
-                    <div class="grades-row">${chipsHtml}</div>
-                    <div class="subject-footer">
-                        <div class="stat"><div class="stat-label">Средний балл</div><div class="stat-value">${avg !== null ? avg : '—'}</div></div>
-                        <div class="stat"><div class="stat-label">${escapeHtml(periodLabel)}</div><div class="stat-value green">${periodQtr !== null ? escapeHtml(String(periodQtr)) : '—'}</div></div>
-                        <div class="stat"><div class="stat-label">Всего оценок</div><div class="stat-value">${gradesArr.length}</div></div>
-                    </div>
-                </div>`;
+                <tr>
+                    <td class="subject-name-cell">${escapeHtml(subject.name)}</td>
+                    <td>${gradesHtml}</td>
+                    <td class="avg-cell">${avgHtml}</td>
+                    <td class="qtr-cell">${qtrHtml}</td>
+                </tr>
+            `;
         });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        if (!anyGrades) {
+            html += `<div style="text-align:center;padding:20px;color:#8a9bb5;font-size:14px;margin-top:12px;">Учителя ещё не выставили ни одной оценки за этот период. Загляните позже.</div>`;
+        }
 
         container.innerHTML = html;
 
-        if (!anyGrades) {
-            container.insertAdjacentHTML('beforeend', `<div style="text-align:center;padding:20px;color:#8a9bb5;font-size:14px;">Учителя ещё не выставили ни одной оценки за этот период. Загляните позже.</div>`);
-        }
-
-        container.querySelectorAll('.grade-chip.clickable').forEach(chip => {
+        // Обработчики клика по оценкам
+        container.querySelectorAll('.grade-box.clickable').forEach(chip => {
             chip.addEventListener('click', () => {
                 showStats(chip.dataset.subject, chip.dataset.key);
             });
@@ -921,7 +980,7 @@
         ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
         CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
 
-        // ===== МЕРЖ ВСЕХ class_schedules ЭТОГО КЛАССА =====
+        // Мерж всех class_schedules этого класса
         const classSchedules = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
         const mergedGrid = {};
         classSchedules.forEach(s => {
