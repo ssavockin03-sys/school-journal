@@ -6,9 +6,9 @@
     <title>Дневник.ру — Панель администратора</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
-        body { min-height: 100vh; background: #f0f4f9; color: #1a2b4a; }
+        body { min-height: 100vh; background: #fff; color: #1a2b4a; }
 
-        /* ===== ЭКРАН ЗАГРУЗКИ / ЛОГИНА (если не админ — редирект) ===== */
+        /* ===== ЭКРАН ЗАГРУЗКИ ===== */
         .loading-screen { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; }
         .loading-screen.hidden { display: none; }
         .loading-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 420px; width: 100%; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35); text-align: center; }
@@ -16,9 +16,12 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { font-size: 15px; color: #5a6a85; font-weight: 500; }
 
-        /* ===== НОВАЯ ШАПКА ===== */
-        .top-header { background: linear-gradient(135deg, #1565c0, #1976d2); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        .top-header-inner { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 20px; }
+        /* ===== ГЛАВНАЯ ОБЁРТКА ===== */
+        .page-wrapper { max-width: 1400px; margin: 0 auto; background: #fff; min-height: 100vh; }
+
+        /* ===== ВЕРХНЯЯ ТЁМНО-СИНЯЯ ПОЛОСА ===== */
+        .top-header { background: linear-gradient(135deg, #1565c0, #1976d2); color: #fff; position: sticky; top: 0; z-index: 100; }
+        .top-header-inner { padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 20px; }
         .top-header-nav { display: flex; gap: 0; align-items: center; flex: 1; }
         .top-tab { padding: 18px 22px; border: none; background: transparent; color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; position: relative; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
         .top-tab:hover { color: #fff; background: rgba(255,255,255,0.08); }
@@ -34,8 +37,8 @@
         .top-logout-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
         /* ===== СВЕТЛАЯ ПОЛОСА С ПОДРАЗДЕЛАМИ ===== */
-        .sub-header { background: #fff; border-bottom: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.04); position: sticky; top: 56px; z-index: 99; }
-        .sub-header-inner { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 0; overflow-x: auto; }
+        .sub-header { background: #fff; border-bottom: 1px solid #e2e8f0; position: sticky; top: 56px; z-index: 99; }
+        .sub-header-inner { padding: 0 32px; display: flex; align-items: center; gap: 0; overflow-x: auto; }
         .sub-header-inner::-webkit-scrollbar { height: 0; display: none; }
         .sub-tab { padding: 14px 18px; border: none; background: transparent; color: #4a5a72; font-size: 13.5px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.2s ease; position: relative; white-space: nowrap; }
         .sub-tab:hover { color: #1976d2; }
@@ -43,19 +46,13 @@
         .sub-tab.active::after { content: ''; position: absolute; left: 18px; right: 18px; bottom: 0; height: 2px; background: #1976d2; }
         .sub-tab svg { width: 14px; height: 14px; fill: currentColor; vertical-align: middle; margin-right: 5px; }
 
-        /* ===== ШКОЛА (название) ===== */
-        .school-bar { background: #fff; padding: 12px 24px 0; }
-        .school-bar-inner { max-width: 1400px; margin: 0 auto; }
+        /* ===== ШКОЛА ===== */
+        .school-bar { background: #fff; padding: 14px 32px 0; }
         .school-name { font-size: 13px; color: #7a8aa3; margin-bottom: 2px; }
         .page-title { font-size: 28px; font-weight: 400; color: #1976d2; margin-bottom: 12px; }
 
-        /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 24px 60px; }
-
-        /* ===== ВКЛАДКИ — старые (используем как подразделы) ===== */
-        .tab-panel { display: none; animation: fadeIn 0.3s ease; }
-        .tab-panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        /* ===== КОНТЕЙНЕР ===== */
+        .container { padding: 0 32px 60px; }
 
         /* ===== КАРТОЧКИ/ФОРМЫ/ТАБЛИЦЫ ===== */
         .panel-grid { display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; }
@@ -64,6 +61,10 @@
         .card-header-icon { width: 36px; height: 36px; border-radius: 10px; background: #e3f2fd; display: flex; align-items: center; justify-content: center; color: #1976d2; flex-shrink: 0; }
         .card-header-icon svg { width: 18px; height: 18px; fill: currentColor; }
         .card-header h2 { font-size: 16px; font-weight: 700; color: #1a2b4a; }
+
+        .tab-panel { display: none; animation: fadeIn 0.3s ease; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; color: #4a5a72; margin-bottom: 7px; }
@@ -115,11 +116,10 @@
         .empty-state svg { width: 48px; height: 48px; fill: #d4dce8; margin-bottom: 12px; }
         .empty-state p { font-size: 14px; font-weight: 500; }
 
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.25s ease; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
-        .modal { background: #fff; border-radius: 16px; padding: 28px; max-width: 480px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3); animation: cardAppear 0.3s ease; max-height: 90vh; overflow-y: auto; }
+        .modal { background: #fff; border-radius: 16px; padding: 28px; max-width: 480px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3); max-height: 90vh; overflow-y: auto; }
         .modal.modal-wide { max-width: 560px; }
-        @keyframes cardAppear { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
         .modal-header { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
         .modal-header-icon { width: 40px; height: 40px; border-radius: 10px; background: #e3f2fd; display: flex; align-items: center; justify-content: center; color: #1976d2; }
         .modal-header-icon svg { width: 20px; height: 20px; fill: currentColor; }
@@ -218,8 +218,6 @@
         .schedule-info { background: #f0f4f9; border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: #4a5a72; display: flex; align-items: center; gap: 10px; }
         .schedule-info svg { width: 18px; height: 18px; fill: #1976d2; flex-shrink: 0; }
 
-        .journals-header { margin-bottom: 16px; }
-        .journals-title { font-size: 26px; font-weight: 400; color: #1976d2; letter-spacing: -0.3px; }
         .year-banner { display: flex; align-items: center; gap: 12px; background: #f0f4f9; padding: 12px 18px; border-radius: 10px; margin-bottom: 18px; flex-wrap: wrap; }
         .year-banner-text { font-size: 15px; font-weight: 600; color: #2a3a52; }
         .year-badge { display: inline-flex; align-items: center; gap: 6px; background: #00bfa5; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
@@ -227,6 +225,7 @@
         .quick-actions { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
         .btn-quick { padding: 9px 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; color: #2a3a52; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
         .btn-quick:hover { border-color: #1976d2; color: #1976d2; background: #f0f5ff; }
+        .btn-quick svg { width: 14px; height: 14px; fill: currentColor; }
 
         .classes-list { background: #fff; border-radius: 14px; padding: 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; }
         .parallels-grid { display: flex; flex-direction: row; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
@@ -235,14 +234,14 @@
         .parallel-classes { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
         .class-link { display: inline-block; color: #1976d2; font-size: 17px; font-weight: 500; text-decoration: none; padding: 2px 0; cursor: pointer; background: none; border: none; font-family: inherit; text-align: left; white-space: nowrap; }
         .class-link:hover { color: #0d47a1; text-decoration: underline; }
-        .empty-classes { text-align: center; padding: 60px 20px; background: #fff; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .empty-classes { text-align: center; padding: 60px 20px; background: #fff; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; }
         .empty-classes svg { width: 64px; height: 64px; fill: #d4dce8; margin-bottom: 16px; }
         .empty-classes h3 { font-size: 18px; font-weight: 700; color: #5a6a85; margin-bottom: 8px; }
         .empty-classes p { font-size: 14px; color: #8a9bb5; max-width: 400px; margin: 0 auto; line-height: 1.5; }
 
         .journal-chooser-screen { display: none; }
         .journal-chooser-screen.active { display: block; }
-        .chooser-header { background: #fff; border-radius: 14px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .chooser-header { background: #fff; border-radius: 14px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin-bottom: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
         .chooser-header .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; background: #f0f4f9; border: none; border-radius: 8px; color: #1976d2; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
         .chooser-header .back-btn:hover { background: #e2e8f0; }
         .chooser-header .back-btn svg { width: 14px; height: 14px; fill: currentColor; }
@@ -311,7 +310,6 @@
 </head>
 <body>
 
-<!-- ===== ЭКРАН ЗАГРУЗКИ ===== -->
 <div class="loading-screen" id="loginScreen">
     <div class="loading-box">
         <div class="loading-spinner"></div>
@@ -319,7 +317,7 @@
     </div>
 </div>
 
-<div id="appContainer" style="display:none;">
+<div id="appContainer" class="page-wrapper" style="display:none;">
 
     <!-- ===== ВЕРХНЯЯ ТЁМНО-СИНЯЯ ПОЛОСА ===== -->
     <header class="top-header">
@@ -344,23 +342,19 @@
 
     <!-- ===== СВЕТЛАЯ ПОЛОСА С ПОДРАЗДЕЛАМИ ===== -->
     <div class="sub-header" id="subHeader">
-        <div class="sub-header-inner" id="subHeaderInner">
-            <!-- Заполняется JS в зависимости от активного верхнего раздела -->
-        </div>
+        <div class="sub-header-inner" id="subHeaderInner"></div>
     </div>
 
-    <!-- ===== НАЗВАНИЕ ШКОЛЫ + ЗАГОЛОВОК ===== -->
+    <!-- ===== ШКОЛА + ЗАГОЛОВОК ===== -->
     <div class="school-bar">
-        <div class="school-bar-inner">
-            <div class="school-name">ГОУ ЛНР «АСШ № 6»</div>
-            <h1 class="page-title" id="pageTitle">Классы</h1>
-        </div>
+        <div class="school-name">ГОУ ЛНР «АСШ № 6»</div>
+        <h1 class="page-title" id="pageTitle">Классы</h1>
     </div>
 
-    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+    <!-- ===== КОНТЕЙНЕР ===== -->
     <div class="container">
 
-        <!-- ============ КЛАССЫ ============ -->
+        <!-- КЛАССЫ -->
         <div class="tab-panel active" id="panel-classes">
             <div class="panel-grid">
                 <div class="card">
@@ -384,7 +378,7 @@
             </div>
         </div>
 
-        <!-- ============ УЧИТЕЛЯ ============ -->
+        <!-- УЧИТЕЛЯ -->
         <div class="tab-panel" id="panel-teachers">
             <div class="panel-grid">
                 <div class="card">
@@ -421,7 +415,7 @@
             </div>
         </div>
 
-        <!-- ============ УЧЕНИКИ ============ -->
+        <!-- УЧЕНИКИ -->
         <div class="tab-panel" id="panel-students">
             <div class="panel-grid">
                 <div class="card">
@@ -457,7 +451,7 @@
             </div>
         </div>
 
-        <!-- ============ ПРЕДМЕТЫ ============ -->
+        <!-- ПРЕДМЕТЫ -->
         <div class="tab-panel" id="panel-subjects">
             <div class="panel-grid">
                 <div class="card">
@@ -481,7 +475,7 @@
             </div>
         </div>
 
-        <!-- ============ КАБИНЕТЫ ============ -->
+        <!-- КАБИНЕТЫ -->
         <div class="tab-panel" id="panel-rooms">
             <div class="panel-grid">
                 <div class="card">
@@ -505,7 +499,7 @@
             </div>
         </div>
 
-        <!-- ============ НАГРУЗКА ============ -->
+        <!-- НАГРУЗКА -->
         <div class="tab-panel" id="panel-workload">
             <div class="workload-filter">
                 <label for="workloadClassSelect">Класс:</label>
@@ -540,7 +534,7 @@
             </div>
         </div>
 
-        <!-- ============ ЗВОНКИ ============ -->
+        <!-- ЗВОНКИ -->
         <div class="tab-panel" id="panel-bells">
             <div class="bells-toolbar">
                 <div class="bells-shifts" id="bellsShifts"></div>
@@ -574,7 +568,7 @@
             </div>
         </div>
 
-        <!-- ============ РАСПИСАНИЕ ============ -->
+        <!-- РАСПИСАНИЕ -->
         <div class="tab-panel" id="panel-schedule">
             <div class="workload-filter">
                 <label for="schedulePeriodSelect">Период:</label>
@@ -598,7 +592,7 @@
             </div>
         </div>
 
-        <!-- ============ ЖУРНАЛЫ ============ -->
+        <!-- ЖУРНАЛЫ -->
         <div class="tab-panel" id="panel-journals">
             <div id="journalsListScreen">
                 <div class="year-banner"><span class="year-banner-text">2026/2027 учебный год</span><span class="year-badge">Текущий год</span></div>
@@ -634,7 +628,7 @@
             </div>
         </div>
 
-        <!-- ============ ПЕРИОДЫ ============ -->
+        <!-- ПЕРИОДЫ -->
         <div class="tab-panel" id="panel-periods">
             <div class="periods-toolbar">
                 <div class="periods-toolbar-title">Учебные периоды</div>
@@ -648,6 +642,17 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- ЗАГЛУШКИ для верхних разделов -->
+    <div class="container">
+        <div class="tab-panel" id="panel-chats"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Чаты</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
+        <div class="tab-panel" id="panel-news"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Новости</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
+        <div class="tab-panel" id="panel-support"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Поддержка</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
+        <div class="tab-panel" id="panel-library"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Библиотека</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
+        <div class="tab-panel" id="panel-olymp"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Олимпиады</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
+        <div class="tab-panel" id="panel-courses"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Курсы</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
+        <div class="tab-panel" id="panel-settings"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Настройки</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
     </div>
 
     <!-- ===== МОДАЛКИ ===== -->
@@ -689,7 +694,6 @@ const PERIOD_LABELS = {
     'Семестры':  ['I семестр', 'II семестр']
 };
 
-// Структура подразделов для каждого верхнего раздела
 const SUB_TABS = {
     education: [
         { id: 'classes',   label: 'Классы',    icon: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>' },
@@ -722,9 +726,9 @@ const TRANSLIT_MAP = {
     'ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'
 };
 
-// ============================================================
-// УТИЛИТЫ
-// ============================================================
+let ACTIVE_TOP_TAB = 'education';
+let ACTIVE_SUB_TAB = 'classes';
+
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
     const div = document.createElement('div');
@@ -784,9 +788,6 @@ function genId(prefix) {
     return prefix + '_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
 }
 
-// ============================================================
-// АВТОРИЗАЦИЯ
-// ============================================================
 async function logout() {
     if (!confirm('Выйти из панели администратора?')) return;
     try {
@@ -830,12 +831,6 @@ window.addEventListener('load', async () => {
     }
 });
 
-// ============================================================
-// НАВИГАЦИЯ (верхняя и подраздел)
-// ============================================================
-let ACTIVE_TOP_TAB = 'education';
-let ACTIVE_SUB_TAB = 'classes';
-
 function initTopTabs() {
     document.querySelectorAll('.top-tab').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -861,26 +856,18 @@ function renderSubTabs() {
         btn.addEventListener('click', () => switchSubTab(item.id));
         container.appendChild(btn);
     });
-    // Автоматически активируем первый, если текущий не в этом списке
-    if (items.length > 0 && !items.some(i => i.id === ACTIVE_SUB_TAB)) {
-        switchSubTab(items[0].id);
-    } else {
-        switchSubTab(ACTIVE_SUB_TAB);
-    }
+    if (items.length > 0 && !items.some(i => i.id === ACTIVE_SUB_TAB)) switchSubTab(items[0].id);
+    else switchSubTab(ACTIVE_SUB_TAB);
 }
 
 function switchSubTab(subTabId) {
     ACTIVE_SUB_TAB = subTabId;
-    // Подсветка кнопок
     document.querySelectorAll('.sub-tab').forEach(b => b.classList.toggle('active', b.dataset.subtab === subTabId));
-    // Показ панели
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     const panel = document.getElementById('panel-' + subTabId);
     if (panel) panel.classList.add('active');
-    // Обновление заголовка
     const meta = (SUB_TABS[ACTIVE_TOP_TAB] || []).find(i => i.id === subTabId);
     document.getElementById('pageTitle').textContent = meta ? meta.label : 'Панель';
-    // Загрузка данных для нужной панели
     if (subTabId === 'classes') renderClasses();
     if (subTabId === 'teachers') renderTeachers();
     if (subTabId === 'students') renderStudents();
@@ -891,15 +878,8 @@ function switchSubTab(subTabId) {
     if (subTabId === 'schedule') refreshScheduleTab();
     if (subTabId === 'journals') refreshJournalsTab();
     if (subTabId === 'periods') renderPeriods();
-    if (subTabId === 'chats' || subTabId === 'news' || subTabId === 'support' ||
-        subTabId === 'library' || subTabId === 'olymp' || subTabId === 'courses' || subTabId === 'settings') {
-        showToast('Раздел в разработке');
-    }
 }
 
-// ============================================================
-// TOAST
-// ============================================================
 let toastTimeout;
 function showToast(message, type) {
     const toast = document.getElementById('toast');
@@ -2270,7 +2250,7 @@ async function deletePeriod(id) {
 }
 
 // ============================================================
-// ИНИЦИАЛИЗАЦИЯ ДАННЫХ
+// ИНИЦИАЛИЗАЦИЯ
 // ============================================================
 async function init() {
     await fillTeacherSubjectSelect();
