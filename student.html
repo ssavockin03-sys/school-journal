@@ -51,7 +51,7 @@
         .info-banner-label { font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; }
         .info-banner-value { font-size: 15px; font-weight: 600; color: #1a2b4a; }
 
-        /* ====== КАРТОЧКИ ОЦЕНОК (Сегодня) ====== */
+        /* ====== Сегодня ====== */
         .grades-strip-label {
             font-size: 12px;
             font-weight: 700;
@@ -132,7 +132,6 @@
         }
         .grades-hint::before { content: '👉'; }
 
-        /* ====== КАРТОЧКА "СЕГОДНЯ" ====== */
         .today-card {
             background: #fff;
             border-radius: 16px;
@@ -223,7 +222,6 @@
             font-size: 17px;
             color: #fff;
             box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-            transition: transform 0.15s ease;
         }
         .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
         .today-lesson-grade.g3 { background: #FB923C; }
@@ -336,7 +334,7 @@
         .lesson-grade.gn { background: #94A3B8; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
-        /* ====== ОЦЕНКИ — ТАБЛИЦА ====== */
+        /* ====== ОЦЕНКИ — ТАБЛИЦА (как скриншот 4) ====== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 12px; flex-wrap: wrap; }
         .tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
@@ -348,128 +346,253 @@
             background: #fff;
             border-radius: 14px;
             box-shadow: 0 4px 16px rgba(30,60,114,0.07);
-            overflow-x: auto;
-            padding: 0;
+            overflow: hidden;
         }
         .grades-table {
+            width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
-            min-width: 100%;
-        }
-        .grades-table th {
-            background: #E8EEF5;
-            color: #334155;
-            font-weight: 700;
-            font-size: 11px;
-            padding: 10px 8px;
-            text-align: center;
-            border: 1px solid #CBD5E1;
-            white-space: nowrap;
-            position: sticky;
-            top: 0;
-            z-index: 5;
-        }
-        .grades-table th.subject-col {
-            text-align: left;
-            padding-left: 14px;
-            min-width: 160px;
-            position: sticky;
-            left: 0;
-            background: #E8EEF5;
-            z-index: 6;
-        }
-        .grades-table th.avg-col,
-        .grades-table th.qtr-col {
-            min-width: 60px;
-            background: #dbeafe;
-            color: #1e40af;
-        }
-        .grades-table td {
-            padding: 6px;
-            text-align: center;
-            border: 1px solid #E2E8F0;
-            vertical-align: middle;
-        }
-        .grades-table td.subject-cell {
-            text-align: left;
-            padding: 8px 14px;
-            font-weight: 600;
-            color: #1a2b4a;
-            background: #FAFCFE;
-            position: sticky;
-            left: 0;
-            z-index: 4;
-            white-space: nowrap;
             font-size: 13.5px;
         }
-        .grades-table tr:hover td.subject-cell { background: #eff6ff; }
-        .grades-table tbody tr:nth-child(5n) td {
-            border-bottom: 2px solid #94A3B8;
+        .grades-table th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 11px;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
-        .grades-table tbody tr:hover { background: #f8faff; }
+        .grades-table th.center { text-align: center; }
+        .grades-table th.col-subject { width: 34%; padding-left: 22px; }
+        .grades-table th.col-grades { width: 46%; }
+        .grades-table th.col-avg { width: 10%; text-align: center; }
+        .grades-table th.col-qtr { width: 10%; text-align: center; }
 
-        .grade-cell-box {
+        .grades-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        .grades-table tbody tr:hover { background: #fafcff; }
+        .grades-table tbody tr:last-child td { border-bottom: none; }
+
+        .grades-table td.subject-cell {
+            padding-left: 22px;
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 14px;
+        }
+        .grades-table td.grades-cell {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: center;
+        }
+        .grades-table td.avg-cell {
+            text-align: center;
+            font-weight: 700;
+            color: #65A30D;
+            font-size: 15px;
+        }
+        .grades-table td.avg-cell.no-grade {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+        .grades-table td.qtr-cell {
+            text-align: center;
+        }
+        .no-grades-text {
+            color: #94a3b8;
+            font-style: italic;
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        /* Маленькие квадратики с оценками (как на скрине 4) */
+        .mini-grade {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 26px;
-            height: 26px;
-            padding: 0 6px;
-            border-radius: 6px;
-            font-weight: 400;
-            font-size: 14px;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 5px;
+            border-radius: 5px;
+            font-weight: 500;
+            font-size: 13px;
             color: #fff;
             cursor: pointer;
-            transition: transform 0.15s ease;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.12s ease;
+            margin-right: 2px;
         }
-        .grade-cell-box:hover { transform: scale(1.1); }
-        .grade-cell-box.g5, .grade-cell-box.g4 { background: #65A30D; }
-        .grade-cell-box.g3 { background: #FB923C; }
-        .grade-cell-box.g2, .grade-cell-box.g1 { background: #DC2626; }
-        .grade-cell-box.gn { background: #94A3B8; }
-        .grade-cell-box.no-grade {
-            background: transparent;
-            color: #cbd5e1;
-            box-shadow: none;
-            font-weight: 300;
-            cursor: default;
-        }
-        .grade-cell-box.no-grade:hover { transform: none; }
+        .mini-grade:hover { transform: scale(1.12); }
+        .mini-grade.g5, .mini-grade.g4 { background: #65A30D; }
+        .mini-grade.g3 { background: #FB923C; }
+        .mini-grade.g2, .mini-grade.g1 { background: #DC2626; }
+        .mini-grade.gn { background: #94A3B8; }
+        .mini-grade:not([data-subject]) { cursor: default; }
+        .mini-grade:not([data-subject]):hover { transform: none; }
 
-        .avg-cell-value {
-            font-weight: 700;
-            color: #2a5298;
-            font-size: 14px;
-        }
-        .qtr-cell-value {
+        .qtr-grade {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 28px;
-            height: 26px;
-            padding: 0 8px;
+            min-width: 30px;
+            height: 28px;
+            padding: 0 10px;
             border-radius: 6px;
+            font-weight: 500;
+            font-size: 15px;
+            color: #fff;
+        }
+        .qtr-grade.g5, .qtr-grade.g4 { background: #65A30D; }
+        .qtr-grade.g3 { background: #FB923C; }
+        .qtr-grade.g2, .qtr-grade.g1 { background: #DC2626; }
+        .qtr-grade.gn { background: #94A3B8; }
+        .qtr-grade.no-grade {
+            background: transparent;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        /* ====== СТРАНИЦА УРОКА (как скриншот 3) ====== */
+        .lesson-page {
+            background: #fff;
+            border-radius: 14px;
+            padding: 32px 36px;
+            box-shadow: 0 4px 16px rgba(30,60,114,0.07);
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .lesson-page-title {
+            font-size: 26px;
             font-weight: 700;
+            color: #2a5298;
+            margin-bottom: 24px;
+        }
+        .lesson-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #475569;
+            margin-top: 24px;
+            margin-bottom: 10px;
+        }
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+            align-items: start;
+        }
+        .lesson-details-block {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 24px;
+        }
+        .lesson-detail-row {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eef2f8;
             font-size: 14px;
         }
-        .qtr-cell-value.g5, .qtr-cell-value.g4 { background: #65A30D; color: #fff; }
-        .qtr-cell-value.g3 { background: #FB923C; color: #fff; }
-        .qtr-cell-value.g2, .qtr-cell-value.g1 { background: #DC2626; color: #fff; }
-        .qtr-cell-value.gn { background: #94A3B8; color: #fff; }
-        .qtr-cell-value.no-grade { color: #cbd5e1; }
+        .lesson-detail-row:last-child { border-bottom: none; }
+        .lesson-detail-label {
+            color: #64748b;
+        }
+        .lesson-detail-value {
+            color: #1e293b;
+            font-weight: 600;
+        }
+        .lesson-detail-value.blue { color: #2563eb; }
 
-        .empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 18px; box-shadow: 0 4px 20px rgba(30,60,114,0.07); }
-        .empty-state svg { width: 64px; height: 64px; fill: #d4dce8; margin-bottom: 16px; }
-        .empty-state h3 { font-size: 18px; font-weight: 700; color: #5a6a85; margin-bottom: 8px; }
-        .empty-state p { font-size: 14px; color: #8a9bb5; max-width: 400px; margin: 0 auto; line-height: 1.5; }
+        .lesson-empty-block {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 14px;
+        }
 
-        .loading { text-align: center; padding: 60px 20px; }
-        .spinner { width: 50px; height: 50px; border: 5px solid rgba(42,82,152,0.15); border-top-color: #2a5298; border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { font-size: 15px; color: #5a6a85; }
+        .lesson-teacher-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .lesson-teacher-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 26px;
+        }
+        .lesson-teacher-name {
+            color: #16a34a;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.3;
+        }
 
-        /* ====== МОДАЛКИ ====== */
+        /* Таблица оценок за работу на занятии */
+        .lesson-grades-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .lesson-grades-table th {
+            padding: 10px 16px;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 700;
+            text-align: right;
+            background: #f8fafc;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .lesson-grades-table td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #1e293b;
+            border-top: 1px solid #e2e8f0;
+            text-align: right;
+        }
+        .lesson-grades-table td:first-child {
+            text-align: left;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 18px;
+            background: none;
+            border: none;
+            font-family: inherit;
+            padding: 0;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .back-link svg { width: 14px; height: 14px; fill: currentColor; }
+
+        /* ====== МОДАЛКА СТАТИСТИКИ ====== */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.25s ease; }
         .modal-overlay.show { display: flex; }
         .modal { background: #fff; border-radius: 20px; padding: 24px 24px 22px; max-width: 500px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3); animation: modalAppear 0.3s ease; max-height: 90vh; overflow-y: auto; }
@@ -481,65 +604,9 @@
         .modal-title { font-size: 17px; font-weight: 700; color: #1a2b4a; }
         .modal-subtitle { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
 
-        /* Страница урока */
-        .lesson-info-block {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            border-left: 4px solid #93c5fd;
-        }
-        .lesson-info-label {
-            font-size: 10px;
-            font-weight: 700;
-            color: #7a8aa3;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            margin-bottom: 4px;
-        }
-        .lesson-info-value {
-            font-size: 14px;
-            color: #1a2b4a;
-            line-height: 1.5;
-        }
-        .lesson-info-value.empty {
-            color: #94a3b8;
-            font-style: italic;
-        }
-
-        .lesson-my-grade {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #f0f4f9;
-            border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-        }
-        .lesson-my-grade-box {
-            width: 52px;
-            height: 52px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 30px;
-            font-weight: 400;
-            flex-shrink: 0;
-        }
-        .lesson-my-grade-box.g5, .lesson-my-grade-box.g4 { background: #65A30D; }
-        .lesson-my-grade-box.g3 { background: #FB923C; }
-        .lesson-my-grade-box.g2, .lesson-my-grade-box.g1 { background: #DC2626; }
-        .lesson-my-grade-box.gn { background: #94A3B8; }
-
-        .lesson-my-grade-text { font-size: 13px; color: #334155; line-height: 1.4; }
-        .lesson-my-grade-text b { color: #1a2b4a; }
-
-        /* Статистика */
         .stats-list { display: flex; flex-direction: column; gap: 10px; }
         .stat-row { display: flex; align-items: center; gap: 12px; }
-        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 400; font-size: 15px; color: #fff; flex-shrink: 0; }
+        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; color: #fff; flex-shrink: 0; }
         .stat-badge.g5, .stat-badge.g4 { background: #65A30D; }
         .stat-badge.g3 { background: #FB923C; }
         .stat-badge.g2, .stat-badge.g1 { background: #DC2626; }
@@ -553,6 +620,19 @@
         .modal-close { width: 100%; height: 44px; margin-top: 16px; background: #f0f2f5; color: #4a5a72; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s ease; font-family: inherit; }
         .modal-close:hover { background: #e2e8f0; }
 
+        .empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 18px; box-shadow: 0 4px 20px rgba(30,60,114,0.07); }
+        .empty-state svg { width: 64px; height: 64px; fill: #d4dce8; margin-bottom: 16px; }
+        .empty-state h3 { font-size: 18px; font-weight: 700; color: #5a6a85; margin-bottom: 8px; }
+        .empty-state p { font-size: 14px; color: #8a9bb5; max-width: 400px; margin: 0 auto; line-height: 1.5; }
+
+        .loading { text-align: center; padding: 60px 20px; }
+        .spinner { width: 50px; height: 50px; border: 5px solid rgba(42,82,152,0.15); border-top-color: #2a5298; border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { font-size: 15px; color: #5a6a85; }
+
+        @media (max-width: 900px) {
+            .lesson-grid { grid-template-columns: 1fr; }
+        }
         @media (max-width: 700px) {
             .header { padding: 0 14px; height: 62px; }
             .header-logo { font-size: 15px; }
@@ -570,8 +650,9 @@
             .grade-tile-box { width: 38px; height: 38px; font-size: 22px; }
             .grade-tile-subject { max-width: 70px; font-size: 11px; }
             .grade-tile-type { max-width: 70px; font-size: 10px; }
-            .grades-table th.subject-col { min-width: 120px; padding-left: 8px; font-size: 12px; }
-            .grades-table td.subject-cell { padding: 6px 8px; font-size: 12px; }
+            .lesson-page { padding: 20px 16px; }
+            .lesson-page-title { font-size: 20px; }
+            .lesson-detail-row { grid-template-columns: 110px 1fr; font-size: 13px; }
         }
     </style>
 </head>
@@ -600,6 +681,7 @@
         <div class="loading-text">Загружаем данные...</div>
     </div>
 
+    <!-- ГЛАВНАЯ СТРАНИЦА (с вкладками) -->
     <div id="content" style="display:none;">
         <div class="info-banner" id="infoBanner"></div>
 
@@ -634,6 +716,11 @@
             <div id="gradesTableContainer"></div>
         </div>
     </div>
+
+    <!-- СТРАНИЦА УРОКА (открывается вместо главной) -->
+    <div id="lessonPage" style="display:none;">
+        <div class="lesson-page" id="lessonPageContent"></div>
+    </div>
 </div>
 
 <!-- Модалка статистики (клик по оценке) -->
@@ -651,23 +738,6 @@
         <div class="stats-list" id="statsList"></div>
         <div class="stats-total" id="statsTotal"></div>
         <button class="modal-close" onclick="closeStats()">Закрыть</button>
-    </div>
-</div>
-
-<!-- Модалка страницы урока (клик по уроку в дневнике) -->
-<div class="modal-overlay" id="lessonModal">
-    <div class="modal" role="dialog" aria-modal="true">
-        <div class="modal-header">
-            <div class="modal-header-icon">
-                <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
-            </div>
-            <div>
-                <div class="modal-title" id="lessonModalTitle">Урок</div>
-                <div class="modal-subtitle" id="lessonModalSubtitle"></div>
-            </div>
-        </div>
-        <div id="lessonModalContent"></div>
-        <button class="modal-close" onclick="closeLessonModal()">Закрыть</button>
     </div>
 </div>
 
@@ -724,6 +794,9 @@
     function formatDateRu(d) {
         return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
     }
+    function formatDateLong(d) {
+        return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]} ${d.getFullYear()}`;
+    }
     function formatDateShort(d) {
         return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`;
     }
@@ -768,7 +841,7 @@
                 if (!isNaN(n)) { sum += n; cnt++; }
             }
         });
-        return cnt === 0 ? null : (sum / cnt).toFixed(2);
+        return cnt === 0 ? null : (sum / cnt).toFixed(2).replace(/\.00$/, '');
     }
     function plural(n, forms) {
         const a = Math.abs(n) % 100;
@@ -893,45 +966,6 @@
     }
 
     // ============================================================
-    // ПОИСК ДАННЫХ
-    // ============================================================
-    function getGradesForDate(date) {
-        const result = [];
-        ALL_JOURNALS.forEach(journal => {
-            const studentGrades = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
-            const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
-            if (!subjObj) return;
-            Object.entries(studentGrades).forEach(([key, val]) => {
-                const parsed = parseKey(key);
-                if (!parsed.date) return;
-                if (isoDate(parsed.date) !== isoDate(date)) return;
-                if (val === '' || val === null || val === undefined) return;
-                const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
-                result.push({
-                    subject: subjObj.name,
-                    grade: String(val),
-                    key,
-                    lessonNum: parsed.lesson,
-                    type
-                });
-            });
-        });
-        result.sort((a, b) => String(a.lessonNum).localeCompare(String(b.lessonNum)));
-        return result;
-    }
-
-    function getLessonGrade(date, lessonNum, subjectName) {
-        const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
-        if (!subjObj) return null;
-        const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
-        if (!journal || !journal.grades) return null;
-        const studentGrades = journal.grades[CURRENT_STUDENT.id] || {};
-        const key = isoDate(date) + '_' + lessonNum;
-        const val = studentGrades[key];
-        return val ? String(val).trim() : null;
-    }
-
-    // ============================================================
     // ВКЛАДКА "СЕГОДНЯ"
     // ============================================================
     function renderToday() {
@@ -968,17 +1002,10 @@
         }
 
         const dayLessons = getLessonsForDate(date);
-
         let lessonsHtml = '';
         if (dayLessons.length === 0) {
             const isWeekend = dow === 0;
-            lessonsHtml = `
-                <div class="day-empty">
-                    <div class="day-empty-emoji">${isWeekend ? '☕' : '📅'}</div>
-                    <div class="day-empty-title">${isWeekend ? 'Выходной день' : 'Нет занятий'}</div>
-                    <div class="day-empty-text">${isWeekend ? 'Отдыхай и набирайся сил!' : 'На этот день уроков нет'}</div>
-                </div>
-            `;
+            lessonsHtml = `<div class="day-empty"><div class="day-empty-emoji">${isWeekend ? '☕' : '📅'}</div><div class="day-empty-title">${isWeekend ? 'Выходной день' : 'Нет занятий'}</div><div class="day-empty-text">${isWeekend ? 'Отдыхай и набирайся сил!' : 'На этот день уроков нет'}</div></div>`;
         } else {
             lessonsHtml = `<div class="today-lessons">
                 ${dayLessons.map(l => {
@@ -990,21 +1017,17 @@
                     } else {
                         gradeHtml = `<div class="today-lesson-grade no-grade">—</div>`;
                     }
-
                     const metaParts = [];
                     if (l.teacherName) metaParts.push(l.teacherName);
                     if (l.roomName) metaParts.push('каб. ' + l.roomName);
                     const metaHtml = metaParts.length > 0 ? `<div class="today-lesson-meta">${escapeHtml(metaParts.join(' · '))}</div>` : '';
                     const topicHtml = l.topic ? `<div class="today-lesson-topic"><b>Тема:</b>${escapeHtml(l.topic)}</div>` : '';
                     const hwHtml = l.homework ? `<div class="today-lesson-hw"><b>ДЗ:</b>${escapeHtml(l.homework)}</div>` : '';
-
                     return `<div class="today-lesson" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}">
                         <div class="today-lesson-num">${l.num}</div>
                         <div class="today-lesson-info">
                             <div class="today-lesson-subject">${escapeHtml(l.subject)}</div>
-                            ${metaHtml}
-                            ${topicHtml}
-                            ${hwHtml}
+                            ${metaHtml}${topicHtml}${hwHtml}
                         </div>
                         ${gradeHtml}
                     </div>`;
@@ -1017,42 +1040,25 @@
 
         container.innerHTML = `
             <div class="today-card">
-                <div class="today-card-inner">
-                    ${gradesHtml}
-                </div>
+                <div class="today-card-inner">${gradesHtml}</div>
                 <div class="day-nav">
-                    <button class="day-nav-btn" onclick="shiftDay(-1)" title="Предыдущий день">
-                        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-                    </button>
-                    <div style="flex:1;text-align:center;">
-                        <div class="day-nav-title">${dateLabel}${isToday ? ' · Сегодня' : ''}</div>
-                    </div>
-                    <button class="day-nav-btn" onclick="shiftDay(1)" title="Следующий день">
-                        <svg viewBox="0 0 24 24"><path d="M4 13h12.17l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.17 11H4v2z"/></svg>
-                    </button>
+                    <button class="day-nav-btn" onclick="shiftDay(-1)"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+                    <div style="flex:1;text-align:center;"><div class="day-nav-title">${dateLabel}${isToday ? ' · Сегодня' : ''}</div></div>
+                    <button class="day-nav-btn" onclick="shiftDay(1)"><svg viewBox="0 0 24 24"><path d="M4 13h12.17l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.17 11H4v2z"/></svg></button>
                 </div>
-                <div class="today-card-inner" style="padding-top:0;">
-                    ${lessonsHtml}
-                </div>
+                <div class="today-card-inner" style="padding-top:0;">${lessonsHtml}</div>
             </div>
         `;
 
-        // Клик по оценке = статистика
         container.querySelectorAll('.grade-tile[data-subject]').forEach(tile => {
             tile.addEventListener('click', (e) => {
                 e.stopPropagation();
                 openStats(tile.dataset.subject, tile.dataset.key);
             });
         });
-
-        // Клик по уроку = страница урока
         container.querySelectorAll('.today-lesson[data-subject]').forEach(row => {
             row.addEventListener('click', () => {
-                const subject = row.dataset.subject;
-                const dateIso = row.dataset.date;
-                const num = row.dataset.num;
-                const key = dateIso + '_' + num;
-                openLessonModal(subject, key);
+                openLessonPage(row.dataset.subject, row.dataset.date + '_' + row.dataset.num);
             });
         });
     }
@@ -1063,16 +1069,13 @@
         const dowKey = JS_DAY_MAP[dow];
         if (!dowKey) return [];
         const dayGrid = CURRENT_SCHEDULE.grid[dowKey] || {};
-
         const nums = Object.keys(dayGrid).map(n => parseInt(n, 10)).filter(n => !isNaN(n));
         if (nums.length === 0) return [];
         const maxNum = Math.max(...nums);
-
         const result = [];
         for (let n = 1; n <= maxNum; n++) {
             const lesson = dayGrid[n] || dayGrid[String(n)];
             if (!lesson || !lesson.subject) continue;
-
             let teacherName = lesson.teacherName || '';
             if (!teacherName && lesson.teacherId) {
                 const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId);
@@ -1083,7 +1086,6 @@
                 const r = ALL_ROOMS.find(x => x.id === lesson.roomId);
                 if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : '');
             }
-
             let topic = '', homework = '', gradeVal = null;
             const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
             if (subjObj) {
@@ -1100,16 +1102,7 @@
                     }
                 }
             }
-
-            result.push({
-                num: n,
-                subject: lesson.subject,
-                teacherName,
-                roomName,
-                topic,
-                homework,
-                grade: gradeVal
-            });
+            result.push({ num: n, subject: lesson.subject, teacherName, roomName, topic, homework, grade: gradeVal });
         }
         return result;
     }
@@ -1122,7 +1115,7 @@
     }
 
     // ============================================================
-    // ДНЕВНИК (сетка) — клик по уроку открывает страницу урока
+    // ДНЕВНИК (сетка) — клик по уроку = страница урока
     // ============================================================
     function renderDiary() {
         const container = document.getElementById('diaryContent');
@@ -1139,16 +1132,7 @@
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        let html = `
-            <div class="week-title-bar">
-                <div>
-                    <div class="week-title">Текущая неделя</div>
-                    <div class="week-range">${rangeText}</div>
-                </div>
-                <div class="week-badge">Расписание</div>
-            </div>
-            <div class="week-grid">
-        `;
+        let html = `<div class="week-title-bar"><div><div class="week-title">Текущая неделя</div><div class="week-range">${rangeText}</div></div><div class="week-badge">Расписание</div></div><div class="week-grid">`;
 
         const grid = CURRENT_SCHEDULE.grid;
         let maxLesson = 7;
@@ -1173,7 +1157,6 @@
                     lessonsHtml += `<div class="lesson-card empty"><div class="lesson-subject">Урок ${n} —</div></div>`;
                     continue;
                 }
-
                 let teacherName = lesson.teacherName || '';
                 if (!teacherName && lesson.teacherId) {
                     const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId);
@@ -1184,7 +1167,6 @@
                     const r = ALL_ROOMS.find(x => x.id === lesson.roomId);
                     if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : '');
                 }
-
                 let topic = '', homework = '';
                 const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
                 if (subjObj) {
@@ -1198,7 +1180,6 @@
                         }
                     }
                 }
-
                 const gradeVal = getLessonGrade(date, n, lesson.subject);
                 let gradeHtml = '';
                 if (gradeVal) {
@@ -1207,7 +1188,6 @@
                 } else {
                     gradeHtml = `<div class="lesson-grade no-grade">—</div>`;
                 }
-
                 const metaParts = [];
                 if (teacherName) metaParts.push(teacherName);
                 if (roomName) metaParts.push('каб. ' + roomName);
@@ -1215,49 +1195,40 @@
                 const topicHtml = topic ? `<div class="lesson-section"><span class="lesson-label">Тема:</span><span class="lesson-value">${escapeHtml(topic)}</span></div>` : '';
                 const hwHtml = homework ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value hw">${escapeHtml(homework)}</span></div>` : '';
 
-                lessonsHtml += `
-                    <div class="lesson-card" data-subject="${escapeHtml(lesson.subject)}" data-date="${isoDate(date)}" data-num="${n}">
-                        ${gradeHtml}
-                        <div class="lesson-row-head">
-                            <div class="lesson-num">${n}</div>
-                            <div class="lesson-subject">${escapeHtml(lesson.subject)}</div>
-                        </div>
-                        ${metaHtml}
-                        ${topicHtml}
-                        ${hwHtml}
+                lessonsHtml += `<div class="lesson-card" data-subject="${escapeHtml(lesson.subject)}" data-date="${isoDate(date)}" data-num="${n}">
+                    ${gradeHtml}
+                    <div class="lesson-row-head">
+                        <div class="lesson-num">${n}</div>
+                        <div class="lesson-subject">${escapeHtml(lesson.subject)}</div>
                     </div>
-                `;
+                    ${metaHtml}${topicHtml}${hwHtml}
+                </div>`;
             }
 
-            html += `
-                <div class="day-column ${isToday ? 'today' : ''}">
-                    <div class="day-header">
-                        <div class="day-header-left">
-                            <div class="day-name">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div>
-                            <div class="day-date">${formatDateRu(date)}</div>
-                        </div>
-                        ${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}
+            html += `<div class="day-column ${isToday ? 'today' : ''}">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-name">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div>
+                        <div class="day-date">${formatDateRu(date)}</div>
                     </div>
-                    <div class="day-body">${lessonsHtml}</div>
+                    ${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}
                 </div>
-            `;
+                <div class="day-body">${lessonsHtml}</div>
+            </div>`;
         });
 
         html += '</div>';
         container.innerHTML = html;
 
-        // Клик по уроку = страница урока
         container.querySelectorAll('.lesson-card[data-subject]').forEach(card => {
             card.addEventListener('click', () => {
-                const subject = card.dataset.subject;
-                const key = card.dataset.date + '_' + card.dataset.num;
-                openLessonModal(subject, key);
+                openLessonPage(card.dataset.subject, card.dataset.date + '_' + card.dataset.num);
             });
         });
     }
 
     // ============================================================
-    // ОЦЕНКИ — ТАБЛИЦА
+    // ОЦЕНКИ — ТАБЛИЦА (как на скрине 4)
     // ============================================================
     function getPeriodRange() {
         if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
@@ -1287,84 +1258,74 @@
         });
         subjects.sort((a, b) => a.localeCompare(b, 'ru'));
 
-        // Все оценки ученика по всем журналам — упорядоченные по дате
-        // Собираем все даты (gradeKey), которые есть в оценках ученика
-        const allKeys = new Set();
-        const studentGradesBySubject = {}; // subject -> { key -> grade }
+        const periodLabel = PERIODS.length > 0
+            ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Итог')
+            : 'Итог';
 
-        subjects.forEach(subjectName => {
-            const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
-            if (!subjObj) return;
-            const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
-            if (!journal) return;
-            const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
-            studentGradesBySubject[subjectName] = {};
-            Object.entries(sg).forEach(([key, val]) => {
-                if (val === '' || val === null || val === undefined) return;
-                // фильтр по периоду
-                if (range) {
-                    const parsed = parseKey(key);
-                    if (parsed.date && (parsed.date < range.start || parsed.date > range.end)) return;
-                }
-                studentGradesBySubject[subjectName][key] = String(val);
-                allKeys.add(key);
-            });
-        });
-
-        // Сортируем ключи по дате
-        const sortedKeys = Array.from(allKeys).sort((a, b) => a.localeCompare(b));
-        const dates = sortedKeys.map(k => parseKey(k));
-
-        if (subjects.length === 0) {
-            container.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><h3>Нет предметов</h3><p>Обратитесь к администратору.</p></div>`;
-            return;
-        }
-
-        // Собираем таблицу
         let html = '<div class="grades-table-wrapper"><table class="grades-table">';
-
-        // Заголовок
         html += '<thead><tr>';
-        html += '<th class="subject-col">Предмет</th>';
-        dates.forEach(d => {
-            html += `<th>${d.dateRu.substring(0,5)}</th>`;
-        });
-        html += '<th class="avg-col">Ср.</th>';
-        html += '<th class="qtr-col">Итог</th>';
+        html += '<th class="col-subject">Предмет</th>';
+        html += '<th class="col-grades">Оценки</th>';
+        html += '<th class="col-avg center">Ср. балл</th>';
+        html += `<th class="col-qtr center">${escapeHtml(periodLabel)}</th>`;
         html += '</tr></thead><tbody>';
 
-        // Тело
         subjects.forEach(subjectName => {
-            const subjGrades = studentGradesBySubject[subjectName] || {};
             const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
             const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
 
-            html += '<tr>';
-            html += `<td class="subject-cell">${escapeHtml(subjectName)}</td>`;
-
-            dates.forEach(d => {
-                const grade = subjGrades[d.gradeKey] || null;
-                if (grade) {
-                    const cls = gradeClass(grade);
-                    const isNumeric = /^[1-5]$/.test(grade.trim());
-                    html += `<td><span class="grade-cell-box ${cls}" ${isNumeric ? `data-subject="${escapeHtml(subjectName)}" data-key="${escapeHtml(d.gradeKey)}"` : ''}>${escapeHtml(grade)}</span></td>`;
-                } else {
-                    html += `<td><span class="grade-cell-box no-grade">·</span></td>`;
-                }
-            });
+            // Собираем оценки ученика по этому предмету за период
+            const gradesArr = [];
+            if (journal && journal.grades && journal.grades[CURRENT_STUDENT.id]) {
+                Object.entries(journal.grades[CURRENT_STUDENT.id]).forEach(([key, val]) => {
+                    if (val === '' || val === null || val === undefined) return;
+                    if (range) {
+                        const parsed = parseKey(key);
+                        if (parsed.date && (parsed.date < range.start || parsed.date > range.end)) return;
+                    }
+                    gradesArr.push({ key, grade: String(val) });
+                });
+            }
+            gradesArr.sort((a, b) => a.key.localeCompare(b.key));
 
             // Средний балл
-            const avg = calcAverage(subjGrades);
-            html += `<td><span class="avg-cell-value">${avg !== null ? avg : '—'}</span></td>`;
+            const gradesMap = {};
+            gradesArr.forEach(g => { gradesMap[g.key] = g.grade; });
+            const avg = calcAverage(gradesMap);
 
             // Итог за период
             const qtrGrades = journal && journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
             const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
+
+            html += '<tr>';
+            html += `<td class="subject-cell">${escapeHtml(subjectName)}</td>`;
+
+            // Столбец с оценками
+            if (gradesArr.length === 0) {
+                html += '<td class="grades-cell"><span class="no-grades-text">Нет выставленных оценок</span></td>';
+            } else {
+                html += '<td class="grades-cell">';
+                gradesArr.forEach(g => {
+                    const cls = gradeClass(g.grade);
+                    const isNumeric = /^[1-5]$/.test(g.grade.trim());
+                    html += `<span class="mini-grade ${cls}" ${isNumeric ? `data-subject="${escapeHtml(subjectName)}" data-key="${escapeHtml(g.key)}"` : ''}>${escapeHtml(g.grade)}</span>`;
+                });
+                html += '</td>';
+            }
+
+            // Ср. балл
+            if (avg !== null) {
+                html += `<td class="avg-cell">${escapeHtml(String(avg))}</td>`;
+            } else {
+                html += '<td class="avg-cell no-grade">-</td>';
+            }
+
+            // Итог за период
             if (periodQtr) {
                 const cls = gradeClass(periodQtr);
-                html += `<td><span class="qtr-cell-value ${cls}">${escapeHtml(String(periodQtr))}</span></td>`;
+                html += `<td class="qtr-cell"><span class="qtr-grade ${cls}">${escapeHtml(String(periodQtr))}</span></td>`;
             } else {
-                html += `<td><span class="qtr-cell-value no-grade">—</span></td>`;
+                html += '<td class="qtr-cell"><span class="qtr-grade no-grade">-</span></td>';
             }
 
             html += '</tr>';
@@ -1373,8 +1334,8 @@
         html += '</tbody></table></div>';
         container.innerHTML = html;
 
-        // Клики по оценкам
-        container.querySelectorAll('.grade-cell-box[data-subject]').forEach(box => {
+        // Клик по оценке = статистика
+        container.querySelectorAll('.mini-grade[data-subject]').forEach(box => {
             box.addEventListener('click', () => {
                 openStats(box.dataset.subject, box.dataset.key);
             });
@@ -1382,7 +1343,145 @@
     }
 
     // ============================================================
-    // МОДАЛКА СТАТИСТИКИ (клик по оценке)
+    // СТРАНИЦА УРОКА (как на скрине 3)
+    // ============================================================
+    function openLessonPage(subjectName, lessonKey) {
+        const mainContent = document.getElementById('content');
+        const lessonPage = document.getElementById('lessonPage');
+        const lessonContent = document.getElementById('lessonPageContent');
+
+        const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
+        const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
+
+        const parsed = parseKey(lessonKey);
+        const lessonData = (journal && journal.lessons && journal.lessons[lessonKey]) || null;
+        const gradeVal = (journal && journal.grades && journal.grades[CURRENT_STUDENT.id] && journal.grades[CURRENT_STUDENT.id][lessonKey]) || null;
+        const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
+
+        // Учитель
+        const workload = ALL_WORKLOADS.find(w => w.subject === subjectName);
+        let teacherName = '—';
+        if (workload) {
+            const t = ALL_TEACHERS.find(x => x.id === workload.teacher_id);
+            if (t) teacherName = t.full_name;
+        }
+
+        // Аудитория
+        let roomName = '';
+        if (CURRENT_SCHEDULE && CURRENT_SCHEDULE.grid && parsed.date) {
+            const dow = parsed.date.getDay();
+            const dowKey = JS_DAY_MAP[dow];
+            if (dowKey) {
+                const dayGrid = CURRENT_SCHEDULE.grid[dowKey] || {};
+                const lessonInGrid = dayGrid[parsed.lesson] || dayGrid[String(parsed.lesson)];
+                if (lessonInGrid && lessonInGrid.roomName) {
+                    roomName = lessonInGrid.roomName;
+                }
+            }
+        }
+        if (!roomName && workload) {
+            const r = ALL_ROOMS.find(x => x.id === workload.room_id);
+            if (r) roomName = r.number + ' каб.';
+        }
+
+        // Формируем страницу
+        const topic = lessonData ? (lessonData.t || '') : '';
+        const homework = lessonData ? (lessonData.h || '') : '';
+
+        // Детали занятия
+        let detailRows = '';
+        detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Предмет:</div><div class="lesson-detail-value blue">${escapeHtml(subjectName)}</div></div>`;
+        detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Дата:</div><div class="lesson-detail-value">${escapeHtml(formatDateLong(parsed.date))}, ${parsed.lesson} занятие</div></div>`;
+        detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Кто приходит:</div><div class="lesson-detail-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>`;
+        detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Аудитория:</div><div class="lesson-detail-value">${escapeHtml(roomName || '—')}</div></div>`;
+        detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Тема занятия:</div><div class="lesson-detail-value">${topic ? escapeHtml(topic) : '-'}</div></div>`;
+
+        // Оценки за работу на занятии (таблица как на скрине 3)
+        const gradeDisplay = gradeVal ? escapeHtml(String(gradeVal)) : 'нет';
+        const gradeTypeFull = getLessonTypeFullName(lessonType);
+
+        const gradesTable = `
+            <table class="lesson-grades-table">
+                <thead><tr><th>Оценка</th></tr></thead>
+                <tbody>
+                    <tr><td>${escapeHtml(gradeTypeFull)}</td><td>${gradeDisplay}</td></tr>
+                </tbody>
+            </table>
+        `;
+
+        lessonContent.innerHTML = `
+            <button class="back-link" onclick="closeLessonPage()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Назад
+            </button>
+            <div class="lesson-page-title">Страница занятия</div>
+
+            <div class="lesson-grid">
+                <div>
+                    <div class="lesson-section-title" style="margin-top:0;">Детали занятия</div>
+                    <div class="lesson-details-block">
+                        ${detailRows}
+                    </div>
+
+                    <div class="lesson-section-title">Присутствие на уроке и комментарий преподавателя</div>
+                    <div class="lesson-empty-block">Данные не введены преподавателем.</div>
+
+                    <div class="lesson-section-title">Домашние задания</div>
+                    <div class="lesson-empty-block">
+                        ${homework ? escapeHtml(homework) : 'На это занятие не задано ни одного домашнего задания.'}
+                    </div>
+
+                    <div class="lesson-section-title">Оценки за работу на занятии</div>
+                    ${gradesTable}
+                </div>
+
+                <div>
+                    <div class="lesson-section-title" style="margin-top:0;">Преподаватель</div>
+                    <div class="lesson-teacher-card">
+                        <div class="lesson-teacher-avatar">👤</div>
+                        <div class="lesson-teacher-name">${escapeHtml(teacherName)}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        mainContent.style.display = 'none';
+        lessonPage.style.display = 'block';
+    }
+
+    function getLessonTypeFullName(abbr) {
+        const map = {
+            'ОТВ': 'Ответ на уроке',
+            'К/Р': 'Контрольная работа',
+            'С/Р': 'Самостоятельная работа',
+            'Д': 'Диктант',
+            'СОЧ': 'Сочинение',
+            'И': 'Изложение',
+            'Тест': 'Тест',
+            'ПР': 'Проверочная работа',
+            'Л/Р': 'Лабораторная работа',
+            'Пр-т': 'Проект',
+            'РЕФ': 'Реферат',
+            'Зчт': 'Зачет',
+            'ДОК': 'Доклад',
+            'Р/У': 'Работа на уроке',
+            'РНО': 'Работа над ошибками',
+            'О': 'Опрос',
+            'Д/Р': 'Домашняя работа',
+            'УС': 'Устный счет',
+            'Наиз': 'Наизусть',
+            'ЧИТ': 'Чтение'
+        };
+        return map[abbr] || abbr;
+    }
+
+    function closeLessonPage() {
+        document.getElementById('lessonPage').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+    }
+
+    // ============================================================
+    // МОДАЛКА СТАТИСТИКИ
     // ============================================================
     function openStats(subjectName, lessonKey) {
         const journal = ALL_JOURNALS.find(j => {
@@ -1450,86 +1549,11 @@
         if (e.target.id === 'statsModal') closeStats();
     });
 
-    // ============================================================
-    // МОДАЛКА СТРАНИЦЫ УРОКА (клик по уроку)
-    // ============================================================
-    function openLessonModal(subjectName, lessonKey) {
-        const modal = document.getElementById('lessonModal');
-        const title = document.getElementById('lessonModalTitle');
-        const subtitle = document.getElementById('lessonModalSubtitle');
-        const content = document.getElementById('lessonModalContent');
-
-        const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
-        const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
-
-        const parsed = parseKey(lessonKey);
-        const lessonData = (journal && journal.lessons && journal.lessons[lessonKey]) || null;
-        const gradeVal = (journal && journal.grades && journal.grades[CURRENT_STUDENT.id] && journal.grades[CURRENT_STUDENT.id][lessonKey]) || null;
-        const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
-
-        // Учитель
-        const workload = ALL_WORKLOADS.find(w => w.subject === subjectName);
-        let teacherName = '—';
-        if (workload) {
-            const t = ALL_TEACHERS.find(x => x.id === workload.teacher_id);
-            if (t) teacherName = t.full_name;
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeStats();
+            closeLessonPage();
         }
-
-        title.textContent = subjectName;
-        subtitle.textContent = `${parsed.dateRu} · ${parsed.lesson}-й урок · ${lessonType}`;
-
-        let html = '';
-
-        // Оценка
-        if (gradeVal) {
-            const cls = gradeClass(gradeVal);
-            html += `<div class="lesson-my-grade">
-                <div class="lesson-my-grade-box ${cls}">${escapeHtml(String(gradeVal))}</div>
-                <div class="lesson-my-grade-text">
-                    Твоя оценка за этот урок.<br>
-                    <b>Тип работы:</b> ${escapeHtml(lessonType)}
-                </div>
-            </div>`;
-        } else {
-            html += `<div class="lesson-my-grade">
-                <div class="lesson-my-grade-box" style="background:#e2e8f0;color:#94a3b8;">—</div>
-                <div class="lesson-my-grade-text">
-                    Оценки за этот урок нет.<br>
-                    <b>Тип работы:</b> ${escapeHtml(lessonType)}
-                </div>
-            </div>`;
-        }
-
-        // Тема
-        const topic = lessonData ? (lessonData.t || '') : '';
-        html += `<div class="lesson-info-block">
-            <div class="lesson-info-label">Тема урока</div>
-            <div class="lesson-info-value ${topic ? '' : 'empty'}">${topic ? escapeHtml(topic) : 'Тема не указана'}</div>
-        </div>`;
-
-        // ДЗ
-        const homework = lessonData ? (lessonData.h || '') : '';
-        html += `<div class="lesson-info-block">
-            <div class="lesson-info-label">Домашнее задание</div>
-            <div class="lesson-info-value ${homework ? '' : 'empty'}">${homework ? escapeHtml(homework) : 'ДЗ не задано'}</div>
-        </div>`;
-
-        // Учитель
-        html += `<div class="lesson-info-block">
-            <div class="lesson-info-label">Учитель</div>
-            <div class="lesson-info-value">${escapeHtml(teacherName)}</div>
-        </div>`;
-
-        content.innerHTML = html;
-        modal.classList.add('show');
-    }
-
-    function closeLessonModal() {
-        document.getElementById('lessonModal').classList.remove('show');
-    }
-
-    document.getElementById('lessonModal').addEventListener('click', (e) => {
-        if (e.target.id === 'lessonModal') closeLessonModal();
     });
 
     // ============================================================
