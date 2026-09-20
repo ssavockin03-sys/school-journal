@@ -531,7 +531,17 @@ async function loadJournal(classId, subjectId, subjectName) {
     } : { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
 
     const schedules = await DB.getAll('class_schedules');
-    CURRENT_SCHEDULE = schedules.find(s => s.class_id === classId);
+// Расписание привязано к периоду — ищем для текущего периода
+let foundSchedule = schedules.find(s =>
+    s.class_id === classId && s.period_index === ACTIVE_PERIOD_INDEX
+);
+// Обратная совместимость: старое расписание = I четверть
+if (!foundSchedule && ACTIVE_PERIOD_INDEX === 0) {
+    foundSchedule = schedules.find(s =>
+        s.class_id === classId && s.period_index === undefined
+    );
+}
+CURRENT_SCHEDULE = foundSchedule;
 
     // Текущий период по дате (если ещё не выбран)
     if (PERIODS.length > 0 && ACTIVE_PERIOD_INDEX === 0) {
