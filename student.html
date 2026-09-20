@@ -71,8 +71,8 @@
         .week-grid::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         .day-column {
-            flex: 0 0 240px;
-            min-width: 240px;
+            flex: 0 0 250px;
+            min-width: 250px;
             background: #fff;
             border-radius: 14px;
             box-shadow: 0 4px 16px rgba(30,60,114,0.07);
@@ -105,11 +105,12 @@
             border-radius: 10px;
             padding: 10px 12px;
             border-left: 3px solid #93c5fd;
+            position: relative;
         }
         .lesson-card.empty { background: transparent; border-left: 3px dashed #e2e8f0; padding: 6px 12px; }
         .lesson-card.empty .lesson-subject { color: #cbd5e1; font-weight: 400; font-style: italic; font-size: 12px; }
 
-        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; }
+        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 34px; }
         .lesson-num {
             width: 20px; height: 20px;
             background: #dbeafe; color: #2563eb;
@@ -124,6 +125,37 @@
         .lesson-label { font-weight: 700; color: #7a8aa3; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
         .lesson-value { color: #334155; }
         .lesson-value.hw { color: #1e40af; }
+
+        /* Оценка в дневнике */
+        .lesson-grade {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            min-width: 26px;
+            height: 26px;
+            padding: 0 7px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+        }
+        .lesson-grade.g5 { background: #65A30D; }
+        .lesson-grade.g4 { background: #84CC16; }
+        .lesson-grade.g3 { background: #FB923C; }
+        .lesson-grade.g2 { background: #DC2626; }
+        .lesson-grade.g1 { background: #7f1d1d; }
+        .lesson-grade.gn { background: #94A3B8; }
+        .lesson-grade.no-grade {
+            background: #e2e8f0;
+            color: #94a3b8;
+            font-weight: 400;
+            font-size: 12px;
+            box-shadow: none;
+        }
 
         /* ===== ОЦЕНКИ ===== */
         .period-tabs-wrapper { margin-bottom: 16px; }
@@ -491,8 +523,21 @@
     }
 
     // ============================================================
-    // ДНЕВНИК — горизонтальная сетка
+    // ДНЕВНИК
     // ============================================================
+    function getLessonGrade(date, lessonNum, subjectName) {
+        // Ищем журнал по этому предмету
+        const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
+        if (!subjObj) return null;
+        const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
+        if (!journal || !journal.grades) return null;
+
+        const studentGrades = journal.grades[CURRENT_STUDENT.id] || {};
+        const key = isoDate(date) + '_' + lessonNum;
+        const val = studentGrades[key];
+        return val ? String(val).trim() : null;
+    }
+
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         const monday = getMondayOfCurrentWeek();
@@ -521,7 +566,6 @@
 
         const grid = CURRENT_SCHEDULE.grid;
 
-        // Максимум уроков за неделю
         let maxLesson = 7;
         DAYS_KEYS.forEach(day => {
             const dayGrid = grid[day] || {};
@@ -545,9 +589,6 @@
                     continue;
                 }
 
-                const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
-                const subjectId = subjObj ? subjObj.id : null;
-
                 let teacherName = '';
                 if (lesson.teacherName) teacherName = lesson.teacherName;
                 else if (lesson.teacherId) {
@@ -563,8 +604,9 @@
                 }
 
                 let topic = '', homework = '';
-                if (subjectId) {
-                    const journal = ALL_JOURNALS.find(j => j.subject_id === subjectId);
+                const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
+                if (subjObj) {
+                    const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
                     if (journal && journal.lessons) {
                         const key = isoDate(date) + '_' + n;
                         const lessonData = journal.lessons[key];
@@ -573,6 +615,16 @@
                             homework = lessonData.h || '';
                         }
                     }
+                }
+
+                // Оценка
+                const gradeVal = getLessonGrade(date, n, lesson.subject);
+                let gradeHtml = '';
+                if (gradeVal) {
+                    const cls = gradeClass(gradeVal);
+                    gradeHtml = `<div class="lesson-grade ${cls}" title="Оценка за урок">${escapeHtml(gradeVal)}</div>`;
+                } else {
+                    gradeHtml = `<div class="lesson-grade no-grade" title="Оценки нет">—</div>`;
                 }
 
                 const metaParts = [];
@@ -584,6 +636,7 @@
 
                 lessonsHtml += `
                     <div class="lesson-card">
+                        ${gradeHtml}
                         <div class="lesson-row-head">
                             <div class="lesson-num">${n}</div>
                             <div class="lesson-subject">${escapeHtml(lesson.subject)}</div>
@@ -633,7 +686,6 @@
         }
 
         const range = getPeriodRange();
-
         const seen = new Set();
         const subjects = [];
         ALL_WORKLOADS.forEach(w => {
@@ -868,7 +920,22 @@
         ALL_WORKLOADS = workloads.filter(w => w.class_id === CURRENT_STUDENT.class_id);
         ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
         CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
-        CURRENT_SCHEDULE = schedules.find(s => s.class_id === CURRENT_STUDENT.class_id) || null;
+
+        // ===== МЕРЖ ВСЕХ class_schedules ЭТОГО КЛАССА =====
+        const classSchedules = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
+        const mergedGrid = {};
+        classSchedules.forEach(s => {
+            if (!s.grid) return;
+            Object.entries(s.grid).forEach(([day, lessons]) => {
+                if (!mergedGrid[day]) mergedGrid[day] = {};
+                Object.entries(lessons || {}).forEach(([num, lesson]) => {
+                    if (lesson && lesson.subject && !mergedGrid[day][num]) {
+                        mergedGrid[day][num] = lesson;
+                    }
+                });
+            });
+        });
+        CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
 
         const periodDoc = periodDocs[0] || null;
         PERIODS = periodDoc ? (periodDoc.periods || []) : [];
