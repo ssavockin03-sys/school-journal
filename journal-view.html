@@ -477,7 +477,6 @@ async function init() {
         .filter(s => s.class_id === CLASS_ID)
         .sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
 
-    // ===== ЗАГРУЗКА ПЕРИОДОВ =====
     const periodDocs = await DB.getAll('educational_periods');
     const periodDoc = periodDocs[0] || null;
     PERIODS = periodDoc ? (periodDoc.periods || []) : [];
