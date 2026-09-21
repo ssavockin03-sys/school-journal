@@ -534,8 +534,65 @@ async function buildDatesForPeriod(periodIndex) {
     if (!subPeriod) return [];
 
     const schedules = await DB.getAll('class_schedules');
-    const classSchedule = schedules.find(s => s.class_id === CLASS_ID);
+
+    // ⬇⬇⬇ ИЩЕМ РАСПИСАНИЕ ИМЕННО ЭТОЙ ЧЕТВЕРТИ ⬇⬇⬇
+    // 1. Сначала ищем документ с class_id И period_index = текущая четверть
+    let classSchedule = schedules.find(s =>
+        s.class_id === CLASS_ID && s.period_index === periodIndex
+    );
+
+    // 2. Если для этой четверти расписания нет — пробуем взять "общее"
+    //    (старые документы без period_index — считаем их расписанием I четверти)
+    if (!classSchedule && periodIndex === 0) {
+        classSchedule = schedules.find(s =>
+            s.class_id === CLASS_ID && s.period_index === undefined
+        );
+    }
+
     if (!classSchedule || !classSchedule.grid) return [];
+    // ⬆⬆⬆ КОНЕЦ ПРАВКИ ⬆⬆⬆
+
+    const grid = classSchedule.grid;
+    const result = [];
+    const seen = new Set();
+
+    const start = new Date(subPeriod.start + 'T00:00:00');
+    const end = new Date(subPeriod.end + 'T23:59:59');
+    const cursor = new Date(start);
+
+    while (cursor <= end) {
+        const jsDay = cursor.getDay();
+        const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
+
+        if (dayKey && grid[dayKey]) {
+            Object.keys(grid[dayKey]).forEach(lessonNumStr => {
+                const lesson = grid[dayKey][lessonNumStr];
+                if (lesson && lesson.subject === SUBJECT_NAME) {
+                    const iso = formatIso(cursor);
+                    const key = iso + '_' + lessonNumStr;
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        result.push({
+                            iso: iso,
+                            dateNoYear: formatDateNoYear(cursor),
+                            dateFull: formatDateFull(cursor),
+                            dayKey: dayKey,
+                            lessonNum: parseInt(lessonNumStr, 10),
+                            gradeKey: key
+                        });
+                    }
+                }
+            });
+        }
+        cursor.setDate(cursor.getDate() + 1);
+    }
+
+    result.sort((a, b) => {
+        if (a.iso !== b.iso) return a.iso.localeCompare(b.iso);
+        return a.lessonNum - b.lessonNum;
+    });
+    return result;
+}
 
     const grid = classSchedule.grid;
     const result = [];
