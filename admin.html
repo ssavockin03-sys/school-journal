@@ -8,24 +8,20 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
 body { min-height: 100vh; background: #fff; color: #1a2b4a; }
 
-/* ЭКРАН ЗАГРУЗКИ */
 .loading-screen { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; }
 .loading-screen.hidden { display: none; }
-.loading-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 460px; width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,0.35); text-align: center; }
+.loading-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 480px; width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,0.35); text-align: center; }
 .loading-spinner { width: 56px; height: 56px; border: 5px solid rgba(42,82,152,0.15); border-top-color: #2a5298; border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 20px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-text { font-size: 15px; color: #5a6a85; font-weight: 500; }
 .loading-error-title { font-size: 20px; font-weight: 700; color: #d32f2f; margin-bottom: 12px; }
 .loading-error-text { font-size: 14px; color: #4a5a72; line-height: 1.6; margin-bottom: 16px; text-align: left; }
-.loading-error-detail { font-size: 12px; color: #8a9bb5; background: #f7f9fc; padding: 10px; border-radius: 8px; word-break: break-word; max-height: 180px; overflow: auto; text-align: left; margin-bottom: 16px; }
+.loading-error-detail { font-size: 12px; color: #8a9bb5; background: #f7f9fc; padding: 10px; border-radius: 8px; word-break: break-word; max-height: 200px; overflow: auto; text-align: left; margin-bottom: 16px; font-family: Consolas, monospace; }
 .loading-btn { width: 100%; height: 44px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 8px; }
 .loading-btn-primary { background: #1976d2; color: #fff; }
 .loading-btn-secondary { background: #f0f2f5; color: #4a5a72; }
 
-/* ОБЁРТКА */
 .page-wrapper { max-width: 1400px; margin: 0 auto; background: #fff; min-height: 100vh; }
-
-/* ВЕРХНЯЯ ПОЛОСА */
 .top-header { background: linear-gradient(135deg, #1565c0, #1976d2); color: #fff; position: sticky; top: 0; z-index: 100; }
 .top-header-inner { padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 20px; }
 .top-header-nav { display: flex; gap: 0; align-items: center; flex: 1; }
@@ -41,7 +37,6 @@ body { min-height: 100vh; background: #fff; color: #1a2b4a; }
 .top-logout-btn:hover { background: rgba(255,255,255,0.25); }
 .top-logout-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
-/* ПОДРАЗДЕЛЫ */
 .sub-header { background: #fff; border-bottom: 1px solid #e2e8f0; position: sticky; top: 56px; z-index: 99; }
 .sub-header-inner { padding: 0 32px; display: flex; align-items: center; gap: 0; overflow-x: auto; }
 .sub-header-inner::-webkit-scrollbar { height: 0; display: none; }
@@ -56,7 +51,6 @@ body { min-height: 100vh; background: #fff; color: #1a2b4a; }
 .page-title { font-size: 28px; font-weight: 400; color: #1976d2; margin-bottom: 12px; }
 .container { padding: 0 32px 60px; }
 
-/* КАРТОЧКИ */
 .panel-grid { display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; }
 .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; }
 .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid #eef2f8; }
@@ -319,7 +313,6 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
 </div>
 
 <div id="appContainer" class="page-wrapper" style="display:none;">
-
     <header class="top-header">
         <div class="top-header-inner">
             <nav class="top-header-nav">
@@ -340,9 +333,7 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
         </div>
     </header>
 
-    <div class="sub-header" id="subHeader">
-        <div class="sub-header-inner" id="subHeaderInner"></div>
-    </div>
+    <div class="sub-header" id="subHeader"><div class="sub-header-inner" id="subHeaderInner"></div></div>
 
     <div class="school-bar">
         <div class="school-name">ГОУ ЛНР «АСШ № 6»</div>
@@ -350,8 +341,6 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
     </div>
 
     <div class="container">
-
-        <!-- КЛАССЫ -->
         <div class="tab-panel active" id="panel-classes">
             <div class="panel-grid">
                 <div class="card">
@@ -365,17 +354,13 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
                 <div class="card">
                     <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></div><h2>Список классов</h2></div>
                     <div class="table-wrapper">
-                        <table class="data-table" id="classesTable">
-                            <thead><tr><th>Класс</th><th>Классный руководитель</th><th>Учеников</th><th></th></tr></thead>
-                            <tbody id="classesBody"></tbody>
-                        </table>
-                        <div class="empty-state" id="classesEmpty"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg><p>Пока нет ни одного класса</p></div>
+                        <table class="data-table" id="classesTable"><thead><tr><th>Класс</th><th>Классный руководитель</th><th>Учеников</th><th></th></tr></thead><tbody id="classesBody"></tbody></table>
+                        <div class="empty-state" id="classesEmpty"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><p>Пока нет ни одного класса</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- УЧИТЕЛЯ -->
         <div class="tab-panel" id="panel-teachers">
             <div class="panel-grid">
                 <div class="card">
@@ -388,35 +373,30 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
                         </div>
                         <div class="form-group"><label for="teacherSubject">Предмет <span class="required">*</span></label><select id="teacherSubject" required></select></div>
                         <div class="form-row">
-                            <div class="form-group"><label for="teacherEmail">Почта <span class="required">*</span></label><input type="email" id="teacherEmail" placeholder="ivanov@school.ru" required></div>
-                            <div class="form-group"><label for="teacherPhone">Телефон <span class="required">*</span></label><input type="tel" id="teacherPhone" placeholder="+7 (999) 123-45-67" required></div>
+                            <div class="form-group"><label for="teacherEmail">Почта <span class="required">*</span></label><input type="email" id="teacherEmail" required></div>
+                            <div class="form-group"><label for="teacherPhone">Телефон <span class="required">*</span></label><input type="tel" id="teacherPhone" required></div>
                         </div>
                         <div class="form-row">
                             <div class="form-group"><label for="teacherLogin">Логин</label><input type="text" id="teacherLogin" readonly></div>
                             <div class="form-group"><label for="teacherPassword">Пароль</label><input type="text" id="teacherPassword" readonly></div>
                         </div>
-                        <div class="hint-text"><svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>Логин и пароль создаются автоматически</div>
                         <button type="submit" class="btn-submit"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Создать учителя</button>
                     </form>
                 </div>
                 <div class="card">
                     <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></div><h2>Список учителей</h2></div>
                     <div class="table-wrapper">
-                        <table class="data-table" id="teachersTable">
-                            <thead><tr><th>ФИО</th><th>Предмет</th><th>Д.Р.</th><th>Пол</th><th>Контакты</th><th>Логин</th><th></th></tr></thead>
-                            <tbody id="teachersBody"></tbody>
-                        </table>
-                        <div class="empty-state" id="teachersEmpty"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><p>Пока нет ни одного учителя</p></div>
+                        <table class="data-table" id="teachersTable"><thead><tr><th>ФИО</th><th>Предмет</th><th>Д.Р.</th><th>Пол</th><th>Контакты</th><th>Логин</th><th></th></tr></thead><tbody id="teachersBody"></tbody></table>
+                        <div class="empty-state" id="teachersEmpty"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/></svg><p>Пока нет ни одного учителя</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- УЧЕНИКИ -->
         <div class="tab-panel" id="panel-students">
             <div class="panel-grid">
                 <div class="card">
-                    <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><h2>Создать аккаунт ученика</h2></div>
+                    <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3z"/></svg></div><h2>Создать аккаунт ученика</h2></div>
                     <form id="studentForm">
                         <div class="form-group"><label for="studentFullName">ФИО <span class="required">*</span></label><input type="text" id="studentFullName" placeholder="Петров Пётр Петрович" required></div>
                         <div class="form-row">
@@ -425,8 +405,8 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
                         </div>
                         <div class="form-group"><label for="studentClass">Класс <span class="required">*</span></label><select id="studentClass" required></select><div class="hint-text" id="studentClassHint"></div></div>
                         <div class="form-row">
-                            <div class="form-group"><label for="studentEmail">Почта <span class="required">*</span></label><input type="email" id="studentEmail" placeholder="petrov@school.ru" required></div>
-                            <div class="form-group"><label for="studentPhone">Телефон <span class="required">*</span></label><input type="tel" id="studentPhone" placeholder="+7 (999) 123-45-67" required></div>
+                            <div class="form-group"><label for="studentEmail">Почта <span class="required">*</span></label><input type="email" id="studentEmail" required></div>
+                            <div class="form-group"><label for="studentPhone">Телефон <span class="required">*</span></label><input type="tel" id="studentPhone" required></div>
                         </div>
                         <div class="form-row">
                             <div class="form-group"><label for="studentLogin">Логин</label><input type="text" id="studentLogin" readonly></div>
@@ -438,21 +418,17 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
                 <div class="card">
                     <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></div><h2>Список учеников</h2></div>
                     <div class="table-wrapper">
-                        <table class="data-table" id="studentsTable">
-                            <thead><tr><th>ФИО</th><th>Класс</th><th>Д.Р.</th><th>Пол</th><th>Контакты</th><th>Логин</th><th></th></tr></thead>
-                            <tbody id="studentsBody"></tbody>
-                        </table>
-                        <div class="empty-state" id="studentsEmpty"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><p>Пока нет ни одного ученика</p></div>
+                        <table class="data-table" id="studentsTable"><thead><tr><th>ФИО</th><th>Класс</th><th>Д.Р.</th><th>Пол</th><th>Контакты</th><th>Логин</th><th></th></tr></thead><tbody id="studentsBody"></tbody></table>
+                        <div class="empty-state" id="studentsEmpty"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3z"/></svg><p>Пока нет ни одного ученика</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ПРЕДМЕТЫ -->
         <div class="tab-panel" id="panel-subjects">
             <div class="panel-grid">
                 <div class="card">
-                    <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-5 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm4 8h-8v-1c0-1.33 2.67-2 4-2s4 .67 4 2v1z"/></svg></div><h2>Добавить предмет</h2></div>
+                    <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg></div><h2>Добавить предмет</h2></div>
                     <form id="subjectForm">
                         <div class="form-group"><label for="subjectName">Название предмета <span class="required">*</span></label><input type="text" id="subjectName" placeholder="Например: Биология" required></div>
                         <div class="form-group"><label for="subjectDirection">Направление <span class="required">*</span></label><select id="subjectDirection" required><option value="" disabled selected>Выберите направление</option><option value="Точные науки">Точные науки</option><option value="Гуманитарные науки">Гуманитарные науки</option><option value="Естественные науки">Естественные науки</option><option value="Спорт и искусство">Спорт и искусство</option></select></div>
@@ -462,21 +438,17 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
                 <div class="card">
                     <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></div><h2>Список предметов</h2></div>
                     <div class="table-wrapper">
-                        <table class="data-table" id="subjectsTable">
-                            <thead><tr><th>Название</th><th>Направление</th><th></th></tr></thead>
-                            <tbody id="subjectsBody"></tbody>
-                        </table>
+                        <table class="data-table" id="subjectsTable"><thead><tr><th>Название</th><th>Направление</th><th></th></tr></thead><tbody id="subjectsBody"></tbody></table>
                         <div class="empty-state" id="subjectsEmpty"><svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg><p>Пока нет ни одного предмета</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- КАБИНЕТЫ -->
         <div class="tab-panel" id="panel-rooms">
             <div class="panel-grid">
                 <div class="card">
-                    <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg></div><h2>Добавить кабинет</h2></div>
+                    <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></div><h2>Добавить кабинет</h2></div>
                     <form id="roomForm">
                         <div class="form-group"><label for="roomNumber">Номер кабинета <span class="required">*</span></label><input type="text" id="roomNumber" placeholder="Например: 204" required></div>
                         <div class="form-group"><label for="roomName">Наименование <span class="required">*</span></label><input type="text" id="roomName" placeholder="Кабинет химии" required></div>
@@ -486,22 +458,15 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
                 <div class="card">
                     <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></div><h2>Список кабинетов</h2></div>
                     <div class="table-wrapper">
-                        <table class="data-table" id="roomsTable">
-                            <thead><tr><th>Номер</th><th>Наименование</th><th></th></tr></thead>
-                            <tbody id="roomsBody"></tbody>
-                        </table>
+                        <table class="data-table" id="roomsTable"><thead><tr><th>Номер</th><th>Наименование</th><th></th></tr></thead><tbody id="roomsBody"></tbody></table>
                         <div class="empty-state" id="roomsEmpty"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><p>Пока нет ни одного кабинета</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- НАГРУЗКА -->
         <div class="tab-panel" id="panel-workload">
-            <div class="workload-filter">
-                <label for="workloadClassSelect">Класс:</label>
-                <select id="workloadClassSelect"></select>
-            </div>
+            <div class="workload-filter"><label for="workloadClassSelect">Класс:</label><select id="workloadClassSelect"></select></div>
             <div id="workloadContent" style="display:none;">
                 <div class="panel-grid">
                     <div class="card">
@@ -517,104 +482,69 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
                     <div class="card">
                         <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></div><h2>Учебный план класса</h2></div>
                         <div class="table-wrapper">
-                            <table class="data-table" id="workloadTable">
-                                <thead><tr><th>Предмет</th><th>Подгруппа</th><th>Учитель</th><th>Кабинет</th><th></th></tr></thead>
-                                <tbody id="workloadBody"></tbody>
-                            </table>
+                            <table class="data-table" id="workloadTable"><thead><tr><th>Предмет</th><th>Подгруппа</th><th>Учитель</th><th>Кабинет</th><th></th></tr></thead><tbody id="workloadBody"></tbody></table>
                             <div class="empty-state" id="workloadEmpty"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><p>Для этого класса ещё не создана нагрузка</p></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card" id="workloadNoClasses" style="display:none;">
-                <div class="empty-state"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg><p>Сначала создайте хотя бы один класс на вкладке «Классы»</p></div>
-            </div>
+            <div class="card" id="workloadNoClasses" style="display:none;"><div class="empty-state"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg><p>Сначала создайте хотя бы один класс на вкладке «Классы»</p></div></div>
         </div>
 
-        <!-- ЗВОНКИ -->
         <div class="tab-panel" id="panel-bells">
             <div class="bells-toolbar">
                 <div class="bells-shifts" id="bellsShifts"></div>
-                <button type="button" class="btn-outline" onclick="openAddShiftModal()" style="background:linear-gradient(135deg,#1976d2,#2196f3);color:#fff;border:none;">
-                    <svg viewBox="0 0 24 24" style="fill:#fff;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    Создать смену
-                </button>
+                <button type="button" class="btn-outline" onclick="openAddShiftModal()" style="background:linear-gradient(135deg,#1976d2,#2196f3);color:#fff;border:none;"><svg viewBox="0 0 24 24" style="fill:#fff;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Создать смену</button>
             </div>
             <div class="bells-card" id="bellsContent" style="display:none;">
                 <div class="bells-header">
                     <div class="bells-header-title"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><span id="bellsCurrentShiftName">Расписание звонков</span></div>
-                    <button type="button" class="btn-outline danger" onclick="deleteCurrentShift()"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>Удалить смену</button>
+                    <button type="button" class="btn-outline danger" onclick="deleteCurrentShift()"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg>Удалить смену</button>
                 </div>
-                <div class="bell-table-wrapper">
-                    <table class="bell-table" id="bellTable">
-                        <thead><tr><th>#</th><th>ПО</th><th>ВТ</th><th>СР</th><th>ЧЕ</th><th>ПЯ</th><th>СУ</th></tr></thead>
-                        <tbody id="bellTableBody"></tbody>
-                    </table>
-                </div>
+                <div class="bell-table-wrapper"><table class="bell-table"><thead><tr><th>#</th><th>ПО</th><th>ВТ</th><th>СР</th><th>ЧЕ</th><th>ПЯ</th><th>СУ</th></tr></thead><tbody id="bellTableBody"></tbody></table></div>
                 <div class="bells-footer">
                     <div class="bells-footer-left">
-                        <button type="button" class="btn-outline" onclick="addLessonRow()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>+ ДОБАВИТЬ УРОК</button>
-                        <button type="button" class="btn-outline danger" onclick="removeLessonRow()"><svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>− УДАЛИТЬ ПОСЛЕДНИЙ</button>
+                        <button type="button" class="btn-outline" onclick="addLessonRow()">+ Добавить урок</button>
+                        <button type="button" class="btn-outline danger" onclick="removeLessonRow()">− Удалить последний</button>
                     </div>
-                    <button type="button" class="btn-save-bells" onclick="saveBellSchedule()"><svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Сохранить</button>
+                    <button type="button" class="btn-save-bells" onclick="saveBellSchedule()">Сохранить</button>
                 </div>
-                <div class="bells-hint"><svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>Оставьте поля пустыми для нерабочих уроков</div>
+                <div class="bells-hint">Оставьте поля пустыми для нерабочих уроков</div>
             </div>
-            <div class="card" id="bellsNoShifts" style="display:none;">
-                <div class="empty-state"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><p>Нет ни одной смены. Нажмите «Создать смену», чтобы начать</p></div>
-            </div>
+            <div class="card" id="bellsNoShifts" style="display:none;"><div class="empty-state"><p>Нет ни одной смены. Нажмите «Создать смену», чтобы начать</p></div></div>
         </div>
 
-        <!-- РАСПИСАНИЕ -->
         <div class="tab-panel" id="panel-schedule">
             <div class="workload-filter">
-                <label for="schedulePeriodSelect">Период:</label>
-                <select id="schedulePeriodSelect"></select>
-                <label for="scheduleClassSelect">Класс:</label>
-                <select id="scheduleClassSelect"></select>
+                <label for="schedulePeriodSelect">Период:</label><select id="schedulePeriodSelect"></select>
+                <label for="scheduleClassSelect">Класс:</label><select id="scheduleClassSelect"></select>
             </div>
             <div id="scheduleContent" style="display:none;">
-                <div class="schedule-info"><svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>Для назначения урока нажмите кнопку «Назначить». В окне выберите связку из «Нагрузки» этого класса.</div>
+                <div class="schedule-info">Для назначения урока нажмите «Назначить». В окне выберите связку из «Нагрузки» этого класса.</div>
                 <div class="schedule-day-grid" id="scheduleDayGrid"></div>
-                <div class="schedule-footer"><button type="button" class="btn-save-schedule" onclick="saveClassSchedule()"><svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Сохранить расписание</button></div>
+                <div class="schedule-footer"><button type="button" class="btn-save-schedule" onclick="saveClassSchedule()">Сохранить расписание</button></div>
             </div>
-            <div class="card" id="scheduleNoClasses" style="display:none;">
-                <div class="empty-state"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg><p>Сначала создайте хотя бы один класс на вкладке «Классы»</p></div>
-            </div>
-            <div class="card" id="scheduleNoWorkload" style="display:none;">
-                <div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><p>Для этого класса не создана «Нагрузка». Перейдите на вкладку «Нагрузка» и добавьте предметы.</p></div>
-            </div>
-            <div class="card" id="scheduleNoPeriods" style="display:none;">
-                <div class="empty-state"><svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg><p>Сначала создайте хотя бы один период на вкладке «Периоды». Расписание привязано к периоду.</p></div>
-            </div>
+            <div class="card" id="scheduleNoClasses" style="display:none;"><div class="empty-state"><p>Сначала создайте класс</p></div></div>
+            <div class="card" id="scheduleNoWorkload" style="display:none;"><div class="empty-state"><p>Для этого класса не создана «Нагрузка»</p></div></div>
+            <div class="card" id="scheduleNoPeriods" style="display:none;"><div class="empty-state"><p>Сначала создайте период на вкладке «Периоды»</p></div></div>
         </div>
 
-        <!-- ЖУРНАЛЫ -->
         <div class="tab-panel" id="panel-journals">
             <div id="journalsListScreen">
                 <div class="year-banner"><span class="year-banner-text">2026/2027 учебный год</span><span class="year-badge">Текущий год</span></div>
-                <div class="quick-actions">
-                    <button class="btn-quick" onclick="journalQuickAction('Просмотр')"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>Просмотр</button>
-                    <button class="btn-quick" onclick="journalQuickAction('Печать')"><svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>Печать</button>
-                    <button class="btn-quick" onclick="journalQuickAction('Экспорт')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Экспорт</button>
-                    <button class="btn-quick" onclick="journalQuickAction('Печать аттестатов')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Печать аттестатов</button>
-                </div>
                 <div id="journalsClassesContainer"></div>
             </div>
             <div id="journalChooserScreen" class="journal-chooser-screen">
-                <div class="chooser-header">
-                    <button class="back-btn" onclick="backToJournalsList()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>Назад к списку классов</button>
-                    <div class="chooser-title" id="chooserTitle">Класс</div>
-                </div>
+                <div class="chooser-header"><button class="back-btn" onclick="backToJournalsList()">← Назад</button><div class="chooser-title" id="chooserTitle">Класс</div></div>
                 <div class="chooser-grid">
                     <div class="chooser-column">
-                        <div class="chooser-column-header"><div class="chooser-column-title">Журнал за день</div><div class="month-nav"><button class="month-nav-btn" onclick="chooserPrevMonth()">‹ Пред</button><button class="month-nav-btn" onclick="chooserNextMonth()">След ›</button></div></div>
-                        <div class="month-label" id="chooserMonthLabel" style="margin-bottom:10px;">Ноябрь 2024</div>
+                        <div class="chooser-column-header"><div class="chooser-column-title">Журнал за день</div></div>
+                        <div class="month-label" id="chooserMonthLabel"></div>
                         <table class="calendar-table"><thead><tr><th>П</th><th>В</th><th>С</th><th>Ч</th><th>П</th><th class="weekend">С</th><th class="weekend">В</th></tr></thead><tbody id="chooserDayCalendar"></tbody></table>
                     </div>
                     <div class="chooser-column">
-                        <div class="chooser-column-header"><div class="chooser-column-title">Журнал за неделю</div><div class="month-nav"><button class="month-nav-btn" onclick="chooserPrevMonthWeek()">‹ Пред</button><button class="month-nav-btn" onclick="chooserNextMonthWeek()">След ›</button></div></div>
-                        <div class="month-label" id="chooserMonthLabelWeek" style="margin-bottom:10px;">Ноябрь 2024</div>
+                        <div class="chooser-column-header"><div class="chooser-column-title">Журнал за неделю</div></div>
+                        <div class="month-label" id="chooserMonthLabelWeek"></div>
                         <table class="calendar-table"><thead><tr><th class="week-num-col">№ нед.</th><th>П</th><th>В</th><th>С</th><th>Ч</th><th>П</th><th class="weekend">С</th><th class="weekend">В</th></tr></thead><tbody id="chooserWeekCalendar"></tbody></table>
                     </div>
                     <div class="chooser-column">
@@ -625,44 +555,39 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
             </div>
         </div>
 
-        <!-- ПЕРИОДЫ -->
         <div class="tab-panel" id="panel-periods">
-            <div class="periods-toolbar">
-                <div class="periods-toolbar-title">Учебные периоды</div>
-                <button type="button" class="btn-add-period" onclick="openAddPeriodModal()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Добавить период</button>
-            </div>
+            <div class="periods-toolbar"><div class="periods-toolbar-title">Учебные периоды</div><button type="button" class="btn-add-period" onclick="openAddPeriodModal()">Добавить период</button></div>
             <div class="periods-card">
-                <div class="periods-card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></div><h2>Список созданных периодов</h2></div>
+                <div class="periods-card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2z"/></svg></div><h2>Список созданных периодов</h2></div>
                 <div class="table-wrapper">
-                    <table class="data-table" id="periodsTable"><thead><tr><th>Название периода</th><th>Система</th><th>Даты</th><th></th></tr></thead><tbody id="periodsBody"></tbody></table>
-                    <div class="empty-state" id="periodsEmpty"><svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg><p>Пока нет ни одного периода. Нажмите «Добавить период», чтобы создать</p></div>
+                    <table class="data-table"><thead><tr><th>Название</th><th>Система</th><th>Даты</th><th></th></tr></thead><tbody id="periodsBody"></tbody></table>
+                    <div class="empty-state" id="periodsEmpty"><p>Пока нет ни одного периода</p></div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <div class="tab-panel" id="panel-chats"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Чаты</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
-        <div class="tab-panel" id="panel-news"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Новости</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
-        <div class="tab-panel" id="panel-support"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Поддержка</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
-        <div class="tab-panel" id="panel-library"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Библиотека</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
-        <div class="tab-panel" id="panel-olymp"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Олимпиады</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
-        <div class="tab-panel" id="panel-courses"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Курсы</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
-        <div class="tab-panel" id="panel-settings"><div class="empty-state"><h3 style="font-size:18px;color:#5a6a85;margin-bottom:8px;">Настройки</h3><p style="color:#8a9bb5;">Раздел в разработке</p></div></div>
+        <div class="tab-panel" id="panel-chats"><div class="empty-state"><p>Чаты — в разработке</p></div></div>
+        <div class="tab-panel" id="panel-news"><div class="empty-state"><p>Новости — в разработке</p></div></div>
+        <div class="tab-panel" id="panel-support"><div class="empty-state"><p>Поддержка — в разработке</p></div></div>
+        <div class="tab-panel" id="panel-library"><div class="empty-state"><p>Библиотека — в разработке</p></div></div>
+        <div class="tab-panel" id="panel-olymp"><div class="empty-state"><p>Олимпиады — в разработке</p></div></div>
+        <div class="tab-panel" id="panel-courses"><div class="empty-state"><p>Курсы — в разработке</p></div></div>
+        <div class="tab-panel" id="panel-settings"><div class="empty-state"><p>Настройки — в разработке</p></div></div>
     </div>
 
-    <!-- МОДАЛКИ -->
-    <div class="modal-overlay" id="editModal"><div class="modal"><div class="modal-header"><div class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></div><h3>Редактирование предмета</h3></div><form id="editSubjectForm"><input type="hidden" id="editSubjectId"><div class="form-group"><label for="editSubjectName">Название <span class="required">*</span></label><input type="text" id="editSubjectName" required></div><div class="form-group"><label for="editSubjectDirection">Направление <span class="required">*</span></label><select id="editSubjectDirection" required><option value="Точные науки">Точные науки</option><option value="Гуманитарные науки">Гуманитарные науки</option><option value="Естественные науки">Естественные науки</option><option value="Спорт и искусство">Спорт и искусство</option></select></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeEditModal()">Отмена</button><button type="submit" class="btn-save">Сохранить</button></div></form></div></div>
+    <div class="modal-overlay" id="editModal"><div class="modal"><div class="modal-header"><h3>Редактирование предмета</h3></div><form id="editSubjectForm"><input type="hidden" id="editSubjectId"><div class="form-group"><label>Название</label><input type="text" id="editSubjectName" required></div><div class="form-group"><label>Направление</label><select id="editSubjectDirection" required><option value="Точные науки">Точные науки</option><option value="Гуманитарные науки">Гуманитарные науки</option><option value="Естественные науки">Естественные науки</option><option value="Спорт и искусство">Спорт и искусство</option></select></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeEditModal()">Отмена</button><button type="submit" class="btn-save">Сохранить</button></div></form></div></div>
 
-    <div class="modal-overlay" id="roomModal"><div class="modal"><div class="modal-header"><div class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg></div><h3 id="roomModalTitle">Добавить кабинет</h3></div><form id="roomModalForm"><input type="hidden" id="roomId"><div class="form-group"><label for="roomModalNumber">Номер кабинета <span class="required">*</span></label><input type="text" id="roomModalNumber" required></div><div class="form-group"><label for="roomModalName">Наименование <span class="required">*</span></label><input type="text" id="roomModalName" required></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeRoomModal()">Отмена</button><button type="submit" class="btn-save" id="roomModalSaveBtn">Сохранить</button></div></form></div></div>
+    <div class="modal-overlay" id="roomModal"><div class="modal"><div class="modal-header"><h3 id="roomModalTitle">Кабинет</h3></div><form id="roomModalForm"><input type="hidden" id="roomId"><div class="form-group"><label>Номер</label><input type="text" id="roomModalNumber" required></div><div class="form-group"><label>Наименование</label><input type="text" id="roomModalName" required></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeRoomModal()">Отмена</button><button type="submit" class="btn-save" id="roomModalSaveBtn">Сохранить</button></div></form></div></div>
 
-    <div class="modal-overlay" id="shiftModal"><div class="modal"><div class="modal-header"><div class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div><h3>Создать смену</h3></div><form id="shiftForm"><div class="form-group"><label for="shiftName">Название смены <span class="required">*</span></label><input type="text" id="shiftName" placeholder="Например: Расписание звонков 2" required maxlength="40"></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeAddShiftModal()">Отмена</button><button type="submit" class="btn-save">Создать</button></div></form></div></div>
+    <div class="modal-overlay" id="shiftModal"><div class="modal"><div class="modal-header"><h3>Создать смену</h3></div><form id="shiftForm"><div class="form-group"><label>Название смены</label><input type="text" id="shiftName" required maxlength="40"></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeAddShiftModal()">Отмена</button><button type="submit" class="btn-save">Создать</button></div></form></div></div>
 
-    <div class="modal-overlay" id="assignModal"><div class="modal"><div class="modal-header"><div class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div><h3 id="assignModalTitle">Назначить урок</h3></div><form id="assignForm"><div class="form-group"><label for="assignWorkloadSelect">Выберите связку из «Нагрузки» <span class="required">*</span></label><select id="assignWorkloadSelect" required></select><div class="hint-text" id="assignHint"></div></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeAssignModal()">Отмена</button><button type="button" class="btn-save" onclick="saveAssignedLesson()">Сохранить</button></div></form></div></div>
+    <div class="modal-overlay" id="assignModal"><div class="modal"><div class="modal-header"><h3 id="assignModalTitle">Назначить урок</h3></div><div class="form-group"><label>Связка из нагрузки</label><select id="assignWorkloadSelect" required></select><div class="hint-text" id="assignHint"></div></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeAssignModal()">Отмена</button><button type="button" class="btn-save" onclick="saveAssignedLesson()">Сохранить</button></div></div></div>
 
-    <div class="modal-overlay" id="periodModal"><div class="modal modal-wide"><div class="modal-header"><div class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg></div><h3 id="periodModalTitle">Создание периода</h3></div><form id="periodForm"><input type="hidden" id="periodId"><div class="form-group"><label for="periodName">Название периода <span class="required">*</span></label><input type="text" id="periodName" placeholder="Например: 2026/2027 учебный год" required></div><div class="form-group"><label for="periodSystem">Система обучения <span class="required">*</span></label><select id="periodSystem" required><option value="" disabled selected>Выберите систему</option><option value="Четверти">Четверти</option><option value="Полугодия">Полугодия</option><option value="Триместры">Триместры</option><option value="Семестры">Семестры</option></select></div><div class="periods-container" id="periodsContainer"></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closePeriodModal()">Отмена</button><button type="submit" class="btn-save" id="periodSaveBtn">Создать период</button></div></form></div></div>
+    <div class="modal-overlay" id="periodModal"><div class="modal modal-wide"><div class="modal-header"><h3 id="periodModalTitle">Создание периода</h3></div><form id="periodForm"><input type="hidden" id="periodId"><div class="form-group"><label>Название периода</label><input type="text" id="periodName" required></div><div class="form-group"><label>Система обучения</label><select id="periodSystem" required><option value="" disabled selected>Выберите</option><option value="Четверти">Четверти</option><option value="Полугодия">Полугодия</option><option value="Триместры">Триместры</option><option value="Семестры">Семестры</option></select></div><div class="periods-container" id="periodsContainer"></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closePeriodModal()">Отмена</button><button type="submit" class="btn-save" id="periodSaveBtn">Создать</button></div></form></div></div>
 
-    <div class="modal-overlay" id="transferModal"><div class="modal"><div class="modal-header"><div class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><h3>Перевести ученика</h3></div><div class="info-banner"><svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><div>Ученик: <strong id="transferStudentName">—</strong><br>Текущий класс: <span id="transferCurrentClass">—</span></div></div><form id="transferForm"><input type="hidden" id="transferStudentId"><div class="form-group"><label for="transferNewClass">Новый класс <span class="required">*</span></label><select id="transferNewClass" required></select></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeTransferModal()">Отмена</button><button type="submit" class="btn-save">Перевести</button></div></form></div></div>
+    <div class="modal-overlay" id="transferModal"><div class="modal"><div class="modal-header"><h3>Перевести ученика</h3></div><div class="info-banner">Ученик: <strong id="transferStudentName">—</strong> · Текущий класс: <span id="transferCurrentClass">—</span></div><form id="transferForm"><input type="hidden" id="transferStudentId"><div class="form-group"><label>Новый класс</label><select id="transferNewClass" required></select></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeTransferModal()">Отмена</button><button type="submit" class="btn-save">Перевести</button></div></form></div></div>
 
     <div class="toast" id="toast"><svg id="toastIcon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span id="toastText">Готово</span></div>
 </div>
@@ -672,7 +597,6 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
 // ============================================================
 // КОНСТАНТЫ
 // ============================================================
-const SESSION_KEY = 'dr_admin_session';
 const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const DAYS_RU = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота' };
 const DAYS_SHORT = { mon: 'ПН', tue: 'ВТ', wed: 'СР', thu: 'ЧТ', fri: 'ПТ', sat: 'СБ' };
@@ -689,42 +613,35 @@ const PERIOD_LABELS = {
 
 const SUB_TABS = {
     education: [
-        { id: 'classes',   label: 'Классы',    icon: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>' },
-        { id: 'teachers',  label: 'Учителя',   icon: '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/>' },
-        { id: 'students',  label: 'Ученики',   icon: '<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3z"/>' },
-        { id: 'subjects',  label: 'Предметы',  icon: '<path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/>' },
-        { id: 'rooms',     label: 'Кабинеты',  icon: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>' },
-        { id: 'workload',  label: 'Нагрузка',  icon: '<path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>' },
-        { id: 'bells',     label: 'Звонки',    icon: '<path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>' },
-        { id: 'schedule',  label: 'Расписание',icon: '<path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>' },
-        { id: 'journals',  label: 'Журналы',   icon: '<path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>' },
-        { id: 'periods',   label: 'Периоды',   icon: '<path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>' }
+        { id: 'classes',   label: 'Классы' },
+        { id: 'teachers',  label: 'Учителя' },
+        { id: 'students',  label: 'Ученики' },
+        { id: 'subjects',  label: 'Предметы' },
+        { id: 'rooms',     label: 'Кабинеты' },
+        { id: 'workload',  label: 'Нагрузка' },
+        { id: 'bells',     label: 'Звонки' },
+        { id: 'schedule',  label: 'Расписание' },
+        { id: 'journals',  label: 'Журналы' },
+        { id: 'periods',   label: 'Периоды' }
     ],
     communication: [
-        { id: 'chats',   label: 'Чаты',         icon: '<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>' },
-        { id: 'news',    label: 'Новости',      icon: '<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>' },
-        { id: 'support', label: 'Поддержка',    icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>' }
+        { id: 'chats', label: 'Чаты' },
+        { id: 'news', label: 'Новости' },
+        { id: 'support', label: 'Поддержка' }
     ],
     apps: [
-        { id: 'library',  label: 'Библиотека',  icon: '<path d="M4 6h2v14H4zM6 6h2v14H6zM8 6h2v14H8zM12 4l8 16h-2L11 6z"/>' },
-        { id: 'olymp',    label: 'Олимпиады',   icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>' },
-        { id: 'courses',  label: 'Курсы',       icon: '<path d="M4 6h16v2H4zM4 10h16v2H4zM4 14h10v2H4z"/>' },
-        { id: 'settings', label: 'Настройки',   icon: '<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>' }
+        { id: 'library', label: 'Библиотека' },
+        { id: 'olymp', label: 'Олимпиады' },
+        { id: 'courses', label: 'Курсы' },
+        { id: 'settings', label: 'Настройки' }
     ]
 };
 
-const TRANSLIT_MAP = {
-    'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m',
-    'н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'kh','ц':'ts','ч':'ch','ш':'sh','щ':'shch',
-    'ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'
-};
+const TRANSLIT_MAP = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'kh','ц':'ts','ч':'ch','ш':'sh','щ':'shch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'};
 
 let ACTIVE_TOP_TAB = 'education';
 let ACTIVE_SUB_TAB = 'classes';
 
-// ============================================================
-// УТИЛИТЫ
-// ============================================================
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
     const div = document.createElement('div');
@@ -783,26 +700,18 @@ function formatPeriodDate(isoDate) {
 function genId(prefix) {
     return prefix + '_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
 }
-
-// ============================================================
-// ЗАГРУЗКА / ОШИБКИ / TOAST
-// ============================================================
 function setLoadingText(text) {
     const el = document.getElementById('loadingText');
     if (el) el.textContent = text;
 }
-
 function withTimeout(promise, ms, label) {
     return Promise.race([
         promise,
-        new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Таймаут: ' + label + ' (' + ms + ' мс)')), ms)
-        )
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Таймаут: ' + label)), ms))
     ]);
 }
-
 function showFatalError(message, err) {
-    console.error('[admin.html] ФАТАЛЬНАЯ ОШИБКА:', message, err);
+    console.error('[admin] FATAL:', message, err);
     const box = document.getElementById('loadingBox');
     if (!box) return;
     const detail = err && err.message ? String(err.message) : 'Подробности в консоли (F12)';
@@ -810,157 +719,126 @@ function showFatalError(message, err) {
         <div class="loading-error-title">Ошибка входа</div>
         <div class="loading-error-text">${String(message).replace(/</g, '&lt;')}</div>
         <div class="loading-error-detail">${detail.replace(/</g, '&lt;')}</div>
-        <button class="loading-btn loading-btn-primary" onclick="location.reload()">Обновить страницу</button>
+        <button class="loading-btn loading-btn-primary" onclick="location.reload()">Обновить</button>
         <button class="loading-btn loading-btn-secondary" onclick="location.href='index.html'">На страницу входа</button>
     `;
 }
-
 let toastTimeout;
 function showToast(message, type) {
     const toast = document.getElementById('toast');
-    const toastText = document.getElementById('toastText');
-    const toastIcon = document.getElementById('toastIcon');
-    toastText.textContent = message;
+    document.getElementById('toastText').textContent = message;
     toast.className = 'toast show ' + (type || 'success');
-    if (type === 'error') {
-        toastIcon.innerHTML = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>';
-    } else {
-        toastIcon.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
-    }
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// ============================================================
-// АВТОРИЗАЦИЯ
-// ============================================================
 async function logout() {
-    if (!confirm('Выйти из панели администратора?')) return;
+    if (!confirm('Выйти?')) return;
     try {
-        if (window._sb && window._sb.auth) {
-            await window._sb.auth.signOut();
-        }
-    } catch (e) { console.warn('signOut error:', e); }
-    try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+        const sb = await window._sbReady;
+        await sb.auth.signOut();
+    } catch (e) {}
     location.href = 'index.html';
-}
-
-async function getCurrentUser() {
-    // Пытаемся получить текущую сессию из Supabase
-    if (!window._sb || !window._sb.auth) {
-        throw new Error('Supabase клиент не инициализирован (window._sb). Проверьте supabase-config.js');
-    }
-    const { data, error } = await window._sb.auth.getSession();
-    if (error) throw error;
-    if (data && data.session && data.session.user) return data.session.user;
-    // Если сессии нет — пробуем getUser
-    const { data: uData, error: uErr } = await window._sb.auth.getUser();
-    if (uErr) throw uErr;
-    return uData && uData.user ? uData.user : null;
 }
 
 // ============================================================
 // ИНИЦИАЛИЗАЦИЯ
 // ============================================================
 window.addEventListener('load', async () => {
-    console.log('[admin.html] Старт инициализации...');
+    console.log('[admin] Старт');
 
-    // 1. Проверяем клиент
-    if (!window._sb) {
-        showFatalError('Клиент Supabase не найден. В supabase-config.js должен быть установлен window._sb.', null);
-        return;
-    }
     if (typeof DB === 'undefined' || !DB.getAll) {
-        showFatalError('Объект DB не найден. В supabase-config.js должен быть определён объект DB с методами getAll/insert/update/remove.', null);
+        showFatalError('DB не найден. Проверьте supabase-config.js.', null);
+        return;
+    }
+    if (!window._sbReady) {
+        showFatalError('_sbReady не найден. Проверьте supabase-config.js.', null);
         return;
     }
 
-    // 2. Получаем пользователя
-    let user;
+    let sb;
     try {
-        setLoadingText('Проверяем пользователя...');
-        user = await withTimeout(getCurrentUser(), 10000, 'получение пользователя');
-        console.log('[admin.html] Пользователь:', user);
+        setLoadingText('Подключаемся к Supabase...');
+        sb = await withTimeout(window._sbReady, 20000, 'подключение к Supabase');
+        console.log('[admin] Supabase готов');
     } catch (err) {
-        showFatalError('Не удалось получить данные пользователя.', err);
+        showFatalError('Не удалось загрузить Supabase SDK.', err);
+        return;
+    }
+
+    let user = null;
+    try {
+        setLoadingText('Проверяем сессию...');
+        const { data, error } = await withTimeout(sb.auth.getSession(), 12000, 'сессия');
+        if (error) throw error;
+        user = data && data.session ? data.session.user : null;
+        console.log('[admin] user =', user);
+    } catch (err) {
+        showFatalError('Не удалось получить сессию.', err);
         return;
     }
 
     if (!user) {
-        console.warn('[admin.html] Пользователь не авторизован → index.html');
+        console.warn('[admin] Нет сессии → index.html');
         location.replace('index.html');
         return;
     }
 
-    // 3. Проверяем админа
     let admins;
     try {
-        setLoadingText('Проверяем права администратора...');
-        admins = await withTimeout(DB.getAll('admins'), 10000, 'получение таблицы admins');
-        console.log('[admin.html] admins из БД:', admins);
+        setLoadingText('Проверяем права...');
+        admins = await withTimeout(DB.getAll('admins'), 12000, 'admins');
+        console.log('[admin] admins =', admins);
     } catch (err) {
-        showFatalError('Не удалось загрузить таблицу admins. Возможно, база спит или нет прав.', err);
+        showFatalError('Не удалось загрузить таблицу admins.', err);
         return;
     }
 
     const isAdmin = Array.isArray(admins) && admins.some(a => a && (a.id === user.id || a.user_id === user.id));
-    console.log('[admin.html] isAdmin =', isAdmin, '| user.id =', user.id);
+    console.log('[admin] isAdmin =', isAdmin, '| user.id =', user.id);
 
     if (!isAdmin) {
-        const email = user.email || '';
-        const login = email.split('@')[0];
-
+        const login = (user.email || '').split('@')[0];
         try {
-            setLoadingText('Проверяем, не учитель ли вы...');
-            const teachers = await withTimeout(DB.getAll('teachers'), 10000, 'teachers');
+            const teachers = await DB.getAll('teachers');
             if (Array.isArray(teachers) && teachers.some(t => t && t.login === login)) {
-                location.replace('teacher.html');
-                return;
+                location.replace('teacher.html'); return;
             }
-        } catch (e) { console.warn('[admin.html] teachers не загрузились:', e); }
-
+        } catch (e) {}
         try {
-            const students = await withTimeout(DB.getAll('students'), 10000, 'students');
+            const students = await DB.getAll('students');
             if (Array.isArray(students) && students.some(s => s && s.login === login)) {
-                location.replace('student.html');
-                return;
+                location.replace('student.html'); return;
             }
-        } catch (e) { console.warn('[admin.html] students не загрузились:', e); }
-
-        showFatalError(
-            'У вашего аккаунта нет прав администратора. UID: ' + user.id + ', email: ' + (user.email || '—') + '. Добавьте запись в таблицу admins с полем id = ваш UID.',
-            null
-        );
+        } catch (e) {}
+        showFatalError('Нет прав администратора. user.id = ' + user.id + '. Добавьте запись в admins с id = ' + user.id, null);
         return;
     }
 
-    // 4. Показываем панель
     try {
         setLoadingText('Загружаем панель...');
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('appContainer').style.display = 'block';
         initTopTabs();
         await init();
-        console.log('[admin.html] Инициализация завершена.');
+        console.log('[admin] Готово');
     } catch (err) {
-        console.error('[admin.html] Ошибка после входа:', err);
-        showFatalError('Панель загрузилась, но при инициализации данных произошла ошибка.', err);
+        console.error('[admin] Ошибка:', err);
+        showFatalError('Панель загружена, но инициализация данных упала.', err);
     }
 });
 
 function initTopTabs() {
     document.querySelectorAll('.top-tab').forEach(btn => {
         btn.addEventListener('click', () => {
-            const topId = btn.dataset.toptab;
             document.querySelectorAll('.top-tab').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            ACTIVE_TOP_TAB = topId;
+            ACTIVE_TOP_TAB = btn.dataset.toptab;
             renderSubTabs();
         });
     });
     renderSubTabs();
 }
-
 function renderSubTabs() {
     const container = document.getElementById('subHeaderInner');
     container.innerHTML = '';
@@ -968,7 +846,7 @@ function renderSubTabs() {
     items.forEach(item => {
         const btn = document.createElement('button');
         btn.className = 'sub-tab' + (item.id === ACTIVE_SUB_TAB ? ' active' : '');
-        btn.innerHTML = `<svg viewBox="0 0 24 24">${item.icon}</svg>${escapeHtml(item.label)}`;
+        btn.textContent = item.label;
         btn.dataset.subtab = item.id;
         btn.addEventListener('click', () => switchSubTab(item.id));
         container.appendChild(btn);
@@ -976,7 +854,6 @@ function renderSubTabs() {
     if (items.length > 0 && !items.some(i => i.id === ACTIVE_SUB_TAB)) switchSubTab(items[0].id);
     else switchSubTab(ACTIVE_SUB_TAB);
 }
-
 function switchSubTab(subTabId) {
     ACTIVE_SUB_TAB = subTabId;
     document.querySelectorAll('.sub-tab').forEach(b => b.classList.toggle('active', b.dataset.subtab === subTabId));
@@ -984,7 +861,7 @@ function switchSubTab(subTabId) {
     const panel = document.getElementById('panel-' + subTabId);
     if (panel) panel.classList.add('active');
     const meta = (SUB_TABS[ACTIVE_TOP_TAB] || []).find(i => i.id === subTabId);
-    document.getElementById('pageTitle').textContent = meta ? meta.label : 'Панель';
+    document.getElementById('pageTitle').textContent = meta ? meta.label : '';
     if (subTabId === 'classes') renderClasses();
     if (subTabId === 'teachers') renderTeachers();
     if (subTabId === 'students') renderStudents();
@@ -1026,13 +903,13 @@ async function renderSubjects() {
     subjectsBody.innerHTML = '';
     if (subjects.length === 0) { subjectsEmpty.style.display = 'block'; subjectsTable.style.display = 'none'; return; }
     subjectsEmpty.style.display = 'none'; subjectsTable.style.display = 'table';
-    subjects.forEach((s) => {
+    subjects.forEach(s => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td data-label="Название"><strong>${escapeHtml(s.name)}</strong></td><td data-label="Направление"><span class="badge ${getDirectionBadgeClass(s.direction)}">${escapeHtml(s.direction)}</span></td><td data-label=""><div class="actions"><button class="btn-icon btn-edit" data-id="${escapeHtml(s.id)}" title="Редактировать"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button><button class="btn-icon btn-delete" data-id="${escapeHtml(s.id)}" title="Удалить"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td>`;
+        tr.innerHTML = `<td><strong>${escapeHtml(s.name)}</strong></td><td><span class="badge ${getDirectionBadgeClass(s.direction)}">${escapeHtml(s.direction)}</span></td><td><div class="actions"><button class="btn-icon btn-edit" data-id="${escapeHtml(s.id)}">✎</button><button class="btn-icon btn-delete" data-id="${escapeHtml(s.id)}">🗑</button></div></td>`;
         subjectsBody.appendChild(tr);
     });
-    subjectsBody.querySelectorAll('.btn-edit').forEach(btn => btn.addEventListener('click', () => openEditModal(btn.dataset.id)));
-    subjectsBody.querySelectorAll('.btn-delete').forEach(btn => btn.addEventListener('click', () => deleteSubject(btn.dataset.id)));
+    subjectsBody.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', () => openEditModal(b.dataset.id)));
+    subjectsBody.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', () => deleteSubject(b.dataset.id)));
 }
 async function openEditModal(id) {
     const subjects = await DB.getAll('subjects');
@@ -1040,57 +917,45 @@ async function openEditModal(id) {
     if (!s) return;
     editSubjectId.value = s.id; editSubjectName.value = s.name; editSubjectDirection.value = s.direction;
     editModal.classList.add('show');
-    setTimeout(() => editSubjectName.focus(), 100);
 }
 function closeEditModal() { editModal.classList.remove('show'); editSubjectForm.reset(); }
-editModal.addEventListener('click', (e) => { if (e.target === editModal) closeEditModal(); });
-editSubjectForm.addEventListener('submit', async (e) => {
+editModal.addEventListener('click', e => { if (e.target === editModal) closeEditModal(); });
+editSubjectForm.addEventListener('submit', async e => {
     e.preventDefault();
     const id = editSubjectId.value;
     const newName = editSubjectName.value.trim();
     const newDirection = editSubjectDirection.value;
     if (!newName) { showToast('Введите название', 'error'); return; }
     const subjects = await DB.getAll('subjects');
-    const index = subjects.findIndex(s => s.id === id);
-    if (index === -1) { showToast('Предмет не найден', 'error'); return; }
-    if (subjects.some((s, i) => i !== index && s.name.toLowerCase() === newName.toLowerCase())) { showToast('Предмет с таким названием уже существует', 'error'); return; }
-    const oldName = subjects[index].name;
+    const old = subjects.find(s => s.id === id);
+    if (!old) return;
     await DB.update('subjects', id, { name: newName, direction: newDirection });
-    if (oldName !== newName) {
+    if (old.name !== newName) {
         const teachers = await DB.getAll('teachers');
-        for (const t of teachers) if (t.subject === oldName) await DB.update('teachers', t.id, { subject: newName });
+        for (const t of teachers) if (t.subject === old.name) await DB.update('teachers', t.id, { subject: newName });
         const workloads = await DB.getAll('workloads');
-        for (const w of workloads) if (w.subject === oldName) await DB.update('workloads', w.id, { subject: newName });
+        for (const w of workloads) if (w.subject === old.name) await DB.update('workloads', w.id, { subject: newName });
     }
-    closeEditModal();
-    await renderSubjects(); await fillTeacherSubjectSelect(); await renderTeachers(); await refreshWorkloadTab();
+    closeEditModal(); await renderSubjects(); await fillTeacherSubjectSelect(); await renderTeachers(); await refreshWorkloadTab();
     showToast('Предмет обновлён');
 });
-subjectForm.addEventListener('submit', async (e) => {
+subjectForm.addEventListener('submit', async e => {
     e.preventDefault();
     const name = subjectNameInput.value.trim();
     const direction = subjectDirectionInput.value;
-    if (!name) { showToast('Введите название предмета', 'error'); return; }
-    if (!direction) { showToast('Выберите направление', 'error'); return; }
+    if (!name || !direction) { showToast('Заполните все поля', 'error'); return; }
     const subjects = await DB.getAll('subjects');
-    if (subjects.some(s => s.name.toLowerCase() === name.toLowerCase())) { showToast('Такой предмет уже существует', 'error'); return; }
+    if (subjects.some(s => s.name.toLowerCase() === name.toLowerCase())) { showToast('Такой предмет уже есть', 'error'); return; }
     await DB.insert('subjects', { id: genId('sub'), name, direction });
     subjectForm.reset();
     await renderSubjects(); await fillTeacherSubjectSelect(); await refreshWorkloadTab();
-    showToast('Предмет "' + name + '" добавлен');
+    showToast('Предмет добавлен');
 });
 async function deleteSubject(id) {
     const subjects = await DB.getAll('subjects');
     const subject = subjects.find(s => s.id === id);
     if (!subject) return;
-    const teachers = await DB.getAll('teachers');
-    const usedBy = teachers.filter(t => t.subject === subject.name);
-    if (usedBy.length > 0) {
-        if (!confirm(`Предмет "${subject.name}" назначен ${usedBy.length} учител(ям).\n\nУдалить предмет?`)) return;
-        for (const t of usedBy) await DB.update('teachers', t.id, { subject: '— не указан —' });
-    } else {
-        if (!confirm(`Удалить предмет "${subject.name}"?`)) return;
-    }
+    if (!confirm(`Удалить предмет "${subject.name}"?`)) return;
     await DB.remove('subjects', id);
     await renderSubjects(); await fillTeacherSubjectSelect(); await renderTeachers(); await refreshWorkloadTab();
     showToast('Предмет удалён', 'error');
@@ -1113,23 +978,16 @@ async function fillClassTeacherSelect() {
     const currentValue = classTeacherSelect.value;
     classTeacherSelect.innerHTML = '';
     if (teachers.length === 0) {
-        const option = document.createElement('option'); option.value = ''; option.textContent = 'Сначала добавьте учителей'; option.disabled = true; option.selected = true;
-        classTeacherSelect.appendChild(option);
+        classTeacherSelect.innerHTML = '<option value="" disabled selected>Сначала добавьте учителей</option>';
         classTeacherSelect.disabled = true; classSubmitBtn.disabled = true;
-        classTeacherHint.className = 'hint-text warning';
-        classTeacherHint.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> Перейдите на вкладку «Учителя»';
         return;
     }
     classTeacherSelect.disabled = false; classSubmitBtn.disabled = false;
-    classTeacherHint.className = 'hint-text';
-    classTeacherHint.innerHTML = '<svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg> Выберите учителя из списка';
-    const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = 'Выберите учителя'; placeholder.disabled = true;
-    if (!currentValue) placeholder.selected = true;
-    classTeacherSelect.appendChild(placeholder);
+    classTeacherSelect.innerHTML = '<option value="" disabled>Выберите учителя</option>';
     teachers.forEach(t => {
-        const option = document.createElement('option'); option.value = t.id; option.textContent = t.full_name + (t.subject ? ' — ' + t.subject : '');
-        if (t.id === currentValue) option.selected = true;
-        classTeacherSelect.appendChild(option);
+        const o = document.createElement('option'); o.value = t.id; o.textContent = t.full_name + (t.subject ? ' — ' + t.subject : '');
+        if (t.id === currentValue) o.selected = true;
+        classTeacherSelect.appendChild(o);
     });
 }
 async function renderClasses() {
@@ -1139,45 +997,36 @@ async function renderClasses() {
     classesBody.innerHTML = '';
     if (classes.length === 0) { classesEmpty.style.display = 'block'; classesTable.style.display = 'none'; return; }
     classesEmpty.style.display = 'none'; classesTable.style.display = 'table';
-    classes.forEach((cls) => {
+    classes.forEach(cls => {
         const teacher = teachers.find(t => t.id === cls.teacher_id);
-        const teacherName = teacher ? teacher.full_name : '— не назначен —';
-        const studentCount = students.filter(s => s.class_id === cls.id).length;
+        const teacherName = teacher ? teacher.full_name : '—';
+        const count = students.filter(s => s.class_id === cls.id).length;
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td data-label="Класс"><span class="badge badge-blue">${escapeHtml(cls.name)}</span></td><td data-label="Классный руководитель">${escapeHtml(teacherName)}</td><td data-label="Учеников"><span class="badge badge-green">${studentCount}</span></td><td data-label=""><div class="actions"><button class="btn-icon btn-delete" data-id="${escapeHtml(cls.id)}" title="Удалить класс"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td>`;
+        tr.innerHTML = `<td><span class="badge badge-blue">${escapeHtml(cls.name)}</span></td><td>${escapeHtml(teacherName)}</td><td><span class="badge badge-green">${count}</span></td><td><div class="actions"><button class="btn-icon btn-delete" data-id="${escapeHtml(cls.id)}">🗑</button></div></td>`;
         classesBody.appendChild(tr);
     });
-    classesBody.querySelectorAll('.btn-delete').forEach(btn => btn.addEventListener('click', () => deleteClass(btn.dataset.id)));
+    classesBody.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', () => deleteClass(b.dataset.id)));
 }
 async function deleteClass(id) {
     const classes = await DB.getAll('classes');
-    const students = await DB.getAll('students');
     const cls = classes.find(c => c.id === id);
     if (!cls) return;
-    const studentCount = students.filter(s => s.class_id === cls.id).length;
-    const workloads = await DB.getAll('workloads');
-    const workloadCount = workloads.filter(w => w.class_id === cls.id).length;
-    let msg = `Удалить класс "${cls.name}"?`;
-    if (studentCount > 0 || workloadCount > 0) msg = `В классе "${cls.name}" ${studentCount} ученик(ов) и ${workloadCount} запис(ей) нагрузки.\n\nУдалить класс вместе с ними?`;
-    if (!confirm(msg)) return;
-    for (const s of students.filter(s => s.class_id === cls.id)) await DB.remove('students', s.id);
-    for (const w of workloads.filter(w => w.class_id === cls.id)) await DB.remove('workloads', w.id);
+    if (!confirm(`Удалить класс "${cls.name}"?`)) return;
     await DB.remove('classes', id);
     await renderClasses(); await renderStudents(); await fillStudentClassSelect(); await refreshWorkloadTab(); await refreshScheduleTab(); await refreshJournalsTab();
     showToast('Класс удалён', 'error');
 }
-classForm.addEventListener('submit', async (e) => {
+classForm.addEventListener('submit', async e => {
     e.preventDefault();
     const name = classNameInput.value.trim();
     const teacherId = classTeacherSelect.value;
-    if (!name) { showToast('Введите название класса', 'error'); return; }
-    if (!teacherId) { showToast('Выберите классного руководителя', 'error'); return; }
+    if (!name || !teacherId) { showToast('Заполните поля', 'error'); return; }
     const classes = await DB.getAll('classes');
-    if (classes.some(c => c.name.toLowerCase() === name.toLowerCase())) { showToast('Такой класс уже существует', 'error'); return; }
+    if (classes.some(c => c.name.toLowerCase() === name.toLowerCase())) { showToast('Такой класс уже есть', 'error'); return; }
     await DB.insert('classes', { id: genId('cls'), name, teacher_id: teacherId });
     classForm.reset();
     await fillClassTeacherSelect(); await renderClasses(); await fillStudentClassSelect(); await refreshWorkloadTab(); await refreshScheduleTab(); await refreshJournalsTab();
-    showToast('Класс "' + name + '" добавлен');
+    showToast('Класс добавлен');
 });
 
 // ============================================================
@@ -1201,22 +1050,20 @@ async function fillTeacherSubjectSelect() {
     const currentValue = teacherSubjectSelect.value;
     teacherSubjectSelect.innerHTML = '';
     if (subjects.length === 0) {
-        const option = document.createElement('option'); option.value = ''; option.textContent = 'Сначала добавьте предметы'; option.disabled = true; option.selected = true;
-        teacherSubjectSelect.appendChild(option); return;
+        teacherSubjectSelect.innerHTML = '<option value="" disabled selected>Сначала добавьте предметы</option>';
+        return;
     }
-    const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = 'Выберите предмет'; placeholder.disabled = true;
-    if (!currentValue) placeholder.selected = true;
-    teacherSubjectSelect.appendChild(placeholder);
+    teacherSubjectSelect.innerHTML = '<option value="" disabled>Выберите предмет</option>';
     subjects.forEach(s => {
-        const option = document.createElement('option'); option.value = s.name; option.textContent = s.name;
-        if (s.name === currentValue) option.selected = true;
-        teacherSubjectSelect.appendChild(option);
+        const o = document.createElement('option'); o.value = s.name; o.textContent = s.name;
+        if (s.name === currentValue) o.selected = true;
+        teacherSubjectSelect.appendChild(o);
     });
 }
 teacherFullNameInput.addEventListener('input', async () => {
-    const fullName = teacherFullNameInput.value.trim();
-    if (fullName.length >= 3) {
-        teacherLoginInput.value = await generateUniqueLogin(fullName);
+    const fn = teacherFullNameInput.value.trim();
+    if (fn.length >= 3) {
+        teacherLoginInput.value = await generateUniqueLogin(fn);
         if (!teacherPasswordInput.value) teacherPasswordInput.value = generatePassword();
     } else { teacherLoginInput.value = ''; teacherPasswordInput.value = ''; }
 });
@@ -1226,32 +1073,24 @@ async function renderTeachers() {
     teachersBody.innerHTML = '';
     if (teachers.length === 0) { teachersEmpty.style.display = 'block'; teachersTable.style.display = 'none'; return; }
     teachersEmpty.style.display = 'none'; teachersTable.style.display = 'table';
-    teachers.forEach((t) => {
-        const genderBadge = t.gender === 'Мужской' ? 'badge-blue' : 'badge-pink';
+    teachers.forEach(t => {
+        const gb = t.gender === 'Мужской' ? 'badge-blue' : 'badge-pink';
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td data-label="ФИО">${escapeHtml(t.full_name)}</td><td data-label="Предмет"><span class="badge badge-purple">${escapeHtml(t.subject)}</span></td><td data-label="Д.Р.">${formatDate(t.birth_date)}</td><td data-label="Пол"><span class="badge ${genderBadge}">${escapeHtml(t.gender)}</span></td><td data-label="Контакты"><div style="font-size:12px;line-height:1.5;"><div>${escapeHtml(t.email || '—')}</div><div style="color:#7a8aa3;">${escapeHtml(t.phone || '—')}</div></div></td><td data-label="Логин"><code>${escapeHtml(t.login)}</code></td><td data-label=""><div class="actions"><button class="btn-icon btn-delete" data-id="${escapeHtml(t.id)}" title="Удалить учителя"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td>`;
+        tr.innerHTML = `<td>${escapeHtml(t.full_name)}</td><td><span class="badge badge-purple">${escapeHtml(t.subject || '')}</span></td><td>${formatDate(t.birth_date)}</td><td><span class="badge ${gb}">${escapeHtml(t.gender || '')}</span></td><td><div style="font-size:12px;">${escapeHtml(t.email || '')}<br><span style="color:#7a8aa3;">${escapeHtml(t.phone || '')}</span></div></td><td><code>${escapeHtml(t.login || '')}</code></td><td><div class="actions"><button class="btn-icon btn-delete" data-id="${escapeHtml(t.id)}">🗑</button></div></td>`;
         teachersBody.appendChild(tr);
     });
-    teachersBody.querySelectorAll('.btn-delete').forEach(btn => btn.addEventListener('click', () => deleteTeacher(btn.dataset.id)));
+    teachersBody.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', () => deleteTeacher(b.dataset.id)));
 }
 async function deleteTeacher(id) {
     const teachers = await DB.getAll('teachers');
-    const teacher = teachers.find(t => t.id === id);
-    if (!teacher) return;
-    const classes = await DB.getAll('classes');
-    const assignedClasses = classes.filter(c => c.teacher_id === teacher.id);
-    const workloads = await DB.getAll('workloads');
-    const assignedWorkloads = workloads.filter(w => w.teacher_id === teacher.id);
-    let msg = `Удалить учителя "${teacher.full_name}"?`;
-    if (assignedClasses.length > 0 || assignedWorkloads.length > 0) msg = `Учитель "${teacher.full_name}" ведёт ${assignedWorkloads.length} нагруз(ок) и является классным руководителем ${assignedClasses.length} класс(ов).\n\nУдалить учителя?`;
-    if (!confirm(msg)) return;
-    for (const c of assignedClasses) await DB.update('classes', c.id, { teacher_id: null });
-    for (const w of assignedWorkloads) await DB.remove('workloads', w.id);
+    const t = teachers.find(x => x.id === id);
+    if (!t) return;
+    if (!confirm(`Удалить учителя "${t.full_name}"?`)) return;
     await DB.remove('teachers', id);
     await renderTeachers(); await renderClasses(); await fillClassTeacherSelect(); await refreshWorkloadTab(); await refreshScheduleTab();
     showToast('Учитель удалён', 'error');
 }
-teacherForm.addEventListener('submit', async (e) => {
+teacherForm.addEventListener('submit', async e => {
     e.preventDefault();
     const fullName = teacherFullNameInput.value.trim();
     const birthDate = teacherBirthDateInput.value;
@@ -1261,24 +1100,14 @@ teacherForm.addEventListener('submit', async (e) => {
     const phone = teacherPhoneInput.value.trim();
     let login = teacherLoginInput.value.trim();
     let password = teacherPasswordInput.value.trim();
-    if (!fullName) { showToast('Введите ФИО', 'error'); teacherFullNameInput.focus(); return; }
-    if (!birthDate) { showToast('Укажите дату рождения', 'error'); teacherBirthDateInput.focus(); return; }
-    if (!gender) { showToast('Выберите пол', 'error'); teacherGenderInput.focus(); return; }
-    if (!subject) { showToast('Выберите предмет', 'error'); teacherSubjectSelect.focus(); return; }
-    if (!email) { showToast('Введите почту', 'error'); teacherEmailInput.focus(); return; }
-    if (!phone) { showToast('Введите телефон', 'error'); teacherPhoneInput.focus(); return; }
+    if (!fullName || !birthDate || !gender || !subject || !email || !phone) { showToast('Заполните все поля', 'error'); return; }
     if (!login) login = await generateUniqueLogin(fullName);
     if (!password) password = generatePassword();
-    if (!(await isLoginUnique(login))) {
-        showToast('Логин занят, генерирую новый...', 'error');
-        login = await generateUniqueLogin(fullName);
-        teacherLoginInput.value = login;
-        return;
-    }
+    if (!(await isLoginUnique(login))) { login = await generateUniqueLogin(fullName); teacherLoginInput.value = login; }
     await DB.insert('teachers', { id: genId('tch'), full_name: fullName, birth_date: birthDate, gender, subject, email, phone, login, password });
     teacherForm.reset(); teacherLoginInput.value = ''; teacherPasswordInput.value = '';
     await renderTeachers(); await fillClassTeacherSelect(); await refreshWorkloadTab();
-    showToast('Учитель "' + fullName + '" создан');
+    showToast('Учитель создан');
 });
 
 // ============================================================
@@ -1304,29 +1133,22 @@ async function fillStudentClassSelect() {
     const currentValue = studentClassSelect.value;
     studentClassSelect.innerHTML = '';
     if (classes.length === 0) {
-        const option = document.createElement('option'); option.value = ''; option.textContent = 'Сначала добавьте классы'; option.disabled = true; option.selected = true;
-        studentClassSelect.appendChild(option);
+        studentClassSelect.innerHTML = '<option value="" disabled selected>Сначала добавьте классы</option>';
         studentClassSelect.disabled = true; studentSubmitBtn.disabled = true;
-        studentClassHint.className = 'hint-text warning';
-        studentClassHint.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> Перейдите на вкладку «Классы»';
         return;
     }
     studentClassSelect.disabled = false; studentSubmitBtn.disabled = false;
-    studentClassHint.className = 'hint-text';
-    studentClassHint.innerHTML = '<svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg> Выберите класс из списка';
-    const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = 'Выберите класс'; placeholder.disabled = true;
-    if (!currentValue) placeholder.selected = true;
-    studentClassSelect.appendChild(placeholder);
+    studentClassSelect.innerHTML = '<option value="" disabled>Выберите класс</option>';
     classes.forEach(c => {
-        const option = document.createElement('option'); option.value = c.id; option.textContent = c.name;
-        if (c.id === currentValue) option.selected = true;
-        studentClassSelect.appendChild(option);
+        const o = document.createElement('option'); o.value = c.id; o.textContent = c.name;
+        if (c.id === currentValue) o.selected = true;
+        studentClassSelect.appendChild(o);
     });
 }
 studentFullNameInput.addEventListener('input', async () => {
-    const fullName = studentFullNameInput.value.trim();
-    if (fullName.length >= 3) {
-        studentLoginInput.value = await generateUniqueLogin(fullName);
+    const fn = studentFullNameInput.value.trim();
+    if (fn.length >= 3) {
+        studentLoginInput.value = await generateUniqueLogin(fn);
         if (!studentPasswordInput.value) studentPasswordInput.value = generatePassword();
     } else { studentLoginInput.value = ''; studentPasswordInput.value = ''; }
 });
@@ -1337,16 +1159,16 @@ async function renderStudents() {
     studentsBody.innerHTML = '';
     if (students.length === 0) { studentsEmpty.style.display = 'block'; studentsTable.style.display = 'none'; return; }
     studentsEmpty.style.display = 'none'; studentsTable.style.display = 'table';
-    students.forEach((s) => {
+    students.forEach(s => {
         const cls = classes.find(c => c.id === s.class_id);
-        const className = cls ? cls.name : '— класс удалён —';
-        const genderBadge = s.gender === 'Мужской' ? 'badge-blue' : 'badge-pink';
+        const cn = cls ? cls.name : '—';
+        const gb = s.gender === 'Мужской' ? 'badge-blue' : 'badge-pink';
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td data-label="ФИО">${escapeHtml(s.full_name)}</td><td data-label="Класс"><span class="badge badge-orange">${escapeHtml(className)}</span></td><td data-label="Д.Р.">${formatDate(s.birth_date)}</td><td data-label="Пол"><span class="badge ${genderBadge}">${escapeHtml(s.gender)}</span></td><td data-label="Контакты"><div style="font-size:12px;line-height:1.5;"><div>${escapeHtml(s.email || '—')}</div><div style="color:#7a8aa3;">${escapeHtml(s.phone || '—')}</div></div></td><td data-label="Логин"><code>${escapeHtml(s.login)}</code></td><td data-label=""><div class="actions"><button class="btn-icon btn-transfer" data-id="${escapeHtml(s.id)}" title="Перевести в другой класс"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></button><button class="btn-icon btn-delete" data-id="${escapeHtml(s.id)}" title="Удалить ученика"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td>`;
+        tr.innerHTML = `<td>${escapeHtml(s.full_name)}</td><td><span class="badge badge-orange">${escapeHtml(cn)}</span></td><td>${formatDate(s.birth_date)}</td><td><span class="badge ${gb}">${escapeHtml(s.gender || '')}</span></td><td><div style="font-size:12px;">${escapeHtml(s.email || '')}<br><span style="color:#7a8aa3;">${escapeHtml(s.phone || '')}</span></div></td><td><code>${escapeHtml(s.login || '')}</code></td><td><div class="actions"><button class="btn-icon btn-transfer" data-id="${escapeHtml(s.id)}">↔</button><button class="btn-icon btn-delete" data-id="${escapeHtml(s.id)}">🗑</button></div></td>`;
         studentsBody.appendChild(tr);
     });
-    studentsBody.querySelectorAll('.btn-transfer').forEach(btn => btn.addEventListener('click', () => openTransferModal(btn.dataset.id)));
-    studentsBody.querySelectorAll('.btn-delete').forEach(btn => btn.addEventListener('click', () => deleteStudent(btn.dataset.id)));
+    studentsBody.querySelectorAll('.btn-transfer').forEach(b => b.addEventListener('click', () => openTransferModal(b.dataset.id)));
+    studentsBody.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', () => deleteStudent(b.dataset.id)));
 }
 async function deleteStudent(id) {
     const students = await DB.getAll('students');
@@ -1362,43 +1184,32 @@ async function openTransferModal(id) {
     const classes = await DB.getAll('classes');
     const student = students.find(s => s.id === id);
     if (!student) return;
-    if (classes.length < 2) { showToast('Нужно минимум 2 класса, чтобы перевести ученика', 'error'); return; }
-    const currentClass = classes.find(c => c.id === student.class_id);
+    if (classes.length < 2) { showToast('Нужно минимум 2 класса', 'error'); return; }
+    const cur = classes.find(c => c.id === student.class_id);
     document.getElementById('transferStudentId').value = student.id;
     document.getElementById('transferStudentName').textContent = student.full_name;
-    document.getElementById('transferCurrentClass').textContent = currentClass ? currentClass.name : '— не назначен —';
-    const select = document.getElementById('transferNewClass');
-    select.innerHTML = '';
-    const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = 'Выберите новый класс'; placeholder.disabled = true; placeholder.selected = true;
-    select.appendChild(placeholder);
+    document.getElementById('transferCurrentClass').textContent = cur ? cur.name : '—';
+    const sel = document.getElementById('transferNewClass');
+    sel.innerHTML = '<option value="" disabled selected>Выберите</option>';
     classes.forEach(c => {
         if (c.id === student.class_id) return;
-        const option = document.createElement('option'); option.value = c.id; option.textContent = c.name;
-        select.appendChild(option);
+        const o = document.createElement('option'); o.value = c.id; o.textContent = c.name;
+        sel.appendChild(o);
     });
     document.getElementById('transferModal').classList.add('show');
 }
 function closeTransferModal() { document.getElementById('transferModal').classList.remove('show'); document.getElementById('transferForm').reset(); }
-document.getElementById('transferModal').addEventListener('click', (e) => { if (e.target === document.getElementById('transferModal')) closeTransferModal(); });
-document.getElementById('transferForm').addEventListener('submit', async (e) => {
+document.getElementById('transferModal').addEventListener('click', e => { if (e.target === document.getElementById('transferModal')) closeTransferModal(); });
+document.getElementById('transferForm').addEventListener('submit', async e => {
     e.preventDefault();
     const studentId = document.getElementById('transferStudentId').value;
     const newClassId = document.getElementById('transferNewClass').value;
-    if (!newClassId) { showToast('Выберите новый класс', 'error'); return; }
-    const students = await DB.getAll('students');
-    const classes = await DB.getAll('classes');
-    const student = students.find(s => s.id === studentId);
-    if (!student) { showToast('Ученик не найден', 'error'); return; }
-    const oldClassId = student.class_id;
-    if (oldClassId === newClassId) { showToast('Ученик уже в этом классе', 'error'); return; }
-    const oldClassName = (classes.find(c => c.id === oldClassId) || {}).name || '—';
-    const newClassName = (classes.find(c => c.id === newClassId) || {}).name || '—';
+    if (!newClassId) return;
     await DB.update('students', studentId, { class_id: newClassId });
-    closeTransferModal();
-    await renderStudents(); await renderClasses(); await refreshJournalsTab();
-    showToast(`Ученик переведён: ${oldClassName} → ${newClassName}`);
+    closeTransferModal(); await renderStudents(); await renderClasses();
+    showToast('Ученик переведён');
 });
-studentForm.addEventListener('submit', async (e) => {
+studentForm.addEventListener('submit', async e => {
     e.preventDefault();
     const fullName = studentFullNameInput.value.trim();
     const birthDate = studentBirthDateInput.value;
@@ -1408,24 +1219,14 @@ studentForm.addEventListener('submit', async (e) => {
     const phone = studentPhoneInput.value.trim();
     let login = studentLoginInput.value.trim();
     let password = studentPasswordInput.value.trim();
-    if (!fullName) { showToast('Введите ФИО', 'error'); studentFullNameInput.focus(); return; }
-    if (!birthDate) { showToast('Укажите дату рождения', 'error'); studentBirthDateInput.focus(); return; }
-    if (!gender) { showToast('Выберите пол', 'error'); studentGenderInput.focus(); return; }
-    if (!classId) { showToast('Выберите класс', 'error'); studentClassSelect.focus(); return; }
-    if (!email) { showToast('Введите почту', 'error'); studentEmailInput.focus(); return; }
-    if (!phone) { showToast('Введите телефон', 'error'); studentPhoneInput.focus(); return; }
+    if (!fullName || !birthDate || !gender || !classId || !email || !phone) { showToast('Заполните все поля', 'error'); return; }
     if (!login) login = await generateUniqueLogin(fullName);
     if (!password) password = generatePassword();
-    if (!(await isLoginUnique(login))) {
-        showToast('Логин занят, генерирую новый...', 'error');
-        login = await generateUniqueLogin(fullName);
-        studentLoginInput.value = login;
-        return;
-    }
+    if (!(await isLoginUnique(login))) { login = await generateUniqueLogin(fullName); studentLoginInput.value = login; }
     await DB.insert('students', { id: genId('std'), full_name: fullName, birth_date: birthDate, gender, class_id: classId, email, phone, login, password });
     studentForm.reset(); studentLoginInput.value = ''; studentPasswordInput.value = '';
     await renderStudents(); await renderClasses(); await fillStudentClassSelect();
-    showToast('Ученик "' + fullName + '" создан');
+    showToast('Ученик создан');
 });
 
 // ============================================================
@@ -1438,82 +1239,55 @@ const roomsBody = document.getElementById('roomsBody');
 const roomsEmpty = document.getElementById('roomsEmpty');
 const roomsTable = document.getElementById('roomsTable');
 const roomModal = document.getElementById('roomModal');
-const roomModalTitle = document.getElementById('roomModalTitle');
 const roomModalForm = document.getElementById('roomModalForm');
 const roomId = document.getElementById('roomId');
 const roomModalNumber = document.getElementById('roomModalNumber');
 const roomModalName = document.getElementById('roomModalName');
-const roomModalSaveBtn = document.getElementById('roomModalSaveBtn');
 
 async function renderRooms() {
     const rooms = await DB.getAll('rooms');
     roomsBody.innerHTML = '';
     if (rooms.length === 0) { roomsEmpty.style.display = 'block'; roomsTable.style.display = 'none'; return; }
     roomsEmpty.style.display = 'none'; roomsTable.style.display = 'table';
-    rooms.forEach((r) => {
+    rooms.forEach(r => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td data-label="Номер"><span class="badge badge-teal">${escapeHtml(r.number)}</span></td><td data-label="Наименование">${escapeHtml(r.name)}</td><td data-label=""><div class="actions"><button class="btn-icon btn-edit" data-id="${escapeHtml(r.id)}" title="Изменить"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button><button class="btn-icon btn-delete" data-id="${escapeHtml(r.id)}" title="Удалить"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td>`;
+        tr.innerHTML = `<td><span class="badge badge-teal">${escapeHtml(r.number)}</span></td><td>${escapeHtml(r.name)}</td><td><div class="actions"><button class="btn-icon btn-edit" data-id="${escapeHtml(r.id)}">✎</button><button class="btn-icon btn-delete" data-id="${escapeHtml(r.id)}">🗑</button></div></td>`;
         roomsBody.appendChild(tr);
     });
-    roomsBody.querySelectorAll('.btn-edit').forEach(btn => btn.addEventListener('click', () => openEditRoomModal(btn.dataset.id)));
-    roomsBody.querySelectorAll('.btn-delete').forEach(btn => btn.addEventListener('click', () => deleteRoom(btn.dataset.id)));
+    roomsBody.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', () => openEditRoomModal(b.dataset.id)));
+    roomsBody.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', () => deleteRoom(b.dataset.id)));
 }
 async function openEditRoomModal(id) {
     const rooms = await DB.getAll('rooms');
     const r = rooms.find(x => x.id === id);
     if (!r) return;
-    roomModalTitle.textContent = 'Редактировать кабинет';
-    roomModalSaveBtn.textContent = 'Сохранить';
     roomId.value = r.id; roomModalNumber.value = r.number; roomModalName.value = r.name;
+    document.getElementById('roomModalTitle').textContent = 'Редактировать кабинет';
     roomModal.classList.add('show');
-    setTimeout(() => roomModalNumber.focus(), 100);
 }
 function closeRoomModal() { roomModal.classList.remove('show'); roomModalForm.reset(); }
-roomModal.addEventListener('click', (e) => { if (e.target === roomModal) closeRoomModal(); });
-roomModalForm.addEventListener('submit', async (e) => {
+roomModal.addEventListener('click', e => { if (e.target === roomModal) closeRoomModal(); });
+roomModalForm.addEventListener('submit', async e => {
     e.preventDefault();
     const id = roomId.value;
     const number = roomModalNumber.value.trim();
     const name = roomModalName.value.trim();
-    if (!number) { showToast('Введите номер', 'error'); return; }
-    if (!name) { showToast('Введите наименование', 'error'); return; }
-    const rooms = await DB.getAll('rooms');
-    if (rooms.some(r => r.number.toLowerCase() === number.toLowerCase() && r.id !== id)) { showToast('Кабинет с таким номером уже существует', 'error'); return; }
-    const r = rooms.find(x => x.id === id);
-    if (!r) { showToast('Кабинет не найден', 'error'); return; }
-    const oldNumber = r.number;
+    if (!number || !name) { showToast('Заполните поля', 'error'); return; }
     await DB.update('rooms', id, { number, name });
-    if (oldNumber !== number) {
-        const workloads = await DB.getAll('workloads');
-        for (const w of workloads) if (w.room_id === id) await DB.update('workloads', w.id, { room_number: number });
-    }
     closeRoomModal(); await renderRooms(); await refreshWorkloadTab();
     showToast('Кабинет обновлён');
 });
-roomForm.addEventListener('submit', async (e) => {
+roomForm.addEventListener('submit', async e => {
     e.preventDefault();
     const number = roomNumberInput.value.trim();
     const name = roomNameInput.value.trim();
-    if (!number) { showToast('Введите номер', 'error'); return; }
-    if (!name) { showToast('Введите наименование', 'error'); return; }
-    const rooms = await DB.getAll('rooms');
-    if (rooms.some(r => r.number.toLowerCase() === number.toLowerCase())) { showToast('Кабинет с таким номером уже существует', 'error'); return; }
+    if (!number || !name) { showToast('Заполните поля', 'error'); return; }
     await DB.insert('rooms', { id: genId('room'), number, name });
     roomForm.reset(); await renderRooms(); await refreshWorkloadTab();
-    showToast('Кабинет "' + number + '" добавлен');
+    showToast('Кабинет добавлен');
 });
 async function deleteRoom(id) {
-    const rooms = await DB.getAll('rooms');
-    const r = rooms.find(x => x.id === id);
-    if (!r) return;
-    const workloads = await DB.getAll('workloads');
-    const usedBy = workloads.filter(w => w.room_id === r.id);
-    if (usedBy.length > 0) {
-        if (!confirm(`Кабинет "${r.number}" используется в ${usedBy.length} нагруз(ках).\n\nУдалить кабинет?`)) return;
-        for (const w of usedBy) await DB.remove('workloads', w.id);
-    } else {
-        if (!confirm(`Удалить кабинет "${r.number}"?`)) return;
-    }
+    if (!confirm('Удалить кабинет?')) return;
     await DB.remove('rooms', id);
     await renderRooms(); await refreshWorkloadTab();
     showToast('Кабинет удалён', 'error');
@@ -1527,12 +1301,9 @@ const workloadContent = document.getElementById('workloadContent');
 const workloadNoClasses = document.getElementById('workloadNoClasses');
 const workloadForm = document.getElementById('workloadForm');
 const workloadSubject = document.getElementById('workloadSubject');
-const workloadSubjectHint = document.getElementById('workloadSubjectHint');
 const workloadSubgroup = document.getElementById('workloadSubgroup');
 const workloadTeacher = document.getElementById('workloadTeacher');
-const workloadTeacherHint = document.getElementById('workloadTeacherHint');
 const workloadRoom = document.getElementById('workloadRoom');
-const workloadRoomHint = document.getElementById('workloadRoomHint');
 const workloadSubmitBtn = document.getElementById('workloadSubmitBtn');
 const workloadBody = document.getElementById('workloadBody');
 const workloadEmpty = document.getElementById('workloadEmpty');
@@ -1546,131 +1317,76 @@ async function refreshWorkloadTab() {
         return;
     }
     workloadClassSelect.disabled = false; workloadNoClasses.style.display = 'none';
-    const currentValue = workloadClassSelect.value;
-    workloadClassSelect.innerHTML = '';
-    const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = 'Выберите класс'; placeholder.disabled = true;
-    if (!currentValue || !classes.some(c => c.id === currentValue)) placeholder.selected = true;
-    workloadClassSelect.appendChild(placeholder);
+    const cv = workloadClassSelect.value;
+    workloadClassSelect.innerHTML = '<option value="" disabled>Выберите класс</option>';
     classes.forEach(c => {
-        const option = document.createElement('option'); option.value = c.id; option.textContent = c.name;
-        if (c.id === currentValue) option.selected = true;
-        workloadClassSelect.appendChild(option);
+        const o = document.createElement('option'); o.value = c.id; o.textContent = c.name;
+        if (c.id === cv) o.selected = true;
+        workloadClassSelect.appendChild(o);
     });
     if (workloadClassSelect.value) { workloadContent.style.display = 'block'; await fillWorkloadFormSelects(); await renderWorkloadTable(); }
-    else { workloadContent.style.display = 'none'; }
+    else workloadContent.style.display = 'none';
 }
 async function fillWorkloadFormSelects() {
     const subjects = await DB.getAll('subjects');
-    const currentSubject = workloadSubject.value;
-    workloadSubject.innerHTML = '';
-    if (subjects.length === 0) {
-        const opt = document.createElement('option'); opt.value = ''; opt.textContent = 'Сначала добавьте предметы'; opt.disabled = true; opt.selected = true;
-        workloadSubject.appendChild(opt);
-        workloadSubjectHint.className = 'hint-text warning';
-        workloadSubjectHint.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> Перейдите на вкладку «Предметы»';
-    } else {
-        const ph = document.createElement('option'); ph.value = ''; ph.textContent = 'Выберите предмет'; ph.disabled = true;
-        if (!currentSubject) ph.selected = true;
-        workloadSubject.appendChild(ph);
-        subjects.forEach(s => {
-            const opt = document.createElement('option'); opt.value = s.name; opt.textContent = s.name;
-            if (s.name === currentSubject) opt.selected = true;
-            workloadSubject.appendChild(opt);
-        });
-        workloadSubjectHint.className = 'hint-text'; workloadSubjectHint.innerHTML = '';
-    }
+    workloadSubject.innerHTML = '<option value="" disabled selected>Выберите предмет</option>';
+    subjects.forEach(s => {
+        const o = document.createElement('option'); o.value = s.name; o.textContent = s.name;
+        workloadSubject.appendChild(o);
+    });
     const teachers = await DB.getAll('teachers');
-    const currentTeacher = workloadTeacher.value;
-    workloadTeacher.innerHTML = '';
-    if (teachers.length === 0) {
-        const opt = document.createElement('option'); opt.value = ''; opt.textContent = 'Сначала добавьте учителей'; opt.disabled = true; opt.selected = true;
-        workloadTeacher.appendChild(opt);
-        workloadTeacherHint.className = 'hint-text warning';
-        workloadTeacherHint.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> Перейдите на вкладку «Учителя»';
-    } else {
-        const ph = document.createElement('option'); ph.value = ''; ph.textContent = 'Выберите учителя'; ph.disabled = true;
-        if (!currentTeacher) ph.selected = true;
-        workloadTeacher.appendChild(ph);
-        teachers.forEach(t => {
-            const opt = document.createElement('option'); opt.value = t.id; opt.textContent = t.full_name + (t.subject ? ' — ' + t.subject : '');
-            if (t.id === currentTeacher) opt.selected = true;
-            workloadTeacher.appendChild(opt);
-        });
-        workloadTeacherHint.className = 'hint-text'; workloadTeacherHint.innerHTML = '';
-    }
+    workloadTeacher.innerHTML = '<option value="" disabled selected>Выберите учителя</option>';
+    teachers.forEach(t => {
+        const o = document.createElement('option'); o.value = t.id; o.textContent = t.full_name;
+        workloadTeacher.appendChild(o);
+    });
     const rooms = await DB.getAll('rooms');
-    const currentRoom = workloadRoom.value;
-    workloadRoom.innerHTML = '';
-    if (rooms.length === 0) {
-        const opt = document.createElement('option'); opt.value = ''; opt.textContent = 'Сначала добавьте кабинеты'; opt.disabled = true; opt.selected = true;
-        workloadRoom.appendChild(opt);
-        workloadRoomHint.className = 'hint-text warning';
-        workloadRoomHint.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> Перейдите на вкладку «Кабинеты»';
-    } else {
-        const ph = document.createElement('option'); ph.value = ''; ph.textContent = 'Выберите кабинет'; ph.disabled = true;
-        if (!currentRoom) ph.selected = true;
-        workloadRoom.appendChild(ph);
-        rooms.forEach(r => {
-            const opt = document.createElement('option'); opt.value = r.id; opt.textContent = r.number + ' — ' + r.name;
-            if (r.id === currentRoom) opt.selected = true;
-            workloadRoom.appendChild(opt);
-        });
-        workloadRoomHint.className = 'hint-text'; workloadRoomHint.innerHTML = '';
-    }
-    workloadSubmitBtn.disabled = !(subjects.length > 0 && teachers.length > 0 && rooms.length > 0);
+    workloadRoom.innerHTML = '<option value="" disabled selected>Выберите кабинет</option>';
+    rooms.forEach(r => {
+        const o = document.createElement('option'); o.value = r.id; o.textContent = r.number + ' — ' + r.name;
+        workloadRoom.appendChild(o);
+    });
+    workloadSubmitBtn.disabled = !(subjects.length && teachers.length && rooms.length);
 }
 async function renderWorkloadTable() {
     const classId = workloadClassSelect.value;
     if (!classId) return;
-    const allWorkloads = await DB.getAll('workloads');
-    const workloads = allWorkloads.filter(w => w.class_id === classId);
+    const all = await DB.getAll('workloads');
+    const list = all.filter(w => w.class_id === classId);
     const teachers = await DB.getAll('teachers');
     const rooms = await DB.getAll('rooms');
     workloadBody.innerHTML = '';
-    if (workloads.length === 0) { workloadEmpty.style.display = 'block'; workloadTable.style.display = 'none'; return; }
+    if (list.length === 0) { workloadEmpty.style.display = 'block'; workloadTable.style.display = 'none'; return; }
     workloadEmpty.style.display = 'none'; workloadTable.style.display = 'table';
-    workloads.forEach((w) => {
-        const teacher = teachers.find(t => t.id === w.teacher_id);
-        const teacherName = teacher ? teacher.full_name : '— учитель удалён —';
-        const room = rooms.find(r => r.id === w.room_id);
-        const roomName = room ? (room.number + ' — ' + room.name) : '— кабинет удалён —';
+    list.forEach(w => {
+        const t = teachers.find(x => x.id === w.teacher_id);
+        const r = rooms.find(x => x.id === w.room_id);
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td data-label="Предмет"><span class="badge badge-purple">${escapeHtml(w.subject)}</span></td><td data-label="Подгруппа"><span class="badge badge-gray">${escapeHtml(w.subgroup)}</span></td><td data-label="Учитель">${escapeHtml(teacherName)}</td><td data-label="Кабинет">${escapeHtml(roomName)}</td><td data-label=""><div class="actions"><button class="btn-icon btn-delete" data-id="${escapeHtml(w.id)}" title="Удалить"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td>`;
+        tr.innerHTML = `<td><span class="badge badge-purple">${escapeHtml(w.subject)}</span></td><td><span class="badge badge-gray">${escapeHtml(w.subgroup || '')}</span></td><td>${escapeHtml(t ? t.full_name : '—')}</td><td>${escapeHtml(r ? r.number + ' — ' + r.name : '—')}</td><td><div class="actions"><button class="btn-icon btn-delete" data-id="${escapeHtml(w.id)}">🗑</button></div></td>`;
         workloadBody.appendChild(tr);
     });
-    workloadBody.querySelectorAll('.btn-delete').forEach(btn => btn.addEventListener('click', () => deleteWorkload(btn.dataset.id)));
-}
-async function deleteWorkload(id) {
-    const workloads = await DB.getAll('workloads');
-    const w = workloads.find(x => x.id === id);
-    if (!w) return;
-    if (!confirm(`Удалить нагрузку: ${w.subject} (${w.subgroup})?`)) return;
-    await DB.remove('workloads', id);
-    await renderWorkloadTable(); await refreshScheduleTab();
-    showToast('Нагрузка удалена', 'error');
+    workloadBody.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Удалить нагрузку?')) return;
+        await DB.remove('workloads', b.dataset.id);
+        await renderWorkloadTable(); await refreshScheduleTab();
+        showToast('Удалено', 'error');
+    }));
 }
 workloadClassSelect.addEventListener('change', async () => {
     if (workloadClassSelect.value) { workloadContent.style.display = 'block'; await fillWorkloadFormSelects(); await renderWorkloadTable(); }
-    else { workloadContent.style.display = 'none'; }
+    else workloadContent.style.display = 'none';
 });
-workloadForm.addEventListener('submit', async (e) => {
+workloadForm.addEventListener('submit', async e => {
     e.preventDefault();
     const classId = workloadClassSelect.value;
-    if (!classId) { showToast('Выберите класс', 'error'); return; }
     const subject = workloadSubject.value;
     const subgroup = workloadSubgroup.value;
     const teacherId = workloadTeacher.value;
     const roomId = workloadRoom.value;
-    if (!subject) { showToast('Выберите предмет', 'error'); return; }
-    if (!subgroup) { showToast('Выберите подгруппу', 'error'); return; }
-    if (!teacherId) { showToast('Выберите учителя', 'error'); return; }
-    if (!roomId) { showToast('Выберите кабинет', 'error'); return; }
-    const workloads = await DB.getAll('workloads');
-    if (workloads.some(w => w.class_id === classId && w.subject === subject && w.subgroup === subgroup)) { showToast('Такая нагрузка уже добавлена для этого класса', 'error'); return; }
+    if (!classId || !subject || !teacherId || !roomId) { showToast('Заполните поля', 'error'); return; }
     const rooms = await DB.getAll('rooms');
     const room = rooms.find(r => r.id === roomId);
     await DB.insert('workloads', { id: genId('wl'), class_id: classId, subject, subgroup, teacher_id: teacherId, room_id: roomId, room_number: room ? room.number : '' });
-    workloadForm.reset(); workloadSubgroup.value = 'Весь класс';
     await fillWorkloadFormSelects(); await renderWorkloadTable(); await refreshScheduleTab();
     showToast('Нагрузка добавлена');
 });
@@ -1689,28 +1405,14 @@ const shiftNameInput = document.getElementById('shiftName');
 let activeShiftId = null;
 
 async function getShifts() { return await DB.getAll('bell_shifts'); }
-async function getSchedule(shiftId) {
+async function getBellSchedule(shiftId) {
     const schedules = await DB.getAll('bell_schedules');
-    let sched = schedules.find(s => s.shift_id === shiftId);
-    if (!sched) {
-        sched = { shift_id: shiftId, lessons: DEFAULT_LESSON_COUNT, times: {} };
-        const inserted = await DB.insert('bell_schedules', sched);
-        return inserted || sched;
+    let s = schedules.find(x => x.shift_id === shiftId);
+    if (!s) {
+        s = { id: genId('bsch'), shift_id: shiftId, lessons: DEFAULT_LESSON_COUNT, times: {} };
+        await DB.insert('bell_schedules', s);
     }
-    return sched;
-}
-async function updateSchedule(shiftId, updater) {
-    const schedules = await DB.getAll('bell_schedules');
-    const existing = schedules.find(s => s.shift_id === shiftId);
-    if (!existing) {
-        const newSched = { shift_id: shiftId, lessons: DEFAULT_LESSON_COUNT, times: {} };
-        updater(newSched);
-        await DB.insert('bell_schedules', newSched);
-    } else {
-        const copy = { ...existing };
-        updater(copy);
-        await DB.update('bell_schedules', existing.id, { lessons: copy.lessons, times: copy.times });
-    }
+    return s;
 }
 async function renderShiftsTabs() {
     const shifts = await getShifts();
@@ -1734,22 +1436,17 @@ async function renderBellTable() {
     const shift = shifts.find(s => s.id === activeShiftId);
     if (!shift) return;
     bellsCurrentShiftName.textContent = shift.name;
-    const sched = await getSchedule(activeShiftId);
-    const lessonCount = sched.lessons || DEFAULT_LESSON_COUNT;
+    const sched = await getBellSchedule(activeShiftId);
+    const count = sched.lessons || DEFAULT_LESSON_COUNT;
     const times = sched.times || {};
     bellTableBody.innerHTML = '';
-    for (let i = 1; i <= lessonCount; i++) {
+    for (let i = 1; i <= count; i++) {
         const tr = document.createElement('tr');
-        const tdNum = document.createElement('td');
-        tdNum.innerHTML = `<div class="lesson-num">${i}</div>`;
-        tr.appendChild(tdNum);
+        tr.innerHTML = `<td><div class="lesson-num">${i}</div></td>`;
         DAYS.forEach(day => {
+            const sk = `${day}_${i}_start`, ek = `${day}_${i}_end`;
             const td = document.createElement('td');
-            const startKey = `${day}_${i}_start`;
-            const endKey = `${day}_${i}_end`;
-            const startVal = times[startKey] || '';
-            const endVal = times[endKey] || '';
-            td.innerHTML = `<div class="time-inputs"><input type="time" data-key="${startKey}" value="${startVal}"><span class="time-sep">—</span><input type="time" data-key="${endKey}" value="${endVal}"></div>`;
+            td.innerHTML = `<div class="time-inputs"><input type="time" data-key="${sk}" value="${times[sk] || ''}"><span class="time-sep">—</span><input type="time" data-key="${ek}" value="${times[ek] || ''}"></div>`;
             tr.appendChild(td);
         });
         bellTableBody.appendChild(tr);
@@ -1758,47 +1455,43 @@ async function renderBellTable() {
 async function refreshBellsTab() { await renderShiftsTabs(); if (activeShiftId) await renderBellTable(); }
 async function addLessonRow() {
     if (!activeShiftId) return;
-    await updateSchedule(activeShiftId, (sched) => { sched.lessons = (sched.lessons || DEFAULT_LESSON_COUNT) + 1; });
-    const sched = await getSchedule(activeShiftId);
+    const s = await getBellSchedule(activeShiftId);
+    await DB.update('bell_schedules', s.id, { lessons: (s.lessons || DEFAULT_LESSON_COUNT) + 1 });
     await renderBellTable();
-    showToast('Добавлен урок №' + sched.lessons);
 }
 async function removeLessonRow() {
     if (!activeShiftId) return;
-    const sched = await getSchedule(activeShiftId);
-    if ((sched.lessons || DEFAULT_LESSON_COUNT) <= 1) { showToast('Нельзя удалить все уроки', 'error'); return; }
-    const lastNum = sched.lessons;
-    await updateSchedule(activeShiftId, (s) => {
-        s.lessons = s.lessons - 1;
-        DAYS.forEach(day => { delete s.times[`${day}_${lastNum}_start`]; delete s.times[`${day}_${lastNum}_end`]; });
-    });
+    const s = await getBellSchedule(activeShiftId);
+    if ((s.lessons || DEFAULT_LESSON_COUNT) <= 1) return;
+    await DB.update('bell_schedules', s.id, { lessons: s.lessons - 1 });
     await renderBellTable();
-    showToast('Удалён урок №' + lastNum, 'error');
 }
 async function saveBellSchedule() {
     if (!activeShiftId) return;
     const times = {};
-    const inputs = bellTableBody.querySelectorAll('input[type="time"]');
-    inputs.forEach(input => { const key = input.dataset.key; const val = input.value; if (val) times[key] = val; });
-    await updateSchedule(activeShiftId, (sched) => { sched.times = times; });
-    showToast('Расписание звонков сохранено');
+    bellTableBody.querySelectorAll('input[type="time"]').forEach(inp => {
+        if (inp.value) times[inp.dataset.key] = inp.value;
+    });
+    const s = await getBellSchedule(activeShiftId);
+    await DB.update('bell_schedules', s.id, { times });
+    showToast('Сохранено');
 }
-function openAddShiftModal() { shiftForm.reset(); shiftModal.classList.add('show'); setTimeout(() => shiftNameInput.focus(), 100); }
+function openAddShiftModal() { shiftForm.reset(); shiftModal.classList.add('show'); }
 function closeAddShiftModal() { shiftModal.classList.remove('show'); shiftForm.reset(); }
-shiftModal.addEventListener('click', (e) => { if (e.target === shiftModal) closeAddShiftModal(); });
-shiftForm.addEventListener('submit', async (e) => {
+shiftModal.addEventListener('click', e => { if (e.target === shiftModal) closeAddShiftModal(); });
+shiftForm.addEventListener('submit', async e => {
     e.preventDefault();
     const name = shiftNameInput.value.trim();
-    if (!name) { showToast('Введите название смены', 'error'); return; }
+    if (!name) return;
     const shifts = await getShifts();
-    if (shifts.some(s => s.name.toLowerCase() === name.toLowerCase())) { showToast('Смена с таким названием уже существует', 'error'); return; }
+    if (shifts.some(s => s.name.toLowerCase() === name.toLowerCase())) { showToast('Такая смена есть', 'error'); return; }
     const newShift = await DB.insert('bell_shifts', { id: genId('shift'), name });
     if (newShift) {
-        await DB.insert('bell_schedules', { shift_id: newShift.id, lessons: DEFAULT_LESSON_COUNT, times: {} });
+        await DB.insert('bell_schedules', { id: genId('bsch'), shift_id: newShift.id, lessons: DEFAULT_LESSON_COUNT, times: {} });
         activeShiftId = newShift.id;
     }
     closeAddShiftModal(); await renderShiftsTabs(); await renderBellTable();
-    showToast('Смена "' + name + '" создана');
+    showToast('Смена создана');
 });
 async function deleteCurrentShift() {
     if (!activeShiftId) return;
@@ -1807,10 +1500,10 @@ async function deleteCurrentShift() {
     if (!shift) return;
     if (!confirm(`Удалить смену "${shift.name}"?`)) return;
     const schedules = await DB.getAll('bell_schedules');
-    for (const s of schedules.filter(s => s.shift_id === activeShiftId)) await DB.remove('bell_schedules', s.id);
+    for (const s of schedules.filter(x => x.shift_id === activeShiftId)) await DB.remove('bell_schedules', s.id);
     await DB.remove('bell_shifts', activeShiftId);
-    const remaining = shifts.filter(s => s.id !== activeShiftId);
-    activeShiftId = remaining.length > 0 ? remaining[0].id : null;
+    const rest = shifts.filter(s => s.id !== activeShiftId);
+    activeShiftId = rest.length ? rest[0].id : null;
     await renderShiftsTabs(); if (activeShiftId) await renderBellTable();
     showToast('Смена удалена', 'error');
 }
@@ -1826,10 +1519,7 @@ const scheduleNoWorkload = document.getElementById('scheduleNoWorkload');
 const scheduleNoPeriods = document.getElementById('scheduleNoPeriods');
 const scheduleDayGrid = document.getElementById('scheduleDayGrid');
 const assignModal = document.getElementById('assignModal');
-const assignModalTitle = document.getElementById('assignModalTitle');
-const assignForm = document.getElementById('assignForm');
 const assignWorkloadSelect = document.getElementById('assignWorkloadSelect');
-const assignHint = document.getElementById('assignHint');
 let currentAssign = { classId: null, day: null, lesson: null };
 let workingSchedule = {};
 let CURRENT_PERIODS = [];
@@ -1838,16 +1528,12 @@ let ACTIVE_SCHEDULE_PERIOD_INDEX = 0;
 
 async function refreshScheduleTab() {
     const classes = await DB.getAll('classes');
-    const periodDocs = await DB.getAll('educational_periods');
-    const periodDoc = periodDocs[0] || null;
+    const pd = await DB.getAll('educational_periods');
+    const periodDoc = pd[0] || null;
     CURRENT_PERIODS = periodDoc ? (periodDoc.periods || []) : [];
     CURRENT_PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
 
     if (CURRENT_PERIODS.length === 0) {
-        schedulePeriodSelect.innerHTML = '';
-        schedulePeriodSelect.disabled = true;
-        scheduleClassSelect.innerHTML = '';
-        scheduleClassSelect.disabled = true;
         scheduleContent.style.display = 'none';
         scheduleNoClasses.style.display = 'none';
         scheduleNoWorkload.style.display = 'none';
@@ -1855,183 +1541,125 @@ async function refreshScheduleTab() {
         return;
     }
     scheduleNoPeriods.style.display = 'none';
-    schedulePeriodSelect.disabled = false;
 
-    const currentPeriodVal = schedulePeriodSelect.value;
     schedulePeriodSelect.innerHTML = '';
     const labels = PERIOD_LABELS[CURRENT_PERIOD_SYSTEM] || [];
-    CURRENT_PERIODS.forEach((p, idx) => {
-        const opt = document.createElement('option');
-        opt.value = idx;
-        opt.textContent = (labels[idx] || ('Период ' + (idx + 1))) + ' (' + p.start + ' – ' + p.end + ')';
-        if (String(idx) === currentPeriodVal) opt.selected = true;
-        schedulePeriodSelect.appendChild(opt);
+    CURRENT_PERIODS.forEach((p, i) => {
+        const o = document.createElement('option'); o.value = i;
+        o.textContent = (labels[i] || ('Период ' + (i + 1))) + ' (' + p.start + ' – ' + p.end + ')';
+        schedulePeriodSelect.appendChild(o);
     });
     ACTIVE_SCHEDULE_PERIOD_INDEX = parseInt(schedulePeriodSelect.value) || 0;
 
     if (classes.length === 0) {
-        scheduleClassSelect.innerHTML = '';
-        scheduleClassSelect.disabled = true;
         scheduleContent.style.display = 'none';
         scheduleNoWorkload.style.display = 'none';
         scheduleNoClasses.style.display = 'block';
         return;
     }
-    scheduleClassSelect.disabled = false;
     scheduleNoClasses.style.display = 'none';
-    const currentValue = scheduleClassSelect.value;
-    scheduleClassSelect.innerHTML = '';
-    const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = 'Выберите класс'; placeholder.disabled = true;
-    if (!currentValue || !classes.some(c => c.id === currentValue)) placeholder.selected = true;
-    scheduleClassSelect.appendChild(placeholder);
-    classes.forEach(c => {
-        const option = document.createElement('option'); option.value = c.id; option.textContent = c.name;
-        if (c.id === currentValue) option.selected = true;
-        scheduleClassSelect.appendChild(option);
-    });
 
+    const cv = scheduleClassSelect.value;
+    scheduleClassSelect.innerHTML = '<option value="" disabled selected>Выберите класс</option>';
+    classes.forEach(c => {
+        const o = document.createElement('option'); o.value = c.id; o.textContent = c.name;
+        if (c.id === cv) o.selected = true;
+        scheduleClassSelect.appendChild(o);
+    });
     if (scheduleClassSelect.value) await loadClassSchedule(scheduleClassSelect.value, ACTIVE_SCHEDULE_PERIOD_INDEX);
     else { scheduleContent.style.display = 'none'; scheduleNoWorkload.style.display = 'none'; }
 }
-
 async function loadClassSchedule(classId, periodIndex) {
     const workloads = (await DB.getAll('workloads')).filter(w => w.class_id === classId);
     if (workloads.length === 0) { scheduleContent.style.display = 'none'; scheduleNoWorkload.style.display = 'block'; return; }
     scheduleNoWorkload.style.display = 'none'; scheduleContent.style.display = 'block';
-
-    const allSchedules = await DB.getAll('class_schedules');
-    let saved = allSchedules.find(s => s.class_id === classId && s.period_index === periodIndex);
-    if (!saved && periodIndex === 0) {
-        saved = allSchedules.find(s => s.class_id === classId && s.period_index === undefined);
-    }
-
+    const all = await DB.getAll('class_schedules');
+    const saved = all.find(s => s.class_id === classId && s.period_index === periodIndex);
     workingSchedule = {};
-    DAYS.forEach(day => { workingSchedule[day] = {}; });
+    DAYS.forEach(d => workingSchedule[d] = {});
     if (saved && saved.grid) {
-        DAYS.forEach(day => {
-            if (saved.grid[day]) {
-                Object.keys(saved.grid[day]).forEach(lesson => { workingSchedule[day][lesson] = { ...saved.grid[day][lesson] }; });
-            }
+        DAYS.forEach(d => {
+            if (saved.grid[d]) Object.keys(saved.grid[d]).forEach(k => workingSchedule[d][k] = { ...saved.grid[d][k] });
         });
     }
     await renderScheduleGrid();
 }
-
 async function renderScheduleGrid() {
-    const classId = scheduleClassSelect.value;
-    if (!classId) return;
     scheduleDayGrid.innerHTML = '';
     DAYS.forEach(day => {
-        const dayCard = document.createElement('div');
-        dayCard.className = 'day-card';
-        const header = document.createElement('div');
-        header.className = 'day-card-header';
-        header.innerHTML = `<div class="day-card-header-icon">${DAYS_SHORT[day]}</div><h3>${DAYS_RU[day]}</h3>`;
-        dayCard.appendChild(header);
-        const lessonsList = document.createElement('div');
-        lessonsList.className = 'day-lessons-list';
+        const card = document.createElement('div');
+        card.className = 'day-card';
+        card.innerHTML = `<div class="day-card-header"><div class="day-card-header-icon">${DAYS_SHORT[day]}</div><h3>${DAYS_RU[day]}</h3></div>`;
+        const list = document.createElement('div');
+        list.className = 'day-lessons-list';
         for (let i = 1; i <= DEFAULT_LESSON_COUNT; i++) {
             const row = document.createElement('div');
             row.className = 'day-lesson-row';
-            const numEl = document.createElement('div');
-            numEl.className = 'lesson-num-small';
-            numEl.textContent = i;
-            const contentEl = document.createElement('div');
-            contentEl.className = 'lesson-content';
-            const infoEl = document.createElement('div');
-            infoEl.className = 'lesson-info';
             const assigned = workingSchedule[day] && workingSchedule[day][i];
-            if (assigned && assigned.subject) {
-                infoEl.innerHTML = `<div class="lesson-info-subject">${escapeHtml(assigned.subject)}</div><div class="lesson-info-meta">${escapeHtml(assigned.teacherName || '')} · ${escapeHtml(assigned.roomName || '')}</div>`;
-            } else {
-                infoEl.innerHTML = `<div class="lesson-info-empty">Урок не назначен</div>`;
-            }
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'btn-assign' + (assigned && assigned.subject ? ' assigned' : '');
-            btn.textContent = assigned && assigned.subject ? 'Изменить' : 'Назначить';
-            btn.addEventListener('click', () => openAssignModal(day, i));
-            contentEl.appendChild(infoEl); contentEl.appendChild(btn);
-            row.appendChild(numEl); row.appendChild(contentEl);
-            lessonsList.appendChild(row);
+            row.innerHTML = `<div class="lesson-num-small">${i}</div><div class="lesson-content"><div class="lesson-info">${assigned && assigned.subject ? `<div class="lesson-info-subject">${escapeHtml(assigned.subject)}</div><div class="lesson-info-meta">${escapeHtml(assigned.teacherName || '')} · ${escapeHtml(assigned.roomName || '')}</div>` : '<div class="lesson-info-empty">Не назначен</div>'}</div><button type="button" class="btn-assign${assigned ? ' assigned' : ''}">${assigned ? 'Изменить' : 'Назначить'}</button></div>`;
+            row.querySelector('.btn-assign').addEventListener('click', () => openAssignModal(day, i));
+            list.appendChild(row);
         }
-        dayCard.appendChild(lessonsList);
-        scheduleDayGrid.appendChild(dayCard);
+        card.appendChild(list);
+        scheduleDayGrid.appendChild(card);
     });
 }
-
 async function openAssignModal(day, lesson) {
     const classId = scheduleClassSelect.value;
-    if (!classId) { showToast('Выберите класс', 'error'); return; }
+    if (!classId) return;
     const workloads = (await DB.getAll('workloads')).filter(w => w.class_id === classId);
-    if (workloads.length === 0) { showToast('Сначала добавьте нагрузку для этого класса', 'error'); return; }
+    if (!workloads.length) { showToast('Нет нагрузки', 'error'); return; }
     currentAssign = { classId, day, lesson };
-    assignModalTitle.textContent = `Назначить урок: ${DAYS_RU[day]}, ${lesson}-й урок`;
+    document.getElementById('assignModalTitle').textContent = `Назначить: ${DAYS_RU[day]}, ${lesson}-й урок`;
     const teachers = await DB.getAll('teachers');
     const rooms = await DB.getAll('rooms');
-    assignWorkloadSelect.innerHTML = '';
-    const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = 'Выберите связку'; placeholder.disabled = true; placeholder.selected = true;
-    assignWorkloadSelect.appendChild(placeholder);
-    const current = workingSchedule[day] && workingSchedule[day][lesson];
+    assignWorkloadSelect.innerHTML = '<option value="" disabled selected>Выберите связку</option>';
+    const cur = workingSchedule[day] && workingSchedule[day][lesson];
     workloads.forEach(w => {
-        const teacher = teachers.find(t => t.id === w.teacher_id);
-        const room = rooms.find(r => r.id === w.room_id);
-        const teacherName = teacher ? teacher.full_name : '— учитель удалён —';
-        const roomName = room ? (room.number + ' — ' + room.name) : '— кабинет удалён —';
-        const option = document.createElement('option'); option.value = w.id; option.textContent = `${w.subject} — ${teacherName} (${roomName})`;
-        if (current && current.workloadId === w.id) option.selected = true;
-        assignWorkloadSelect.appendChild(option);
+        const t = teachers.find(x => x.id === w.teacher_id);
+        const r = rooms.find(x => x.id === w.room_id);
+        const o = document.createElement('option'); o.value = w.id;
+        o.textContent = `${w.subject} — ${t ? t.full_name : '?'} (${r ? r.number : '?'})`;
+        if (cur && cur.workloadId === w.id) o.selected = true;
+        assignWorkloadSelect.appendChild(o);
     });
-    if (current && current.workloadId) {
-        const clearOpt = document.createElement('option'); clearOpt.value = '__clear__'; clearOpt.textContent = '— Снять назначение —';
-        assignWorkloadSelect.appendChild(clearOpt);
+    if (cur) {
+        const c = document.createElement('option'); c.value = '__clear__'; c.textContent = '— Снять —';
+        assignWorkloadSelect.appendChild(c);
     }
-    assignHint.className = 'hint-text';
-    assignHint.innerHTML = '<svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg> Данные берутся из вкладки «Нагрузка»';
     assignModal.classList.add('show');
 }
-function closeAssignModal() { assignModal.classList.remove('show'); assignForm.reset(); }
-assignModal.addEventListener('click', (e) => { if (e.target === assignModal) closeAssignModal(); });
+function closeAssignModal() { assignModal.classList.remove('show'); }
+assignModal.addEventListener('click', e => { if (e.target === assignModal) closeAssignModal(); });
 async function saveAssignedLesson() {
-    const workloadId = assignWorkloadSelect.value;
-    const { classId, day, lesson } = currentAssign;
-    if (!classId || !day || !lesson) { closeAssignModal(); return; }
-    if (!workloadId) { showToast('Выберите связку из нагрузки', 'error'); return; }
+    const wid = assignWorkloadSelect.value;
+    const { day, lesson } = currentAssign;
+    if (!wid) { closeAssignModal(); return; }
     if (!workingSchedule[day]) workingSchedule[day] = {};
-    if (workloadId === '__clear__') { delete workingSchedule[day][lesson]; closeAssignModal(); await renderScheduleGrid(); showToast('Назначение снято'); return; }
+    if (wid === '__clear__') { delete workingSchedule[day][lesson]; closeAssignModal(); await renderScheduleGrid(); return; }
     const workloads = await DB.getAll('workloads');
-    const w = workloads.find(x => x.id === workloadId);
-    if (!w) { showToast('Нагрузка не найдена', 'error'); return; }
+    const w = workloads.find(x => x.id === wid);
+    if (!w) return;
     const teachers = await DB.getAll('teachers');
     const rooms = await DB.getAll('rooms');
-    const teacher = teachers.find(t => t.id === w.teacher_id);
-    const room = rooms.find(r => r.id === w.room_id);
-    workingSchedule[day][lesson] = {
-        workloadId: w.id, subject: w.subject, teacherId: w.teacher_id,
-        teacherName: teacher ? teacher.full_name : '—',
-        roomId: w.room_id, roomName: room ? (room.number + ' — ' + room.name) : '—'
-    };
+    const t = teachers.find(x => x.id === w.teacher_id);
+    const r = rooms.find(x => x.id === w.room_id);
+    workingSchedule[day][lesson] = { workloadId: w.id, subject: w.subject, teacherId: w.teacher_id, teacherName: t ? t.full_name : '—', roomId: w.room_id, roomName: r ? r.number + ' — ' + r.name : '—' };
     closeAssignModal(); await renderScheduleGrid();
-    showToast('Урок назначен');
+    showToast('Назначено');
 }
 async function saveClassSchedule() {
     const classId = scheduleClassSelect.value;
-    if (!classId) { showToast('Выберите класс', 'error'); return; }
-    const periodIndex = parseInt(schedulePeriodSelect.value) || 0;
-    const allSchedules = await DB.getAll('class_schedules');
-    const existing = allSchedules.find(s => s.class_id === classId && s.period_index === periodIndex);
-    if (existing) {
-        await DB.update('class_schedules', existing.id, { grid: workingSchedule, period_index: periodIndex });
-    } else {
-        await DB.insert('class_schedules', { id: genId('csched'), class_id: classId, period_index: periodIndex, grid: workingSchedule });
-    }
-    const labels = PERIOD_LABELS[CURRENT_PERIOD_SYSTEM] || [];
-    const periodName = labels[periodIndex] || ('Период ' + (periodIndex + 1));
-    showToast('Расписание сохранено (' + periodName + ')');
+    if (!classId) return;
+    const pi = parseInt(schedulePeriodSelect.value) || 0;
+    const all = await DB.getAll('class_schedules');
+    const ex = all.find(s => s.class_id === classId && s.period_index === pi);
+    if (ex) await DB.update('class_schedules', ex.id, { grid: workingSchedule });
+    else await DB.insert('class_schedules', { id: genId('csched'), class_id: classId, period_index: pi, grid: workingSchedule });
+    showToast('Расписание сохранено');
 }
 scheduleClassSelect.addEventListener('change', async () => {
     if (scheduleClassSelect.value) await loadClassSchedule(scheduleClassSelect.value, ACTIVE_SCHEDULE_PERIOD_INDEX);
-    else { scheduleContent.style.display = 'none'; scheduleNoWorkload.style.display = 'none'; }
 });
 schedulePeriodSelect.addEventListener('change', async () => {
     ACTIVE_SCHEDULE_PERIOD_INDEX = parseInt(schedulePeriodSelect.value) || 0;
@@ -2044,204 +1672,100 @@ schedulePeriodSelect.addEventListener('change', async () => {
 let chooserClass = { id: null, name: null };
 let chooserMonth = new Date().getMonth();
 let chooserYear = new Date().getFullYear();
-let chooserMonthWeek = new Date().getMonth();
-let chooserYearWeek = new Date().getFullYear();
 
-function extractParallel(className) {
-    const match = String(className).match(/^\s*(\d+)/);
-    return match ? parseInt(match[1], 10) : null;
-}
-function normalizeClassName(className) { return String(className).replace(/-/g, '').trim(); }
-function groupClassesByParallel(classes) {
-    const groups = {};
-    classes.forEach(cls => {
-        const parallel = extractParallel(cls.name);
-        if (parallel === null) return;
-        if (!groups[parallel]) groups[parallel] = [];
-        groups[parallel].push(cls);
-    });
-    const sortedParallels = Object.keys(groups).map(Number).sort((a, b) => a - b);
-    sortedParallels.forEach(p => { groups[p].sort((a, b) => a.name.localeCompare(b.name, 'ru')); });
-    return { groups, sortedParallels };
-}
+function extractParallel(name) { const m = String(name).match(/^\s*(\d+)/); return m ? parseInt(m[1], 10) : null; }
+function normalizeClassName(name) { return String(name).replace(/-/g, '').trim(); }
+
 async function renderJournalsClasses() {
     const container = document.getElementById('journalsClassesContainer');
     const classes = await DB.getAll('classes');
-    if (classes.length === 0) {
-        container.innerHTML = `<div class="empty-classes"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><h3>В базе данных пока нет созданных классов</h3><p>Создайте классы на вкладке «Классы».</p></div>`;
+    if (!classes.length) {
+        container.innerHTML = '<div class="empty-classes"><p>Нет классов</p></div>';
         return;
     }
-    const { groups, sortedParallels } = groupClassesByParallel(classes);
-    if (sortedParallels.length === 0) {
-        container.innerHTML = `<div class="empty-classes"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><h3>Не удалось распознать классы</h3><p>Проверьте, что названия классов начинаются с цифры.</p></div>`;
-        return;
-    }
+    const groups = {};
+    classes.forEach(c => {
+        const p = extractParallel(c.name);
+        if (p === null) return;
+        if (!groups[p]) groups[p] = [];
+        groups[p].push(c);
+    });
+    const parallels = Object.keys(groups).map(Number).sort((a, b) => a - b);
     let html = '<div class="classes-list"><div class="parallels-grid">';
-    sortedParallels.forEach(parallel => {
-        html += '<div class="parallel-column">';
-        html += `<div class="parallel-number">${parallel}</div>`;
-        html += '<div class="parallel-classes">';
-        groups[parallel].forEach(cls => {
-            const displayName = normalizeClassName(cls.name);
-            html += `<button type="button" class="class-link" data-class-id="${escapeHtml(cls.id)}" data-class-name="${escapeHtml(displayName)}">${escapeHtml(displayName)}</button>`;
+    parallels.forEach(p => {
+        html += `<div class="parallel-column"><div class="parallel-number">${p}</div><div class="parallel-classes">`;
+        groups[p].forEach(c => {
+            const dn = normalizeClassName(c.name);
+            html += `<button type="button" class="class-link" data-id="${escapeHtml(c.id)}" data-name="${escapeHtml(dn)}">${escapeHtml(dn)}</button>`;
         });
         html += '</div></div>';
     });
     html += '</div></div>';
     container.innerHTML = html;
-    container.querySelectorAll('.class-link').forEach(link => {
-        link.addEventListener('click', () => openChooser(link.dataset.classId, link.dataset.className));
-    });
+    container.querySelectorAll('.class-link').forEach(b => b.addEventListener('click', () => openChooser(b.dataset.id, b.dataset.name)));
 }
 async function refreshJournalsTab() {
     document.getElementById('journalsListScreen').style.display = 'block';
     document.getElementById('journalChooserScreen').classList.remove('active');
     await renderJournalsClasses();
 }
-function openChooser(classId, className) {
-    chooserClass = { id: classId, name: className };
-    const now = new Date();
-    chooserMonth = now.getMonth(); chooserYear = now.getFullYear();
-    chooserMonthWeek = now.getMonth(); chooserYearWeek = now.getFullYear();
+function openChooser(id, name) {
+    chooserClass = { id, name };
     document.getElementById('journalsListScreen').style.display = 'none';
     document.getElementById('journalChooserScreen').classList.add('active');
-    document.getElementById('chooserTitle').textContent = `Класс ${className}`;
-    renderChooserDayCalendar(); renderChooserWeekCalendar(); renderChooserSubjects();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('chooserTitle').textContent = 'Класс ' + name;
+    renderChooserDayCalendar(); renderChooserSubjects();
 }
 function backToJournalsList() {
     document.getElementById('journalChooserScreen').classList.remove('active');
     document.getElementById('journalsListScreen').style.display = 'block';
 }
-function chooserPrevMonth() { chooserMonth--; if (chooserMonth < 0) { chooserMonth = 11; chooserYear--; } renderChooserDayCalendar(); }
-function chooserNextMonth() { chooserMonth++; if (chooserMonth > 11) { chooserMonth = 0; chooserYear++; } renderChooserDayCalendar(); }
 function renderChooserDayCalendar() {
     const label = `${MONTH_NAMES[chooserMonth]} ${chooserYear}`;
     document.getElementById('chooserMonthLabel').textContent = label;
-    const tbody = document.getElementById('chooserDayCalendar');
-    tbody.innerHTML = '';
-    const firstDay = new Date(chooserYear, chooserMonth, 1);
-    const daysInMonth = new Date(chooserYear, chooserMonth + 1, 0).getDate();
-    let startWeekday = firstDay.getDay() - 1;
-    if (startWeekday < 0) startWeekday = 6;
-    const today = new Date();
-    const isCurrentMonth = (today.getFullYear() === chooserYear && today.getMonth() === chooserMonth);
-    let cells = [];
-    for (let i = 0; i < startWeekday; i++) cells.push(null);
-    for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+    const tb = document.getElementById('chooserDayCalendar');
+    tb.innerHTML = '';
+    const first = new Date(chooserYear, chooserMonth, 1);
+    const dim = new Date(chooserYear, chooserMonth + 1, 0).getDate();
+    let sw = first.getDay() - 1; if (sw < 0) sw = 6;
+    const cells = [];
+    for (let i = 0; i < sw; i++) cells.push(null);
+    for (let d = 1; d <= dim; d++) cells.push(d);
     for (let i = 0; i < cells.length; i += 7) {
         const tr = document.createElement('tr');
         for (let j = 0; j < 7; j++) {
             const td = document.createElement('td');
             const day = cells[i + j];
-            if (day === null || day === undefined) { td.innerHTML = `<button class="calendar-day-btn empty" disabled></button>`; }
+            if (day === null || day === undefined) td.innerHTML = '<button class="calendar-day-btn empty" disabled></button>';
             else {
-                const isWeekend = (j === 5 || j === 6);
-                const isToday = isCurrentMonth && today.getDate() === day;
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'calendar-day-btn' + (isWeekend ? ' weekend' : '') + (isToday ? ' today' : '');
-                btn.textContent = day;
-                btn.addEventListener('click', () => openDayJournal(day));
-                td.appendChild(btn);
+                const isW = j === 5 || j === 6;
+                td.innerHTML = `<button class="calendar-day-btn${isW ? ' weekend' : ''}">${day}</button>`;
             }
             tr.appendChild(td);
         }
-        tbody.appendChild(tr);
-    }
-}
-function chooserPrevMonthWeek() { chooserMonthWeek--; if (chooserMonthWeek < 0) { chooserMonthWeek = 11; chooserYearWeek--; } renderChooserWeekCalendar(); }
-function chooserNextMonthWeek() { chooserMonthWeek++; if (chooserMonthWeek > 11) { chooserMonthWeek = 0; chooserYearWeek++; } renderChooserWeekCalendar(); }
-function getWeekNumber(date) {
-    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    const dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-}
-function renderChooserWeekCalendar() {
-    const label = `${MONTH_NAMES[chooserMonthWeek]} ${chooserYearWeek}`;
-    document.getElementById('chooserMonthLabelWeek').textContent = label;
-    const tbody = document.getElementById('chooserWeekCalendar');
-    tbody.innerHTML = '';
-    const firstDay = new Date(chooserYearWeek, chooserMonthWeek, 1);
-    const daysInMonth = new Date(chooserYearWeek, chooserMonthWeek + 1, 0).getDate();
-    let startWeekday = firstDay.getDay() - 1;
-    if (startWeekday < 0) startWeekday = 6;
-    let cells = [];
-    for (let i = 0; i < startWeekday; i++) cells.push(null);
-    for (let d = 1; d <= daysInMonth; d++) cells.push(d);
-    const totalRows = Math.ceil(cells.length / 7);
-    for (let row = 0; row < totalRows; row++) {
-        const tr = document.createElement('tr');
-        let mondayDate = null;
-        for (let j = 0; j < 7; j++) {
-            const day = cells[row * 7 + j];
-            if (day !== null && day !== undefined) {
-                const d = new Date(chooserYearWeek, chooserMonthWeek, day);
-                const dow = (d.getDay() + 6) % 7;
-                mondayDate = new Date(d);
-                mondayDate.setDate(d.getDate() - dow);
-                break;
-            }
-        }
-        if (!mondayDate) mondayDate = new Date(chooserYearWeek, chooserMonthWeek, 1);
-        const weekNumber = getWeekNumber(mondayDate);
-        const tdWeekNum = document.createElement('td');
-        const wBtn = document.createElement('button');
-        wBtn.type = 'button';
-        wBtn.className = 'week-num-btn';
-        wBtn.textContent = weekNumber;
-        wBtn.addEventListener('click', () => openWeekJournal(weekNumber));
-        tdWeekNum.appendChild(wBtn);
-        tr.appendChild(tdWeekNum);
-        for (let j = 0; j < 7; j++) {
-            const td = document.createElement('td');
-            const day = cells[row * 7 + j];
-            if (day === null || day === undefined) { td.innerHTML = `<button class="calendar-day-btn empty" disabled></button>`; }
-            else {
-                const isWeekend = (j === 5 || j === 6);
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'calendar-day-btn' + (isWeekend ? ' weekend' : '');
-                btn.textContent = day;
-                btn.addEventListener('click', () => openWeekJournal(weekNumber));
-                td.appendChild(btn);
-            }
-            tr.appendChild(td);
-        }
-        tbody.appendChild(tr);
+        tb.appendChild(tr);
     }
 }
 async function renderChooserSubjects() {
-    const container = document.getElementById('chooserSubjectsList');
-    const classId = chooserClass.id;
-    const workloads = (await DB.getAll('workloads')).filter(w => w.class_id === classId);
-    container.innerHTML = '';
-    if (workloads.length === 0) {
-        container.innerHTML = `<div class="subjects-chooser-empty"><svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg><div>Для класса ещё не назначена нагрузка.</div></div>`;
-        return;
-    }
+    const c = document.getElementById('chooserSubjectsList');
+    const wls = (await DB.getAll('workloads')).filter(w => w.class_id === chooserClass.id);
+    c.innerHTML = '';
+    if (!wls.length) { c.innerHTML = '<div class="subjects-chooser-empty">Нет нагрузки</div>'; return; }
     const seen = new Set();
-    const uniqueSubjects = [];
-    workloads.forEach(w => { if (!seen.has(w.subject)) { seen.add(w.subject); uniqueSubjects.push(w.subject); } });
+    const list = [];
+    wls.forEach(w => { if (!seen.has(w.subject)) { seen.add(w.subject); list.push(w.subject); } });
     const subjects = await DB.getAll('subjects');
-    uniqueSubjects.forEach(name => {
-        const subjectObj = subjects.find(s => s.name === name);
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'subject-chooser-link';
-        btn.textContent = name;
-        btn.addEventListener('click', () => {
-            if (!subjectObj) { showToast('Не удалось определить ID предмета', 'error'); return; }
-            window.location.href = 'journal-view.html?class=' + encodeURIComponent(classId) + '&subject=' + encodeURIComponent(subjectObj.id);
+    list.forEach(name => {
+        const so = subjects.find(s => s.name === name);
+        if (!so) return;
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'subject-chooser-link'; b.textContent = name;
+        b.addEventListener('click', () => {
+            window.location.href = 'journal-view.html?class=' + encodeURIComponent(chooserClass.id) + '&subject=' + encodeURIComponent(so.id);
         });
-        container.appendChild(btn);
+        c.appendChild(b);
     });
 }
-function openDayJournal(day) { showToast(`Журнал за день: ${day} ${MONTH_NAMES[chooserMonth].toLowerCase()} ${chooserYear} (в разработке)`); }
-function openWeekJournal(weekNum) { showToast(`Журнал за неделю №${weekNum} (в разработке)`); }
-function journalQuickAction(name) { showToast(`«${name}» — раздел в разработке`); }
 
 // ============================================================
 // ПЕРИОДЫ
@@ -2252,106 +1776,92 @@ const periodId = document.getElementById('periodId');
 const periodName = document.getElementById('periodName');
 const periodSystem = document.getElementById('periodSystem');
 const periodsContainer = document.getElementById('periodsContainer');
-const periodModalTitle = document.getElementById('periodModalTitle');
-const periodSaveBtn = document.getElementById('periodSaveBtn');
 const periodsBody = document.getElementById('periodsBody');
 const periodsEmpty = document.getElementById('periodsEmpty');
-const periodsTable = document.getElementById('periodsTable');
+const periodsTable = document.querySelector('#panel-periods table');
+const periodModalTitle = document.getElementById('periodModalTitle');
+const periodSaveBtn = document.getElementById('periodSaveBtn');
 
-function renderPeriodBlocks(systemValue, existingPeriods) {
+function renderPeriodBlocks(sys, existing) {
     periodsContainer.innerHTML = '';
-    if (!systemValue || !SYSTEM_PERIODS[systemValue]) return;
-    const count = SYSTEM_PERIODS[systemValue];
-    for (let i = 1; i <= count; i++) {
-        const existing = existingPeriods && existingPeriods[i - 1] ? existingPeriods[i - 1] : {};
-        const block = document.createElement('div');
-        block.className = 'period-block';
-        block.innerHTML = `<div class="period-block-title">ПЕРИОД ${i}</div><div class="period-dates"><div class="period-date-group"><label>Начало</label><input type="date" data-period-index="${i}" data-period-type="start" value="${existing.start || ''}"></div><div class="period-date-group"><label>Окончание</label><input type="date" data-period-index="${i}" data-period-type="end" value="${existing.end || ''}"></div></div>`;
-        periodsContainer.appendChild(block);
+    if (!sys || !SYSTEM_PERIODS[sys]) return;
+    for (let i = 1; i <= SYSTEM_PERIODS[sys]; i++) {
+        const ex = existing && existing[i - 1] ? existing[i - 1] : {};
+        const b = document.createElement('div');
+        b.className = 'period-block';
+        b.innerHTML = `<div class="period-block-title">Период ${i}</div><div class="period-dates"><div class="period-date-group"><label>Начало</label><input type="date" data-idx="${i}" data-t="start" value="${ex.start || ''}"></div><div class="period-date-group"><label>Конец</label><input type="date" data-idx="${i}" data-t="end" value="${ex.end || ''}"></div></div>`;
+        periodsContainer.appendChild(b);
     }
 }
-periodSystem.addEventListener('change', () => { renderPeriodBlocks(periodSystem.value, null); });
+periodSystem.addEventListener('change', () => renderPeriodBlocks(periodSystem.value, null));
 function openAddPeriodModal() {
     periodModalTitle.textContent = 'Создание периода';
-    periodSaveBtn.textContent = 'Создать период';
+    periodSaveBtn.textContent = 'Создать';
     periodId.value = '';
     periodForm.reset();
     periodsContainer.innerHTML = '';
     periodModal.classList.add('show');
-    setTimeout(() => periodName.focus(), 100);
 }
 async function openEditPeriodModal(id) {
-    const periods = await DB.getAll('educational_periods');
-    const p = periods.find(x => x.id === id);
+    const ps = await DB.getAll('educational_periods');
+    const p = ps.find(x => x.id === id);
     if (!p) return;
-    periodModalTitle.textContent = 'Редактирование периода';
+    periodModalTitle.textContent = 'Редактирование';
     periodSaveBtn.textContent = 'Сохранить';
     periodId.value = p.id; periodName.value = p.name; periodSystem.value = p.system;
     renderPeriodBlocks(p.system, p.periods || []);
     periodModal.classList.add('show');
-    setTimeout(() => periodName.focus(), 100);
 }
 function closePeriodModal() { periodModal.classList.remove('show'); periodForm.reset(); periodsContainer.innerHTML = ''; }
-periodModal.addEventListener('click', (e) => { if (e.target === periodModal) closePeriodModal(); });
-periodForm.addEventListener('submit', async (e) => {
+periodModal.addEventListener('click', e => { if (e.target === periodModal) closePeriodModal(); });
+periodForm.addEventListener('submit', async e => {
     e.preventDefault();
     const id = periodId.value;
     const name = periodName.value.trim();
-    const system = periodSystem.value;
-    if (!name) { showToast('Введите название периода', 'error'); periodName.focus(); return; }
-    if (!system) { showToast('Выберите систему обучения', 'error'); periodSystem.focus(); return; }
-    const count = SYSTEM_PERIODS[system];
+    const sys = periodSystem.value;
+    if (!name || !sys) return;
     const periods = [];
-    for (let i = 1; i <= count; i++) {
-        const startInput = periodsContainer.querySelector(`input[data-period-index="${i}"][data-period-type="start"]`);
-        const endInput = periodsContainer.querySelector(`input[data-period-index="${i}"][data-period-type="end"]`);
-        const startVal = startInput ? startInput.value : '';
-        const endVal = endInput ? endInput.value : '';
-        if (!startVal || !endVal) { showToast(`Заполните даты для ПЕРИОДА ${i}`, 'error'); return; }
-        periods.push({ start: startVal, end: endVal });
+    for (let i = 1; i <= SYSTEM_PERIODS[sys]; i++) {
+        const s = periodsContainer.querySelector(`input[data-idx="${i}"][data-t="start"]`).value;
+        const en = periodsContainer.querySelector(`input[data-idx="${i}"][data-t="end"]`).value;
+        if (!s || !en) { showToast('Заполните все даты', 'error'); return; }
+        periods.push({ start: s, end: en });
     }
     if (id) {
-        await DB.update('educational_periods', id, { name, system, periods });
-        closePeriodModal(); await renderPeriods();
-        showToast('Период обновлён');
+        await DB.update('educational_periods', id, { name, system: sys, periods });
     } else {
-        await DB.insert('educational_periods', { id: genId('period'), name, system, periods });
-        closePeriodModal(); await renderPeriods();
-        showToast('Период "' + name + '" создан');
+        await DB.insert('educational_periods', { id: genId('period'), name, system: sys, periods });
     }
+    closePeriodModal(); await renderPeriods();
+    showToast('Период сохранён');
 });
 async function renderPeriods() {
-    const periods = await DB.getAll('educational_periods');
+    const ps = await DB.getAll('educational_periods');
     periodsBody.innerHTML = '';
-    if (periods.length === 0) { periodsEmpty.style.display = 'block'; periodsTable.style.display = 'none'; return; }
+    if (!ps.length) { periodsEmpty.style.display = 'block'; periodsTable.style.display = 'none'; return; }
     periodsEmpty.style.display = 'none'; periodsTable.style.display = 'table';
-    periods.forEach((p) => {
-        const badgeClass = SYSTEM_BADGE_CLASS[p.system] || 'badge-gray';
-        let datesHtml = '';
-        (p.periods || []).forEach((per, i) => {
+    ps.forEach(p => {
+        const bc = SYSTEM_BADGE_CLASS[p.system] || 'badge-gray';
+        let dates = '';
+        (p.periods || []).forEach((x, i) => {
             const labels = PERIOD_LABELS[p.system] || [];
-            const label = labels[i] || ('Период ' + (i + 1));
-            datesHtml += `<div class="period-dates-line"><strong>${label}:</strong> ${formatPeriodDate(per.start)} — ${formatPeriodDate(per.end)}</div>`;
+            dates += `<div>${labels[i] || ('Период ' + (i + 1))}: ${formatPeriodDate(x.start)} — ${formatPeriodDate(x.end)}</div>`;
         });
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td data-label="Название периода"><strong>${escapeHtml(p.name)}</strong></td><td data-label="Система"><span class="period-system-badge ${badgeClass}">${escapeHtml(p.system)}</span></td><td data-label="Даты"><div class="period-dates-cell">${datesHtml}</div></td><td data-label=""><div class="actions"><button class="btn-icon btn-edit" data-id="${escapeHtml(p.id)}" title="Изменить"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button><button class="btn-icon btn-delete" data-id="${escapeHtml(p.id)}" title="Удалить"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td>`;
+        tr.innerHTML = `<td><strong>${escapeHtml(p.name)}</strong></td><td><span class="period-system-badge ${bc}">${escapeHtml(p.system)}</span></td><td><div class="period-dates-cell">${dates}</div></td><td><div class="actions"><button class="btn-icon btn-edit" data-id="${escapeHtml(p.id)}">✎</button><button class="btn-icon btn-delete" data-id="${escapeHtml(p.id)}">🗑</button></div></td>`;
         periodsBody.appendChild(tr);
     });
-    periodsBody.querySelectorAll('.btn-edit').forEach(btn => btn.addEventListener('click', () => openEditPeriodModal(btn.dataset.id)));
-    periodsBody.querySelectorAll('.btn-delete').forEach(btn => btn.addEventListener('click', () => deletePeriod(btn.dataset.id)));
-}
-async function deletePeriod(id) {
-    const periods = await DB.getAll('educational_periods');
-    const p = periods.find(x => x.id === id);
-    if (!p) return;
-    if (!confirm(`Удалить период "${p.name}"?`)) return;
-    await DB.remove('educational_periods', id);
-    await renderPeriods();
-    showToast('Период удалён', 'error');
+    periodsBody.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', () => openEditPeriodModal(b.dataset.id)));
+    periodsBody.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Удалить период?')) return;
+        await DB.remove('educational_periods', b.dataset.id);
+        await renderPeriods();
+        showToast('Удалено', 'error');
+    }));
 }
 
 // ============================================================
-// ИНИЦИАЛИЗАЦИЯ ДАННЫХ
+// INIT
 // ============================================================
 async function init() {
     await fillTeacherSubjectSelect();
