@@ -292,6 +292,13 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 const DAYS_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const DAYS_JS_INDEX = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
 
+const PERIOD_LABELS = {
+    'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
+    'Полугодия': ['I полугодие', 'II полугодие'],
+    'Триместры': ['I триместр', 'II триместр', 'III триместр'],
+    'Семестры':  ['I семестр', 'II семестр']
+};
+
 const LESSON_TYPES = [
     { abbr: 'АК/Р', full: 'Административная контрольная работа' },
     { abbr: 'АД', full: 'Арифметический диктант' },
@@ -470,8 +477,9 @@ async function init() {
         .filter(s => s.class_id === CLASS_ID)
         .sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
 
-    PERIODS = await DB.getAll('educational_periods');
-    const periodDoc = PERIODS[0] || null;
+    // ===== ЗАГРУЗКА ПЕРИОДОВ =====
+    const periodDocs = await DB.getAll('educational_periods');
+    const periodDoc = periodDocs[0] || null;
     PERIODS = periodDoc ? (periodDoc.periods || []) : [];
     PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
 
@@ -660,12 +668,14 @@ function renderPeriodTabs() {
         const tab = document.createElement('button');
         tab.type = 'button';
         tab.className = 'tab-pill active';
-        tab.textContent = 'Весь год';
+        tab.textContent = 'Периоды не созданы';
+        tab.disabled = true;
+        tab.style.cursor = 'default';
         container.appendChild(tab);
         return;
     }
 
-    const labels = ['I четверть','II четверть','III четверть','IV четверть','I полугодие','II полугодие','I триместр','II триместр','III триместр','I семестр','II семестр'];
+    const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
     PERIODS.forEach((p, idx) => {
         const tab = document.createElement('button');
         tab.type = 'button';
@@ -676,6 +686,12 @@ function renderPeriodTabs() {
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
             DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
+            if (DATES.length === 0) {
+                showEmpty('Нет уроков в периоде', 'По расписанию в выбранном периоде нет уроков по этому предмету.');
+                return;
+            }
+            document.getElementById('mainContent').style.display = '';
+            document.getElementById('emptyState').style.display = 'none';
             renderMainTable();
         });
         container.appendChild(tab);
