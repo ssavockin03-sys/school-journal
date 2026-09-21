@@ -1917,9 +1917,8 @@ async function saveClassSchedule() {
     const classId = scheduleClassSelect.value;
     if (!classId) { showToast('Выберите класс', 'error'); return; }
     const periodIndex = parseInt(schedulePeriodSelect.value) || 0;
-const periodIndex = parseInt(schedulePeriodSelect.value) || 0;
-const allSchedules = await DB.getAll('class_schedules');
-const existing = allSchedules.find(s => s.class_id === classId && s.period_index === periodIndex);
+    const allSchedules = await DB.getAll('class_schedules');
+    const existing = allSchedules.find(s => s.class_id === classId && s.period_index === periodIndex);
     if (existing) {
         await DB.update('class_schedules', existing.id, { grid: workingSchedule, period_index: periodIndex });
     } else {
