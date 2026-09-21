@@ -1,360 +1,147 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Дневник.ру — Вход</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            display: flex; align-items: center; justify-content: center;
-            padding: 20px;
-        }
-        .login-box {
-            background: #fff; border-radius: 24px;
-            padding: 44px 40px; max-width: 420px; width: 100%;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
-            animation: appear 0.4s ease;
-        }
-        @keyframes appear {
-            from { opacity: 0; transform: translateY(20px) scale(0.96); }
-            to   { opacity: 1; transform: translateY(0)    scale(1);    }
-        }
-        .logo {
-            width: 64px; height: 64px; margin: 0 auto 20px;
-            background: linear-gradient(135deg, #2a5298, #3b7dd8);
-            border-radius: 18px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .logo svg { width: 34px; height: 34px; fill: #fff; }
-        .title    { font-size: 24px; font-weight: 700; color: #1a2b4a; text-align: center; margin-bottom: 6px; }
-        .subtitle { font-size: 14px; color: #7a8aa3; text-align: center; margin-bottom: 28px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #4a5a72; margin-bottom: 7px; }
-        .form-group input {
-            width: 100%; height: 50px; padding: 0 16px; font-size: 15px;
-            color: #1a2b4a; background: #f7f9fc; border: 2px solid #e2e8f0;
-            border-radius: 12px; outline: none; transition: all 0.25s ease;
-            font-family: inherit;
-        }
-        .form-group input:focus {
-            border-color: #2a5298; background: #fff;
-            box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
-        }
-        .btn {
-            width: 100%; height: 52px; margin-top: 8px;
-            background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff;
-            border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
-            cursor: pointer; transition: all 0.25s ease;
-            box-shadow: 0 6px 18px rgba(42, 82, 152, 0.35);
-            font-family: inherit;
-        }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(42, 82, 152, 0.45); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .error {
-            background: #fff0f0; color: #d32f2f; padding: 12px 14px;
-            border-radius: 10px; font-size: 13px; font-weight: 500;
-            margin-bottom: 16px; display: none; border: 1px solid #ffd6d6;
-        }
-        .error.show { display: block; }
-        .hint {
-            margin-top: 20px; padding: 14px; background: #f0f5ff;
-            border-radius: 12px; font-size: 12px; color: #4a5a72;
-            line-height: 1.5; text-align: center;
-        }
-        .status {
-            margin-top: 16px; text-align: center;
-            font-size: 13px; color: #2a5298; font-weight: 600;
-            min-height: 18px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дневник.ру — Вход</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 420px; width: 100%; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35); }
+.logo { width: 64px; height: 64px; margin: 0 auto 20px; background: linear-gradient(135deg, #2a5298, #3b7dd8); border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+.logo svg { width: 34px; height: 34px; fill: #fff; }
+.title { font-size: 24px; font-weight: 700; color: #1a2b4a; text-align: center; margin-bottom: 6px; }
+.subtitle { font-size: 14px; color: #7a8aa3; text-align: center; margin-bottom: 28px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: #4a5a72; margin-bottom: 7px; }
+.form-group input { width: 100%; height: 50px; padding: 0 16px; font-size: 15px; color: #1a2b4a; background: #f7f9fc; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; font-family: inherit; }
+.form-group input:focus { border-color: #2a5298; background: #fff; }
+.btn { width: 100%; height: 52px; margin-top: 8px; background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.btn:hover { opacity: 0.9; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.error { background: #fff0f0; color: #d32f2f; padding: 12px 14px; border-radius: 10px; font-size: 13px; font-weight: 500; margin-bottom: 16px; display: none; border: 1px solid #ffd6d6; }
+.error.show { display: block; }
+.hint { margin-top: 20px; padding: 14px; background: #f0f5ff; border-radius: 12px; font-size: 12px; color: #4a5a72; line-height: 1.5; text-align: center; }
+.status { margin-top: 16px; text-align: center; font-size: 13px; color: #2a5298; font-weight: 600; min-height: 18px; }
+</style>
 </head>
 <body>
+<div class="login-box">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
+    <div class="title">Вход в школьный журнал</div>
+    <div class="subtitle">Введите email и пароль</div>
+    <div class="error" id="errorBox"></div>
+    <form id="loginForm">
+        <div class="form-group"><label for="loginInput">Email</label><input type="email" id="loginInput" placeholder="director@school.ru" autocomplete="username" required></div>
+        <div class="form-group"><label for="passwordInput">Пароль</label><input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" required></div>
+        <button type="submit" class="btn" id="loginBtn">Войти</button>
+    </form>
+    <div class="status" id="statusBox"></div>
+    <div class="hint">🔒 Безопасный вход через Supabase.<br>Роль определяется автоматически.</div>
+</div>
 
-    <div class="login-box">
-        <div class="logo">
-            <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
-        </div>
-        <div class="title">Вход в школьный журнал</div>
-        <div class="subtitle">Введите логин и пароль</div>
+<script src="supabase-config.js"></script>
+<script>
+const SESSION_KEY = 'sj_session';
+const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
+const ROUTES = { admin: 'admin.html', teacher: 'teacher.html', student: 'student.html' };
 
-        <div class="error" id="errorBox"></div>
+const form = document.getElementById('loginForm');
+const loginInput = document.getElementById('loginInput');
+const passInput = document.getElementById('passwordInput');
+const loginBtn = document.getElementById('loginBtn');
+const errorBox = document.getElementById('errorBox');
+const statusBox = document.getElementById('statusBox');
 
-        <form id="loginForm" autocomplete="on">
-            <div class="form-group">
-                <label for="loginInput">Логин</label>
-                <input type="text" id="loginInput" placeholder="Например: ivanov.ivan" autocomplete="username" required>
-            </div>
-            <div class="form-group">
-                <label for="passwordInput">Пароль</label>
-                <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" required>
-            </div>
-            <button type="submit" class="btn" id="loginBtn">Войти</button>
-        </form>
+function showError(t) { errorBox.textContent = t; errorBox.classList.add('show'); statusBox.textContent = ''; }
+function clearError() { errorBox.classList.remove('show'); errorBox.textContent = ''; }
+function setStatus(t) { statusBox.textContent = t || ''; }
+function resetButton() { loginBtn.disabled = false; loginBtn.textContent = 'Войти'; }
+function saveSession(user, role) {
+    try { localStorage.setItem(SESSION_KEY, JSON.stringify({ uid: user.id, email: user.email, role, loggedAt: Date.now(), expiresAt: Date.now() + SESSION_DURATION_MS })); } catch (e) {}
+}
+function clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch (e) {} }
 
-        <div class="status" id="statusBox"></div>
+async function determineRole(sb, user) {
+    if (!user || !user.email) return null;
+    const email = user.email;
+    const login = email.split('@')[0];
 
-        <div class="hint">
-            🔒 Безопасный вход. Сессия — 24 часа.<br>
-            Роль определяется автоматически.<br>
-            <span style="font-size:11px;color:#8a9bb5;">Первый вход автоматически создаёт аккаунт.</span>
-        </div>
-    </div>
+    // Проверяем admins
+    try {
+        const { data } = await sb.from('admins').select('id').or(`id.eq.${user.id},user_id.eq.${user.id}`).limit(1);
+        if (data && data.length) return 'admin';
+    } catch (e) { console.warn('admins check:', e); }
 
-    <!-- Firebase SDK (compat) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    // Проверяем teachers
+    try {
+        const { data } = await sb.from('teachers').select('id').eq('login', login).limit(1);
+        if (data && data.length) return 'teacher';
+    } catch (e) { console.warn('teachers check:', e); }
 
-    <script>
-    // ============================================================
-    // КОНФИГ FIREBASE
-    // ============================================================
-    const firebaseConfig = {
-        apiKey: "AIzaSyD1d1JQioGL8lHON8ydgtpHU1EXEwD00SY",
-        authDomain: "school-journal-8f39a.firebaseapp.com",
-        projectId: "school-journal-8f39a",
-        storageBucket: "school-journal-8f39a.firebasestorage.app",
-        messagingSenderId: "254973926699",
-        appId: "1:254973926699:web:43a7d8109df5366163396e"
-    };
+    // Проверяем students
+    try {
+        const { data } = await sb.from('students').select('id').eq('login', login).limit(1);
+        if (data && data.length) return 'student';
+    } catch (e) { console.warn('students check:', e); }
 
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
+    return null;
+}
+
+async function loginFlow(email, password) {
+    clearError();
+    email = String(email || '').trim();
+    if (!email || !password) { showError('Введите email и пароль'); return; }
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Проверка...';
+    setStatus('Авторизация...');
+
+    let sb;
+    try { sb = await window._sbReady; }
+    catch (e) { showError('Не удалось подключиться к Supabase.'); resetButton(); setStatus(''); return; }
+
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+        console.error('signIn error:', error);
+        let msg = 'Не удалось войти. Проверьте email и пароль.';
+        if (error.message && error.message.includes('Invalid login')) msg = 'Неверный email или пароль.';
+        if (error.message && error.message.includes('Email not confirmed')) msg = 'Email не подтверждён. Обратитесь к администратору.';
+        showError(msg); resetButton(); setStatus(''); return;
     }
 
-    const auth = firebase.auth();
-    const db   = firebase.firestore();
+    const user = data.user;
+    if (!user) { showError('Не удалось получить пользователя.'); resetButton(); setStatus(''); return; }
 
-    // ============================================================
-    // КОНСТАНТЫ
-    // ============================================================
-    const AUTH_EMAIL_DOMAIN = '@school-journal-8f39a.firebaseapp.com';
-    const SESSION_KEY = 'sj_session';
-    const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
-
-const ROUTES = {
-    admin:   'admin.html',
-    teacher: 'teacher.html',
-    student: 'student.html'         // ← теперь
-};
-
-    // ============================================================
-    // DOM
-    // ============================================================
-    const form        = document.getElementById('loginForm');
-    const loginInput  = document.getElementById('loginInput');
-    const passInput   = document.getElementById('passwordInput');
-    const loginBtn    = document.getElementById('loginBtn');
-    const errorBox    = document.getElementById('errorBox');
-    const statusBox   = document.getElementById('statusBox');
-
-    // ============================================================
-    // УТИЛИТЫ
-    // ============================================================
-    function showError(text) {
-        errorBox.textContent = text;
-        errorBox.classList.add('show');
-        statusBox.textContent = '';
-    }
-    function clearError() {
-        errorBox.classList.remove('show');
-        errorBox.textContent = '';
-    }
-    function setStatus(text) {
-        statusBox.textContent = text || '';
-    }
-    function resetButton() {
-        loginBtn.disabled = false;
-        loginBtn.textContent = 'Войти';
-    }
-    function saveSession(user, role) {
-        try {
-            localStorage.setItem(SESSION_KEY, JSON.stringify({
-                uid: user.uid, email: user.email, role: role,
-                loggedAt: Date.now(), expiresAt: Date.now() + SESSION_DURATION_MS
-            }));
-        } catch (e) {}
-    }
-    function getSession() {
-        try {
-            const raw = localStorage.getItem(SESSION_KEY);
-            if (!raw) return null;
-            const s = JSON.parse(raw);
-            if (!s.expiresAt || Date.now() > s.expiresAt) {
-                localStorage.removeItem(SESSION_KEY);
-                return null;
-            }
-            return s;
-        } catch (e) { return null; }
-    }
-    function clearSession() {
-        try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+    setStatus('Определяем роль...');
+    const role = await determineRole(sb, user);
+    if (!role) {
+        showError('Доступ запрещён: роль не найдена. Обратитесь к администратору.');
+        try { await sb.auth.signOut(); } catch (e) {}
+        clearSession(); resetButton(); setStatus(''); return;
     }
 
-    // ============================================================
-    // ОПРЕДЕЛЕНИЕ РОЛИ
-    // ============================================================
-    async function determineRole(user) {
-        if (!user || !user.email) return null;
+    saveSession(user, role);
+    setStatus('Роль: ' + role + '. Переходим...');
+    window.location.replace(ROUTES[role]);
+}
 
-        try {
-            const adminDoc = await db.collection('admins').doc(user.uid).get();
-            if (adminDoc.exists) {
-                const data = adminDoc.data() || {};
-                if (!data.role || data.role === 'admin') return 'admin';
-            }
-        } catch (e) { console.warn('Ошибка проверки admins:', e); }
+form.addEventListener('submit', (e) => { e.preventDefault(); loginFlow(loginInput.value, passInput.value); });
 
-        const login = user.email.split('@')[0];
+window.addEventListener('load', async () => {
+    let sb;
+    try { sb = await window._sbReady; } catch (e) { return; }
+    const { data } = await sb.auth.getSession();
+    const user = data && data.session ? data.session.user : null;
+    if (!user) { clearSession(); return; }
 
-        try {
-            const snap = await db.collection('teachers').where('login', '==', login).limit(1).get();
-            if (!snap.empty) return 'teacher';
-        } catch (e) { console.warn('Ошибка проверки teachers:', e); }
-
-        try {
-            const snap = await db.collection('students').where('login', '==', login).limit(1).get();
-            if (!snap.empty) return 'student';
-        } catch (e) { console.warn('Ошибка проверки students:', e); }
-
-        return null;
-    }
-
-    // ============================================================
-    // РЕДИРЕКТ ПО РОЛИ
-    // ============================================================
-    function redirectByRole(role) {
-        const url = ROUTES[role];
-        if (!url) { showError('Неизвестная роль: ' + role); return false; }
-        window.location.replace(url);
-        return true;
-    }
-
-    // ============================================================
-    // ВХОД (с автосозданием аккаунта при первом входе)
-    // ============================================================
-    async function loginFlow(rawLogin, password) {
-        clearError();
-        const login = String(rawLogin || '').trim();
-        if (!login || !password) { showError('Введите логин и пароль'); return; }
-
-        const email = login.includes('@') ? login : login + AUTH_EMAIL_DOMAIN;
-
-        loginBtn.disabled = true;
-        loginBtn.textContent = 'Проверка...';
-        setStatus('Авторизация...');
-
-        let user = null;
-
-        // --- 1. Пытаемся войти ---
-        try {
-            const cred = await auth.signInWithEmailAndPassword(email, password);
-            user = cred.user;
-        } catch (err) {
-            const noAccount =
-                err.code === 'auth/user-not-found' ||
-                err.code === 'auth/invalid-credential' ||
-                err.code === 'auth/invalid-login-credentials';
-
-            if (noAccount) {
-                // --- 2. Аккаунта нет → создаём его ---
-                setStatus('Первый вход — создаём аккаунт...');
-                try {
-                    const cred = await auth.createUserWithEmailAndPassword(email, password);
-                    user = cred.user;
-                } catch (createErr) {
-                    console.error('Ошибка создания аккаунта:', createErr);
-                    let msg = 'Не удалось создать аккаунт.';
-                    if (createErr.code === 'auth/email-already-in-use') {
-                        msg = 'Аккаунт уже существует, но пароль не подходит. Обратитесь к администратору.';
-                    } else if (createErr.code === 'auth/weak-password') {
-                        msg = 'Пароль слишком слабый (минимум 6 символов).';
-                    } else if (createErr.code === 'auth/invalid-email') {
-                        msg = 'Некорректный логин.';
-                    } else if (createErr.code === 'auth/network-request-failed') {
-                        msg = 'Ошибка сети. Проверьте интернет.';
-                    }
-                    setStatus('');
-                    showError(msg);
-                    resetButton();
-                    return;
-                }
-            } else {
-                console.error('Ошибка входа:', err);
-                let msg = 'Не удалось войти. Проверьте логин и пароль.';
-                switch (err.code) {
-                    case 'auth/wrong-password': msg = 'Неверный пароль.'; break;
-                    case 'auth/too-many-requests': msg = 'Слишком много попыток. Попробуйте позже.'; break;
-                    case 'auth/network-request-failed': msg = 'Ошибка сети. Проверьте интернет.'; break;
-                    case 'auth/invalid-email': msg = 'Некорректный логин.'; break;
-                }
-                setStatus('');
-                showError(msg);
-                resetButton();
-                return;
-            }
-        }
-
-        if (!user) { showError('Не удалось получить пользователя.'); resetButton(); return; }
-
-        // --- 3. Определяем роль ---
-        setStatus('Определяем роль...');
-        const role = await determineRole(user);
-
-        if (!role) {
-            setStatus('');
-            showError('Доступ запрещён: роль не найдена. Обратитесь к администратору.');
-            try { await auth.signOut(); } catch (e) {}
-            clearSession();
-            resetButton();
-            return;
-        }
-
-        saveSession(user, role);
-        setStatus('Роль: ' + role + '. Переходим...');
-        redirectByRole(role);
-    }
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        loginFlow(loginInput.value, passInput.value);
-    });
-
-    // ============================================================
-    // АВТОВХОД ПРИ ЗАГРУЗКЕ
-    // ============================================================
-    window.addEventListener('load', async () => {
-        const user = await new Promise((resolve) => {
-            const unsub = auth.onAuthStateChanged((u) => { unsub(); resolve(u); });
-        });
-
-        if (!user) { clearSession(); return; }
-
-        const session = getSession();
-        if (session && session.uid === user.uid && session.role && ROUTES[session.role]) {
-            setStatus('Возвращаемся в кабинет...');
-            redirectByRole(session.role);
-            return;
-        }
-
-        setStatus('Определяем роль...');
-        const role = await determineRole(user);
-
-        if (!role) {
-            setStatus('');
-            showError('Доступ запрещён: роль не найдена.');
-            try { await auth.signOut(); } catch (e) {}
-            clearSession();
-            return;
-        }
-
-        saveSession(user, role);
-        setStatus('Роль: ' + role + '. Переходим...');
-        redirectByRole(role);
-    });
-    </script>
+    setStatus('Определяем роль...');
+    const role = await determineRole(sb, user);
+    if (!role) { try { await sb.auth.signOut(); } catch (e) {} clearSession(); setStatus(''); return; }
+    saveSession(user, role);
+    setStatus('Роль: ' + role + '. Переходим...');
+    window.location.replace(ROUTES[role]);
+});
+</script>
 </body>
 </html>
