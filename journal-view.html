@@ -12,167 +12,63 @@
 html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; }
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; background: #FFFFFF; flex-wrap: wrap; }
-.top-nav a { color: #1976d2; text-decoration: none; font-weight: 500; cursor: pointer; }
-.top-nav a:hover { color: #0d47a1; text-decoration: underline; }
+.top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
+.top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
 .top-nav .sep { color: #CBD5E1; font-size: 12px; }
-.top-nav .current { color: #1976d2; font-weight: 500; cursor: default; }
+.top-nav .current { color: #2563EB; font-weight: 500; cursor: default; }
 .header-bar { background: #FFFFFF; padding: 4px 30px 10px 30px; }
 .header-grid { display: inline-grid; grid-template-columns: max-content max-content; column-gap: 40px; row-gap: 8px; align-items: center; }
 .header-grid .cell { min-width: 0; }
 .dropdown { position: relative; display: inline-block; }
-.dropdown-trigger { display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: transparent; border: none; font-size: 17.85px; font-weight: 700; color: #1976d2; cursor: pointer; font-family: inherit; white-space: nowrap; letter-spacing: -0.4px; line-height: 1.15; }
-.dropdown-trigger:hover { color: #0d47a1; }
-.dropdown-trigger .chevron { width: 13px; height: 13px; fill: #1976d2; transition: transform 0.2s ease; margin-top: 3px; }
+.dropdown-trigger { display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: transparent; border: none; font-size: 17.85px; font-weight: 700; color: #3B82F6; cursor: pointer; font-family: inherit; white-space: nowrap; letter-spacing: -0.4px; line-height: 1.15; }
+.dropdown-trigger:hover { color: #2563EB; }
+.dropdown-trigger .chevron { width: 13px; height: 13px; fill: #3B82F6; transition: transform 0.2s ease; margin-top: 3px; }
 .dropdown.open .dropdown-trigger .chevron { transform: rotate(180deg); }
 .dropdown-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12); padding: 4px; z-index: 200; display: none; max-height: 320px; overflow-y: auto; }
 .dropdown.open .dropdown-menu { display: block; }
 .dropdown-menu-item { display: block; width: 100%; padding: 8px 12px; background: transparent; border: none; border-radius: 5px; color: #1E293B; font-size: 14px; font-weight: 500; cursor: pointer; text-align: left; font-family: inherit; }
-.dropdown-menu-item:hover { background: #EFF6FF; color: #1976d2; }
-.dropdown-menu-item.active { background: #DBEAFE; color: #0d47a1; font-weight: 600; }
+.dropdown-menu-item:hover { background: #EFF6FF; color: #2563EB; }
+.dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; font-weight: 400; white-space: nowrap; }
 .period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; background: #FFFFFF; flex-wrap: wrap; }
 .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 3px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; flex-wrap: wrap; }
 .tab-pill { padding: 5px 12px; background: transparent; color: #64748B; font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 6px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
 .tab-pill:hover { background: #F1F5F9; color: #334155; }
-.tab-pill.active { background: #FFFFFF; color: #1976d2; border-color: #1976d2; font-weight: 600; }
+.tab-pill.active { background: #FFFFFF; color: #2563EB; border-color: #2563EB; font-weight: 600; }
 .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
 .btn-import { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFFFFF; color: #334155; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; }
 .btn-import:hover { background: #F8FAFC; border-color: #94A3B8; }
 .btn-import svg { width: 14px; height: 14px; fill: #64748B; }
-.btn-text-action { padding: 5px 10px; background: transparent; border: none; color: #1976d2; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border-radius: 6px; white-space: nowrap; transition: all 0.15s ease; }
-.btn-text-action:hover { background: #EFF6FF; color: #0d47a1; }
-.btn-outlined-blue { padding: 5px 10px; background: #FFFFFF; border: 1px solid #1976d2; color: #1976d2; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border-radius: 6px; white-space: nowrap; transition: all 0.15s ease; }
+.btn-text-action { padding: 5px 10px; background: transparent; border: none; color: #2563EB; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border-radius: 6px; white-space: nowrap; transition: all 0.15s ease; }
+.btn-text-action:hover { background: #EFF6FF; color: #1D4ED8; }
+.btn-outlined-blue { padding: 5px 10px; background: #FFFFFF; border: 1px solid #2563EB; color: #2563EB; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border-radius: 6px; white-space: nowrap; transition: all 0.15s ease; }
 .btn-outlined-blue:hover { background: #EFF6FF; }
 .icon-actions { display: inline-flex; align-items: center; gap: 2px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 2px; }
 .icon-action-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: transparent; border: none; border-radius: 4px; color: #64748B; cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
 .icon-action-btn:hover { background: #F1F5F9; color: #1E293B; }
 .icon-action-btn svg { width: 15px; height: 15px; fill: currentColor; }
 .icon-action-btn .excel-icon { fill: #217346; }
-
-/* ============================================================
-   ГЛАВНЫЙ КОНТЕЙНЕР: ЖУРНАЛ + БОКОВЫЕ РАСКРЫВАШКИ + ПОУРОЧНЫЙ ПЛАН
-   ============================================================ */
-.panels-container { display: flex; gap: 0; width: 100%; align-items: stretch; position: relative; padding: 0 8px; }
-
-.panel-left-wrapper, .panel-right-wrapper {
-    display: flex;
-    flex-direction: column;
-    transition: flex-basis 0.35s ease, max-width 0.35s ease, opacity 0.3s ease;
-    overflow: hidden;
-}
+.panels-container { display: flex; gap: 0; width: 100%; align-items: stretch; position: relative; transition: all 0.3s ease; }
+.panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; transition: flex-basis 0.35s ease, max-width 0.35s ease; overflow: hidden; }
 .panel-left-wrapper { flex: 11; min-width: 0; max-width: 100%; }
-.panel-right-wrapper { flex: 9; min-width: 0; max-width: 100%; }
-
-.panel-left {
-    flex: 1; min-width: 0; max-height: 76vh; overflow: hidden;
-    background: #FFFFFF;
-    border: 1px solid #CBD5E1;
-    border-radius: 10px 0 0 10px;
-    display: flex; flex-direction: column;
-    transition: border-radius 0.35s ease;
-    margin: 8px 0 12px 22px;
-}
-.panel-right {
-    flex: 1; min-width: 0; overflow: auto; max-height: 76vh;
-    border: 1px solid #CBD5E1;
-    background: #FFFFFF;
-    border-radius: 0 10px 10px 0;
-    border-left: none;
-    transition: border-radius 0.35s ease;
-    margin: 8px 22px 12px 0;
-}
-
-/* Свёрнутое состояние */
-.panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; opacity: 0; }
+.panel-left { flex: 1; min-width: 0; max-height: 76vh; overflow: hidden; background: #FFFFFF; border-top: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; border-left: 1px solid #CBD5E1; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; transition: border-radius 0.35s ease; margin: 8px 0 12px 30px; }
+.panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
-.panels-container.left-collapsed .panel-right { border-radius: 10px; border-left: 1px solid #CBD5E1; margin-left: 22px; }
-
-.panels-container.right-collapsed .panel-right-wrapper { flex: 0 0 0; max-width: 0; opacity: 0; }
-.panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
-.panels-container.right-collapsed .panel-left { border-radius: 10px; border-right: 1px solid #CBD5E1; margin-right: 22px; }
-
-/* ============================================================
-   КРАСИВЫЕ БОКОВЫЕ РАСКРЫВАШКИ — ВЕРТИКАЛЬНЫЕ "ТАБЛЕТКИ"
-   ============================================================ */
-.side-toggle-tabs {
-    width: 34px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    background: #FFFFFF;
-    position: relative;
-    padding: 0 2px;
-    margin: 8px 0;
-}
-
-.side-toggle-tab {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 22px 6px;
-    background: linear-gradient(135deg, #1976d2, #2196f3);
-    color: #FFFFFF;
-    border: none;
-    font-size: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.25s ease;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    transform: rotate(180deg);
-    white-space: nowrap;
-    user-select: none;
-    line-height: 1;
-    letter-spacing: 0.4px;
-    box-shadow: 0 3px 10px rgba(25, 118, 210, 0.35);
-}
-.side-toggle-tab.tab-left {
-    border-radius: 0 10px 10px 0;
-}
-.side-toggle-tab.tab-right {
-    border-radius: 10px 0 0 10px;
-}
-.side-toggle-tab:hover {
-    background: linear-gradient(135deg, #1565c0, #1976d2);
-    box-shadow: 0 5px 14px rgba(25, 118, 210, 0.5);
-}
-.side-toggle-tab.tab-left:hover { transform: rotate(180deg) translateY(-2px); }
-.side-toggle-tab.tab-right:hover { transform: rotate(180deg) translateY(-2px); }
-.side-toggle-tab.active {
-    background: linear-gradient(135deg, #0d47a1, #1565c0);
-}
-.side-toggle-tab svg {
-    width: 11px;
-    height: 11px;
-    fill: #FFFFFF;
-    flex-shrink: 0;
-    transform: rotate(90deg);
-}
-
-/* ============================================================
-   ЖУРНАЛ (левая панель)
-   ============================================================ */
+.panels-container.left-collapsed .panel-right { border-radius: 8px; border-left: 1px solid #CBD5E1; }
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
-
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 5; }
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CBD5E1; pointer-events: none; z-index: 20; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; transform: translateZ(0); }
-.fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 36px; line-height: 34px; vertical-align: middle; border: none; border-bottom: 1px solid #CBD5E1; box-sizing: border-box; }
-.fio-table thead th { background: #E8EEF5 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 72px; line-height: 70px; padding: 0 10px; position: sticky; top: 0; z-index: 10; }
+.fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-bottom: 1px solid #CBD5E1; box-sizing: border-box; }
+.fio-table thead th { background: #E8EEF5 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 10; }
 .fio-table td { padding: 0 10px; color: #1E293B; font-weight: 400; white-space: nowrap; background: #FFFFFF; }
 .fio-table .student-number-text { display: inline-block; width: 22px; color: #1E293B; margin-right: 6px; font-size: 13.65px; font-weight: 400; text-align: right; }
 .fio-table .student-name-text { display: inline-block; font-size: 13.65px; color: #1E293B; font-weight: 400; text-align: left; }
 .fio-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
-
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; transform: translateZ(0); }
-.marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 36px; line-height: 34px; vertical-align: middle; border: none; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; box-sizing: border-box; overflow: visible; }
+.marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; box-sizing: border-box; overflow: visible; }
 .marks-table th { background: #E8EEF5 !important; font-weight: 600; color: #475569; font-size: 11px; letter-spacing: 0.2px; }
 .marks-table thead { position: sticky; top: 0; z-index: 10; }
 .marks-table thead th { background: #E8EEF5 !important; }
@@ -181,13 +77,12 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table thead tr:nth-child(2) .col-date { cursor: pointer !important; font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; text-align: center; user-select: none; transition: background 0.15s ease; z-index: 5; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #D6E2F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
-
-.grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 34px; position: relative; }
-.grade-cell input { width: 100%; height: 24px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #1976d2; }
-.grade-cell input:focus { background: #FFFFFF; outline: 1.5px solid #1976d2; border-radius: 2px; cursor: text; z-index: 5; color: #1E293B !important; }
+.grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
+.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
+.grade-cell input:focus { background: #FFFFFF; outline: 1.5px solid #2563EB; border-radius: 2px; cursor: text; z-index: 5; color: #1E293B !important; }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
-.grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
-.double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; line-height: 1; }
+.grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
+.double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
 .slash-divider { color: #CBD5E1; font-weight: 700; font-size: 10px; margin: 0 -1px; }
 .grade-4, .grade-5 { background: #65A30D !important; color: #FFFFFF !important; }
 .grade-3 { background: #FB923C !important; color: #FFFFFF !important; }
@@ -195,150 +90,65 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; font-weight: 400 !important; pointer-events: none; z-index: 4; background: transparent !important; border: none !important; padding: 0 !important; line-height: 1; }
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 .col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
-.marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 72px; line-height: 70px; padding: 0 4px; }
+.marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
 .col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
-.marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 72px; line-height: 70px; padding: 0 4px; }
+.marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
 .journal-scroll::-webkit-scrollbar { width: 10px; height: 10px; }
 .journal-scroll::-webkit-scrollbar-track { background: #F8FAFC; }
 .journal-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
 .journal-scroll::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
-
-/* ============================================================
-   ПОУРОЧНЫЙ ПЛАН (правая панель) — ОБНОВЛЁННАЯ ТАБЛИЦА
-   ============================================================ */
-.lesson-table-wrapper { width: 100%; height: 100%; overflow: auto; }
-.lesson-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-.lesson-table thead th {
-    background: #E8EEF5 !important;
-    color: #334155 !important;
-    font-size: 11px !important;
-    font-weight: 600;
-    height: 40px;
-    line-height: 18px;
-    padding: 0 8px;
-    text-align: left;
-    vertical-align: middle;
-    border: 1px solid #CBD5E1;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    white-space: nowrap;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
-.lesson-table thead th.col-num { width: 40px; text-align: center; }
-.lesson-table thead th.col-date { width: 90px; text-align: center; }
-.lesson-table thead th.col-topic { width: 32%; }
-.lesson-table thead th.col-hw { width: auto; }
-
-.lesson-table tbody tr { border-bottom: 1px solid #e2e8f0; }
-.lesson-table tbody tr:hover { background: #f8faff; }
-
-.lesson-table tbody td {
-    padding: 4px 6px;
-    vertical-align: middle;
-    border: 1px solid #e2e8f0;
-    font-size: 12.5px;
-    height: 40px;
-}
-
-.lesson-table td.num-cell {
-    text-align: center;
-    color: #64748b;
-    font-weight: 600;
-    font-size: 12px;
-    background: #F8FAFC;
-    width: 40px;
-}
-.lesson-table td.date-cell {
-    color: #0EA5E9;
-    font-weight: 500;
-    font-size: 12.5px;
-    white-space: nowrap;
-    text-align: center;
-    width: 90px;
-    cursor: pointer;
-}
-
-/* Компактные поля ввода в темах и ДЗ */
-.lesson-input {
-    width: 100%;
-    height: 30px;
-    padding: 4px 8px;
-    font-size: 12.5px;
-    color: #334155;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 5px;
-    font-family: inherit;
-    outline: none;
-    overflow: hidden;
-    line-height: 1.3;
-    display: block;
-    resize: none;
-}
-.lesson-input:hover { background: #F8FAFC; border-color: #e2e8f0; }
-.lesson-input:focus { background: #FFFFFF; border-color: #1976d2; box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1); cursor: text; }
-.lesson-input:disabled { color: #94A3B8; cursor: not-allowed; }
-.lesson-input::placeholder { color: #94A3B8; font-style: italic; font-size: 12px; }
-
-/* Строка с ДЗ + кнопкой "Выдать онлайн" */
-.hw-row { display: flex; align-items: center; gap: 6px; }
-.hw-row .lesson-input { flex: 1; }
-.btn-online-mini {
-    flex-shrink: 0;
-    height: 26px;
-    padding: 0 10px;
-    background: #FFFFFF;
-    border: 1px solid #CBD5E1;
-    border-radius: 6px;
-    color: #7C3AED;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.15s ease;
-}
-.btn-online-mini:hover { background: #F5F3FF; border-color: #A78BFA; color: #6D28D9; }
-.btn-online-mini svg { width: 11px; height: 11px; fill: currentColor; }
-
-/* ============================================================
-   ПУСТОЕ СОСТОЯНИЕ / ПОДСКАЗКИ
-   ============================================================ */
+.panel-right-wrapper { flex: 9; min-width: 0; max-width: 100%; }
+.panel-right { flex: 1; min-width: 0; overflow: auto; max-height: 76vh; border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; transition: border-radius 0.35s ease; margin: 8px 30px 12px 0; }
+.panels-container.right-collapsed .panel-right-wrapper { flex: 0 0 0; max-width: 0; }
+.panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
+.panel-right table { width: 100%; border-collapse: collapse; border-spacing: 0; table-layout: fixed; }
+.panel-right table th { background: #E8EEF5 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600; height: 76px; line-height: 20px; padding: 0 8px; text-align: center; vertical-align: middle; border: 1px solid #CBD5E1; }
+.panel-right table th:nth-child(1) { color: #1E293B !important; width: 100px; }
+.panel-right table th:nth-child(2) { width: 40%; }
+.panel-right table th:nth-child(3) { width: 47%; }
+.lesson-row { height: 66px; background: #FFFFFF !important; }
+.panel-right tbody td { background: #FFFFFF !important; border: 1px solid #CBD5E1; vertical-align: middle; text-align: left; padding: 0; height: 66px; }
+.lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle !important; color: #0EA5E9; font-size: 12px; text-align: center !important; height: 66px; padding: 0 !important; }
+.text-area-input { width: 100%; height: 64px; border: 1px solid transparent; background: transparent; font-size: 13px; padding: 8px 10px; resize: none; text-align: left; cursor: pointer; color: #334155; line-height: 1.4; font-family: inherit; outline: none; border-radius: 4px; box-sizing: border-box; display: block; overflow: hidden; word-wrap: break-word; white-space: pre-wrap; }
+.text-area-input.placeholder-style { color: #0EA5E9 !important; font-style: italic; font-size: 13.5px; text-align: left; }
+.text-area-input:focus { background: #FFFFFF; border-color: #2563EB; cursor: text; color: #1E293B !important; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
+.homework-cell { position: relative; vertical-align: middle; height: 66px; padding: 0; background: #FFFFFF !important; overflow: hidden; text-align: left; }
+.homework-cell .text-area-input { padding-right: 90px; height: 64px; text-align: left; }
+.btn-online-inline { position: absolute; bottom: 4px; right: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; color: #7C3AED; font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; z-index: 2; opacity: 0.85; }
+.btn-online-inline:hover { background: #F5F3FF; border-color: #A78BFA; color: #6D28D9; opacity: 1; }
+.btn-online-inline svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
+.side-toggle-tabs { width: 42px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; background: #FFFFFF; border-top: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; position: relative; padding: 0 6px; margin: 8px 0; }
+.side-toggle-tab { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 24px 8px; background: #3B82F6; color: #FFFFFF; border: 1px solid #3B82F6; font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); white-space: nowrap; user-select: none; line-height: 1; letter-spacing: 0.3px; box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25); }
+.side-toggle-tab.tab-left { border-radius: 8px 0 0 8px; border-right: none; }
+.side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
+.side-toggle-tab.tab-right { border-radius: 0 8px 8px 0; border-left: none; }
+.side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
+.side-toggle-tab svg { width: 12px; height: 12px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 .empty-state { padding: 60px 30px; text-align: center; background: #FFFFFF; border-radius: 10px; border: 1px solid #CBD5E1; margin: 24px 30px; }
 .empty-state svg { width: 56px; height: 56px; fill: #CBD5E1; margin-bottom: 14px; }
 .empty-state h2 { font-size: 17px; font-weight: 700; color: #1E293B; margin-bottom: 8px; }
 .empty-state p { font-size: 13px; color: #64748B; max-width: 480px; margin: 0 auto 18px; line-height: 1.6; }
-
-/* ============================================================
-   ПОПАП ТИПА УРОКА
-   ============================================================ */
 .lesson-type-popup { position: fixed; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18); z-index: 9999; display: none; flex-direction: column; width: 260px; max-height: 340px; overflow: hidden; animation: popupAppear 0.15s ease; }
 .lesson-type-popup.show { display: flex; }
 @keyframes popupAppear { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 .lesson-type-popup-search { padding: 6px; border-bottom: 1px solid #E2E8F0; flex-shrink: 0; }
 .lesson-type-popup-search input { width: 100%; height: 30px; padding: 0 10px; font-size: 12.5px; border: 1px solid #CBD5E1; border-radius: 6px; outline: none; font-family: inherit; color: #1E293B; background: #F8FAFC; }
-.lesson-type-popup-search input:focus { border-color: #1976d2; background: #FFFFFF; box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1); }
+.lesson-type-popup-search input:focus { border-color: #2563EB; background: #FFFFFF; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
 .lesson-type-popup-list { overflow-y: auto; flex: 1; padding: 4px; }
-.lesson-type-popup-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; background: transparent; border: none; border-radius: 5px; cursor: pointer; text-align: left; font-family: inherit; }
+.lesson-type-popup-list::-webkit-scrollbar { width: 6px; }
+.lesson-type-popup-list::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+.lesson-type-popup-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; background: transparent; border: none; border-radius: 5px; cursor: pointer; text-align: left; font-family: inherit; transition: background 0.1s ease; }
 .lesson-type-popup-item:hover { background: #EFF6FF; }
 .lesson-type-popup-item.active { background: #DBEAFE; }
-.lesson-type-popup-item .abbr { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; height: 20px; padding: 0 6px; background: #F1F5F9; border-radius: 4px; font-size: 10.5px; font-weight: 700; color: #1976d2; font-family: 'Consolas', 'Monaco', monospace; flex-shrink: 0; }
-.lesson-type-popup-item.active .abbr { background: #1976d2; color: #FFFFFF; }
+.lesson-type-popup-item .abbr { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; height: 20px; padding: 0 6px; background: #F1F5F9; border-radius: 4px; font-size: 10.5px; font-weight: 700; color: #2563EB; font-family: 'Consolas', 'Monaco', monospace; flex-shrink: 0; letter-spacing: 0.2px; }
+.lesson-type-popup-item.active .abbr { background: #2563EB; color: #FFFFFF; }
 .lesson-type-popup-item .full { font-size: 12px; color: #1E293B; font-weight: 500; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.lesson-type-popup-item.active .full { font-weight: 600; color: #1D4ED8; }
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
-
-/* ============================================================
-   АДАПТИВ
-   ============================================================ */
 @media (max-width: 1100px) {
     .panels-container { flex-direction: column; }
-    .panel-left, .panel-right { max-height: 55vh; border-radius: 10px; border: 1px solid #CBD5E1; margin: 8px 12px; }
-    .panel-left-wrapper, .panel-right-wrapper { max-width: 100% !important; flex: 1 1 auto !important; opacity: 1 !important; }
+    .panel-left, .panel-right { max-height: 55vh; border-radius: 8px; border-right: 1px solid #CBD5E1; border-left: 1px solid #CBD5E1; margin: 8px 12px; }
+    .panel-left-wrapper, .panel-right-wrapper { max-width: 100% !important; flex: 1 1 auto !important; }
     .side-toggle-tabs { display: none; }
     .fio-table thead th { position: static; }
     .header-bar { padding: 4px 16px 10px 16px; }
@@ -409,8 +219,6 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 
 <div id="mainContent">
     <div class="panels-container" id="panelsContainer">
-
-        <!-- ЛЕВАЯ ПАНЕЛЬ — ЖУРНАЛ -->
         <div class="panel-left-wrapper" id="panelLeftWrapper">
             <div class="panel-left" id="panelLeft">
                 <div class="journal-scroll" id="journalScroll">
@@ -435,34 +243,29 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
             </div>
         </div>
 
-        <!-- БОКОВЫЕ РАСКРЫВАШКИ -->
         <div class="side-toggle-tabs" id="sideToggleTabs">
             <button type="button" class="side-toggle-tab tab-left" id="tabLeft" onclick="toggleLeftPanel()">
-                <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                 Раскрыть журнал
             </button>
             <button type="button" class="side-toggle-tab tab-right" id="tabRight" onclick="toggleRightPanel()">
-                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                 Раскрыть поуроч. план
             </button>
         </div>
 
-        <!-- ПРАВАЯ ПАНЕЛЬ — ПОУРОЧНОЕ ПЛАНИРОВАНИЕ -->
         <div class="panel-right-wrapper" id="panelRightWrapper">
             <div class="panel-right" id="panelRight">
-                <div class="lesson-table-wrapper">
-                    <table class="lesson-table">
-                        <thead>
-                            <tr>
-                                <th class="col-num">№</th>
-                                <th class="col-date">Дата</th>
-                                <th class="col-topic">Тема урока</th>
-                                <th class="col-hw">Домашнее задание к следующему уроку</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pBody"></tbody>
-                    </table>
-                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Тема урока</th>
+                            <th>Домашнее задание к следующему уроку</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pBody"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -578,6 +381,7 @@ function escapeHtml(text) {
     div.textContent = String(text);
     return div.innerHTML;
 }
+
 function formatShortName(fullName) {
     if (!fullName) return '';
     const parts = String(fullName).trim().split(/\s+/).filter(Boolean);
@@ -585,6 +389,7 @@ function formatShortName(fullName) {
     if (parts.length === 1) return parts[0];
     return `${parts[0]} ${parts[1]}`;
 }
+
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
     return { classId: params.get('class'), subjectId: params.get('subject') };
@@ -672,10 +477,7 @@ async function init() {
         .filter(s => s.class_id === CLASS_ID)
         .sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
 
-    const periodDocs = await DB.getAll('educational_periods');
-    const periodDoc = periodDocs[0] || null;
-    PERIODS = periodDoc ? (periodDoc.periods || []) : [];
-    PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
+    PERIODS = await DB.getAll('educational_periods');
 
     const journalRecord = await DB.getJournal(CLASS_ID, SUBJECT_ID);
     if (journalRecord) {
@@ -715,18 +517,19 @@ function findActivePeriodIndex() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     for (let i = 0; i < PERIODS.length; i++) {
-        const per = PERIODS[i];
-        const start = new Date(per.start + 'T00:00:00');
-        const end = new Date(per.end + 'T23:59:59');
-        if (today >= start && today <= end) return i;
+        for (const per of (PERIODS[i].periods || [])) {
+            const start = new Date(per.start + 'T00:00:00');
+            const end = new Date(per.end + 'T23:59:59');
+            if (today >= start && today <= end) return i;
+        }
     }
     return 0;
 }
 
 async function buildDatesForPeriod(periodIndex) {
-    if (PERIODS.length === 0) return [];
-    const subPeriod = PERIODS[periodIndex];
-    if (!subPeriod) return [];
+    if (PERIODS.length === 0 || !PERIODS[periodIndex]) return [];
+    const subPeriods = PERIODS[periodIndex].periods || [];
+    if (subPeriods.length === 0) return [];
 
     const schedules = await DB.getAll('class_schedules');
     const classSchedule = schedules.find(s => s.class_id === CLASS_ID);
@@ -736,36 +539,38 @@ async function buildDatesForPeriod(periodIndex) {
     const result = [];
     const seen = new Set();
 
-    const start = new Date(subPeriod.start + 'T00:00:00');
-    const end = new Date(subPeriod.end + 'T23:59:59');
-    const cursor = new Date(start);
+    subPeriods.forEach(subPeriod => {
+        const start = new Date(subPeriod.start + 'T00:00:00');
+        const end = new Date(subPeriod.end + 'T23:59:59');
+        const cursor = new Date(start);
 
-    while (cursor <= end) {
-        const jsDay = cursor.getDay();
-        const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
+        while (cursor <= end) {
+            const jsDay = cursor.getDay();
+            const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
 
-        if (dayKey && grid[dayKey]) {
-            Object.keys(grid[dayKey]).forEach(lessonNumStr => {
-                const lesson = grid[dayKey][lessonNumStr];
-                if (lesson && lesson.subject === SUBJECT_NAME) {
-                    const iso = formatIso(cursor);
-                    const key = iso + '_' + lessonNumStr;
-                    if (!seen.has(key)) {
-                        seen.add(key);
-                        result.push({
-                            iso: iso,
-                            dateNoYear: formatDateNoYear(cursor),
-                            dateFull: formatDateFull(cursor),
-                            dayKey: dayKey,
-                            lessonNum: parseInt(lessonNumStr, 10),
-                            gradeKey: key
-                        });
+            if (dayKey && grid[dayKey]) {
+                Object.keys(grid[dayKey]).forEach(lessonNumStr => {
+                    const lesson = grid[dayKey][lessonNumStr];
+                    if (lesson && lesson.subject === SUBJECT_NAME) {
+                        const iso = formatIso(cursor);
+                        const key = iso + '_' + lessonNumStr;
+                        if (!seen.has(key)) {
+                            seen.add(key);
+                            result.push({
+                                iso: iso,
+                                dateNoYear: formatDateNoYear(cursor),
+                                dateFull: formatDateFull(cursor),
+                                dayKey: dayKey,
+                                lessonNum: parseInt(lessonNumStr, 10),
+                                gradeKey: key
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
+            cursor.setDate(cursor.getDate() + 1);
         }
-        cursor.setDate(cursor.getDate() + 1);
-    }
+    });
 
     result.sort((a, b) => {
         if (a.iso !== b.iso) return a.iso.localeCompare(b.iso);
@@ -862,30 +667,20 @@ function renderPeriodTabs() {
         const tab = document.createElement('button');
         tab.type = 'button';
         tab.className = 'tab-pill active';
-        tab.textContent = 'Периоды не созданы';
-        tab.disabled = true;
-        tab.style.cursor = 'default';
+        tab.textContent = 'Весь год';
         container.appendChild(tab);
         return;
     }
 
-    const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
     PERIODS.forEach((p, idx) => {
         const tab = document.createElement('button');
         tab.type = 'button';
         tab.className = 'tab-pill' + (idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
-        tab.textContent = labels[idx] || ('Период ' + (idx + 1));
-        tab.title = `${p.start} – ${p.end}`;
+        tab.textContent = p.name;
         tab.addEventListener('click', async () => {
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
             DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-            if (DATES.length === 0) {
-                showEmpty('Нет уроков в периоде', 'По расписанию в выбранном периоде нет уроков по этому предмету.');
-                return;
-            }
-            document.getElementById('mainContent').style.display = '';
-            document.getElementById('emptyState').style.display = 'none';
             renderMainTable();
         });
         container.appendChild(tab);
@@ -901,7 +696,6 @@ function renderMainTable() {
 
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
 
-    // === ФИО учеников ===
     STUDENTS.forEach((student, sIdx) => {
         const shortName = formatShortName(student.full_name);
         const tr = document.createElement('tr');
@@ -909,7 +703,6 @@ function renderMainTable() {
         fioBody.appendChild(tr);
     });
 
-    // === Шапка таблицы оценок ===
     DATES.forEach((d) => {
         const th = document.createElement('th');
         th.textContent = d.dateNoYear;
@@ -945,7 +738,6 @@ function renderMainTable() {
         sRow.appendChild(th2);
     });
 
-    // === Тело таблицы оценок ===
     STUDENTS.forEach((student) => {
         const tr = document.createElement('tr');
         DATES.forEach((d, dIdx) => {
@@ -985,7 +777,6 @@ function renderMainTable() {
         jBody.appendChild(tr);
     });
 
-    // === Расчёт среднего балла ===
     jBody.querySelectorAll('tr').forEach((tr, idx) => {
         const avgCell = tr.querySelector('.avg-cell');
         if (avgCell && STUDENTS[idx]) {
@@ -1010,46 +801,36 @@ function renderMainTable() {
         }
     });
 
-    // === Поурочное планирование ===
-    DATES.forEach((d, idx) => {
+    DATES.forEach(d => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: '' };
-        const topicText = l.t || '';
-        const homeworkText = l.h || '';
+        const themeText = l.t || 'Добавить тему';
+        const homeworkText = l.h || '+ ДЗ к след. уроку';
+        const themeClass = !l.t ? 'placeholder-style' : '';
+        const homeworkClass = !l.h ? 'placeholder-style' : '';
 
         const tr = document.createElement('tr');
+        tr.className = 'lesson-row';
         tr.innerHTML = `
-            <td class="num-cell">${idx + 1}</td>
-            <td class="date-cell">${d.dateFull}</td>
+            <td class="lesson-date-cell">${d.dateFull}</td>
             <td>
-                <textarea class="lesson-input"
-                    placeholder="Добавить тему"
-                    oninput="autoGrow(this)"
-                    onchange="upl('${d.gradeKey}', 't', this.value)">${escapeHtml(topicText)}</textarea>
+                <textarea class="text-area-input ${themeClass}"
+                    onfocus="handlePlaceholder(this, 'Добавить тему', true)"
+                    onblur="handlePlaceholder(this, 'Добавить тему', false)"
+                    onchange="upl('${d.gradeKey}', 't', this.value)">${escapeHtml(themeText)}</textarea>
             </td>
-            <td>
-                <div class="hw-row">
-                    <textarea class="lesson-input"
-                        placeholder="+ ДЗ к след. уроку"
-                        oninput="autoGrow(this)"
-                        onchange="upl('${d.gradeKey}', 'h', this.value)">${escapeHtml(homeworkText)}</textarea>
-                    <button type="button" class="btn-online-mini" onclick="showToast('Выдача онлайн-урока — в разработке')">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        Выдать онлайн
-                    </button>
-                </div>
+            <td class="homework-cell">
+                <textarea class="text-area-input ${homeworkClass}"
+                    onfocus="handlePlaceholder(this, '+ ДЗ к след. уроку', true)"
+                    onblur="handlePlaceholder(this, '+ ДЗ к след. уроку', false)"
+                    onchange="upl('${d.gradeKey}', 'h', this.value)">${escapeHtml(homeworkText)}</textarea>
+                <button type="button" class="btn-online-inline" onclick="showToast('Выдача онлайн-урока — в разработке')">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    Выдать онлайн
+                </button>
             </td>
         `;
         pBody.appendChild(tr);
     });
-
-    // Автовысота для textarea при загрузке
-    pBody.querySelectorAll('.lesson-input').forEach(ta => autoGrow(ta));
-}
-
-// Автоувеличение высоты textarea
-function autoGrow(el) {
-    el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
 function getGradeClass(value) {
@@ -1149,9 +930,19 @@ async function upqtr(studentId, inputElement) {
 
 async function upl(gradeKey, key, value) {
     const txt = value.trim();
+    if (txt === 'Добавить тему' || txt === '+ ДЗ к след. уроку') return;
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: '' };
     JOURNAL.lessons[gradeKey][key] = txt;
     await saveJournal();
+}
+
+function handlePlaceholder(el, defaultText, isFocus) {
+    const val = el.value.trim();
+    if (isFocus) {
+        if (val === defaultText) { el.value = ''; el.classList.remove('placeholder-style'); }
+    } else {
+        if (val === '') { el.value = defaultText; el.classList.add('placeholder-style'); }
+    }
 }
 
 async function saveJournal() {
@@ -1163,53 +954,6 @@ async function saveJournal() {
     });
 }
 
-// ============================================================
-// РАСКРЫВАШКИ (левая / правая панель)
-// ============================================================
-function toggleLeftPanel() {
-    const container = document.getElementById('panelsContainer');
-    const tabLeft = document.getElementById('tabLeft');
-    leftCollapsed = !leftCollapsed;
-    container.classList.toggle('left-collapsed', leftCollapsed);
-    tabLeft.classList.toggle('active', leftCollapsed);
-    if (leftCollapsed) {
-        rightCollapsed = false;
-        container.classList.remove('right-collapsed');
-        document.getElementById('tabRight').classList.remove('active');
-    }
-    updateTabIcons();
-}
-
-function toggleRightPanel() {
-    const container = document.getElementById('panelsContainer');
-    const tabRight = document.getElementById('tabRight');
-    rightCollapsed = !rightCollapsed;
-    container.classList.toggle('right-collapsed', rightCollapsed);
-    tabRight.classList.toggle('active', rightCollapsed);
-    if (rightCollapsed) {
-        leftCollapsed = false;
-        container.classList.remove('left-collapsed');
-        document.getElementById('tabLeft').classList.remove('active');
-    }
-    updateTabIcons();
-}
-
-function updateTabIcons() {
-    const tabLeft = document.getElementById('tabLeft');
-    const tabRight = document.getElementById('tabRight');
-    const iconLeft = leftCollapsed
-        ? '<path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>'
-        : '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>';
-    const iconRight = rightCollapsed
-        ? '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>'
-        : '<path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>';
-    tabLeft.innerHTML = `<svg viewBox="0 0 24 24">${iconLeft}</svg>Раскрыть журнал`;
-    tabRight.innerHTML = `<svg viewBox="0 0 24 24">${iconRight}</svg>Раскрыть поуроч. план`;
-}
-
-// ============================================================
-// ПОПАП ТИПА УРОКА
-// ============================================================
 let currentLessonTypeContext = { gradeKey: null };
 let popupJustOpened = false;
 
@@ -1282,6 +1026,47 @@ document.addEventListener('mousedown', (e) => {
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
 window.addEventListener('resize', closeLessonTypePopup);
+
+function toggleLeftPanel() {
+    const container = document.getElementById('panelsContainer');
+    const tabLeft = document.getElementById('tabLeft');
+    leftCollapsed = !leftCollapsed;
+    container.classList.toggle('left-collapsed', leftCollapsed);
+    tabLeft.classList.toggle('active', leftCollapsed);
+    if (leftCollapsed) {
+        rightCollapsed = false;
+        container.classList.remove('right-collapsed');
+        document.getElementById('tabRight').classList.remove('active');
+    }
+    updateTabIcons();
+}
+
+function toggleRightPanel() {
+    const container = document.getElementById('panelsContainer');
+    const tabRight = document.getElementById('tabRight');
+    rightCollapsed = !rightCollapsed;
+    container.classList.toggle('right-collapsed', rightCollapsed);
+    tabRight.classList.toggle('active', rightCollapsed);
+    if (rightCollapsed) {
+        leftCollapsed = false;
+        container.classList.remove('left-collapsed');
+        document.getElementById('tabLeft').classList.remove('active');
+    }
+    updateTabIcons();
+}
+
+function updateTabIcons() {
+    const tabLeft = document.getElementById('tabLeft');
+    const tabRight = document.getElementById('tabRight');
+    const iconLeft = leftCollapsed
+        ? '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>'
+        : '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>';
+    const iconRight = rightCollapsed
+        ? '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>'
+        : '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>';
+    tabLeft.innerHTML = `<svg viewBox="0 0 24 24">${iconLeft}</svg>Раскрыть поуроч. планирование`;
+    tabRight.innerHTML = `<svg viewBox="0 0 24 24">${iconRight}</svg>Раскрыть журнал`;
+}
 
 function showEmpty(title, text) {
     document.getElementById('mainContent').style.display = 'none';
