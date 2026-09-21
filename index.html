@@ -25,13 +25,14 @@ body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298);
 </style>
 </head>
 <body>
+
 <div class="login-box">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
     <div class="title">Вход в школьный журнал</div>
-    <div class="subtitle">Введите email и пароль</div>
+    <div class="subtitle">Введите логин и пароль</div>
     <div class="error" id="errorBox"></div>
     <form id="loginForm">
-        <div class="form-group"><label for="loginInput">Email</label><input type="email" id="loginInput" placeholder="director@school.ru" autocomplete="username" required></div>
+        <div class="form-group"><label for="loginInput">Логин</label><input type="text" id="loginInput" placeholder="Например: director" autocomplete="username" required></div>
         <div class="form-group"><label for="passwordInput">Пароль</label><input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" required></div>
         <button type="submit" class="btn" id="loginBtn">Войти</button>
     </form>
@@ -41,6 +42,18 @@ body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298);
 
 <script src="supabase-config.js"></script>
 <script>
+// ============================================================
+// НАСТРОЙКИ
+// ============================================================
+// Домен, который приклеивается к логину.
+// ВАЖНО: он должен совпадать с тем, как созданы пользователи в
+// Supabase → Authentication → Users.
+//  - если вы логинитесь как "playerrb3081488" и юзер создан как
+//    "playerrb3081488@gmail.com" → домен = "@gmail.com"
+//  - если вы создали юзера "director@school.local" и хотите
+//    логиниться как "director" → домен = "@school.local"
+const AUTH_EMAIL_DOMAIN = '@gmail.com';
+
 const SESSION_KEY = 'sj_session';
 const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
 const ROUTES = { admin: 'admin.html', teacher: 'teacher.html', student: 'student.html' };
@@ -61,7 +74,6 @@ function saveSession(user, role) {
 }
 function clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch (e) {} }
 
-// Простой таймаут
 function withTimeout(p, ms, label) {
     return Promise.race([
         p,
@@ -69,63 +81,59 @@ function withTimeout(p, ms, label) {
     ]);
 }
 
-// Определение роли — БЕЗ .or(), простыми проверками
+// ============================================================
+// ОПРЕДЕЛЕНИЕ РОЛИ
+// ============================================================
 async function determineRole(sb, user) {
     console.log('[role] user.id =', user.id, ', email =', user.email);
     if (!user || !user.email) return null;
-
     const login = user.email.split('@')[0];
 
-    // 1. admins — сначала по id, потом по user_id
+    // 1. admins — по id
     try {
-        const { data, error } = await withTimeout(
-            sb.from('admins').select('id').eq('id', user.id).limit(1),
-            6000, 'admins по id'
-        );
-        if (error) throw error;
-        console.log('[role] admins (by id):', data);
-        if (data && data.length) return 'admin';
-    } catch (e) { console.warn('[role] admins id fail:', e); }
+        const res = await withTimeout(sb.from('admins').select('id').eq('id', user.id), 6000, 'admins id');
+        if (res.error) throw res.error;
+        console.log('[role] admins by id:', res.data);
+        if (res.data && res.data.length) return 'admin';
+    } catch (e) { console.warn('[role] admins id:', e); }
 
+    // 1b. admins — по user_id
     try {
-        const { data, error } = await withTimeout(
-            sb.from('admins').select('id').eq('user_id', user.id).limit(1),
-            6000, 'admins по user_id'
-        );
-        if (error) throw error;
-        console.log('[role] admins (by user_id):', data);
-        if (data && data.length) return 'admin';
-    } catch (e) { console.warn('[role] admins user_id fail:', e); }
+        const res = await withTimeout(sb.from('admins').select('id').eq('user_id', user.id), 6000, 'admins user_id');
+        if (res.error) throw res.error;
+        console.log('[role] admins by user_id:', res.data);
+        if (res.data && res.data.length) return 'admin';
+    } catch (e) { console.warn('[role] admins user_id:', e); }
 
     // 2. teachers
     try {
-        const { data, error } = await withTimeout(
-            sb.from('teachers').select('id').eq('login', login).limit(1),
-            6000, 'teachers'
-        );
-        if (error) throw error;
-        console.log('[role] teachers:', data);
-        if (data && data.length) return 'teacher';
-    } catch (e) { console.warn('[role] teachers fail:', e); }
+        const res = await withTimeout(sb.from('teachers').select('id').eq('login', login), 6000, 'teachers');
+        if (res.error) throw res.error;
+        console.log('[role] teachers:', res.data);
+        if (res.data && res.data.length) return 'teacher';
+    } catch (e) { console.warn('[role] teachers:', e); }
 
     // 3. students
     try {
-        const { data, error } = await withTimeout(
-            sb.from('students').select('id').eq('login', login).limit(1),
-            6000, 'students'
-        );
-        if (error) throw error;
-        console.log('[role] students:', data);
-        if (data && data.length) return 'student';
-    } catch (e) { console.warn('[role] students fail:', e); }
+        const res = await withTimeout(sb.from('students').select('id').eq('login', login), 6000, 'students');
+        if (res.error) throw res.error;
+        console.log('[role] students:', res.data);
+        if (res.data && res.data.length) return 'student';
+    } catch (e) { console.warn('[role] students:', e); }
 
     return null;
 }
 
-async function loginFlow(email, password) {
+// ============================================================
+// ВХОД
+// ============================================================
+async function loginFlow(rawLogin, password) {
     clearError();
-    email = String(email || '').trim();
-    if (!email || !password) { showError('Введите email и пароль'); return; }
+    const login = String(rawLogin || '').trim();
+    if (!login || !password) { showError('Введите логин и пароль'); return; }
+
+    const email = login.includes('@') ? login : (login + AUTH_EMAIL_DOMAIN);
+    console.log('[login] email =', email);
 
     loginBtn.disabled = true;
     loginBtn.textContent = 'Проверка...';
@@ -148,12 +156,13 @@ async function loginFlow(email, password) {
         if (res.error) throw res.error;
         user = res.data && res.data.user;
     } catch (e) {
-        console.error('signIn error:', e);
-        let msg = 'Не удалось войти. Проверьте email и пароль.';
-        if (e && e.message) {
-            if (e.message.includes('Invalid login') || e.message.includes('invalid')) msg = 'Неверный email или пароль.';
-            if (e.message.includes('Email not confirmed')) msg = 'Email не подтверждён. Обратитесь к администратору.';
-        }
+        console.error('[login] signIn error:', e);
+        let msg = 'Не удалось войти. Проверьте логин и пароль.';
+        const m = (e && e.message) ? e.message.toLowerCase() : '';
+        if (m.includes('invalid login') || m.includes('invalid credentials')) msg = 'Неверный логин или пароль.';
+        else if (m.includes('email not confirmed')) msg = 'Email не подтверждён. Обратитесь к администратору.';
+        else if (m.includes('failed to fetch')) msg = 'Нет связи с Supabase. Проверьте интернет и ключ в supabase-config.js.';
+        else if (e && e.message) msg = e.message;
         showError(msg); resetButton(); setStatus(''); return;
     }
 
@@ -161,16 +170,11 @@ async function loginFlow(email, password) {
 
     setStatus('Определяем роль...');
     let role = null;
-    try {
-        role = await determineRole(sb, user);
-    } catch (e) {
-        console.error('determineRole error:', e);
-        showError('Ошибка при определении роли: ' + (e.message || e));
-        resetButton(); setStatus(''); return;
-    }
+    try { role = await determineRole(sb, user); }
+    catch (e) { showError('Ошибка при определении роли: ' + (e.message || e)); resetButton(); setStatus(''); return; }
 
     if (!role) {
-        showError('Роль не найдена. Убедитесь, что ваш user.id = ' + user.id + ' есть в таблице admins (или вы добавлены как учитель/ученик).');
+        showError('Роль не найдена. Ваш user.id = ' + user.id + '. Добавьте его в таблицу admins.');
         try { await sb.auth.signOut(); } catch (e) {}
         clearSession(); resetButton(); setStatus(''); return;
     }
@@ -182,6 +186,9 @@ async function loginFlow(email, password) {
 
 form.addEventListener('submit', (e) => { e.preventDefault(); loginFlow(loginInput.value, passInput.value); });
 
+// ============================================================
+// АВТОВХОД
+// ============================================================
 window.addEventListener('load', async () => {
     let sb;
     try { sb = await withTimeout(window._sbReady, 15000, 'загрузка Supabase'); } catch (e) { return; }
