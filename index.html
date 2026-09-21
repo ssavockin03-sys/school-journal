@@ -17,7 +17,6 @@ body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298);
 .form-group input { width: 100%; height: 50px; padding: 0 16px; font-size: 15px; color: #1a2b4a; background: #f7f9fc; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; font-family: inherit; }
 .form-group input:focus { border-color: #2a5298; background: #fff; }
 .btn { width: 100%; height: 52px; margin-top: 8px; background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; }
-.btn:hover { opacity: 0.9; }
 .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .error { background: #fff0f0; color: #d32f2f; padding: 12px 14px; border-radius: 10px; font-size: 13px; font-weight: 500; margin-bottom: 16px; display: none; border: 1px solid #ffd6d6; }
 .error.show { display: block; }
@@ -53,7 +52,7 @@ const loginBtn = document.getElementById('loginBtn');
 const errorBox = document.getElementById('errorBox');
 const statusBox = document.getElementById('statusBox');
 
-function showError(t) { errorBox.textContent = t; errorBox.classList.add('show'); statusBox.textContent = ''; }
+function showError(t) { errorBox.textContent = t; errorBox.classList.add('show'); statusBox.textContent = ''; console.error('[login]', t); }
 function clearError() { errorBox.classList.remove('show'); errorBox.textContent = ''; }
 function setStatus(t) { statusBox.textContent = t || ''; }
 function resetButton() { loginBtn.disabled = false; loginBtn.textContent = 'Войти'; }
@@ -62,28 +61,63 @@ function saveSession(user, role) {
 }
 function clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch (e) {} }
 
+// Простой таймаут
+function withTimeout(p, ms, label) {
+    return Promise.race([
+        p,
+        new Promise((_, r) => setTimeout(() => r(new Error('Таймаут: ' + label)), ms))
+    ]);
+}
+
+// Определение роли — БЕЗ .or(), простыми проверками
 async function determineRole(sb, user) {
+    console.log('[role] user.id =', user.id, ', email =', user.email);
     if (!user || !user.email) return null;
-    const email = user.email;
-    const login = email.split('@')[0];
 
-    // Проверяем admins
+    const login = user.email.split('@')[0];
+
+    // 1. admins — сначала по id, потом по user_id
     try {
-        const { data } = await sb.from('admins').select('id').or(`id.eq.${user.id},user_id.eq.${user.id}`).limit(1);
+        const { data, error } = await withTimeout(
+            sb.from('admins').select('id').eq('id', user.id).limit(1),
+            6000, 'admins по id'
+        );
+        if (error) throw error;
+        console.log('[role] admins (by id):', data);
         if (data && data.length) return 'admin';
-    } catch (e) { console.warn('admins check:', e); }
+    } catch (e) { console.warn('[role] admins id fail:', e); }
 
-    // Проверяем teachers
     try {
-        const { data } = await sb.from('teachers').select('id').eq('login', login).limit(1);
+        const { data, error } = await withTimeout(
+            sb.from('admins').select('id').eq('user_id', user.id).limit(1),
+            6000, 'admins по user_id'
+        );
+        if (error) throw error;
+        console.log('[role] admins (by user_id):', data);
+        if (data && data.length) return 'admin';
+    } catch (e) { console.warn('[role] admins user_id fail:', e); }
+
+    // 2. teachers
+    try {
+        const { data, error } = await withTimeout(
+            sb.from('teachers').select('id').eq('login', login).limit(1),
+            6000, 'teachers'
+        );
+        if (error) throw error;
+        console.log('[role] teachers:', data);
         if (data && data.length) return 'teacher';
-    } catch (e) { console.warn('teachers check:', e); }
+    } catch (e) { console.warn('[role] teachers fail:', e); }
 
-    // Проверяем students
+    // 3. students
     try {
-        const { data } = await sb.from('students').select('id').eq('login', login).limit(1);
+        const { data, error } = await withTimeout(
+            sb.from('students').select('id').eq('login', login).limit(1),
+            6000, 'students'
+        );
+        if (error) throw error;
+        console.log('[role] students:', data);
         if (data && data.length) return 'student';
-    } catch (e) { console.warn('students check:', e); }
+    } catch (e) { console.warn('[role] students fail:', e); }
 
     return null;
 }
@@ -98,25 +132,45 @@ async function loginFlow(email, password) {
     setStatus('Авторизация...');
 
     let sb;
-    try { sb = await window._sbReady; }
-    catch (e) { showError('Не удалось подключиться к Supabase.'); resetButton(); setStatus(''); return; }
+    try {
+        sb = await withTimeout(window._sbReady, 15000, 'загрузка Supabase');
+    } catch (e) {
+        showError('Не удалось подключиться к Supabase. Проверьте supabase-config.js.');
+        resetButton(); setStatus(''); return;
+    }
 
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) {
-        console.error('signIn error:', error);
+    let user;
+    try {
+        const res = await withTimeout(
+            sb.auth.signInWithPassword({ email, password }),
+            15000, 'signInWithPassword'
+        );
+        if (res.error) throw res.error;
+        user = res.data && res.data.user;
+    } catch (e) {
+        console.error('signIn error:', e);
         let msg = 'Не удалось войти. Проверьте email и пароль.';
-        if (error.message && error.message.includes('Invalid login')) msg = 'Неверный email или пароль.';
-        if (error.message && error.message.includes('Email not confirmed')) msg = 'Email не подтверждён. Обратитесь к администратору.';
+        if (e && e.message) {
+            if (e.message.includes('Invalid login') || e.message.includes('invalid')) msg = 'Неверный email или пароль.';
+            if (e.message.includes('Email not confirmed')) msg = 'Email не подтверждён. Обратитесь к администратору.';
+        }
         showError(msg); resetButton(); setStatus(''); return;
     }
 
-    const user = data.user;
     if (!user) { showError('Не удалось получить пользователя.'); resetButton(); setStatus(''); return; }
 
     setStatus('Определяем роль...');
-    const role = await determineRole(sb, user);
+    let role = null;
+    try {
+        role = await determineRole(sb, user);
+    } catch (e) {
+        console.error('determineRole error:', e);
+        showError('Ошибка при определении роли: ' + (e.message || e));
+        resetButton(); setStatus(''); return;
+    }
+
     if (!role) {
-        showError('Доступ запрещён: роль не найдена. Обратитесь к администратору.');
+        showError('Роль не найдена. Убедитесь, что ваш user.id = ' + user.id + ' есть в таблице admins (или вы добавлены как учитель/ученик).');
         try { await sb.auth.signOut(); } catch (e) {}
         clearSession(); resetButton(); setStatus(''); return;
     }
@@ -130,14 +184,23 @@ form.addEventListener('submit', (e) => { e.preventDefault(); loginFlow(loginInpu
 
 window.addEventListener('load', async () => {
     let sb;
-    try { sb = await window._sbReady; } catch (e) { return; }
-    const { data } = await sb.auth.getSession();
-    const user = data && data.session ? data.session.user : null;
-    if (!user) { clearSession(); return; }
+    try { sb = await withTimeout(window._sbReady, 15000, 'загрузка Supabase'); } catch (e) { return; }
+
+    let session = null;
+    try {
+        const res = await withTimeout(sb.auth.getSession(), 10000, 'getSession');
+        session = res && res.data ? res.data.session : null;
+    } catch (e) { return; }
+
+    if (!session) { clearSession(); return; }
+    const user = session.user;
 
     setStatus('Определяем роль...');
-    const role = await determineRole(sb, user);
+    let role = null;
+    try { role = await determineRole(sb, user); } catch (e) { console.warn(e); return; }
+
     if (!role) { try { await sb.auth.signOut(); } catch (e) {} clearSession(); setStatus(''); return; }
+
     saveSession(user, role);
     setStatus('Роль: ' + role + '. Переходим...');
     window.location.replace(ROUTES[role]);
