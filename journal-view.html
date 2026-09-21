@@ -300,78 +300,37 @@ const PERIOD_LABELS = {
 };
 
 const LESSON_TYPES = [
-    { abbr: 'АК/Р', full: 'Административная контрольная работа' },
-    { abbr: 'АД', full: 'Арифметический диктант' },
-    { abbr: 'АУД', full: 'Аудирование' },
-    { abbr: 'ВКР', full: 'Входная контрольная работа' },
-    { abbr: 'ВКД', full: 'Входной контрольный диктант' },
-    { abbr: 'ГОВОР', full: 'Говорение' },
-    { abbr: 'ГИА', full: 'Государственная итоговая аттестация' },
-    { abbr: 'ГЗ', full: 'Грамматическое задание' },
-    { abbr: 'ДИАЛ', full: 'Диалогическая речь' },
-    { abbr: 'Д', full: 'Диктант' },
-    { abbr: 'ДУ', full: 'Дистанционный урок' },
-    { abbr: 'ДОК', full: 'Доклад' },
-    { abbr: 'Д/Р', full: 'Домашняя работа' },
-    { abbr: 'Зчт', full: 'Зачет' },
-    { abbr: 'И', full: 'Изложение' },
-    { abbr: 'ИПр', full: 'Индивидуальный проект' },
-    { abbr: 'ИК/Р', full: 'Итоговая контрольная работа' },
-    { abbr: 'ИКД', full: 'Итоговый контрольный диктант' },
-    { abbr: 'КПр', full: 'Коллективный проект' },
-    { abbr: 'ККР', full: 'Комплексная контрольная работа' },
-    { abbr: 'КАТ', full: 'Комплексный анализ текста' },
-    { abbr: 'КОНС', full: 'Консультация' },
-    { abbr: 'К/Р', full: 'Контрольная работа' },
-    { abbr: 'КС', full: 'Контрольное списывание' },
-    { abbr: 'КД', full: 'Контрольный диктант' },
-    { abbr: 'КОРР', full: 'Корректированная' },
-    { abbr: 'КП', full: 'Курсовая работа' },
-    { abbr: 'Л/Р', full: 'Лабораторная работа' },
-    { abbr: 'ЛЗ', full: 'Лабораторное занятие' },
-    { abbr: 'ЛЕК', full: 'Лекция' },
-    { abbr: 'М/Д', full: 'Математический диктант' },
-    { abbr: 'МЗ', full: 'Модульный зачет' },
-    { abbr: 'МИУД', full: 'Мониторинг индивидуальных учебных достижений' },
-    { abbr: 'Наиз', full: 'Наизусть' },
-    { abbr: 'Н/З', full: 'Недельное задание' },
-    { abbr: 'ОЗ', full: 'Обзорное занятие' },
-    { abbr: 'ОИ', full: 'Обучающее изложение' },
-    { abbr: 'ОИКП', full: 'Обучающее изложение по коллективно составленному плану' },
-    { abbr: 'ОС', full: 'Обучающее сочинение' },
-    { abbr: 'О', full: 'Опрос' },
-    { abbr: 'ОР', full: 'Орфографическая работа' },
-    { abbr: 'ОТВ', full: 'Ответ на уроке' },
-    { abbr: 'ПрЗ', full: 'Практическое занятие' },
-    { abbr: 'ПР', full: 'Проверочная работа' },
-    { abbr: 'ПрЗд', full: 'Продуктивные задания' },
-    { abbr: 'Пр-т', full: 'Проект' },
-    { abbr: 'ПА', full: 'Промежуточная аттестация' },
-    { abbr: 'Р/У', full: 'Работа на уроке' },
-    { abbr: 'РНО', full: 'Работа над ошибками' },
-    { abbr: 'К/К', full: 'Работа с контурными картами' },
-    { abbr: 'РСТ', full: 'Работа с таблицами' },
-    { abbr: 'Р/Т', full: 'Рабочая тетрадь' },
-    { abbr: 'РЕФ', full: 'Реферат' },
-    { abbr: 'С/Р', full: 'Самостоятельная работа' },
-    { abbr: 'СЕМ', full: 'Семинар' },
-    { abbr: 'СД', full: 'Словарный диктант' },
-    { abbr: 'СОЧ', full: 'Сочинение' },
-    { abbr: 'СК', full: 'Сочинение по картине' },
-    { abbr: 'СПИС', full: 'Списывание' },
-    { abbr: 'ТР', full: 'Творческая работа' },
-    { abbr: 'Тест', full: 'Тест' },
-    { abbr: 'ТЧ', full: 'Техника чтения' },
-    { abbr: 'УР', full: 'Урок' },
-    { abbr: 'У/И', full: 'Устное изложение' },
-    { abbr: 'У/С', full: 'Устное сочинение' },
-    { abbr: 'УС', full: 'Устный счет' },
-    { abbr: 'ФВ', full: 'Факультатив' },
-    { abbr: 'ЧИТ', full: 'Чтение' },
-    { abbr: 'ЧТ/В', full: 'Чтение вслух' },
-    { abbr: 'ЧТ/М', full: 'Чтение молча' },
-    { abbr: 'ЭКС', full: 'Экскурсия' },
-    { abbr: 'Я/Т', full: 'Языковая тема' }
+    { abbr: 'АК/Р', full: 'Административная контрольная работа' }, { abbr: 'АД', full: 'Арифметический диктант' },
+    { abbr: 'АУД', full: 'Аудирование' }, { abbr: 'ВКР', full: 'Входная контрольная работа' },
+    { abbr: 'ВКД', full: 'Входной контрольный диктант' }, { abbr: 'ГОВОР', full: 'Говорение' },
+    { abbr: 'ГИА', full: 'Государственная итоговая аттестация' }, { abbr: 'ГЗ', full: 'Грамматическое задание' },
+    { abbr: 'ДИАЛ', full: 'Диалогическая речь' }, { abbr: 'Д', full: 'Диктант' }, { abbr: 'ДУ', full: 'Дистанционный урок' },
+    { abbr: 'ДОК', full: 'Доклад' }, { abbr: 'Д/Р', full: 'Домашняя работа' }, { abbr: 'Зчт', full: 'Зачет' },
+    { abbr: 'И', full: 'Изложение' }, { abbr: 'ИПр', full: 'Индивидуальный проект' },
+    { abbr: 'ИК/Р', full: 'Итоговая контрольная работа' }, { abbr: 'ИКД', full: 'Итоговый контрольный диктант' },
+    { abbr: 'КПр', full: 'Коллективный проект' }, { abbr: 'ККР', full: 'Комплексная контрольная работа' },
+    { abbr: 'КАТ', full: 'Комплексный анализ текста' }, { abbr: 'КОНС', full: 'Консультация' },
+    { abbr: 'К/Р', full: 'Контрольная работа' }, { abbr: 'КС', full: 'Контрольное списывание' },
+    { abbr: 'КД', full: 'Контрольный диктант' }, { abbr: 'КОРР', full: 'Корректированная' },
+    { abbr: 'КП', full: 'Курсовая работа' }, { abbr: 'Л/Р', full: 'Лабораторная работа' },
+    { abbr: 'ЛЗ', full: 'Лабораторное занятие' }, { abbr: 'ЛЕК', full: 'Лекция' },
+    { abbr: 'М/Д', full: 'Математический диктант' }, { abbr: 'МЗ', full: 'Модульный зачет' },
+    { abbr: 'МИУД', full: 'Мониторинг индивидуальных учебных достижений' }, { abbr: 'Наиз', full: 'Наизусть' },
+    { abbr: 'Н/З', full: 'Недельное задание' }, { abbr: 'ОЗ', full: 'Обзорное занятие' },
+    { abbr: 'ОИ', full: 'Обучающее изложение' }, { abbr: 'ОИКП', full: 'Обучающее изложение по коллективно составленному плану' },
+    { abbr: 'ОС', full: 'Обучающее сочинение' }, { abbr: 'О', full: 'Опрос' }, { abbr: 'ОР', full: 'Орфографическая работа' },
+    { abbr: 'ОТВ', full: 'Ответ на уроке' }, { abbr: 'ПрЗ', full: 'Практическое занятие' },
+    { abbr: 'ПР', full: 'Проверочная работа' }, { abbr: 'ПрЗд', full: 'Продуктивные задания' },
+    { abbr: 'Пр-т', full: 'Проект' }, { abbr: 'ПА', full: 'Промежуточная аттестация' },
+    { abbr: 'Р/У', full: 'Работа на уроке' }, { abbr: 'РНО', full: 'Работа над ошибками' },
+    { abbr: 'К/К', full: 'Работа с контурными картами' }, { abbr: 'РСТ', full: 'Работа с таблицами' },
+    { abbr: 'Р/Т', full: 'Рабочая тетрадь' }, { abbr: 'РЕФ', full: 'Реферат' }, { abbr: 'С/Р', full: 'Самостоятельная работа' },
+    { abbr: 'СЕМ', full: 'Семинар' }, { abbr: 'СД', full: 'Словарный диктант' }, { abbr: 'СОЧ', full: 'Сочинение' },
+    { abbr: 'СК', full: 'Сочинение по картине' }, { abbr: 'СПИС', full: 'Списывание' }, { abbr: 'ТР', full: 'Творческая работа' },
+    { abbr: 'Тест', full: 'Тест' }, { abbr: 'ТЧ', full: 'Техника чтения' }, { abbr: 'УР', full: 'Урок' },
+    { abbr: 'У/И', full: 'Устное изложение' }, { abbr: 'У/С', full: 'Устное сочинение' }, { abbr: 'УС', full: 'Устный счет' },
+    { abbr: 'ФВ', full: 'Факультатив' }, { abbr: 'ЧИТ', full: 'Чтение' }, { abbr: 'ЧТ/В', full: 'Чтение вслух' },
+    { abbr: 'ЧТ/М', full: 'Чтение молча' }, { abbr: 'ЭКС', full: 'Экскурсия' }, { abbr: 'Я/Т', full: 'Языковая тема' }
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
@@ -381,7 +340,6 @@ function escapeHtml(text) {
     div.textContent = String(text);
     return div.innerHTML;
 }
-
 function formatShortName(fullName) {
     if (!fullName) return '';
     const parts = String(fullName).trim().split(/\s+/).filter(Boolean);
@@ -389,7 +347,6 @@ function formatShortName(fullName) {
     if (parts.length === 1) return parts[0];
     return `${parts[0]} ${parts[1]}`;
 }
-
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
     return { classId: params.get('class'), subjectId: params.get('subject') };
@@ -535,14 +492,10 @@ async function buildDatesForPeriod(periodIndex) {
 
     const schedules = await DB.getAll('class_schedules');
 
-    // ⬇⬇⬇ ИЩЕМ РАСПИСАНИЕ ИМЕННО ЭТОЙ ЧЕТВЕРТИ ⬇⬇⬇
-    // 1. Сначала ищем документ с class_id И period_index = текущая четверть
     let classSchedule = schedules.find(s =>
         s.class_id === CLASS_ID && s.period_index === periodIndex
     );
 
-    // 2. Если для этой четверти расписания нет — пробуем взять "общее"
-    //    (старые документы без period_index — считаем их расписанием I четверти)
     if (!classSchedule && periodIndex === 0) {
         classSchedule = schedules.find(s =>
             s.class_id === CLASS_ID && s.period_index === undefined
@@ -550,49 +503,6 @@ async function buildDatesForPeriod(periodIndex) {
     }
 
     if (!classSchedule || !classSchedule.grid) return [];
-    // ⬆⬆⬆ КОНЕЦ ПРАВКИ ⬆⬆⬆
-
-    const grid = classSchedule.grid;
-    const result = [];
-    const seen = new Set();
-
-    const start = new Date(subPeriod.start + 'T00:00:00');
-    const end = new Date(subPeriod.end + 'T23:59:59');
-    const cursor = new Date(start);
-
-    while (cursor <= end) {
-        const jsDay = cursor.getDay();
-        const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
-
-        if (dayKey && grid[dayKey]) {
-            Object.keys(grid[dayKey]).forEach(lessonNumStr => {
-                const lesson = grid[dayKey][lessonNumStr];
-                if (lesson && lesson.subject === SUBJECT_NAME) {
-                    const iso = formatIso(cursor);
-                    const key = iso + '_' + lessonNumStr;
-                    if (!seen.has(key)) {
-                        seen.add(key);
-                        result.push({
-                            iso: iso,
-                            dateNoYear: formatDateNoYear(cursor),
-                            dateFull: formatDateFull(cursor),
-                            dayKey: dayKey,
-                            lessonNum: parseInt(lessonNumStr, 10),
-                            gradeKey: key
-                        });
-                    }
-                }
-            });
-        }
-        cursor.setDate(cursor.getDate() + 1);
-    }
-
-    result.sort((a, b) => {
-        if (a.iso !== b.iso) return a.iso.localeCompare(b.iso);
-        return a.lessonNum - b.lessonNum;
-    });
-    return result;
-}
 
     const grid = classSchedule.grid;
     const result = [];
