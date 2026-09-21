@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Дневник.ру — Вход</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
 body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298); display: flex; align-items: center; justify-content: center; padding: 20px; }
-.login-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 420px; width: 100%; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35); }
-.logo { width: 64px; height: 64px; margin: 0 auto 20px; background: linear-gradient(135deg, #2a5298, #3b7dd8); border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+.login-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 420px; width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,0.35); }
+.logo { width: 64px; height: 64px; margin: 0 auto 20px; background: linear-gradient(135deg,#2a5298,#3b7dd8); border-radius: 18px; display: flex; align-items: center; justify-content: center; }
 .logo svg { width: 34px; height: 34px; fill: #fff; }
 .title { font-size: 24px; font-weight: 700; color: #1a2b4a; text-align: center; margin-bottom: 6px; }
 .subtitle { font-size: 14px; color: #7a8aa3; text-align: center; margin-bottom: 28px; }
@@ -16,7 +16,7 @@ body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298);
 .form-group label { display: block; font-size: 13px; font-weight: 600; color: #4a5a72; margin-bottom: 7px; }
 .form-group input { width: 100%; height: 50px; padding: 0 16px; font-size: 15px; color: #1a2b4a; background: #f7f9fc; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; font-family: inherit; }
 .form-group input:focus { border-color: #2a5298; background: #fff; }
-.btn { width: 100%; height: 52px; margin-top: 8px; background: linear-gradient(135deg, #2a5298, #3b7dd8); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.btn { width: 100%; height: 52px; margin-top: 8px; background: linear-gradient(135deg,#2a5298,#3b7dd8); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; }
 .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .error { background: #fff0f0; color: #d32f2f; padding: 12px 14px; border-radius: 10px; font-size: 13px; font-weight: 500; margin-bottom: 16px; display: none; border: 1px solid #ffd6d6; }
 .error.show { display: block; }
@@ -25,7 +25,6 @@ body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298);
 </style>
 </head>
 <body>
-
 <div class="login-box">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
     <div class="title">Вход в школьный журнал</div>
@@ -37,23 +36,12 @@ body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298);
         <button type="submit" class="btn" id="loginBtn">Войти</button>
     </form>
     <div class="status" id="statusBox"></div>
-    <div class="hint">🔒 Безопасный вход через Supabase.<br>Роль определяется автоматически.</div>
+    <div class="hint">🔒 Безопасный вход.<br>Роль определяется автоматически.</div>
 </div>
 
 <script src="supabase-config.js"></script>
 <script>
-// ============================================================
-// НАСТРОЙКИ
-// ============================================================
-// Домен, который приклеивается к логину.
-// ВАЖНО: он должен совпадать с тем, как созданы пользователи в
-// Supabase → Authentication → Users.
-//  - если вы логинитесь как "playerrb3081488" и юзер создан как
-//    "playerrb3081488@gmail.com" → домен = "@gmail.com"
-//  - если вы создали юзера "director@school.local" и хотите
-//    логиниться как "director" → домен = "@school.local"
-const AUTH_EMAIL_DOMAIN = '@gmail.com';
-
+const AUTH_EMAIL_DOMAIN = '@school-journal-8f39a.firebaseapp.com';
 const SESSION_KEY = 'sj_session';
 const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
 const ROUTES = { admin: 'admin.html', teacher: 'teacher.html', student: 'student.html' };
@@ -65,120 +53,83 @@ const loginBtn = document.getElementById('loginBtn');
 const errorBox = document.getElementById('errorBox');
 const statusBox = document.getElementById('statusBox');
 
-function showError(t) { errorBox.textContent = t; errorBox.classList.add('show'); statusBox.textContent = ''; console.error('[login]', t); }
+function showError(t) { errorBox.textContent = t; errorBox.classList.add('show'); statusBox.textContent = ''; }
 function clearError() { errorBox.classList.remove('show'); errorBox.textContent = ''; }
 function setStatus(t) { statusBox.textContent = t || ''; }
 function resetButton() { loginBtn.disabled = false; loginBtn.textContent = 'Войти'; }
-function saveSession(user, role) {
-    try { localStorage.setItem(SESSION_KEY, JSON.stringify({ uid: user.id, email: user.email, role, loggedAt: Date.now(), expiresAt: Date.now() + SESSION_DURATION_MS })); } catch (e) {}
-}
-function clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch (e) {} }
+function saveSession(user, role) { try { localStorage.setItem(SESSION_KEY, JSON.stringify({ uid: user.uid, email: user.email, role, loggedAt: Date.now(), expiresAt: Date.now() + SESSION_DURATION_MS })); } catch(e){} }
+function clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch(e){} }
 
-function withTimeout(p, ms, label) {
-    return Promise.race([
-        p,
-        new Promise((_, r) => setTimeout(() => r(new Error('Таймаут: ' + label)), ms))
-    ]);
-}
-
-// ============================================================
-// ОПРЕДЕЛЕНИЕ РОЛИ
-// ============================================================
-async function determineRole(sb, user) {
-    console.log('[role] user.id =', user.id, ', email =', user.email);
+async function determineRole(fb, user) {
     if (!user || !user.email) return null;
     const login = user.email.split('@')[0];
-
-    // 1. admins — по id
     try {
-        const res = await withTimeout(sb.from('admins').select('id').eq('id', user.id), 6000, 'admins id');
-        if (res.error) throw res.error;
-        console.log('[role] admins by id:', res.data);
-        if (res.data && res.data.length) return 'admin';
-    } catch (e) { console.warn('[role] admins id:', e); }
-
-    // 1b. admins — по user_id
+        const adminDoc = await fb.getDocs(fb.query(fb.collection(fb.db, 'admins'), fb.where('__name__', '==', user.uid)));
+        if (!adminDoc.empty) return 'admin';
+    } catch (e) {}
     try {
-        const res = await withTimeout(sb.from('admins').select('id').eq('user_id', user.id), 6000, 'admins user_id');
-        if (res.error) throw res.error;
-        console.log('[role] admins by user_id:', res.data);
-        if (res.data && res.data.length) return 'admin';
-    } catch (e) { console.warn('[role] admins user_id:', e); }
-
-    // 2. teachers
+        const docRef = await fb.getDocs(fb.query(fb.collection(fb.db, 'admins')));
+        if (docRef.docs.some(d => d.id === user.uid)) return 'admin';
+    } catch (e) {}
     try {
-        const res = await withTimeout(sb.from('teachers').select('id').eq('login', login), 6000, 'teachers');
-        if (res.error) throw res.error;
-        console.log('[role] teachers:', res.data);
-        if (res.data && res.data.length) return 'teacher';
-    } catch (e) { console.warn('[role] teachers:', e); }
-
-    // 3. students
+        const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'teachers'), fb.where('login', '==', login)));
+        if (!snap.empty) return 'teacher';
+    } catch (e) {}
     try {
-        const res = await withTimeout(sb.from('students').select('id').eq('login', login), 6000, 'students');
-        if (res.error) throw res.error;
-        console.log('[role] students:', res.data);
-        if (res.data && res.data.length) return 'student';
-    } catch (e) { console.warn('[role] students:', e); }
-
+        const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'students'), fb.where('login', '==', login)));
+        if (!snap.empty) return 'student';
+    } catch (e) {}
     return null;
 }
 
-// ============================================================
-// ВХОД
-// ============================================================
 async function loginFlow(rawLogin, password) {
     clearError();
     const login = String(rawLogin || '').trim();
     if (!login || !password) { showError('Введите логин и пароль'); return; }
 
-    const email = login.includes('@') ? login : (login + AUTH_EMAIL_DOMAIN);
-    console.log('[login] email =', email);
-
-    loginBtn.disabled = true;
-    loginBtn.textContent = 'Проверка...';
+    const email = login.includes('@') ? login : login + AUTH_EMAIL_DOMAIN;
+    loginBtn.disabled = true; loginBtn.textContent = 'Проверка...';
     setStatus('Авторизация...');
 
-    let sb;
-    try {
-        sb = await withTimeout(window._sbReady, 15000, 'загрузка Supabase');
-    } catch (e) {
-        showError('Не удалось подключиться к Supabase. Проверьте supabase-config.js.');
-        resetButton(); setStatus(''); return;
-    }
+    let fb;
+    try { fb = await window._fbReady; }
+    catch (e) { showError('Не удалось подключиться к Firebase.'); resetButton(); setStatus(''); return; }
 
-    let user;
+    let user = null;
     try {
-        const res = await withTimeout(
-            sb.auth.signInWithPassword({ email, password }),
-            15000, 'signInWithPassword'
-        );
-        if (res.error) throw res.error;
-        user = res.data && res.data.user;
-    } catch (e) {
-        console.error('[login] signIn error:', e);
-        let msg = 'Не удалось войти. Проверьте логин и пароль.';
-        const m = (e && e.message) ? e.message.toLowerCase() : '';
-        if (m.includes('invalid login') || m.includes('invalid credentials')) msg = 'Неверный логин или пароль.';
-        else if (m.includes('email not confirmed')) msg = 'Email не подтверждён. Обратитесь к администратору.';
-        else if (m.includes('failed to fetch')) msg = 'Нет связи с Supabase. Проверьте интернет и ключ в supabase-config.js.';
-        else if (e && e.message) msg = e.message;
-        showError(msg); resetButton(); setStatus(''); return;
+        const cred = await fb.signInWithEmailAndPassword(fb.auth, email, password);
+        user = cred.user;
+    } catch (err) {
+        const noAcc = err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/invalid-login-credentials';
+        if (noAcc) {
+            setStatus('Первый вход — создаём аккаунт...');
+            try {
+                const cred = await fb.createUserWithEmailAndPassword(fb.auth, email, password);
+                user = cred.user;
+            } catch (createErr) {
+                let msg = 'Не удалось создать аккаунт.';
+                if (createErr.code === 'auth/email-already-in-use') msg = 'Аккаунт есть, но пароль не подходит.';
+                else if (createErr.code === 'auth/weak-password') msg = 'Пароль слишком слабый (мин. 6 символов).';
+                showError(msg); resetButton(); setStatus(''); return;
+            }
+        } else {
+            let msg = 'Не удалось войти.';
+            if (err.code === 'auth/wrong-password') msg = 'Неверный пароль.';
+            if (err.code === 'auth/too-many-requests') msg = 'Слишком много попыток.';
+            if (err.code === 'auth/network-request-failed') msg = 'Ошибка сети.';
+            showError(msg); resetButton(); setStatus(''); return;
+        }
     }
 
     if (!user) { showError('Не удалось получить пользователя.'); resetButton(); setStatus(''); return; }
 
     setStatus('Определяем роль...');
-    let role = null;
-    try { role = await determineRole(sb, user); }
-    catch (e) { showError('Ошибка при определении роли: ' + (e.message || e)); resetButton(); setStatus(''); return; }
-
+    const role = await determineRole(fb, user);
     if (!role) {
-        showError('Роль не найдена. Ваш user.id = ' + user.id + '. Добавьте его в таблицу admins.');
-        try { await sb.auth.signOut(); } catch (e) {}
+        showError('Доступ запрещён: роль не найдена.');
+        try { await fb.signOut(fb.auth); } catch(e){}
         clearSession(); resetButton(); setStatus(''); return;
     }
-
     saveSession(user, role);
     setStatus('Роль: ' + role + '. Переходим...');
     window.location.replace(ROUTES[role]);
@@ -186,30 +137,20 @@ async function loginFlow(rawLogin, password) {
 
 form.addEventListener('submit', (e) => { e.preventDefault(); loginFlow(loginInput.value, passInput.value); });
 
-// ============================================================
-// АВТОВХОД
-// ============================================================
 window.addEventListener('load', async () => {
-    let sb;
-    try { sb = await withTimeout(window._sbReady, 15000, 'загрузка Supabase'); } catch (e) { return; }
-
-    let session = null;
-    try {
-        const res = await withTimeout(sb.auth.getSession(), 10000, 'getSession');
-        session = res && res.data ? res.data.session : null;
-    } catch (e) { return; }
-
-    if (!session) { clearSession(); return; }
-    const user = session.user;
-
-    setStatus('Определяем роль...');
-    let role = null;
-    try { role = await determineRole(sb, user); } catch (e) { console.warn(e); return; }
-
-    if (!role) { try { await sb.auth.signOut(); } catch (e) {} clearSession(); setStatus(''); return; }
-
+    let fb;
+    try { fb = await window._fbReady; } catch (e) { return; }
+    const user = await new Promise((resolve) => {
+        const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
+    });
+    if (!user) { clearSession(); return; }
+    const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    if (session && session.uid === user.uid && session.role && ROUTES[session.role]) {
+        window.location.replace(ROUTES[session.role]); return;
+    }
+    const role = await determineRole(fb, user);
+    if (!role) { try { await fb.signOut(fb.auth); } catch(e){} clearSession(); return; }
     saveSession(user, role);
-    setStatus('Роль: ' + role + '. Переходим...');
     window.location.replace(ROUTES[role]);
 });
 </script>
