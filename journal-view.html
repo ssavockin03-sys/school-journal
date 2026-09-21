@@ -398,6 +398,7 @@ let STUDENTS = [];
 let DATES = [];
 let ACTIVE_PERIOD_INDEX = 0;
 let PERIODS = [];
+let PERIOD_SYSTEM = '';
 let JOURNAL = null;
 let ALL_CLASSES = [];
 let ALL_CLASS_SUBJECTS = [];
@@ -470,6 +471,9 @@ async function init() {
         .sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
 
     PERIODS = await DB.getAll('educational_periods');
+    const periodDoc = PERIODS[0] || null;
+    PERIODS = periodDoc ? (periodDoc.periods || []) : [];
+    PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
 
     const journalRecord = await DB.getJournal(CLASS_ID, SUBJECT_ID);
     if (journalRecord) {
@@ -509,19 +513,18 @@ function findActivePeriodIndex() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     for (let i = 0; i < PERIODS.length; i++) {
-        for (const per of (PERIODS[i].periods || [])) {
-            const start = new Date(per.start + 'T00:00:00');
-            const end = new Date(per.end + 'T23:59:59');
-            if (today >= start && today <= end) return i;
-        }
+        const per = PERIODS[i];
+        const start = new Date(per.start + 'T00:00:00');
+        const end = new Date(per.end + 'T23:59:59');
+        if (today >= start && today <= end) return i;
     }
     return 0;
 }
 
 async function buildDatesForPeriod(periodIndex) {
-    if (PERIODS.length === 0 || !PERIODS[periodIndex]) return [];
-    const subPeriods = PERIODS[periodIndex].periods || [];
-    if (subPeriods.length === 0) return [];
+    if (PERIODS.length === 0) return [];
+    const subPeriod = PERIODS[periodIndex];
+    if (!subPeriod) return [];
 
     const schedules = await DB.getAll('class_schedules');
     const classSchedule = schedules.find(s => s.class_id === CLASS_ID);
@@ -531,38 +534,36 @@ async function buildDatesForPeriod(periodIndex) {
     const result = [];
     const seen = new Set();
 
-    subPeriods.forEach(subPeriod => {
-        const start = new Date(subPeriod.start + 'T00:00:00');
-        const end = new Date(subPeriod.end + 'T23:59:59');
-        const cursor = new Date(start);
+    const start = new Date(subPeriod.start + 'T00:00:00');
+    const end = new Date(subPeriod.end + 'T23:59:59');
+    const cursor = new Date(start);
 
-        while (cursor <= end) {
-            const jsDay = cursor.getDay();
-            const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
+    while (cursor <= end) {
+        const jsDay = cursor.getDay();
+        const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
 
-            if (dayKey && grid[dayKey]) {
-                Object.keys(grid[dayKey]).forEach(lessonNumStr => {
-                    const lesson = grid[dayKey][lessonNumStr];
-                    if (lesson && lesson.subject === SUBJECT_NAME) {
-                        const iso = formatIso(cursor);
-                        const key = iso + '_' + lessonNumStr;
-                        if (!seen.has(key)) {
-                            seen.add(key);
-                            result.push({
-                                iso: iso,
-                                dateNoYear: formatDateNoYear(cursor),
-                                dateFull: formatDateFull(cursor),
-                                dayKey: dayKey,
-                                lessonNum: parseInt(lessonNumStr, 10),
-                                gradeKey: key
-                            });
-                        }
+        if (dayKey && grid[dayKey]) {
+            Object.keys(grid[dayKey]).forEach(lessonNumStr => {
+                const lesson = grid[dayKey][lessonNumStr];
+                if (lesson && lesson.subject === SUBJECT_NAME) {
+                    const iso = formatIso(cursor);
+                    const key = iso + '_' + lessonNumStr;
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        result.push({
+                            iso: iso,
+                            dateNoYear: formatDateNoYear(cursor),
+                            dateFull: formatDateFull(cursor),
+                            dayKey: dayKey,
+                            lessonNum: parseInt(lessonNumStr, 10),
+                            gradeKey: key
+                        });
                     }
-                });
-            }
-            cursor.setDate(cursor.getDate() + 1);
+                }
+            });
         }
-    });
+        cursor.setDate(cursor.getDate() + 1);
+    }
 
     result.sort((a, b) => {
         if (a.iso !== b.iso) return a.iso.localeCompare(b.iso);
@@ -664,11 +665,13 @@ function renderPeriodTabs() {
         return;
     }
 
+    const labels = ['I четверть','II четверть','III четверть','IV четверть','I полугодие','II полугодие','I триместр','II триместр','III триместр','I семестр','II семестр'];
     PERIODS.forEach((p, idx) => {
         const tab = document.createElement('button');
         tab.type = 'button';
         tab.className = 'tab-pill' + (idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
-        tab.textContent = p.name;
+        tab.textContent = labels[idx] || ('Период ' + (idx + 1));
+        tab.title = `${p.start} – ${p.end}`;
         tab.addEventListener('click', async () => {
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
