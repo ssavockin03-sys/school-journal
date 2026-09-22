@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Дневник.ру — Панель администратора</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, 'Segoe UI', Roboto, sans-serif; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
 html, body { background: #fff; }
 body { min-height: 100vh; color: #1a2b4a; }
 
@@ -23,47 +23,53 @@ body { min-height: 100vh; color: #1a2b4a; }
 .loading-btn-primary { background: #1976d2; color: #fff; }
 .loading-btn-secondary { background: #f0f2f5; color: #4a5a72; }
 
-/* ===== ОБЩАЯ ОБЁРТКА ===== */
-.page-wrapper { max-width: 1400px; margin: 0 auto; background: #fff; min-height: 100vh; display: flex; flex-direction: column; }
+/* ============================================================
+   ОБЩАЯ ОБЁРТКА — ВСЁ ВНУТРИ НЕЁ, ОДНА ШИРИНА
+   ============================================================ */
+.page-wrapper { max-width: 1400px; margin: 0 auto; background: #fff; min-height: 100vh; }
+
+/* ОБЩИЙ КОНТЕЙНЕР ДЛЯ ВСЕХ СТРОК ШАПКИ И КОНТЕНТА */
+.hdr-row { padding: 0 32px; }
 
 /* ===== ШАПКА (белая) ===== */
 .header { background: #ffffff; border-bottom: 1px solid #e0e0e0; }
-.header-container { padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-.logo { font-size: 22px; color: #007baf; }
-.logo-bold { font-weight: bold; }
+.header-inner { padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.logo { font-size: 22px; color: #007baf; font-weight: 400; }
+.logo-bold { font-weight: 700; }
 .logo-sub { color: #777; }
 
-/* правая зона — сетка 2 колонки, обе выровнены по правому краю */
-.d-user-profile-zone { display: grid; grid-template-columns: auto auto; column-gap: 24px; align-items: center; }
-.d-user-info { display: flex; flex-direction: column; align-items: flex-end; text-align: right; line-height: 1.3; }
-.d-user-name { font-size: 14px; font-weight: bold; color: #333; }
-.d-user-role { font-size: 12px; color: #888; }
-.d-user-actions { display: flex; flex-direction: column; align-items: flex-end; text-align: right; line-height: 1.3; }
-.d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; }
+/* Правая зона — flex, две колонки, обе выровнены по правому краю */
+.d-user-profile-zone { display: flex; align-items: center; gap: 40px; }
+.d-user-info { display: flex; flex-direction: column; align-items: flex-end; text-align: right; line-height: 1.25; }
+.d-user-name { font-size: 14px; font-weight: 700; color: #333; }
+.d-user-role { font-size: 12px; color: #888; font-weight: 400; }
+.d-user-actions { display: flex; flex-direction: column; align-items: flex-end; text-align: right; line-height: 1.25; }
+.d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; font-weight: 400; }
 .d-action-link:hover { text-decoration: underline; }
 .d-action-link.logout { color: #d9534f; }
 
-/* ===== СИНЯЯ ПОЛОСА — теперь просто на всю ширину .page-wrapper ===== */
+/* ===== СИНЯЯ ПОЛОСА ===== */
 .d-top-blue-bar { background: #166a94; }
-.d-top-blue-container { padding: 0 32px; }
+.d-top-blue-inner { padding: 0 32px; }
 .d-main-nav { display: flex; }
-.d-nav-item { display: inline-block; padding: 12px 20px; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 400; border-bottom: 3px solid transparent; cursor: pointer; }
+.d-nav-item { display: block; padding: 12px 20px; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 400; border-bottom: 3px solid transparent; cursor: pointer; }
 .d-nav-item:hover { background: rgba(255,255,255,0.12); }
 .d-nav-item.active { background: #0f4f70; border-bottom-color: #ffffff; font-weight: 400; }
 
 /* ===== ПОДМЕНЮ ===== */
 .d-sub-menu-bar { background: #ffffff; border-bottom: 1px solid #e0e0e0; }
-.d-sub-menu-container { padding: 0 32px; display: flex; flex-wrap: wrap; }
-.d-sub-item { display: inline-block; padding: 10px 15px; color: #555; text-decoration: none; font-size: 13px; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
+.d-sub-menu-inner { padding: 0 32px; display: flex; flex-wrap: wrap; }
+.d-sub-item { display: inline-block; padding: 10px 15px; color: #555; text-decoration: none; font-size: 13px; font-weight: 400; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
 .d-sub-item:hover { color: #1d82b5; }
-.d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 400; }
+.d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
 
-/* ===== ОСТАЛЬНОЕ ===== */
+/* ===== ШКОЛА + ЗАГОЛОВОК ===== */
 .school-bar { background: #fff; padding: 14px 32px 0; }
 .school-name { font-size: 13px; color: #7a8aa3; margin-bottom: 2px; }
 .page-title { font-size: 28px; font-weight: 400; color: #1976d2; margin-bottom: 12px; }
 .container { padding: 0 32px 60px; }
 
+/* ===== КАРТОЧКИ ===== */
 .panel-grid { display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; }
 .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; }
 .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid #eef2f8; }
@@ -298,8 +304,8 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
     .chooser-column:last-child { border-bottom: none; }
 }
 @media (max-width: 700px) {
-    .header-container { padding: 10px 12px; }
-    .d-top-blue-container, .d-sub-menu-container { padding: 0 12px; }
+    .header-inner { padding: 10px 12px; }
+    .d-top-blue-inner, .d-sub-menu-inner { padding: 0 12px; }
     .d-nav-item { padding: 10px 12px; font-size: 13px; }
     .d-sub-item { padding: 8px 10px; font-size: 12px; }
     .d-user-name { font-size: 13px; }
@@ -329,7 +335,7 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
 <div id="appContainer" class="page-wrapper" style="display:none;">
 
     <header class="header">
-        <div class="header-container">
+        <div class="header-inner">
             <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
             <div class="d-user-profile-zone">
                 <div class="d-user-info">
@@ -344,7 +350,7 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
         </div>
     </header>
     <div class="d-top-blue-bar">
-        <div class="d-top-blue-container">
+        <div class="d-top-blue-inner">
             <nav class="d-main-nav">
                 <a href="#" class="d-nav-item active" data-toptab="education" onclick="return false">ОБРАЗОВАНИЕ</a>
                 <a href="#" class="d-nav-item" data-toptab="communication" onclick="return false">ОБЩЕНИЕ</a>
@@ -353,7 +359,7 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
         </div>
     </div>
     <div class="d-sub-menu-bar">
-        <div class="d-sub-menu-container" id="subHeaderInner"></div>
+        <div class="d-sub-menu-inner" id="subHeaderInner"></div>
     </div>
 
     <div class="school-bar">
