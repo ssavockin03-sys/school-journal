@@ -22,7 +22,7 @@ body { min-height: 100vh; background: #fff; color: #1a2b4a; }
 .loading-btn-primary { background: #1976d2; color: #fff; }
 .loading-btn-secondary { background: #f0f2f5; color: #4a5a72; }
 
-/* ===== НОВАЯ ШАПКА ===== */
+/* ===== ШАПКА ===== */
 .header { background: #ffffff; border-bottom: 1px solid #e0e0e0; }
 .header-container { max-width: 1400px; margin: 0 auto; padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .logo { font-size: 22px; font-weight: normal; color: #007baf; }
@@ -32,17 +32,18 @@ body { min-height: 100vh; background: #fff; color: #1a2b4a; }
 .d-user-info { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; }
 .d-user-name { font-size: 14px; font-weight: bold; color: #333; }
 .d-user-role { font-size: 12px; color: #888; }
-.d-user-actions { display: flex; align-items: center; gap: 14px; }
-.d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; }
+.d-user-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; line-height: 1.4; }
 .d-action-link:hover { text-decoration: underline; }
 .d-action-link.logout { color: #d9534f; }
 
-.d-top-blue-bar { background: #1d82b5; }
+/* Синяя полоса — темнее, и внутри контейнера */
+.d-top-blue-bar { background: #166a94; }
 .d-top-blue-container { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
 .d-main-nav { display: flex; }
-.d-nav-item { display: inline-block; padding: 12px 20px; color: #ffffff; text-decoration: none; font-size: 14px; border-bottom: 3px solid transparent; cursor: pointer; }
-.d-nav-item:hover { background: rgba(255,255,255,0.1); }
-.d-nav-item.active { border-bottom-color: #ffffff; font-weight: bold; }
+.d-nav-item { display: inline-block; padding: 12px 20px; color: #ffffff; text-decoration: none; font-size: 14px; border-bottom: 3px solid transparent; cursor: pointer; text-transform: capitalize; }
+.d-nav-item:hover { background: rgba(255,255,255,0.12); }
+.d-nav-item.active { background: #0f4f70; border-bottom-color: #ffffff; font-weight: bold; }
 
 .d-sub-menu-bar { background: #ffffff; border-bottom: 1px solid #e0e0e0; }
 .d-sub-menu-container { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; flex-wrap: wrap; }
@@ -321,7 +322,6 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
 
 <div id="appContainer" class="page-wrapper" style="display:none;">
 
-    <!-- ===== НОВАЯ ШАПКА ===== -->
     <header class="header">
         <div class="header-container">
             <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
@@ -340,9 +340,9 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
     <div class="d-top-blue-bar">
         <div class="d-top-blue-container">
             <nav class="d-main-nav">
-                <a href="#" class="d-nav-item active" data-toptab="education" onclick="return false">Образование</a>
-                <a href="#" class="d-nav-item" data-toptab="communication" onclick="return false">Общение</a>
-                <a href="#" class="d-nav-item" data-toptab="apps" onclick="return false">Приложения</a>
+                <a href="#" class="d-nav-item active" data-toptab="education" onclick="return false">ОБРАЗОВАНИЕ</a>
+                <a href="#" class="d-nav-item" data-toptab="communication" onclick="return false">ОБЩЕНИЕ</a>
+                <a href="#" class="d-nav-item" data-toptab="apps" onclick="return false">ПРИЛОЖЕНИЯ</a>
             </nav>
         </div>
     </div>
@@ -350,13 +350,11 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
         <div class="d-sub-menu-container" id="subHeaderInner"></div>
     </div>
 
-    <!-- ===== ШКОЛА + ЗАГОЛОВОК ===== -->
     <div class="school-bar">
         <div class="school-name">ГОУ ЛНР «АСШ № 6»</div>
         <h1 class="page-title" id="pageTitle">Классы</h1>
     </div>
 
-    <!-- ===== КОНТЕЙНЕР ===== -->
     <div class="container">
         <div class="tab-panel active" id="panel-classes">
             <div class="panel-grid">
@@ -544,24 +542,24 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
                 <div class="schedule-day-grid" id="scheduleDayGrid"></div>
                 <div class="schedule-footer"><button type="button" class="btn-save-schedule" onclick="saveClassSchedule()"><svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Сохранить расписание</button></div>
             </div>
-            <div class="card" id="scheduleNoClasses" style="display:none;"><div class="empty-state"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg><p>Сначала создайте класс</p></div></div>
-            <div class="card" id="scheduleNoWorkload" style="display:none;"><div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><p>Нет нагрузки для этого класса</p></div></div>
-            <div class="card" id="scheduleNoPeriods" style="display:none;"><div class="empty-state"><svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg><p>Сначала создайте хотя бы один период</p></div></div>
+            <div class="card" id="scheduleNoClasses" style="display:none;"><div class="empty-state"><p>Сначала создайте класс</p></div></div>
+            <div class="card" id="scheduleNoWorkload" style="display:none;"><div class="empty-state"><p>Нет нагрузки для класса</p></div></div>
+            <div class="card" id="scheduleNoPeriods" style="display:none;"><div class="empty-state"><p>Сначала создайте период</p></div></div>
         </div>
 
         <div class="tab-panel" id="panel-journals">
             <div id="journalsListScreen">
                 <div class="year-banner"><span class="year-banner-text">2026/2027 учебный год</span><span class="year-badge">Текущий год</span></div>
                 <div class="quick-actions">
-                    <button class="btn-quick" onclick="journalQuickAction('Просмотр')"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>Просмотр</button>
-                    <button class="btn-quick" onclick="journalQuickAction('Печать')"><svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>Печать</button>
-                    <button class="btn-quick" onclick="journalQuickAction('Экспорт')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Экспорт</button>
+                    <button class="btn-quick" onclick="journalQuickAction('Просмотр')">Просмотр</button>
+                    <button class="btn-quick" onclick="journalQuickAction('Печать')">Печать</button>
+                    <button class="btn-quick" onclick="journalQuickAction('Экспорт')">Экспорт</button>
                 </div>
                 <div id="journalsClassesContainer"></div>
             </div>
             <div id="journalChooserScreen" class="journal-chooser-screen">
                 <div class="chooser-header">
-                    <button class="back-btn" onclick="backToJournalsList()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>Назад к списку классов</button>
+                    <button class="back-btn" onclick="backToJournalsList()">← Назад к списку классов</button>
                     <div class="chooser-title" id="chooserTitle">Класс</div>
                 </div>
                 <div class="chooser-grid">
@@ -727,7 +725,8 @@ window.addEventListener('load', async () => {
 });
 
 function initTopTabs() {
-    document.querySelectorAll('.d-nav-item').forEach(btn => btn.addEventListener('click', () => {
+    document.querySelectorAll('.d-nav-item').forEach(btn => btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
         document.querySelectorAll('.d-nav-item').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         ACTIVE_TOP_TAB = btn.dataset.toptab;
