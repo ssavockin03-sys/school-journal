@@ -376,7 +376,7 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
 }
 
 /* ============================================================
-   ВКЛАДКА "ЛЮДИ" — стиль как в референсе
+   ВКЛАДКА "ЛЮДИ"
    ============================================================ */
 .people-layout { display: flex; gap: 24px; align-items: flex-start; }
 .people-sidebar {
@@ -453,7 +453,7 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     z-index: 100;
-    min-width: 160px;
+    min-width: 260px;
     text-align: left;
     overflow: hidden;
 }
@@ -462,6 +462,14 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
 .people-dropdown-item:hover { background: #f5f9fd; color: #1d82b5; }
 .people-dropdown-item.delete { color: #d93025; }
 .people-dropdown-item.delete:hover { background: #fce8e6; color: #d93025; }
+.people-dropdown-creds { padding: 10px 15px; background: #f8fafc; border-bottom: 1px solid #eef2f8; }
+.people-dropdown-creds-title { font-size: 10px; font-weight: 800; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.people-cred-row { display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 1.6; }
+.people-cred-label { color: #7a8aa3; font-weight: 600; min-width: 52px; }
+.people-cred-value { color: #1a2b4a; font-family: 'Consolas', monospace; font-size: 12.5px; flex: 1; word-break: break-all; }
+.people-cred-copy { border: none; background: #e3f2fd; color: #1976d2; width: 22px; height: 22px; border-radius: 5px; cursor: pointer; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.people-cred-copy:hover { background: #1976d2; color: #fff; }
+.people-cred-empty { color: #a8b5c9; font-style: italic; }
 
 .people-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 12px; gap: 16px; flex-wrap: wrap; border-bottom: 1px solid #eee; }
 .people-title-row h1 { margin: 0; font-size: 22px; color: #777; font-weight: 400; }
@@ -969,6 +977,7 @@ function showFatalError(msg,err){console.error('[admin]',msg,err);const box=docu
 let toastTimeout;
 function showToast(msg,type){const t=document.getElementById('toast');document.getElementById('toastText').textContent=msg;t.className='toast show '+(type||'success');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>t.classList.remove('show'),3000);}
 async function logout(e){if(e)e.preventDefault();if(!confirm('Выйти?'))return false;try{const fb=await window._fbReady;await fb.signOut(fb.auth);}catch(err){}location.href='index.html';return false;}
+function copyToClipboard(text){ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=>showToast('Скопировано')).catch(()=>{}); } }
 
 window.addEventListener('load', async () => {
     if (typeof DB === 'undefined' || !DB.getAll) { showFatalError('DB не найден.',''); return; }
@@ -1148,6 +1157,7 @@ async function loadAllPeople(){
             class_name: null,
             child_name: null,
             login: t.login || '',
+            password: t.password || '',
             email: t.email || '',
             phone: t.phone || '',
             gender: t.gender || '',
@@ -1168,6 +1178,7 @@ async function loadAllPeople(){
             class_name: cls ? cls.name : null,
             child_name: null,
             login: s.login || '',
+            password: s.password || '',
             email: s.email || '',
             phone: s.phone || '',
             gender: s.gender || '',
@@ -1187,6 +1198,7 @@ async function loadAllPeople(){
             class_name: null,
             child_name: p.child_name || null,
             login: p.login || '',
+            password: p.password || '',
             email: p.email || '',
             phone: p.phone || '',
             gender: p.gender || '',
@@ -1271,6 +1283,13 @@ function renderPeopleTable(){
         } else if(p.role==='parent' && p.child_name){
             relationHtml = `<span class="people-class">${escapeHtml(p.child_name)}</span>`;
         }
+        const hasCreds = p.login || p.password;
+        const credsHtml = hasCreds ? `
+            <div class="people-dropdown-creds">
+                <div class="people-dropdown-creds-title">Данные для входа</div>
+                ${p.login ? `<div class="people-cred-row"><span class="people-cred-label">Логин:</span><span class="people-cred-value">${escapeHtml(p.login)}</span><button type="button" class="people-cred-copy" onclick="copyToClipboard('${escapeHtml(p.login).replace(/'/g,"\\'")}')" title="Скопировать">⧉</button></div>` : ''}
+                ${p.password ? `<div class="people-cred-row"><span class="people-cred-label">Пароль:</span><span class="people-cred-value">${escapeHtml(p.password)}</span><button type="button" class="people-cred-copy" onclick="copyToClipboard('${escapeHtml(p.password).replace(/'/g,"\\'")}')" title="Скопировать">⧉</button></div>` : ''}
+            </div>` : `<div class="people-dropdown-creds"><div class="people-dropdown-creds-title">Данные для входа</div><div class="people-cred-row"><span class="people-cred-empty">Нет данных для входа</span></div></div>`;
         html += `
             <tr>
                 <td>
@@ -1284,6 +1303,7 @@ function renderPeopleTable(){
                 <td class="people-actions-cell">
                     <span class="people-gear" data-id="${escapeHtml(p.id)}" data-source="${escapeHtml(p.source)}">⚙</span>
                     <div class="people-dropdown" id="pmenu_${escapeHtml(p.source)}_${escapeHtml(p.id)}">
+                        ${credsHtml}
                         <button type="button" class="people-dropdown-item" onclick="openPersonModal('edit','${escapeHtml(p.source)}','${escapeHtml(p.id)}')">✎ Редактировать</button>
                         <button type="button" class="people-dropdown-item delete" onclick="deletePerson('${escapeHtml(p.source)}','${escapeHtml(p.id)}')">🗑 Удалить</button>
                     </div>
@@ -1475,7 +1495,9 @@ personForm.addEventListener('submit', async e=>{
         if(id){
             await DB.update('people', id, payload);
         } else {
-            await DB.insert('people', {id:genId('ppl'), ...payload});
+            const login = await generateUniqueLogin(fullName);
+            const password = generatePassword();
+            await DB.insert('people', {id:genId('ppl'), ...payload, login, password});
         }
     }
 
@@ -1527,7 +1549,29 @@ async function refreshScheduleTab(){const classes=await DB.getAll('classes');con
 async function loadClassSchedule(classId,pi){scheduleContent.style.display='block';const all=await DB.getAll('class_schedules');const saved=all.find(s=>s.class_id===classId&&s.period_index===pi);workingSchedule={};DAYS.forEach(d=>workingSchedule[d]={});if(saved&&saved.grid){DAYS.forEach(d=>{if(saved.grid[d])Object.keys(saved.grid[d]).forEach(k=>workingSchedule[d][k]={...saved.grid[d][k]});});}await renderScheduleGrid();}
 async function renderScheduleGrid(){scheduleDayGrid.innerHTML='';DAYS.forEach(day=>{const card=document.createElement('div');card.className='day-card';card.innerHTML=`<div class="day-card-header"><div class="day-card-header-icon">${DAYS_SHORT[day]}</div><h3>${DAYS_RU[day]}</h3></div>`;const list=document.createElement('div');list.className='day-lessons-list';for(let i=1;i<=DEFAULT_LESSON_COUNT;i++){const row=document.createElement('div');row.className='day-lesson-row';const a=workingSchedule[day]&&workingSchedule[day][i];row.innerHTML=`<div class="lesson-num-small">${i}</div><div class="lesson-content"><div class="lesson-info">${a&&a.subject?`<div class="lesson-info-subject">${escapeHtml(a.subject)}</div><div class="lesson-info-meta">${escapeHtml(a.teacherName||'')}${a.roomName?' · '+escapeHtml(a.roomName):''}</div>`:'<div class="lesson-info-empty">Не назначен</div>'}</div><button type="button" class="btn-assign${a?' assigned':''}">${a?'Изменить':'Назначить'}</button></div>`;row.querySelector('.btn-assign').addEventListener('click',()=>openAssignModal(day,i));list.appendChild(row);}card.appendChild(list);scheduleDayGrid.appendChild(card);});}
 async function openAssignModal(day,lesson){const cid=scheduleClassSelect.value;if(!cid)return;currentAssign={classId:cid,day,lesson};document.getElementById('assignModalTitle').textContent=`Назначить: ${DAYS_RU[day]}, ${lesson}-й`;const subjects=await DB.getAll('subjects');const cur=workingSchedule[day]&&workingSchedule[day][lesson];assignSubjectSelect.innerHTML='<option value="" disabled selected>Выберите предмет</option>';subjects.forEach(s=>{const o=document.createElement('option');o.value=s.name;o.textContent=s.name;if(cur&&cur.subject===s.name)o.selected=true;assignSubjectSelect.appendChild(o);});assignRoomSelect.innerHTML='<option value="">— Без кабинета —</option>';const rooms=await DB.getAll('rooms');rooms.forEach(r=>{const o=document.createElement('option');o.value=r.id;o.textContent=r.number+' — '+r.name;if(cur&&cur.roomId===r.id)o.selected=true;assignRoomSelect.appendChild(o);});await fillAssignTeachers();assignClearBtn.style.display=cur?'block':'none';assignModal.classList.add('show');}
-async function fillAssignTeachers(){const subject=assignSubjectSelect.value;const teachers=await DB.getAll('teachers');assignTeacherSelect.innerHTML='';if(!subject){assignTeacherSelect.innerHTML='<option value="" disabled selected>Сначала выберите предмет</option>';assignTeacherSelect.disabled=true;assignTeacherHint.textContent='Учителя фильтруются по предмету';return;}const filtered=teachers.filter(t=>t.subject===subject);if(!filtered.length){assignTeacherSelect.innerHTML='<option value="" disabled selected>Нет учителей по этому предмету</option>';assignTeacherSelect.disabled=true;assignTeacherHint.className='hint-text warning';assignTeacherHint.textContent='Создайте учителя с предметом «'+subject+'» на вкладке «Люди»';return;}assignTeacherSelect.disabled=false;assignTeacherHint.className='hint-text';assignTeacherHint.textContent='Найдено: '+filtered.length;assignTeacherSelect.innerHTML='<option value="" disabled selected>Выберите учителя</option>';const cur=workingSchedule[currentAssign.day]&&workingSchedule[currentAssign.day][currentAssign.lesson];filtered.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent=t.full_name;if(cur&&cur.teacherId===t.id)o.selected=true;assignTeacherSelect.appendChild(o);});}
+async function fillAssignTeachers(){
+    const teachers=await DB.getAll('teachers');
+    assignTeacherSelect.innerHTML='';
+    if(!teachers.length){
+        assignTeacherSelect.innerHTML='<option value="" disabled selected>Нет ни одного учителя</option>';
+        assignTeacherSelect.disabled=true;
+        assignTeacherHint.className='hint-text warning';
+        assignTeacherHint.textContent='Создайте учителя на вкладке «Люди»';
+        return;
+    }
+    assignTeacherSelect.disabled=false;
+    assignTeacherHint.className='hint-text';
+    assignTeacherHint.textContent='Всего учителей: '+teachers.length;
+    assignTeacherSelect.innerHTML='<option value="" disabled selected>Выберите учителя</option>';
+    const cur=workingSchedule[currentAssign.day]&&workingSchedule[currentAssign.day][currentAssign.lesson];
+    teachers.forEach(t=>{
+        const o=document.createElement('option');
+        o.value=t.id;
+        o.textContent=t.full_name+(t.subject?' — '+t.subject:'');
+        if(cur&&cur.teacherId===t.id)o.selected=true;
+        assignTeacherSelect.appendChild(o);
+    });
+}
 assignSubjectSelect.addEventListener('change',async()=>{await fillAssignTeachers();});
 function closeAssignModal(){assignModal.classList.remove('show');}
 assignModal.addEventListener('click',e=>{if(e.target===assignModal)closeAssignModal();});
@@ -1567,16 +1611,6 @@ periodForm.addEventListener('submit',async e=>{e.preventDefault();const id=perio
 async function renderPeriods(){const ps=await DB.getAll('educational_periods');periodsBody.innerHTML='';if(!ps.length){periodsEmpty.style.display='block';periodsTable.style.display='none';return;}periodsEmpty.style.display='none';periodsTable.style.display='table';ps.forEach(p=>{const bc=SYSTEM_BADGE_CLASS[p.system]||'badge-gray';let dates='';(p.periods||[]).forEach((x,i)=>{const labels=PERIOD_LABELS[p.system]||[];dates+=`<div><strong>${labels[i]||('Период '+(i+1))}:</strong> ${formatPeriodDate(x.start)} — ${formatPeriodDate(x.end)}</div>`;});const tr=document.createElement('tr');tr.innerHTML=`<td><strong>${escapeHtml(p.name)}</strong></td><td><span class="period-system-badge ${bc}">${escapeHtml(p.system)}</span></td><td><div class="period-dates-cell">${dates}</div></td><td><div class="actions"><button class="btn-icon btn-edit" data-id="${escapeHtml(p.id)}">✎</button><button class="btn-icon btn-delete" data-id="${escapeHtml(p.id)}">🗑</button></div></td>`;periodsBody.appendChild(tr);});periodsBody.querySelectorAll('.btn-edit').forEach(b=>b.addEventListener('click',()=>openEditPeriodModal(b.dataset.id)));periodsBody.querySelectorAll('.btn-delete').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Удалить?'))return;await DB.remove('educational_periods',b.dataset.id);await renderPeriods();showToast('Удалено','error');}));}
 
 /* ============================ ИНИЦИАЛИЗАЦИЯ ============================ */
-async function fillTeacherSubjectSelect(){
-    const list = await DB.getAll('subjects');
-    const sel = document.getElementById('teacherSubject');
-    if(!sel) return;
-    sel.innerHTML='';
-    if(!list.length){ sel.innerHTML='<option value="" disabled selected>Сначала предметы</option>'; return; }
-    sel.innerHTML='<option value="" disabled>Выберите</option>';
-    list.forEach(s=>{ const o=document.createElement('option'); o.value=s.name; o.textContent=s.name; sel.appendChild(o); });
-}
-
 async function init(){
     await fillClassTeacherSelect();
     await renderSubjects();
