@@ -463,14 +463,10 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
 .people-dropdown-item.delete { color: #d93025; }
 .people-dropdown-item.delete:hover { background: #fce8e6; color: #d93025; }
 
-.people-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid #eee; padding-bottom: 14px; gap: 16px; flex-wrap: wrap; }
+.people-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 12px; gap: 16px; flex-wrap: wrap; border-bottom: 1px solid #eee; }
 .people-title-row h1 { margin: 0; font-size: 22px; color: #777; font-weight: 400; }
 .people-create-btn { color: #1d82b5; text-decoration: none; font-size: 14px; font-weight: 700; cursor: pointer; background: none; border: none; font-family: inherit; }
 .people-create-btn:hover { text-decoration: underline; }
-
-.people-breadcrumbs { display: flex; align-items: center; gap: 5px; font-size: 13px; margin-bottom: 12px; color: #7a7a7a; }
-.people-breadcrumbs a { color: #1d82b5 !important; text-decoration: none; font-weight: 700; cursor: pointer; }
-.people-breadcrumbs span { color: #999; }
 
 /* Модалка персоны */
 .person-form-section-title {
@@ -584,10 +580,6 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
             </div>
 
             <div class="tab-panel" id="panel-people">
-                <div class="people-breadcrumbs">
-                    <a onclick="return false">ГОУ ЛНР «АСШ № 6»</a> <span>›</span> <a onclick="return false">Администрирование</a>
-                </div>
-
                 <div class="people-title-row">
                     <h1>Поиск людей</h1>
                     <button type="button" class="people-create-btn" onclick="openPersonModal('add')">Создать персону</button>
@@ -966,7 +958,7 @@ function escapeHtml(t){if(t===null||t===undefined)return '';const d=document.cre
 function translit(s){return s.toLowerCase().split('').map(c=>TRANSLIT_MAP[c]!==undefined?TRANSLIT_MAP[c]:c).join('');}
 function generateLogin(fn){const p=fn.trim().split(/\s+/).filter(Boolean);if(!p.length)return 'user';const s=translit(p[0]).replace(/[^a-z0-9]/g,'');let l=s;if(p.length>=2){const f=translit(p[1]).replace(/[^a-z0-9]/g,'');if(f)l=s+'.'+f;}return l||'user';}
 function generatePassword(){const c='abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';let p='';for(let i=0;i<8;i++)p+=c[Math.floor(Math.random()*c.length)];return p;}
-async function isLoginUnique(l,ex){const t=await DB.getAll('teachers');const s=await DB.getAll('students');const p=await DB.getAll('people');return ![...t,...s,...p].some(u=>u.login&&u.login.toLowerCase()===l.toLowerCase()&&u.id!==ex);}
+async function isLoginUnique(l,ex){const t=await DB.getAll('teachers');const s=await DB.getAll('students');const p=await DB.getAll('people').catch(()=>[]);return ![...t,...s,...p].some(u=>u.login&&u.login.toLowerCase()===l.toLowerCase()&&u.id!==ex);}
 async function generateUniqueLogin(fn,ex){const b=generateLogin(fn);let l=b,i=1;while(!(await isLoginUnique(l,ex))){l=b+i;i++;}return l;}
 function formatDate(d){if(!d)return '—';try{const x=new Date(d);return isNaN(x)?d:x.toLocaleDateString('ru-RU');}catch(e){return d;}}
 function formatPeriodDate(d){if(!d)return '—';try{const x=new Date(d);return isNaN(x)?d:`${String(x.getDate()).padStart(2,'0')}.${String(x.getMonth()+1).padStart(2,'0')}.${x.getFullYear()}`;}catch(e){return d;}}
@@ -1013,9 +1005,9 @@ async function renderSubjects(){const list=await DB.getAll('subjects');subjectsB
 async function openEditModal(id){const list=await DB.getAll('subjects');const s=list.find(x=>x.id===id);if(!s)return;editSubjectId.value=s.id;editSubjectName.value=s.name;editSubjectDirection.value=s.direction;editModal.classList.add('show');}
 function closeEditModal(){editModal.classList.remove('show');editSubjectForm.reset();}
 editModal.addEventListener('click',e=>{if(e.target===editModal)closeEditModal();});
-editSubjectForm.addEventListener('submit',async e=>{e.preventDefault();const id=editSubjectId.value;const newName=editSubjectName.value.trim();const newDir=editSubjectDirection.value;if(!newName)return;const list=await DB.getAll('subjects');const old=list.find(s=>s.id===id);await DB.update('subjects',id,{name:newName,direction:newDir});if(old&&old.name!==newName){const t=await DB.getAll('teachers');for(const x of t)if(x.subject===old.name)await DB.update('teachers',x.id,{subject:newName});}closeEditModal();await renderSubjects();await fillTeacherSubjectSelect();await renderTeachers();showToast('Обновлено');});
-subjectForm.addEventListener('submit',async e=>{e.preventDefault();const name=subjectNameInput.value.trim();const dir=subjectDirectionInput.value;if(!name||!dir){showToast('Заполните','error');return;}const list=await DB.getAll('subjects');if(list.some(s=>s.name.toLowerCase()===name.toLowerCase())){showToast('Уже есть','error');return;}await DB.insert('subjects',{id:genId('sub'),name,direction:dir});subjectForm.reset();await renderSubjects();await fillTeacherSubjectSelect();showToast('Добавлено');});
-async function deleteSubject(id){const list=await DB.getAll('subjects');const s=list.find(x=>x.id===id);if(!s||!confirm('Удалить?'))return;await DB.remove('subjects',id);await renderSubjects();await fillTeacherSubjectSelect();await renderTeachers();showToast('Удалено','error');}
+editSubjectForm.addEventListener('submit',async e=>{e.preventDefault();const id=editSubjectId.value;const newName=editSubjectName.value.trim();const newDir=editSubjectDirection.value;if(!newName)return;const list=await DB.getAll('subjects');const old=list.find(s=>s.id===id);await DB.update('subjects',id,{name:newName,direction:newDir});if(old&&old.name!==newName){const t=await DB.getAll('teachers');for(const x of t)if(x.subject===old.name)await DB.update('teachers',x.id,{subject:newName});}closeEditModal();await renderSubjects();showToast('Обновлено');});
+subjectForm.addEventListener('submit',async e=>{e.preventDefault();const name=subjectNameInput.value.trim();const dir=subjectDirectionInput.value;if(!name||!dir){showToast('Заполните','error');return;}const list=await DB.getAll('subjects');if(list.some(s=>s.name.toLowerCase()===name.toLowerCase())){showToast('Уже есть','error');return;}await DB.insert('subjects',{id:genId('sub'),name,direction:dir});subjectForm.reset();await renderSubjects();showToast('Добавлено');});
+async function deleteSubject(id){const list=await DB.getAll('subjects');const s=list.find(x=>x.id===id);if(!s||!confirm('Удалить?'))return;await DB.remove('subjects',id);await renderSubjects();showToast('Удалено','error');}
 
 /* ============================ КЛАССЫ ============================ */
 const classModal=document.getElementById('classModal');
@@ -1120,12 +1112,11 @@ classForm.addEventListener('submit',async e=>{
 });
 
 /* ============================ ЛЮДИ ============================ */
-let ALL_PEOPLE = [];           // объединённый список: {id, source, full_name, role, class_id, class_name, subject, login, email, phone, gender, birth_date, child_name}
+let ALL_PEOPLE = [];
 let CURRENT_PEOPLE_FILTER = 'all';
 let PEOPLE_SEARCH_NAME = '';
 let PEOPLE_SEARCH_CLASS = '';
 
-// при загрузке вкладки «Люди» подтягиваем данные
 async function renderPeopleTab(){
     await loadAllPeople();
     renderPeopleTable();
@@ -1136,7 +1127,7 @@ async function loadAllPeople(){
     const [teachers, students, extraPeople, classes] = await Promise.all([
         DB.getAll('teachers'),
         DB.getAll('students'),
-        DB.getAll('people').catch(()=>[]),   // коллекция может ещё не существовать
+        DB.getAll('people').catch(()=>[]),
         DB.getAll('classes')
     ]);
     const classById = {};
@@ -1144,7 +1135,6 @@ async function loadAllPeople(){
 
     ALL_PEOPLE = [];
 
-    // Учителя (включая замов/директора — по полю role)
     (teachers||[]).forEach(t=>{
         const role = t.role || 'teacher';
         ALL_PEOPLE.push({
@@ -1165,7 +1155,6 @@ async function loadAllPeople(){
         });
     });
 
-    // Ученики
     (students||[]).forEach(s=>{
         const cls = classById[s.class_id];
         ALL_PEOPLE.push({
@@ -1186,7 +1175,6 @@ async function loadAllPeople(){
         });
     });
 
-    // Прочие люди (родители/администраторы) — из коллекции people
     (extraPeople||[]).forEach(p=>{
         ALL_PEOPLE.push({
             id: p.id,
@@ -1244,7 +1232,6 @@ function renderPeopleTable(){
 
     let list = ALL_PEOPLE.slice();
 
-    // фильтр по роли
     if(CURRENT_PEOPLE_FILTER==='student') list = list.filter(p=>p.role==='student');
     else if(CURRENT_PEOPLE_FILTER==='staff') list = list.filter(p=>['director','zam','teacher'].includes(p.role));
     else if(CURRENT_PEOPLE_FILTER==='director') list = list.filter(p=>p.role==='director');
@@ -1253,11 +1240,9 @@ function renderPeopleTable(){
     else if(CURRENT_PEOPLE_FILTER==='parent') list = list.filter(p=>p.role==='parent');
     else if(CURRENT_PEOPLE_FILTER==='admin') list = list.filter(p=>p.role==='admin');
 
-    // поиск по ФИО
     if(PEOPLE_SEARCH_NAME){
         list = list.filter(p=>p.full_name.toLowerCase().includes(PEOPLE_SEARCH_NAME));
     }
-    // поиск по классу
     if(PEOPLE_SEARCH_CLASS){
         list = list.filter(p=>{
             const cls = (p.class_name||'').toLowerCase();
@@ -1265,7 +1250,6 @@ function renderPeopleTable(){
         });
     }
 
-    // сортировка по фамилии
     list.sort((a,b)=>{
         const sa = (a.full_name.split(' ')[0]||'').localeCompare(b.full_name.split(' ')[0]||'', 'ru');
         return sa;
@@ -1309,7 +1293,6 @@ function renderPeopleTable(){
     });
     body.innerHTML = html;
 
-    // обработчики шестерёнок
     body.querySelectorAll('.people-gear').forEach(g=>{
         g.addEventListener('click',(e)=>{
             e.stopPropagation();
@@ -1434,7 +1417,6 @@ personForm.addEventListener('submit', async e=>{
 
     if(!surname||!name){ showToast('Заполните ФИО','error'); return; }
 
-    // определяем целевой источник
     let targetSource = source;
     if(!targetSource){
         if(role==='student') targetSource='students';
@@ -1442,12 +1424,11 @@ personForm.addEventListener('submit', async e=>{
         else targetSource='people';
     }
 
-    const relationValue = document.getElementById('personRelation')?.value || '';
     const relationSelect = document.getElementById('personRelation');
+    const relationValue = relationSelect ? relationSelect.value : '';
     const relationSelected = relationSelect && relationSelect.style.display!=='none' ? relationValue : '';
 
     if(targetSource==='students'){
-        // ученик
         const classId = (role==='student') ? (document.getElementById('personDynamicGroup').style.display!=='none' ? relationValue : '') : '';
         const payload = {
             full_name: fullName,
@@ -1481,7 +1462,6 @@ personForm.addEventListener('submit', async e=>{
             await DB.insert('teachers', {id:genId('tch'), ...payload, subject: '', login, password});
         }
     } else {
-        // люди (parent, admin)
         const payload = {
             full_name: fullName,
             birth_date: birthdate,
@@ -1516,6 +1496,14 @@ async function deletePerson(source, id){
     await fillClassTeacherSelect();
     showToast('Удалено','error');
 }
+
+/* ============================ КАБИНЕТЫ ============================ */
+const roomForm=document.getElementById('roomForm');const roomNumberInput=document.getElementById('roomNumber');const roomNameInput=document.getElementById('roomName');const roomsBody=document.getElementById('roomsBody');const roomsEmpty=document.getElementById('roomsEmpty');const roomsTable=document.getElementById('roomsTable');const roomModal=document.getElementById('roomModal');const roomModalForm=document.getElementById('roomModalForm');const roomId=document.getElementById('roomId');const roomModalNumber=document.getElementById('roomModalNumber');const roomModalName=document.getElementById('roomModalName');
+async function renderRooms(){const list=await DB.getAll('rooms');roomsBody.innerHTML='';if(!list.length){roomsEmpty.style.display='block';roomsTable.style.display='none';return;}roomsEmpty.style.display='none';roomsTable.style.display='table';list.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=`<td><span class="badge badge-teal">${escapeHtml(r.number)}</span></td><td>${escapeHtml(r.name)}</td><td><div class="actions"><button class="btn-icon btn-edit" data-id="${escapeHtml(r.id)}">✎</button><button class="btn-icon btn-delete" data-id="${escapeHtml(r.id)}">🗑</button></div></td>`;roomsBody.appendChild(tr);});roomsBody.querySelectorAll('.btn-edit').forEach(b=>b.addEventListener('click',async()=>{const list=await DB.getAll('rooms');const r=list.find(x=>x.id===b.dataset.id);if(!r)return;roomId.value=r.id;roomModalNumber.value=r.number;roomModalName.value=r.name;roomModal.classList.add('show');}));roomsBody.querySelectorAll('.btn-delete').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Удалить?'))return;await DB.remove('rooms',b.dataset.id);await renderRooms();showToast('Удалено','error');}));}
+function closeRoomModal(){roomModal.classList.remove('show');roomModalForm.reset();}
+roomModal.addEventListener('click',e=>{if(e.target===roomModal)closeRoomModal();});
+roomModalForm.addEventListener('submit',async e=>{e.preventDefault();const id=roomId.value;const number=roomModalNumber.value.trim();const name=roomModalName.value.trim();if(!number||!name)return;await DB.update('rooms',id,{number,name});closeRoomModal();await renderRooms();showToast('Обновлено');});
+roomForm.addEventListener('submit',async e=>{e.preventDefault();const number=roomNumberInput.value.trim();const name=roomNameInput.value.trim();if(!number||!name){showToast('Заполните','error');return;}await DB.insert('rooms',{id:genId('room'),number,name});roomForm.reset();await renderRooms();showToast('Добавлено');});
 
 /* ============================ ЗВОНКИ ============================ */
 const bellsShifts=document.getElementById('bellsShifts');const bellsContent=document.getElementById('bellsContent');const bellsNoShifts=document.getElementById('bellsNoShifts');const bellsCurrentShiftName=document.getElementById('bellsCurrentShiftName');const bellTableBody=document.getElementById('bellTableBody');const shiftModal=document.getElementById('shiftModal');const shiftForm=document.getElementById('shiftForm');const shiftNameInput=document.getElementById('shiftName');let activeShiftId=null;
@@ -1588,7 +1576,6 @@ async function fillTeacherSubjectSelect(){
     sel.innerHTML='<option value="" disabled>Выберите</option>';
     list.forEach(s=>{ const o=document.createElement('option'); o.value=s.name; o.textContent=s.name; sel.appendChild(o); });
 }
-async function renderTeachers(){ /* legacy, больше не используется */ }
 
 async function init(){
     await fillClassTeacherSelect();
