@@ -30,11 +30,18 @@ body {
 .loading-btn-secondary { background: #f0f2f5; color: #4a5a72; }
 
 /* ============================================================
-   ЕДИНАЯ ШИРИНА ВЕЗДЕ: 1400px. Каждый блок ограничен 1400px
-   и отцентрирован. Никаких вложенных контейнеров.
+   ЕДИНАЯ ШИРИНА ВЕЗДЕ: 1400px.
+   Обёртка .app-shell центрирует ВСЁ — и шапку, и контент.
    ============================================================ */
-.header { background: #fff; border-bottom: 1px solid #e0e0e0; max-width: 1400px; margin: 0 auto; }
-.header-inner { padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+.app-shell {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+
+/* Шапка */
+.header { background: #fff; border-bottom: 1px solid #e0e0e0; }
+.header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
 
 .logo { font-size: 22px; color: #007baf; }
 .logo-bold { font-weight: 700; }
@@ -50,9 +57,9 @@ body {
 .d-action-link:hover { text-decoration: underline; }
 .d-action-link.logout { color: #d9534f; }
 
-/* Синяя полоса — ровно те же 1400px и центрирование, что и шапка */
-.d-top-blue-bar { background: #166a94; max-width: 1400px; margin: 0 auto; }
-.d-top-blue-inner { padding: 0 32px; display: flex; }
+/* Синяя полоса */
+.d-top-blue-bar { background: #166a94; }
+.d-top-blue-inner { padding: 0; display: flex; }
 .d-nav-item {
     display: inline-block;
     padding: 12px 20px;
@@ -65,9 +72,9 @@ body {
 .d-nav-item:hover { background: rgba(255,255,255,0.12); }
 .d-nav-item.active { background: #0f4f70; border-bottom-color: #ffffff; font: 400 14px/1 inherit; }
 
-/* Подменю — тоже 1400px */
-.d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; max-width: 1400px; margin: 0 auto; }
-.d-sub-menu-inner { padding: 0 32px; display: flex; flex-wrap: wrap; }
+/* Подменю */
+.d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
+.d-sub-menu-inner { padding: 0; display: flex; flex-wrap: wrap; }
 .d-sub-item {
     display: inline-block;
     padding: 10px 15px;
@@ -81,13 +88,13 @@ body {
 .d-sub-item:hover { color: #1d82b5; }
 .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
 
-/* Школа + заголовок — 1400px */
-.school-bar { padding: 14px 32px 0; max-width: 1400px; margin: 0 auto; }
+/* Школа + заголовок */
+.school-bar { padding: 14px 0 0; }
 .school-name { font-size: 13px; color: #7a8aa3; margin-bottom: 2px; }
 .page-title { font-size: 28px; font-weight: 400; color: #1976d2; margin-bottom: 12px; }
 
-/* Контент — 1400px */
-.container { padding: 0 32px 60px; max-width: 1400px; margin: 0 auto; }
+/* Контент */
+.container { padding: 0 0 60px; }
 
 .panel-grid { display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; }
 .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; }
@@ -297,11 +304,9 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
     .chooser-column { border-right: none; border-bottom: 1px solid #eef2f8; }
 }
 @media (max-width: 700px) {
-    .header-inner { padding: 10px 12px; column-gap: 16px; }
-    .d-top-blue-inner, .d-sub-menu-inner { padding: 0 12px; }
-    .school-bar { padding: 10px 14px 0; }
+    .app-shell { padding: 0 14px; }
+    .header-inner { column-gap: 16px; }
     .page-title { font-size: 22px; }
-    .container { padding: 0 14px 40px; }
     .form-row { grid-template-columns: 1fr; }
 }
 </style>
@@ -317,283 +322,285 @@ code { background: #f0f4f9; padding: 3px 8px; border-radius: 6px; font-size: 12p
 
 <div id="appContainer" style="display:none;">
 
-    <header class="header">
-        <div class="header-inner">
-            <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
-            <div class="d-user-profile-zone">
-                <div class="d-user-info">
-                    <span class="d-user-name">Федоренко В.И.</span>
-                    <span class="d-user-role">Сотрудник</span>
-                </div>
-                <div class="d-user-actions">
-                    <a href="#" class="d-action-link" onclick="return false">Помощь</a>
-                    <a href="#" class="d-action-link logout" onclick="return logout(event)">Выход</a>
-                </div>
-            </div>
-        </div>
-    </header>
+    <div class="app-shell">
 
-    <div class="d-top-blue-bar">
-        <div class="d-top-blue-inner">
-            <a href="#" class="d-nav-item active" data-toptab="education" onclick="return false">ОБРАЗОВАНИЕ</a>
-            <a href="#" class="d-nav-item" data-toptab="communication" onclick="return false">ОБЩЕНИЕ</a>
-            <a href="#" class="d-nav-item" data-toptab="apps" onclick="return false">ПРИЛОЖЕНИЯ</a>
-        </div>
-    </div>
-
-    <div class="d-sub-menu-bar">
-        <div class="d-sub-menu-inner" id="subHeaderInner"></div>
-    </div>
-
-    <div class="school-bar">
-        <div class="school-name">ГОУ ЛНР «АСШ № 6»</div>
-        <h1 class="page-title" id="pageTitle">Классы</h1>
-    </div>
-
-    <div class="container">
-        <div class="tab-panel active" id="panel-classes">
-            <div class="panel-grid">
-                <div class="card">
-                    <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></div><h2>Добавить класс</h2></div>
-                    <form id="classForm">
-                        <div class="form-group"><label>Название класса <span class="required">*</span></label><input type="text" id="className" placeholder="Например: 10-А" required></div>
-                        <div class="form-group"><label>Классный руководитель <span class="required">*</span></label><select id="classTeacher" required></select><div class="hint-text" id="classTeacherHint"></div></div>
-                        <button type="submit" class="btn-submit" id="classSubmitBtn">Добавить класс</button>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></div><h2>Список классов</h2></div>
-                    <div class="table-wrapper">
-                        <table class="data-table" id="classesTable"><thead><tr><th>Класс</th><th>Классный руководитель</th><th>Учеников</th><th></th></tr></thead><tbody id="classesBody"></tbody></table>
-                        <div class="empty-state" id="classesEmpty"><p>Пока нет ни одного класса</p></div>
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
+                <div class="d-user-profile-zone">
+                    <div class="d-user-info">
+                        <span class="d-user-name">Федоренко В.И.</span>
+                        <span class="d-user-role">Сотрудник</span>
+                    </div>
+                    <div class="d-user-actions">
+                        <a href="#" class="d-action-link" onclick="return false">Помощь</a>
+                        <a href="#" class="d-action-link logout" onclick="return logout(event)">Выход</a>
                     </div>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <div class="tab-panel" id="panel-teachers">
-            <div class="panel-grid">
-                <div class="card">
-                    <div class="card-header"><h2>Создать аккаунт учителя</h2></div>
-                    <form id="teacherForm">
-                        <div class="form-group"><label>ФИО <span class="required">*</span></label><input type="text" id="teacherFullName" required></div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Дата рождения <span class="required">*</span></label><input type="date" id="teacherBirthDate" required></div>
-                            <div class="form-group"><label>Пол <span class="required">*</span></label><select id="teacherGender" required><option value="" disabled selected>Выберите</option><option value="Мужской">Мужской</option><option value="Женский">Женский</option></select></div>
-                        </div>
-                        <div class="form-group"><label>Предмет <span class="required">*</span></label><select id="teacherSubject" required></select></div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Почта <span class="required">*</span></label><input type="email" id="teacherEmail" required></div>
-                            <div class="form-group"><label>Телефон <span class="required">*</span></label><input type="tel" id="teacherPhone" required></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Логин</label><input type="text" id="teacherLogin" readonly></div>
-                            <div class="form-group"><label>Пароль</label><input type="text" id="teacherPassword" readonly></div>
-                        </div>
-                        <button type="submit" class="btn-submit">Создать учителя</button>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="card-header"><h2>Список учителей</h2></div>
-                    <div class="table-wrapper">
-                        <table class="data-table" id="teachersTable"><thead><tr><th>ФИО</th><th>Предмет</th><th>Д.Р.</th><th>Пол</th><th>Контакты</th><th>Логин</th><th></th></tr></thead><tbody id="teachersBody"></tbody></table>
-                        <div class="empty-state" id="teachersEmpty"><p>Пока нет ни одного учителя</p></div>
-                    </div>
-                </div>
+        <div class="d-top-blue-bar">
+            <div class="d-top-blue-inner">
+                <a href="#" class="d-nav-item active" data-toptab="education" onclick="return false">ОБРАЗОВАНИЕ</a>
+                <a href="#" class="d-nav-item" data-toptab="communication" onclick="return false">ОБЩЕНИЕ</a>
+                <a href="#" class="d-nav-item" data-toptab="apps" onclick="return false">ПРИЛОЖЕНИЯ</a>
             </div>
         </div>
 
-        <div class="tab-panel" id="panel-students">
-            <div class="panel-grid">
-                <div class="card">
-                    <div class="card-header"><h2>Создать аккаунт ученика</h2></div>
-                    <form id="studentForm">
-                        <div class="form-group"><label>ФИО <span class="required">*</span></label><input type="text" id="studentFullName" required></div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Дата рождения <span class="required">*</span></label><input type="date" id="studentBirthDate" required></div>
-                            <div class="form-group"><label>Пол <span class="required">*</span></label><select id="studentGender" required><option value="" disabled selected>Выберите</option><option value="Мужской">Мужской</option><option value="Женский">Женский</option></select></div>
-                        </div>
-                        <div class="form-group"><label>Класс <span class="required">*</span></label><select id="studentClass" required></select><div class="hint-text" id="studentClassHint"></div></div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Почта <span class="required">*</span></label><input type="email" id="studentEmail" required></div>
-                            <div class="form-group"><label>Телефон <span class="required">*</span></label><input type="tel" id="studentPhone" required></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Логин</label><input type="text" id="studentLogin" readonly></div>
-                            <div class="form-group"><label>Пароль</label><input type="text" id="studentPassword" readonly></div>
-                        </div>
-                        <button type="submit" class="btn-submit" id="studentSubmitBtn">Создать ученика</button>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="card-header"><h2>Список учеников</h2></div>
-                    <div class="table-wrapper">
-                        <table class="data-table" id="studentsTable"><thead><tr><th>ФИО</th><th>Класс</th><th>Д.Р.</th><th>Пол</th><th>Контакты</th><th>Логин</th><th></th></tr></thead><tbody id="studentsBody"></tbody></table>
-                        <div class="empty-state" id="studentsEmpty"><p>Пока нет ни одного ученика</p></div>
-                    </div>
-                </div>
-            </div>
+        <div class="d-sub-menu-bar">
+            <div class="d-sub-menu-inner" id="subHeaderInner"></div>
         </div>
 
-        <div class="tab-panel" id="panel-subjects">
-            <div class="panel-grid">
-                <div class="card">
-                    <div class="card-header"><h2>Добавить предмет</h2></div>
-                    <form id="subjectForm">
-                        <div class="form-group"><label>Название <span class="required">*</span></label><input type="text" id="subjectName" required></div>
-                        <div class="form-group"><label>Направление <span class="required">*</span></label><select id="subjectDirection" required><option value="" disabled selected>Выберите</option><option>Точные науки</option><option>Гуманитарные науки</option><option>Естественные науки</option><option>Спорт и искусство</option></select></div>
-                        <button type="submit" class="btn-submit">Добавить предмет</button>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="card-header"><h2>Список предметов</h2></div>
-                    <div class="table-wrapper">
-                        <table class="data-table" id="subjectsTable"><thead><tr><th>Название</th><th>Направление</th><th></th></tr></thead><tbody id="subjectsBody"></tbody></table>
-                        <div class="empty-state" id="subjectsEmpty"><p>Пока нет ни одного предмета</p></div>
-                    </div>
-                </div>
-            </div>
+        <div class="school-bar">
+            <div class="school-name">ГОУ ЛНР «АСШ № 6»</div>
+            <h1 class="page-title" id="pageTitle">Классы</h1>
         </div>
 
-        <div class="tab-panel" id="panel-rooms">
-            <div class="panel-grid">
-                <div class="card">
-                    <div class="card-header"><h2>Добавить кабинет</h2></div>
-                    <form id="roomForm">
-                        <div class="form-group"><label>Номер <span class="required">*</span></label><input type="text" id="roomNumber" required></div>
-                        <div class="form-group"><label>Наименование <span class="required">*</span></label><input type="text" id="roomName" required></div>
-                        <button type="submit" class="btn-submit">Добавить кабинет</button>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="card-header"><h2>Список кабинетов</h2></div>
-                    <div class="table-wrapper">
-                        <table class="data-table" id="roomsTable"><thead><tr><th>Номер</th><th>Наименование</th><th></th></tr></thead><tbody id="roomsBody"></tbody></table>
-                        <div class="empty-state" id="roomsEmpty"><p>Пока нет ни одного кабинета</p></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-panel" id="panel-workload">
-            <div class="workload-filter"><label>Класс:</label><select id="workloadClassSelect"></select></div>
-            <div id="workloadContent" style="display:none;">
+        <div class="container">
+            <div class="tab-panel active" id="panel-classes">
                 <div class="panel-grid">
                     <div class="card">
-                        <div class="card-header"><h2>Добавить нагрузку</h2></div>
-                        <form id="workloadForm">
-                            <div class="form-group"><label>Предмет <span class="required">*</span></label><select id="workloadSubject" required></select></div>
-                            <div class="form-group"><label>Подгруппа <span class="required">*</span></label><select id="workloadSubgroup" required><option value="Весь класс" selected>Весь класс</option></select></div>
-                            <div class="form-group"><label>Учитель <span class="required">*</span></label><select id="workloadTeacher" required></select></div>
-                            <div class="form-group"><label>Кабинет <span class="required">*</span></label><select id="workloadRoom" required></select></div>
-                            <button type="submit" class="btn-submit" id="workloadSubmitBtn">Добавить нагрузку</button>
+                        <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></div><h2>Добавить класс</h2></div>
+                        <form id="classForm">
+                            <div class="form-group"><label>Название класса <span class="required">*</span></label><input type="text" id="className" placeholder="Например: 10-А" required></div>
+                            <div class="form-group"><label>Классный руководитель <span class="required">*</span></label><select id="classTeacher" required></select><div class="hint-text" id="classTeacherHint"></div></div>
+                            <button type="submit" class="btn-submit" id="classSubmitBtn">Добавить класс</button>
                         </form>
                     </div>
                     <div class="card">
-                        <div class="card-header"><h2>Учебный план класса</h2></div>
+                        <div class="card-header"><div class="card-header-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></div><h2>Список классов</h2></div>
                         <div class="table-wrapper">
-                            <table class="data-table" id="workloadTable"><thead><tr><th>Предмет</th><th>Подгруппа</th><th>Учитель</th><th>Кабинет</th><th></th></tr></thead><tbody id="workloadBody"></tbody></table>
-                            <div class="empty-state" id="workloadEmpty"><p>Нет нагрузки</p></div>
+                            <table class="data-table" id="classesTable"><thead><tr><th>Класс</th><th>Классный руководитель</th><th>Учеников</th><th></th></tr></thead><tbody id="classesBody"></tbody></table>
+                            <div class="empty-state" id="classesEmpty"><p>Пока нет ни одного класса</p></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card" id="workloadNoClasses" style="display:none;"><div class="empty-state"><p>Сначала создайте класс</p></div></div>
-        </div>
 
-        <div class="tab-panel" id="panel-bells">
-            <div class="bells-toolbar">
-                <div class="bells-shifts" id="bellsShifts"></div>
-                <button type="button" class="btn-outline" onclick="openAddShiftModal()" style="background:linear-gradient(135deg,#1976d2,#2196f3);color:#fff;border:none;">Создать смену</button>
-            </div>
-            <div class="bells-card" id="bellsContent" style="display:none;">
-                <div class="bells-header">
-                    <div class="bells-header-title" id="bellsCurrentShiftName">Расписание звонков</div>
-                    <button type="button" class="btn-outline danger" onclick="deleteCurrentShift()">Удалить смену</button>
-                </div>
-                <div class="bell-table-wrapper"><table class="bell-table"><thead><tr><th>#</th><th>ПО</th><th>ВТ</th><th>СР</th><th>ЧЕ</th><th>ПЯ</th><th>СУ</th></tr></thead><tbody id="bellTableBody"></tbody></table></div>
-                <div class="bells-footer">
-                    <div class="bells-footer-left">
-                        <button type="button" class="btn-outline" onclick="addLessonRow()">+ Добавить урок</button>
-                        <button type="button" class="btn-outline danger" onclick="removeLessonRow()">− Удалить последний</button>
+            <div class="tab-panel" id="panel-teachers">
+                <div class="panel-grid">
+                    <div class="card">
+                        <div class="card-header"><h2>Создать аккаунт учителя</h2></div>
+                        <form id="teacherForm">
+                            <div class="form-group"><label>ФИО <span class="required">*</span></label><input type="text" id="teacherFullName" required></div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Дата рождения <span class="required">*</span></label><input type="date" id="teacherBirthDate" required></div>
+                                <div class="form-group"><label>Пол <span class="required">*</span></label><select id="teacherGender" required><option value="" disabled selected>Выберите</option><option value="Мужской">Мужской</option><option value="Женский">Женский</option></select></div>
+                            </div>
+                            <div class="form-group"><label>Предмет <span class="required">*</span></label><select id="teacherSubject" required></select></div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Почта <span class="required">*</span></label><input type="email" id="teacherEmail" required></div>
+                                <div class="form-group"><label>Телефон <span class="required">*</span></label><input type="tel" id="teacherPhone" required></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Логин</label><input type="text" id="teacherLogin" readonly></div>
+                                <div class="form-group"><label>Пароль</label><input type="text" id="teacherPassword" readonly></div>
+                            </div>
+                            <button type="submit" class="btn-submit">Создать учителя</button>
+                        </form>
                     </div>
-                    <button type="button" class="btn-save-bells" onclick="saveBellSchedule()">Сохранить</button>
-                </div>
-                <div class="bells-hint">Оставьте поля пустыми для нерабочих уроков</div>
-            </div>
-            <div class="card" id="bellsNoShifts" style="display:none;"><div class="empty-state"><p>Нет ни одной смены</p></div></div>
-        </div>
-
-        <div class="tab-panel" id="panel-schedule">
-            <div class="workload-filter">
-                <label>Период:</label><select id="schedulePeriodSelect"></select>
-                <label>Класс:</label><select id="scheduleClassSelect"></select>
-            </div>
-            <div id="scheduleContent" style="display:none;">
-                <div class="schedule-info">Для назначения урока нажмите «Назначить»</div>
-                <div class="schedule-day-grid" id="scheduleDayGrid"></div>
-                <div class="schedule-footer"><button type="button" class="btn-save-schedule" onclick="saveClassSchedule()">Сохранить расписание</button></div>
-            </div>
-            <div class="card" id="scheduleNoClasses" style="display:none;"><div class="empty-state"><p>Сначала создайте класс</p></div></div>
-            <div class="card" id="scheduleNoWorkload" style="display:none;"><div class="empty-state"><p>Нет нагрузки</p></div></div>
-            <div class="card" id="scheduleNoPeriods" style="display:none;"><div class="empty-state"><p>Сначала создайте период</p></div></div>
-        </div>
-
-        <div class="tab-panel" id="panel-journals">
-            <div id="journalsListScreen">
-                <div class="year-banner"><span class="year-banner-text">2026/2027 учебный год</span><span class="year-badge">Текущий год</span></div>
-                <div class="quick-actions">
-                    <button class="btn-quick" onclick="journalQuickAction('Просмотр')">Просмотр</button>
-                    <button class="btn-quick" onclick="journalQuickAction('Печать')">Печать</button>
-                    <button class="btn-quick" onclick="journalQuickAction('Экспорт')">Экспорт</button>
-                </div>
-                <div id="journalsClassesContainer"></div>
-            </div>
-            <div id="journalChooserScreen" class="journal-chooser-screen">
-                <div class="chooser-header"><button class="back-btn" onclick="backToJournalsList()">← Назад</button><div class="chooser-title" id="chooserTitle">Класс</div></div>
-                <div class="chooser-grid">
-                    <div class="chooser-column">
-                        <div class="chooser-column-header"><div class="chooser-column-title">Журнал за день</div><div class="month-nav"><button class="month-nav-btn" onclick="chooserPrevMonth()">‹ Пред</button><button class="month-nav-btn" onclick="chooserNextMonth()">След ›</button></div></div>
-                        <div class="month-label" id="chooserMonthLabel"></div>
-                        <table class="calendar-table"><thead><tr><th>П</th><th>В</th><th>С</th><th>Ч</th><th>П</th><th class="weekend">С</th><th class="weekend">В</th></tr></thead><tbody id="chooserDayCalendar"></tbody></table>
-                    </div>
-                    <div class="chooser-column">
-                        <div class="chooser-column-header"><div class="chooser-column-title">Журнал за неделю</div><div class="month-nav"><button class="month-nav-btn" onclick="chooserPrevMonthWeek()">‹ Пред</button><button class="month-nav-btn" onclick="chooserNextMonthWeek()">След ›</button></div></div>
-                        <div class="month-label" id="chooserMonthLabelWeek"></div>
-                        <table class="calendar-table"><thead><tr><th class="week-num-col">№ нед.</th><th>П</th><th>В</th><th>С</th><th>Ч</th><th>П</th><th class="weekend">С</th><th class="weekend">В</th></tr></thead><tbody id="chooserWeekCalendar"></tbody></table>
-                    </div>
-                    <div class="chooser-column">
-                        <div class="chooser-column-header"><div class="chooser-column-title">Журнал предмета</div></div>
-                        <div class="subjects-list-chooser" id="chooserSubjectsList"></div>
+                    <div class="card">
+                        <div class="card-header"><h2>Список учителей</h2></div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="teachersTable"><thead><tr><th>ФИО</th><th>Предмет</th><th>Д.Р.</th><th>Пол</th><th>Контакты</th><th>Логин</th><th></th></tr></thead><tbody id="teachersBody"></tbody></table>
+                            <div class="empty-state" id="teachersEmpty"><p>Пока нет ни одного учителя</p></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="tab-panel" id="panel-periods">
-            <div class="periods-toolbar">
-                <div class="periods-toolbar-title">Учебные периоды</div>
-                <button type="button" class="btn-add-period" onclick="openAddPeriodModal()">Добавить период</button>
-            </div>
-            <div class="periods-card">
-                <div class="periods-card-header"><h2>Список периодов</h2></div>
-                <div class="table-wrapper">
-                    <table class="data-table"><thead><tr><th>Название</th><th>Система</th><th>Даты</th><th></th></tr></thead><tbody id="periodsBody"></tbody></table>
-                    <div class="empty-state" id="periodsEmpty"><p>Пока нет ни одного периода</p></div>
+            <div class="tab-panel" id="panel-students">
+                <div class="panel-grid">
+                    <div class="card">
+                        <div class="card-header"><h2>Создать аккаунт ученика</h2></div>
+                        <form id="studentForm">
+                            <div class="form-group"><label>ФИО <span class="required">*</span></label><input type="text" id="studentFullName" required></div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Дата рождения <span class="required">*</span></label><input type="date" id="studentBirthDate" required></div>
+                                <div class="form-group"><label>Пол <span class="required">*</span></label><select id="studentGender" required><option value="" disabled selected>Выберите</option><option value="Мужской">Мужской</option><option value="Женский">Женский</option></select></div>
+                            </div>
+                            <div class="form-group"><label>Класс <span class="required">*</span></label><select id="studentClass" required></select><div class="hint-text" id="studentClassHint"></div></div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Почта <span class="required">*</span></label><input type="email" id="studentEmail" required></div>
+                                <div class="form-group"><label>Телефон <span class="required">*</span></label><input type="tel" id="studentPhone" required></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Логин</label><input type="text" id="studentLogin" readonly></div>
+                                <div class="form-group"><label>Пароль</label><input type="text" id="studentPassword" readonly></div>
+                            </div>
+                            <button type="submit" class="btn-submit" id="studentSubmitBtn">Создать ученика</button>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h2>Список учеников</h2></div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="studentsTable"><thead><tr><th>ФИО</th><th>Класс</th><th>Д.Р.</th><th>Пол</th><th>Контакты</th><th>Логин</th><th></th></tr></thead><tbody id="studentsBody"></tbody></table>
+                            <div class="empty-state" id="studentsEmpty"><p>Пока нет ни одного ученика</p></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="container">
-        <div class="tab-panel" id="panel-chats"><div class="empty-state"><p>Чаты — в разработке</p></div></div>
-        <div class="tab-panel" id="panel-news"><div class="empty-state"><p>Новости — в разработке</p></div></div>
-        <div class="tab-panel" id="panel-support"><div class="empty-state"><p>Поддержка — в разработке</p></div></div>
-        <div class="tab-panel" id="panel-library"><div class="empty-state"><p>Библиотека — в разработке</p></div></div>
-        <div class="tab-panel" id="panel-olymp"><div class="empty-state"><p>Олимпиады — в разработке</p></div></div>
-        <div class="tab-panel" id="panel-courses"><div class="empty-state"><p>Курсы — в разработке</p></div></div>
-        <div class="tab-panel" id="panel-settings"><div class="empty-state"><p>Настройки — в разработке</p></div></div>
-    </div>
+            <div class="tab-panel" id="panel-subjects">
+                <div class="panel-grid">
+                    <div class="card">
+                        <div class="card-header"><h2>Добавить предмет</h2></div>
+                        <form id="subjectForm">
+                            <div class="form-group"><label>Название <span class="required">*</span></label><input type="text" id="subjectName" required></div>
+                            <div class="form-group"><label>Направление <span class="required">*</span></label><select id="subjectDirection" required><option value="" disabled selected>Выберите</option><option>Точные науки</option><option>Гуманитарные науки</option><option>Естественные науки</option><option>Спорт и искусство</option></select></div>
+                            <button type="submit" class="btn-submit">Добавить предмет</button>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h2>Список предметов</h2></div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="subjectsTable"><thead><tr><th>Название</th><th>Направление</th><th></th></tr></thead><tbody id="subjectsBody"></tbody></table>
+                            <div class="empty-state" id="subjectsEmpty"><p>Пока нет ни одного предмета</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="panel-rooms">
+                <div class="panel-grid">
+                    <div class="card">
+                        <div class="card-header"><h2>Добавить кабинет</h2></div>
+                        <form id="roomForm">
+                            <div class="form-group"><label>Номер <span class="required">*</span></label><input type="text" id="roomNumber" required></div>
+                            <div class="form-group"><label>Наименование <span class="required">*</span></label><input type="text" id="roomName" required></div>
+                            <button type="submit" class="btn-submit">Добавить кабинет</button>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h2>Список кабинетов</h2></div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="roomsTable"><thead><tr><th>Номер</th><th>Наименование</th><th></th></tr></thead><tbody id="roomsBody"></tbody></table>
+                            <div class="empty-state" id="roomsEmpty"><p>Пока нет ни одного кабинета</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="panel-workload">
+                <div class="workload-filter"><label>Класс:</label><select id="workloadClassSelect"></select></div>
+                <div id="workloadContent" style="display:none;">
+                    <div class="panel-grid">
+                        <div class="card">
+                            <div class="card-header"><h2>Добавить нагрузку</h2></div>
+                            <form id="workloadForm">
+                                <div class="form-group"><label>Предмет <span class="required">*</span></label><select id="workloadSubject" required></select></div>
+                                <div class="form-group"><label>Подгруппа <span class="required">*</span></label><select id="workloadSubgroup" required><option value="Весь класс" selected>Весь класс</option></select></div>
+                                <div class="form-group"><label>Учитель <span class="required">*</span></label><select id="workloadTeacher" required></select></div>
+                                <div class="form-group"><label>Кабинет <span class="required">*</span></label><select id="workloadRoom" required></select></div>
+                                <button type="submit" class="btn-submit" id="workloadSubmitBtn">Добавить нагрузку</button>
+                            </form>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><h2>Учебный план класса</h2></div>
+                            <div class="table-wrapper">
+                                <table class="data-table" id="workloadTable"><thead><tr><th>Предмет</th><th>Подгруппа</th><th>Учитель</th><th>Кабинет</th><th></th></tr></thead><tbody id="workloadBody"></tbody></table>
+                                <div class="empty-state" id="workloadEmpty"><p>Нет нагрузки</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" id="workloadNoClasses" style="display:none;"><div class="empty-state"><p>Сначала создайте класс</p></div></div>
+            </div>
+
+            <div class="tab-panel" id="panel-bells">
+                <div class="bells-toolbar">
+                    <div class="bells-shifts" id="bellsShifts"></div>
+                    <button type="button" class="btn-outline" onclick="openAddShiftModal()" style="background:linear-gradient(135deg,#1976d2,#2196f3);color:#fff;border:none;">Создать смену</button>
+                </div>
+                <div class="bells-card" id="bellsContent" style="display:none;">
+                    <div class="bells-header">
+                        <div class="bells-header-title" id="bellsCurrentShiftName">Расписание звонков</div>
+                        <button type="button" class="btn-outline danger" onclick="deleteCurrentShift()">Удалить смену</button>
+                    </div>
+                    <div class="bell-table-wrapper"><table class="bell-table"><thead><tr><th>#</th><th>ПО</th><th>ВТ</th><th>СР</th><th>ЧЕ</th><th>ПЯ</th><th>СУ</th></tr></thead><tbody id="bellTableBody"></tbody></table></div>
+                    <div class="bells-footer">
+                        <div class="bells-footer-left">
+                            <button type="button" class="btn-outline" onclick="addLessonRow()">+ Добавить урок</button>
+                            <button type="button" class="btn-outline danger" onclick="removeLessonRow()">− Удалить последний</button>
+                        </div>
+                        <button type="button" class="btn-save-bells" onclick="saveBellSchedule()">Сохранить</button>
+                    </div>
+                    <div class="bells-hint">Оставьте поля пустыми для нерабочих уроков</div>
+                </div>
+                <div class="card" id="bellsNoShifts" style="display:none;"><div class="empty-state"><p>Нет ни одной смены</p></div></div>
+            </div>
+
+            <div class="tab-panel" id="panel-schedule">
+                <div class="workload-filter">
+                    <label>Период:</label><select id="schedulePeriodSelect"></select>
+                    <label>Класс:</label><select id="scheduleClassSelect"></select>
+                </div>
+                <div id="scheduleContent" style="display:none;">
+                    <div class="schedule-info">Для назначения урока нажмите «Назначить»</div>
+                    <div class="schedule-day-grid" id="scheduleDayGrid"></div>
+                    <div class="schedule-footer"><button type="button" class="btn-save-schedule" onclick="saveClassSchedule()">Сохранить расписание</button></div>
+                </div>
+                <div class="card" id="scheduleNoClasses" style="display:none;"><div class="empty-state"><p>Сначала создайте класс</p></div></div>
+                <div class="card" id="scheduleNoWorkload" style="display:none;"><div class="empty-state"><p>Нет нагрузки</p></div></div>
+                <div class="card" id="scheduleNoPeriods" style="display:none;"><div class="empty-state"><p>Сначала создайте период</p></div></div>
+            </div>
+
+            <div class="tab-panel" id="panel-journals">
+                <div id="journalsListScreen">
+                    <div class="year-banner"><span class="year-banner-text">2026/2027 учебный год</span><span class="year-badge">Текущий год</span></div>
+                    <div class="quick-actions">
+                        <button class="btn-quick" onclick="journalQuickAction('Просмотр')">Просмотр</button>
+                        <button class="btn-quick" onclick="journalQuickAction('Печать')">Печать</button>
+                        <button class="btn-quick" onclick="journalQuickAction('Экспорт')">Экспорт</button>
+                    </div>
+                    <div id="journalsClassesContainer"></div>
+                </div>
+                <div id="journalChooserScreen" class="journal-chooser-screen">
+                    <div class="chooser-header"><button class="back-btn" onclick="backToJournalsList()">← Назад</button><div class="chooser-title" id="chooserTitle">Класс</div></div>
+                    <div class="chooser-grid">
+                        <div class="chooser-column">
+                            <div class="chooser-column-header"><div class="chooser-column-title">Журнал за день</div><div class="month-nav"><button class="month-nav-btn" onclick="chooserPrevMonth()">‹ Пред</button><button class="month-nav-btn" onclick="chooserNextMonth()">След ›</button></div></div>
+                            <div class="month-label" id="chooserMonthLabel"></div>
+                            <table class="calendar-table"><thead><tr><th>П</th><th>В</th><th>С</th><th>Ч</th><th>П</th><th class="weekend">С</th><th class="weekend">В</th></tr></thead><tbody id="chooserDayCalendar"></tbody></table>
+                        </div>
+                        <div class="chooser-column">
+                            <div class="chooser-column-header"><div class="chooser-column-title">Журнал за неделю</div><div class="month-nav"><button class="month-nav-btn" onclick="chooserPrevMonthWeek()">‹ Пред</button><button class="month-nav-btn" onclick="chooserNextMonthWeek()">След ›</button></div></div>
+                            <div class="month-label" id="chooserMonthLabelWeek"></div>
+                            <table class="calendar-table"><thead><tr><th class="week-num-col">№ нед.</th><th>П</th><th>В</th><th>С</th><th>Ч</th><th>П</th><th class="weekend">С</th><th class="weekend">В</th></tr></thead><tbody id="chooserWeekCalendar"></tbody></table>
+                        </div>
+                        <div class="chooser-column">
+                            <div class="chooser-column-header"><div class="chooser-column-title">Журнал предмета</div></div>
+                            <div class="subjects-list-chooser" id="chooserSubjectsList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="panel-periods">
+                <div class="periods-toolbar">
+                    <div class="periods-toolbar-title">Учебные периоды</div>
+                    <button type="button" class="btn-add-period" onclick="openAddPeriodModal()">Добавить период</button>
+                </div>
+                <div class="periods-card">
+                    <div class="periods-card-header"><h2>Список периодов</h2></div>
+                    <div class="table-wrapper">
+                        <table class="data-table"><thead><tr><th>Название</th><th>Система</th><th>Даты</th><th></th></tr></thead><tbody id="periodsBody"></tbody></table>
+                        <div class="empty-state" id="periodsEmpty"><p>Пока нет ни одного периода</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="panel-chats"><div class="empty-state"><p>Чаты — в разработке</p></div></div>
+            <div class="tab-panel" id="panel-news"><div class="empty-state"><p>Новости — в разработке</p></div></div>
+            <div class="tab-panel" id="panel-support"><div class="empty-state"><p>Поддержка — в разработке</p></div></div>
+            <div class="tab-panel" id="panel-library"><div class="empty-state"><p>Библиотека — в разработке</p></div></div>
+            <div class="tab-panel" id="panel-olymp"><div class="empty-state"><p>Олимпиады — в разработке</p></div></div>
+            <div class="tab-panel" id="panel-courses"><div class="empty-state"><p>Курсы — в разработке</p></div></div>
+            <div class="tab-panel" id="panel-settings"><div class="empty-state"><p>Настройки — в разработке</p></div></div>
+        </div>
+
+    </div><!-- /.app-shell -->
 
     <div class="modal-overlay" id="editModal"><div class="modal"><div class="modal-header"><h3>Редактирование предмета</h3></div><form id="editSubjectForm"><input type="hidden" id="editSubjectId"><div class="form-group"><label>Название</label><input type="text" id="editSubjectName" required></div><div class="form-group"><label>Направление</label><select id="editSubjectDirection" required><option>Точные науки</option><option>Гуманитарные науки</option><option>Естественные науки</option><option>Спорт и искусство</option></select></div><div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeEditModal()">Отмена</button><button type="submit" class="btn-save">Сохранить</button></div></form></div></div>
 
