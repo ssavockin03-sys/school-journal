@@ -102,19 +102,21 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .panels-container.right-collapsed .panel-right-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
 .panel-right table { width: 100%; border-collapse: collapse; border-spacing: 0; table-layout: fixed; }
-.panel-right table th { background: #E8EEF5 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600; height: 76px; line-height: 20px; padding: 0 8px; text-align: center; vertical-align: middle; border: 1px solid #CBD5E1; }
-.panel-right table th:nth-child(1) { color: #1E293B !important; width: 100px; }
-.panel-right table th:nth-child(2) { width: 40%; }
-.panel-right table th:nth-child(3) { width: 47%; }
-.lesson-row { height: 66px; background: #FFFFFF !important; }
-.panel-right tbody td { background: #FFFFFF !important; border: 1px solid #CBD5E1; vertical-align: middle; text-align: left; padding: 0; height: 66px; }
-.lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle !important; color: #0EA5E9; font-size: 12px; text-align: center !important; height: 66px; padding: 0 !important; }
-.text-area-input { width: 100%; height: 64px; border: 1px solid transparent; background: transparent; font-size: 13px; padding: 8px 10px; resize: none; text-align: left; cursor: pointer; color: #334155; line-height: 1.4; font-family: inherit; outline: none; border-radius: 4px; box-sizing: border-box; display: block; overflow: hidden; word-wrap: break-word; white-space: pre-wrap; }
+.panel-right table th { background: #E8EEF5 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600; height: 72px; line-height: 18px; padding: 0 8px; text-align: center; vertical-align: middle; border: 1px solid #CBD5E1; }
+.panel-right table th:nth-child(1) { color: #1E293B !important; width: 44px; }
+.panel-right table th:nth-child(2) { color: #1E293B !important; width: 100px; }
+.panel-right table th:nth-child(3) { width: 38%; }
+.panel-right table th:nth-child(4) { width: 45%; }
+.lesson-row { height: 63px; background: #FFFFFF !important; }
+.panel-right tbody td { background: #FFFFFF !important; border: 1px solid #CBD5E1; vertical-align: middle; text-align: left; padding: 0; height: 63px; }
+.lesson-num-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle !important; color: #64748B; font-size: 12px; text-align: center !important; height: 63px; padding: 0 !important; }
+.lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle !important; color: #0EA5E9; font-size: 12px; text-align: center !important; height: 63px; padding: 0 !important; }
+.text-area-input { width: 100%; height: 61px; border: 1px solid transparent; background: transparent; font-size: 13px; padding: 7px 10px; resize: none; text-align: left; cursor: pointer; color: #334155; line-height: 1.4; font-family: inherit; outline: none; border-radius: 4px; box-sizing: border-box; display: block; overflow: hidden; word-wrap: break-word; white-space: pre-wrap; }
 .text-area-input.placeholder-style { color: #0EA5E9 !important; font-style: italic; font-size: 13.5px; text-align: left; }
 .text-area-input:focus { background: #FFFFFF; border-color: #2563EB; cursor: text; color: #1E293B !important; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
-.homework-cell { position: relative; vertical-align: middle; height: 66px; padding: 0; background: #FFFFFF !important; overflow: hidden; text-align: left; }
-.homework-cell .text-area-input { padding-right: 90px; height: 64px; text-align: left; }
-.btn-online-inline { position: absolute; bottom: 4px; right: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; color: #7C3AED; font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; z-index: 2; opacity: 0.85; }
+.homework-cell { position: relative; vertical-align: middle; height: 63px; padding: 0; background: #FFFFFF !important; overflow: hidden; text-align: left; }
+.homework-cell .text-area-input { padding-right: 90px; height: 61px; text-align: left; }
+.btn-online-inline { position: absolute; bottom: 3px; right: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; color: #7C3AED; font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; z-index: 2; opacity: 0.85; }
 .btn-online-inline:hover { background: #F5F3FF; border-color: #A78BFA; color: #6D28D9; opacity: 1; }
 .btn-online-inline svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
 .side-toggle-tabs { width: 42px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; background: #FFFFFF; border-top: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; position: relative; padding: 0 6px; margin: 8px 0; }
@@ -259,6 +261,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
                 <table>
                     <thead>
                         <tr>
+                            <th>№</th>
                             <th>Дата</th>
                             <th>Тема урока</th>
                             <th>Домашнее задание к следующему уроку</th>
@@ -384,10 +387,6 @@ function showToast(message) {
     }, 2500);
 }
 
-/* ============================================================
-   Извлекаем уникальные предметы из расписания класса.
-   Возвращает массив {name, teacherName} — отсортированный по алфавиту.
-   ============================================================ */
 function collectSubjectsFromSchedule(schedules, classId) {
     const map = new Map();
     schedules
@@ -437,15 +436,12 @@ async function init() {
     }
     SUBJECT_NAME = SUBJECT_OBJ.name;
 
-    // Загружаем расписание класса
     ALL_SCHEDULES = await DB.getAll('class_schedules');
 
-    // Учитель для текущего предмета — из расписания
     const classSubjects = collectSubjectsFromSchedule(ALL_SCHEDULES, CLASS_ID);
     const matched = classSubjects.find(s => s.name === SUBJECT_NAME);
     if (matched) TEACHER_NAME = matched.teacherName || '';
 
-    // Список предметов класса — из расписания, с id из коллекции subjects
     ALL_CLASS_SUBJECTS = [];
     classSubjects.forEach(cs => {
         const subjObj = subjects.find(s => s.name === cs.name);
@@ -600,7 +596,6 @@ function renderClassDropdownMenu() {
         btn.addEventListener('click', async (e) => {
             e.stopPropagation();
             if (c.id === CLASS_ID) return;
-            // Берём первый предмет из расписания нового класса (по алфавиту)
             const schedules = await DB.getAll('class_schedules');
             const subjList = collectSubjectsFromSchedule(schedules, c.id);
             if (subjList.length === 0) { showToast('В классе нет расписания'); return; }
@@ -696,18 +691,19 @@ function renderMainTable() {
 
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
 
+    // ===== ФИО (клик по ученику → страница ученика) =====
     STUDENTS.forEach((student, sIdx) => {
-    const shortName = formatShortName(student.full_name);
-    const tr = document.createElement('tr');
-    const td = document.createElement('td');
-    td.innerHTML = `<span class="student-number-text">${sIdx + 1}</span><span class="student-name-text" style="cursor:pointer;color:#2563EB;">${escapeHtml(shortName)}</span>`;
-    td.style.cursor = 'pointer';
-    td.addEventListener('click', () => {
-        window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id);
+        const shortName = formatShortName(student.full_name);
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.style.cursor = 'pointer';
+        td.innerHTML = `<span class="student-number-text">${sIdx + 1}</span><span class="student-name-text">${escapeHtml(shortName)}</span>`;
+        td.addEventListener('click', () => {
+            window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id);
+        });
+        tr.appendChild(td);
+        fioBody.appendChild(tr);
     });
-    tr.appendChild(td);
-    fioBody.appendChild(tr);
-});
 
     DATES.forEach((d) => {
         const th = document.createElement('th');
@@ -807,7 +803,8 @@ function renderMainTable() {
         }
     });
 
-    DATES.forEach(d => {
+    // ===== Правая панель: № / Дата / Тема / ДЗ =====
+    DATES.forEach((d, dIdx) => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: '' };
         const themeText = l.t || 'Добавить тему';
         const homeworkText = l.h || '+ ДЗ к след. уроку';
@@ -817,6 +814,7 @@ function renderMainTable() {
         const tr = document.createElement('tr');
         tr.className = 'lesson-row';
         tr.innerHTML = `
+            <td class="lesson-num-cell">${dIdx + 1}</td>
             <td class="lesson-date-cell">${d.dateFull}</td>
             <td>
                 <textarea class="text-area-input ${themeClass}"
