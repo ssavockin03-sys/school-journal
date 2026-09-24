@@ -93,14 +93,23 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
 .col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
-/* Заглушки-ячейки в теле, ПОСЛЕ колонки "Итог" */
-.marks-table tbody td.col-filler {
+
+/* Заглушки-шапки: серый фон как у колонок с датами */
+.marks-table thead th.col-filler-head {
     background: #E8EEF5 !important;
+    border-right: 1px solid #CBD5E1;
+    border-bottom: 1px solid #CBD5E1;
+}
+/* Заглушки-тела: белый фон как у обычных ячеек */
+.marks-table tbody td.col-filler-body {
+    background: #FFFFFF !important;
     border-right: 1px solid #CBD5E1;
     border-bottom: 1px solid #CBD5E1;
     pointer-events: none;
     cursor: default;
 }
+.marks-table tbody tr:nth-child(5n) td.col-filler-body { border-bottom: 1px solid #000000 !important; }
+
 .journal-scroll::-webkit-scrollbar { width: 10px; height: 10px; }
 .journal-scroll::-webkit-scrollbar-track { background: #F8FAFC; }
 .journal-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
@@ -845,17 +854,19 @@ function renderMainTable() {
         pBody.appendChild(tr);
     });
 
-    // ===== Заглушки в теле после "Итог" =====
-    requestAnimationFrame(() => { fillBodyFillers(); });
+    // ===== Заглушки: в шапке (серая) + в теле (белая), после "Итог" =====
+    requestAnimationFrame(() => { fillFillers(); });
 }
 
 /* ============================================================
-   Заглушки-ячейки в ТЕЛЕ таблицы оценок, ПОСЛЕ колонки "Итог".
-   Заполняют пустое место справа. В шапку ничего не добавляем.
+   Заглушки после колонки "Итог".
+   - В шапке (mRow + sRow) — серые пустые ячейки как у колонок с датами.
+   - В теле (jBody) — белые пустые ячейки.
    ============================================================ */
-function fillBodyFillers() {
-    // Удаляем старые заглушки (только в теле!)
-    document.querySelectorAll('.marks-table tbody td.col-filler').forEach(el => el.remove());
+function fillFillers() {
+    // Удаляем старые заглушки
+    document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
+    document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
 
     const journalScroll = document.getElementById('journalScroll');
     if (!journalScroll) return;
@@ -873,11 +884,33 @@ function fillBodyFillers() {
     const fillerCount = Math.floor(freeSpace / FILLER_COL_WIDTH);
     if (fillerCount <= 0) return;
 
+    const mRow = document.getElementById('mRow');
+    const sRow = document.getElementById('sRow');
     const jBody = document.getElementById('jBody');
+
+    // Заглушки в первой строке шапки (высота 76px через общий стиль thead th)
+    for (let i = 0; i < fillerCount; i++) {
+        const th = document.createElement('th');
+        th.className = 'col-filler-head';
+        th.style.width = FILLER_COL_WIDTH + 'px';
+        th.style.minWidth = FILLER_COL_WIDTH + 'px';
+        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
+        mRow.appendChild(th);
+    }
+    // Заглушки во второй строке шапки
+    for (let i = 0; i < fillerCount; i++) {
+        const th = document.createElement('th');
+        th.className = 'col-filler-head';
+        th.style.width = FILLER_COL_WIDTH + 'px';
+        th.style.minWidth = FILLER_COL_WIDTH + 'px';
+        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
+        sRow.appendChild(th);
+    }
+    // Заглушки в каждой строке тела
     jBody.querySelectorAll('tr').forEach(tr => {
         for (let i = 0; i < fillerCount; i++) {
             const td = document.createElement('td');
-            td.className = 'col-filler';
+            td.className = 'col-filler-body';
             td.style.width = FILLER_COL_WIDTH + 'px';
             td.style.minWidth = FILLER_COL_WIDTH + 'px';
             td.style.maxWidth = FILLER_COL_WIDTH + 'px';
@@ -1078,7 +1111,7 @@ document.addEventListener('mousedown', (e) => {
     if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup();
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
-window.addEventListener('resize', () => { closeLessonTypePopup(); fillBodyFillers(); });
+window.addEventListener('resize', () => { closeLessonTypePopup(); fillFillers(); });
 
 function toggleLeftPanel() {
     const container = document.getElementById('panelsContainer');
@@ -1092,7 +1125,7 @@ function toggleLeftPanel() {
         document.getElementById('tabRight').classList.remove('active');
     }
     updateTabIcons();
-    setTimeout(fillBodyFillers, 380);
+    setTimeout(fillFillers, 380);
 }
 
 function toggleRightPanel() {
@@ -1107,7 +1140,7 @@ function toggleRightPanel() {
         document.getElementById('tabLeft').classList.remove('active');
     }
     updateTabIcons();
-    setTimeout(fillBodyFillers, 380);
+    setTimeout(fillFillers, 380);
 }
 
 function updateTabIcons() {
