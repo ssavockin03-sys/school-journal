@@ -697,11 +697,17 @@ function renderMainTable() {
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
 
     STUDENTS.forEach((student, sIdx) => {
-        const shortName = formatShortName(student.full_name);
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><span class="student-number-text">${sIdx + 1}</span><span class="student-name-text">${escapeHtml(shortName)}</span></td>`;
-        fioBody.appendChild(tr);
+    const shortName = formatShortName(student.full_name);
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.innerHTML = `<span class="student-number-text">${sIdx + 1}</span><span class="student-name-text" style="cursor:pointer;color:#2563EB;">${escapeHtml(shortName)}</span>`;
+    td.style.cursor = 'pointer';
+    td.addEventListener('click', () => {
+        window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id);
     });
+    tr.appendChild(td);
+    fioBody.appendChild(tr);
+});
 
     DATES.forEach((d) => {
         const th = document.createElement('th');
