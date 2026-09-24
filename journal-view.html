@@ -366,6 +366,7 @@ let PERIOD_SYSTEM = '';
 let JOURNAL = null;
 let ALL_CLASSES = [];
 let ALL_CLASS_SUBJECTS = [];
+let ALL_SCHEDULES = [];
 
 let leftCollapsed = false;
 let rightCollapsed = false;
@@ -381,6 +382,32 @@ function showToast(message) {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(20px)';
     }, 2500);
+}
+
+/* ============================================================
+   Извлекаем уникальные предметы из расписания класса.
+   Возвращает массив {name, teacherName} — отсортированный по алфавиту.
+   ============================================================ */
+function collectSubjectsFromSchedule(schedules, classId) {
+    const map = new Map();
+    schedules
+        .filter(s => s.class_id === classId && s.grid)
+        .forEach(s => {
+            Object.values(s.grid).forEach(dayGrid => {
+                Object.values(dayGrid || {}).forEach(lesson => {
+                    if (!lesson || !lesson.subject) return;
+                    if (!map.has(lesson.subject)) {
+                        map.set(lesson.subject, {
+                            name: lesson.subject,
+                            teacherName: lesson.teacherName || ''
+                        });
+                    } else if (!map.get(lesson.subject).teacherName && lesson.teacherName) {
+                        map.get(lesson.subject).teacherName = lesson.teacherName;
+                    }
+                });
+            });
+        });
+    return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 }
 
 async function init() {
@@ -410,23 +437,19 @@ async function init() {
     }
     SUBJECT_NAME = SUBJECT_OBJ.name;
 
-    const workloads = await DB.getAll('workloads');
-    const workload = workloads.find(w => w.class_id === CLASS_ID && w.subject === SUBJECT_NAME);
-    if (workload) {
-        const teachers = await DB.getAll('teachers');
-        const teacher = teachers.find(t => t.id === workload.teacher_id);
-        if (teacher) TEACHER_NAME = teacher.full_name;
-    }
+    // Загружаем расписание класса
+    ALL_SCHEDULES = await DB.getAll('class_schedules');
 
+    // Учитель для текущего предмета — из расписания
+    const classSubjects = collectSubjectsFromSchedule(ALL_SCHEDULES, CLASS_ID);
+    const matched = classSubjects.find(s => s.name === SUBJECT_NAME);
+    if (matched) TEACHER_NAME = matched.teacherName || '';
+
+    // Список предметов класса — из расписания, с id из коллекции subjects
     ALL_CLASS_SUBJECTS = [];
-    const classWorkloads = workloads.filter(w => w.class_id === CLASS_ID);
-    const seenSubj = new Set();
-    classWorkloads.forEach(w => {
-        if (!seenSubj.has(w.subject)) {
-            seenSubj.add(w.subject);
-            const subjObj = subjects.find(s => s.name === w.subject);
-            if (subjObj) ALL_CLASS_SUBJECTS.push({ id: subjObj.id, name: w.subject });
-        }
+    classSubjects.forEach(cs => {
+        const subjObj = subjects.find(s => s.name === cs.name);
+        if (subjObj) ALL_CLASS_SUBJECTS.push({ id: subjObj.id, name: cs.name });
     });
 
     const allStudents = await DB.getAll('students');
@@ -490,7 +513,7 @@ async function buildDatesForPeriod(periodIndex) {
     const subPeriod = PERIODS[periodIndex];
     if (!subPeriod) return [];
 
-    const schedules = await DB.getAll('class_schedules');
+    const schedules = ALL_SCHEDULES;
 
     let classSchedule = schedules.find(s =>
         s.class_id === CLASS_ID && s.period_index === periodIndex
@@ -577,12 +600,12 @@ function renderClassDropdownMenu() {
         btn.addEventListener('click', async (e) => {
             e.stopPropagation();
             if (c.id === CLASS_ID) return;
-            const workloads = await DB.getAll('workloads');
-            const subjList = workloads.filter(w => w.class_id === c.id);
-            if (subjList.length === 0) { showToast('В классе нет нагрузки'); return; }
-            const firstSubjectName = subjList[0].subject;
+            // Берём первый предмет из расписания нового класса (по алфавиту)
+            const schedules = await DB.getAll('class_schedules');
+            const subjList = collectSubjectsFromSchedule(schedules, c.id);
+            if (subjList.length === 0) { showToast('В классе нет расписания'); return; }
             const subjects = await DB.getAll('subjects');
-            const firstSubjObj = subjects.find(s => s.name === firstSubjectName);
+            const firstSubjObj = subjects.find(s => s.name === subjList[0].name);
             if (!firstSubjObj) { showToast('Предмет не найден'); return; }
             window.location.href = `journal-view.html?class=${encodeURIComponent(c.id)}&subject=${encodeURIComponent(firstSubjObj.id)}`;
         });
