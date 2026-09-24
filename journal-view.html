@@ -93,10 +93,14 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
 .col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
-/* Заглушки-колонки справа от "Итог" */
-.marks-table th.col-filler, .marks-table td.col-filler { background: #E8EEF5 !important; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; pointer-events: none; cursor: default; }
-.marks-table thead th.col-filler { height: 76px; }
-.marks-table tbody tr:nth-child(5n) td.col-filler { border-bottom: 1px solid #CBD5E1 !important; }
+/* Заглушки-ячейки в теле, ПОСЛЕ колонки "Итог" */
+.marks-table tbody td.col-filler {
+    background: #E8EEF5 !important;
+    border-right: 1px solid #CBD5E1;
+    border-bottom: 1px solid #CBD5E1;
+    pointer-events: none;
+    cursor: default;
+}
 .journal-scroll::-webkit-scrollbar { width: 10px; height: 10px; }
 .journal-scroll::-webkit-scrollbar-track { background: #F8FAFC; }
 .journal-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
@@ -298,7 +302,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 <script>
 const DAYS_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const DAYS_JS_INDEX = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
-const FILLER_COL_WIDTH = 46; // ширина одной заглушки-колонки в px (как col-date)
+const FILLER_COL_WIDTH = 46;
 
 const PERIOD_LABELS = {
     'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
@@ -841,68 +845,35 @@ function renderMainTable() {
         pBody.appendChild(tr);
     });
 
-    // ===== Заглушки справа =====
-    // Вызываем после отрисовки всех таблиц
-    requestAnimationFrame(() => {
-        fillRightFillers();
-    });
+    // ===== Заглушки в теле после "Итог" =====
+    requestAnimationFrame(() => { fillBodyFillers(); });
 }
 
 /* ============================================================
-   Заглушки-колонки справа от "Итог" в левой таблице оценок.
-   Нужны, чтобы заполнить пустое место, когда правая панель
-   свёрнута и таблица оценок занимает не всю ширину.
+   Заглушки-ячейки в ТЕЛЕ таблицы оценок, ПОСЛЕ колонки "Итог".
+   Заполняют пустое место справа. В шапку ничего не добавляем.
    ============================================================ */
-function fillRightFillers() {
-    // Удаляем старые заглушки
-    document.querySelectorAll('.marks-table .col-filler').forEach(el => el.remove());
+function fillBodyFillers() {
+    // Удаляем старые заглушки (только в теле!)
+    document.querySelectorAll('.marks-table tbody td.col-filler').forEach(el => el.remove());
 
     const journalScroll = document.getElementById('journalScroll');
     if (!journalScroll) return;
 
-    // Считаем доступную ширину: ширина scroll-контейнера минус ширина FIO-таблицы
     const scrollWidth = journalScroll.clientWidth;
     const fioWidth = document.querySelector('.fio-table-wrapper')?.offsetWidth || 210;
     const marksWrapper = document.querySelector('.marks-table-wrapper');
     if (!marksWrapper) return;
 
-    // Реальная ширина таблицы оценок без заглушек
     const marksWidth = marksWrapper.scrollWidth;
-
-    // Сколько свободного места осталось
     const freeSpace = scrollWidth - fioWidth - marksWidth;
 
-    // Если места мало или нет — ничего не добавляем
     if (freeSpace < FILLER_COL_WIDTH * 0.5) return;
 
-    // Считаем количество заглушек
     const fillerCount = Math.floor(freeSpace / FILLER_COL_WIDTH);
     if (fillerCount <= 0) return;
 
-    // Добавляем в шапку (обе строки) и в каждую строку тела
-    const mRow = document.getElementById('mRow');
-    const sRow = document.getElementById('sRow');
     const jBody = document.getElementById('jBody');
-
-    // Заглушки в первой строке шапки
-    for (let i = 0; i < fillerCount; i++) {
-        const th = document.createElement('th');
-        th.className = 'col-filler';
-        th.style.width = FILLER_COL_WIDTH + 'px';
-        th.style.minWidth = FILLER_COL_WIDTH + 'px';
-        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
-        mRow.appendChild(th);
-    }
-    // Заглушки во второй строке шапки
-    for (let i = 0; i < fillerCount; i++) {
-        const th = document.createElement('th');
-        th.className = 'col-filler';
-        th.style.width = FILLER_COL_WIDTH + 'px';
-        th.style.minWidth = FILLER_COL_WIDTH + 'px';
-        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
-        sRow.appendChild(th);
-    }
-    // Заглушки в каждой строке тела
     jBody.querySelectorAll('tr').forEach(tr => {
         for (let i = 0; i < fillerCount; i++) {
             const td = document.createElement('td');
@@ -1107,7 +1078,7 @@ document.addEventListener('mousedown', (e) => {
     if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup();
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
-window.addEventListener('resize', () => { closeLessonTypePopup(); fillRightFillers(); });
+window.addEventListener('resize', () => { closeLessonTypePopup(); fillBodyFillers(); });
 
 function toggleLeftPanel() {
     const container = document.getElementById('panelsContainer');
@@ -1121,8 +1092,7 @@ function toggleLeftPanel() {
         document.getElementById('tabRight').classList.remove('active');
     }
     updateTabIcons();
-    // После анимации пересчитываем заглушки
-    setTimeout(fillRightFillers, 380);
+    setTimeout(fillBodyFillers, 380);
 }
 
 function toggleRightPanel() {
@@ -1137,8 +1107,7 @@ function toggleRightPanel() {
         document.getElementById('tabLeft').classList.remove('active');
     }
     updateTabIcons();
-    // После анимации пересчитываем заглушки
-    setTimeout(fillRightFillers, 380);
+    setTimeout(fillBodyFillers, 380);
 }
 
 function updateTabIcons() {
