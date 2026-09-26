@@ -112,9 +112,31 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     border-bottom: 1px solid #2563EB !important;
 }
 
+/* ============================================================
+   ЯЧЕЙКА ОЦЕНКИ: синяя обводка у самой td, а не у input
+   ============================================================ */
+/* Убираем ВСЕ возможные обводки у input */
+.grade-cell input:focus,
+.grade-cell input:focus-visible,
+.grade-cell input:active {
+    outline: none !important;
+    outline-offset: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    color: #1E293B !important;
+    cursor: text;
+}
+
+/* Синяя обводка по контуру самой td при фокусе внутри */
+.marks-table tbody td:focus-within {
+    box-shadow: inset 0 0 0 2px #2563EB;
+    background: #FFFFFF !important;
+    z-index: 6;
+}
+
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
-.grade-cell input:focus { background: #FFFFFF; outline: 1.5px solid #2563EB; border-radius: 2px; cursor: text; z-index: 5; color: #1E293B !important; }
+.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; caret-color: #2563EB; }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
@@ -915,8 +937,6 @@ function renderMainTable() {
 
 /* ============================================================
    Заглушки после колонки "Итог".
-   - В шапке (mRow + sRow) — серые пустые ячейки как у колонок с датами.
-   - В теле (jBody) — белые пустые ячейки.
    ============================================================ */
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
