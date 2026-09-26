@@ -72,50 +72,49 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table th { background: #E8EEF5 !important; font-weight: 600; color: #475569; font-size: 11px; letter-spacing: 0.2px; }
 .marks-table thead { position: sticky; top: 0; z-index: 10; }
 .marks-table thead th { background: #E8EEF5 !important; }
-.col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; z-index: 1; position: relative; }
+.col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; z-index: 1; }
 .marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; cursor: pointer; font-size: 12px !important; font-weight: 400 !important; text-align: center; z-index: 5; }
 .marks-table thead tr:nth-child(2) .col-date { cursor: pointer !important; font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; text-align: center; user-select: none; transition: background 0.15s ease; z-index: 5; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #D6E2F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
-/* УБРАЛИ .col-today — никакой голубой подсветки колонки */
+/* === Подсветка сегодняшнего дня === */
+.marks-table thead th.col-today {
+    background: #EFF6FF !important;
+    border-left: 1px solid #2563EB !important;
+    border-right: 1px solid #2563EB !important;
+    border-bottom: 1px solid #2563EB !important;
+    color: #2563EB !important;
+    position: relative;
+}
+.marks-table thead tr:first-child th.col-today {
+    border-top: 1px solid #2563EB !important;
+}
+.marks-table thead tr:nth-child(2) th.col-today {
+    border-top: none !important;
+}
+.marks-table thead tr:first-child th.col-today .today-label {
+    display: block;
+    font-size: 10px;
+    color: #64748B;
+    line-height: 1;
+    margin-top: 2px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+}
+.marks-table tbody td.col-today {
+    background: #F8FBFF !important;
+    border-left: 1px solid #2563EB !important;
+    border-right: 1px solid #2563EB !important;
+}
+.marks-table tbody tr:last-child td.col-today {
+    border-bottom: 1px solid #2563EB !important;
+}
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-.grade-cell input {
-    width: 100%; height: 26px; text-align: center; border: none; background: transparent;
-    font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5;
-    padding: 0; color: transparent; font-family: inherit; outline: none;
-    caret-color: #2563EB;
-}
-.grade-cell input:focus {
-    color: #1E293B !important;
-    background: #FFFFFF;
-    cursor: text;
-    outline: none;
-    caret-color: #2563EB;
-}
-
-/* Рамка: НЕ на td, а на псевдоэлементе ::before самого td.
-   Псевдоэлемент — это отдельный блок поверх содержимого.
-   Никаких outline/box-shadow, просто border. */
-.marks-table tbody td.col-date::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 2px solid transparent;
-    pointer-events: none;
-    z-index: 7;
-    box-sizing: border-box;
-}
-.marks-table tbody td.col-date.cell-focused::before {
-    border-color: #2563EB;
-}
-
-/* display-layer: скрываем когда ячейка в фокусе, чтобы не мешал вводу */
-.marks-table tbody td.cell-focused .display-layer {
-    display: none;
-}
-
+.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
+.grade-cell input:focus { background: #FFFFFF; outline: 1.5px solid #2563EB; border-radius: 2px; cursor: text; z-index: 5; color: #1E293B !important; }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
@@ -125,26 +124,10 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .bad-grade { background: #DC2626 !important; color: #FFFFFF !important; }
 .status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; font-weight: 400 !important; pointer-events: none; z-index: 4; background: transparent !important; border: none !important; padding: 0 !important; line-height: 1; }
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
-.col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; position: relative; }
+.col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
-.col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; position: relative; }
+.col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
-
-/* Рамки для ячеек среднего балла и итога — тоже через ::before */
-.marks-table tbody td.col-avg::before,
-.marks-table tbody td.col-qtr::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 2px solid transparent;
-    pointer-events: none;
-    z-index: 7;
-    box-sizing: border-box;
-}
-.marks-table tbody td.col-avg.cell-focused::before,
-.marks-table tbody td.col-qtr.cell-focused::before {
-    border-color: #2563EB;
-}
 
 /* Заглушки-шапки: серый фон как у колонок с датами */
 .marks-table thead th.col-filler-head {
@@ -178,16 +161,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .panel-right table th:nth-child(4) { width: 45%; }
 .lesson-row { height: 63px; background: #FFFFFF !important; }
 .panel-right tbody td { background: #FFFFFF !important; border: 1px solid #CBD5E1; vertical-align: middle; text-align: left; padding: 0; height: 63px; }
-#pBody td.lesson-num-cell {
-    background: #E8EEF5 !important;
-    color: #475569 !important;
-    font-weight: 600 !important;
-    font-size: 12px !important;
-    text-align: center !important;
-    height: 63px !important;
-    padding: 0 !important;
-    border: 1px solid #CBD5E1 !important;
-}
+.lesson-num-cell { font-weight: 600; background: #E8EEF5 !important; vertical-align: middle !important; color: #475569; font-size: 12px; text-align: center !important; height: 63px; padding: 0 !important; border: 1px solid #CBD5E1 !important; }
 .lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle !important; color: #0EA5E9; font-size: 12px; text-align: center !important; height: 63px; padding: 0 !important; }
 .text-area-input { width: 100%; height: 61px; border: 1px solid transparent; background: transparent; font-size: 13px; padding: 7px 10px; resize: none; text-align: left; cursor: pointer; color: #334155; line-height: 1.4; font-family: inherit; outline: none; border-radius: 4px; box-sizing: border-box; display: block; overflow: hidden; word-wrap: break-word; white-space: pre-wrap; }
 .text-area-input.placeholder-style { color: #0EA5E9 !important; font-style: italic; font-size: 13.5px; text-align: left; }
@@ -488,6 +462,11 @@ function collectSubjectsFromSchedule(schedules, classId) {
     return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 }
 
+function todayIso() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 async function init() {
     const { classId, subjectId } = getUrlParams();
 
@@ -761,20 +740,6 @@ function renderPeriodTabs() {
     });
 }
 
-/* Функция фокуса: класс .cell-focused на <td> */
-function attachCellFocus(input) {
-    const td = input.closest('td');
-    if (!td) return;
-    input.addEventListener('focus', () => {
-        td.classList.add('cell-focused');
-        const len = input.value.length;
-        try { input.setSelectionRange(len, len); } catch(e){}
-    });
-    input.addEventListener('blur', () => {
-        td.classList.remove('cell-focused');
-    });
-}
-
 function renderMainTable() {
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
@@ -784,6 +749,9 @@ function renderMainTable() {
 
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
 
+    const todayIsoStr = todayIso();
+
+    // ===== ФИО (клик по ученику → страница ученика) =====
     STUDENTS.forEach((student, sIdx) => {
         const shortName = formatShortName(student.full_name);
         const tr = document.createElement('tr');
@@ -797,12 +765,18 @@ function renderMainTable() {
         fioBody.appendChild(tr);
     });
 
-    // Даты — без всякой подсветки
+    // ===== Верхняя строка шапки: даты =====
     DATES.forEach((d) => {
         const th = document.createElement('th');
         th.className = 'col-date';
         th.title = `Урок №${d.lessonNum}`;
-        th.textContent = d.dateNoYear;
+        const isToday = d.iso === todayIsoStr;
+        if (isToday) {
+            th.classList.add('col-today');
+            th.innerHTML = `<div>${d.dateNoYear}</div><span class="today-label">сегодня</span>`;
+        } else {
+            th.textContent = d.dateNoYear;
+        }
         mRow.appendChild(th);
     });
 
@@ -818,6 +792,7 @@ function renderMainTable() {
     thQtr.textContent = 'Итог';
     mRow.appendChild(thQtr);
 
+    // ===== Вторая строка шапки: тип урока =====
     DATES.forEach((d, dIdx) => {
         const th2 = document.createElement('th');
         th2.className = 'col-date type-lesson-col';
@@ -826,6 +801,8 @@ function renderMainTable() {
         const abbr = JOURNAL.lessonTypes[d.gradeKey] || 'ОТВ';
         th2.textContent = abbr;
         th2.title = 'Нажмите, чтобы выбрать тип урока';
+        const isToday = d.iso === todayIsoStr;
+        if (isToday) th2.classList.add('col-today');
         th2.addEventListener('click', (e) => {
             e.stopPropagation();
             openLessonTypePopup(e.currentTarget, d.gradeKey);
@@ -833,17 +810,22 @@ function renderMainTable() {
         sRow.appendChild(th2);
     });
 
+    // ===== Тело: строки учеников =====
     STUDENTS.forEach((student) => {
         const tr = document.createElement('tr');
         DATES.forEach((d, dIdx) => {
             const td = document.createElement('td');
             td.className = 'col-date';
             td.dataset.col = dIdx;
+            const isToday = d.iso === todayIsoStr;
+            if (isToday) td.classList.add('col-today');
             const value = (JOURNAL.grades[student.id] || {})[d.gradeKey] || '';
             td.innerHTML = `
                 <div class="grade-cell">
                     <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(value)}</div>
                     <input type="text" value="${escapeHtml(value)}"
+                        onfocus="hl(this, ${dIdx}, true); this.style.color='#1E293B';"
+                        onblur="hl(this, ${dIdx}, false); this.style.color='transparent';"
                         onchange="upg('${student.id}', '${d.gradeKey}', this)">
                 </div>
             `;
@@ -861,14 +843,14 @@ function renderMainTable() {
             <div class="grade-cell">
                 <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(qtrValue)}</div>
                 <input type="text" value="${escapeHtml(qtrValue)}"
+                    onfocus="this.style.color='#1E293B';"
+                    onblur="this.style.color='transparent';"
                     onchange="upqtr('${student.id}', this)">
             </div>
         `;
         tr.appendChild(tdQtr);
         jBody.appendChild(tr);
     });
-
-    jBody.querySelectorAll('.grade-cell input').forEach(attachCellFocus);
 
     jBody.querySelectorAll('tr').forEach((tr, idx) => {
         const avgCell = tr.querySelector('.avg-cell');
@@ -894,6 +876,7 @@ function renderMainTable() {
         }
     });
 
+    // ===== Правая панель: № / Дата / Тема / ДЗ =====
     DATES.forEach((d, dIdx) => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: '' };
         const themeText = l.t || 'Добавить тему';
@@ -926,9 +909,15 @@ function renderMainTable() {
         pBody.appendChild(tr);
     });
 
+    // ===== Заглушки: в шапке (серая) + в теле (белая), после "Итог" =====
     requestAnimationFrame(() => { fillFillers(); });
 }
 
+/* ============================================================
+   Заглушки после колонки "Итог".
+   - В шапке (mRow + sRow) — серые пустые ячейки как у колонок с датами.
+   - В теле (jBody) — белые пустые ячейки.
+   ============================================================ */
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
@@ -1016,6 +1005,21 @@ function makeGradeDisplay(v) {
     return `${letterPart}<div class="grade-display"><div class="grade-box ${getGradeClass(gradePart)}">${gradePart}</div></div>`;
 }
 
+function hl(input, colIdx, active) {
+    const tr = input.closest('tr');
+    if (tr) {
+        tr.querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
+        const trIndex = Array.from(tr.parentNode.children).indexOf(tr);
+        const fioRows = document.querySelectorAll('#fioBody tr');
+        if (fioRows[trIndex]) {
+            fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
+        }
+    }
+    document.querySelectorAll(`#jBody td[data-col="${colIdx}"]`).forEach(td => {
+        td.classList.toggle('highlight-cross', active);
+    });
+}
+
 async function upg(studentId, gradeKey, inputElement) {
     const v = inputElement.value.trim();
     const up = v.toUpperCase();
@@ -1027,12 +1031,17 @@ async function upg(studentId, gradeKey, inputElement) {
         return;
     }
 
-    if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
-    JOURNAL.grades[studentId][gradeKey] = up;
-    await saveJournal();
-
     const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+    if (displayLayer) {
+        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:700; font-size:12px;">${escapeHtml(up)}</div></div>`;
+    }
+
+    setTimeout(async () => {
+        if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
+        JOURNAL.grades[studentId][gradeKey] = up;
+        await saveJournal();
+        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+    }, 200);
 }
 
 async function upqtr(studentId, inputElement) {
@@ -1044,12 +1053,16 @@ async function upqtr(studentId, inputElement) {
         inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[ACTIVE_PERIOD_INDEX] || '';
         return;
     }
-    if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
-    JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
-    await saveJournal();
-
     const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+    if (displayLayer) {
+        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:700; font-size:12px;">${escapeHtml(up)}</div></div>`;
+    }
+    setTimeout(async () => {
+        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
+        JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
+        await saveJournal();
+        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+    }, 200);
 }
 
 async function upl(gradeKey, key, value) {
