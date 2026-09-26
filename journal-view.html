@@ -117,23 +117,27 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     width: 100%; height: 26px; text-align: center; border: none; background: transparent;
     font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5;
     padding: 0; color: transparent; font-family: inherit; outline: none;
-    caret-color: #2563EB;
+    caret-color: transparent;
 }
-/* Фокус: рамка ВОКРУГ САМОЙ ЯЧЕЙКИ (td), а не input */
-.marks-table tbody td:focus-within {
-    outline: 2px solid #2563EB;
-    outline-offset: -2px;
-    position: relative;
-    z-index: 6;
-}
-/* Убираем внутреннюю рамку у input, чтобы не было двойной */
 .grade-cell input:focus {
     background: #FFFFFF;
     color: #1E293B !important;
+    caret-color: #1E293B !important;
     cursor: text;
     outline: none;
-    caret-color: #2563EB;
 }
+
+/* Синяя рамка ВНУТРИ ячейки (по 4 сторонам), без outline */
+.marks-table tbody td:focus-within {
+    box-shadow: inset 0 0 0 2px #2563EB !important;
+    position: relative;
+    z-index: 6;
+}
+/* Убираем синюю рамку у .col-today, чтобы не мешала фокусной */
+.marks-table tbody td.col-today:focus-within {
+    box-shadow: inset 0 0 0 2px #2563EB !important;
+}
+
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
@@ -180,7 +184,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .panel-right table th:nth-child(4) { width: 45%; }
 .lesson-row { height: 63px; background: #FFFFFF !important; }
 .panel-right tbody td { background: #FFFFFF !important; border: 1px solid #CBD5E1; vertical-align: middle; text-align: left; padding: 0; height: 63px; }
-/* Колонка "№" в правой панели — серая как шапка (селектор специфичнее, чем .panel-right tbody td) */
+/* Колонка "№" в правой панели — серая как шапка */
 .panel-right tbody td.lesson-num-cell {
     background: #E8EEF5 !important;
     color: #475569;
@@ -849,8 +853,8 @@ function renderMainTable() {
                 <div class="grade-cell">
                     <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(value)}</div>
                     <input type="text" value="${escapeHtml(value)}"
-                        onfocus="hl(this, ${dIdx}, true); this.style.color='#1E293B';"
-                        onblur="hl(this, ${dIdx}, false); this.style.color='transparent';"
+                        onfocus="onGradeFocus(this, ${dIdx});"
+                        onblur="onGradeBlur(this, ${dIdx});"
                         onchange="upg('${student.id}', '${d.gradeKey}', this)">
                 </div>
             `;
@@ -868,8 +872,8 @@ function renderMainTable() {
             <div class="grade-cell">
                 <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(qtrValue)}</div>
                 <input type="text" value="${escapeHtml(qtrValue)}"
-                    onfocus="this.style.color='#1E293B';"
-                    onblur="this.style.color='transparent';"
+                    onfocus="onQtrFocus(this);"
+                    onblur="onQtrBlur(this);"
                     onchange="upqtr('${student.id}', this)">
             </div>
         `;
@@ -934,6 +938,35 @@ function renderMainTable() {
     });
 
     requestAnimationFrame(() => { fillFillers(); });
+}
+
+/* Фокус на ячейке оценки: подсветка строки/столбца + ставим каретку в конец */
+function onGradeFocus(input, colIdx) {
+    hl(input, colIdx, true);
+    input.style.color = '#1E293B';
+    input.style.caretColor = '#1E293B';
+    const len = input.value.length;
+    requestAnimationFrame(() => {
+        try { input.setSelectionRange(len, len); } catch (e) {}
+    });
+}
+function onGradeBlur(input, colIdx) {
+    hl(input, colIdx, false);
+    input.style.color = 'transparent';
+    input.style.caretColor = 'transparent';
+}
+
+function onQtrFocus(input) {
+    input.style.color = '#1E293B';
+    input.style.caretColor = '#1E293B';
+    const len = input.value.length;
+    requestAnimationFrame(() => {
+        try { input.setSelectionRange(len, len); } catch (e) {}
+    });
+}
+function onQtrBlur(input) {
+    input.style.color = 'transparent';
+    input.style.caretColor = 'transparent';
 }
 
 function fillFillers() {
