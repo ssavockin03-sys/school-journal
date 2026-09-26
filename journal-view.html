@@ -113,30 +113,56 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 }
 
 /* ============================================================
-   ЯЧЕЙКА ОЦЕНКИ: синяя обводка у самой td, а не у input
+   ЯЧЕЙКА ОЦЕНКИ
    ============================================================ */
-/* Убираем ВСЕ возможные обводки у input */
-.grade-cell input:focus,
-.grade-cell input:focus-visible,
-.grade-cell input:active {
-    outline: none !important;
-    outline-offset: 0 !important;
-    box-shadow: none !important;
-    border: none !important;
-    background: transparent !important;
-    color: #1E293B !important;
-    cursor: text;
+
+/* td — position relative, чтобы :focus-within обводка работала корректно */
+.marks-table tbody td.col-date {
+    position: relative;
 }
 
-/* Синяя обводка по контуру самой td при фокусе внутри */
-.marks-table tbody td:focus-within {
+/* Синяя обводка ПО КРАЮ САМОЙ ЯЧЕЙКИ при фокусе внутри */
+.marks-table tbody td.col-date:focus-within {
     box-shadow: inset 0 0 0 2px #2563EB;
     background: #FFFFFF !important;
     z-index: 6;
 }
 
+/* Внутри — как раньше: квадратик 26px, отступ сверху 5px */
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; caret-color: #2563EB; }
+.grade-cell input {
+    width: 100%;
+    height: 26px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    left: 0;
+    z-index: 5;
+    padding: 0;
+    color: transparent;
+    font-family: inherit;
+    /* ВАЖНО: делаем каретку видимой, даже когда цвет текста прозрачный */
+    caret-color: #1E293B;
+}
+
+/* УБИРАЕМ синюю обводку у самого инпута — она теперь у td */
+.grade-cell input:focus,
+.grade-cell input:focus-visible,
+.grade-cell input:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    color: #1E293B !important;
+    cursor: text;
+    caret-color: #1E293B;
+}
+
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
@@ -151,13 +177,12 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
 
-/* Заглушки-шапки: серый фон как у колонок с датами */
+/* Заглушки-шапки */
 .marks-table thead th.col-filler-head {
     background: #E8EEF5 !important;
     border-right: 1px solid #CBD5E1;
     border-bottom: 1px solid #CBD5E1;
 }
-/* Заглушки-тела: белый фон как у обычных ячеек */
 .marks-table tbody td.col-filler-body {
     background: #FFFFFF !important;
     border-right: 1px solid #CBD5E1;
@@ -773,7 +798,7 @@ function renderMainTable() {
 
     const todayIsoStr = todayIso();
 
-    // ===== ФИО (клик по ученику → страница ученика) =====
+    // ===== ФИО =====
     STUDENTS.forEach((student, sIdx) => {
         const shortName = formatShortName(student.full_name);
         const tr = document.createElement('tr');
@@ -846,8 +871,8 @@ function renderMainTable() {
                 <div class="grade-cell">
                     <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(value)}</div>
                     <input type="text" value="${escapeHtml(value)}"
-                        onfocus="hl(this, ${dIdx}, true); this.style.color='#1E293B';"
-                        onblur="hl(this, ${dIdx}, false); this.style.color='transparent';"
+                        onfocus="hl(this, ${dIdx}, true);"
+                        onblur="hl(this, ${dIdx}, false);"
                         onchange="upg('${student.id}', '${d.gradeKey}', this)">
                 </div>
             `;
@@ -865,8 +890,6 @@ function renderMainTable() {
             <div class="grade-cell">
                 <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(qtrValue)}</div>
                 <input type="text" value="${escapeHtml(qtrValue)}"
-                    onfocus="this.style.color='#1E293B';"
-                    onblur="this.style.color='transparent';"
                     onchange="upqtr('${student.id}', this)">
             </div>
         `;
@@ -898,7 +921,7 @@ function renderMainTable() {
         }
     });
 
-    // ===== Правая панель: № / Дата / Тема / ДЗ =====
+    // ===== Правая панель =====
     DATES.forEach((d, dIdx) => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: '' };
         const themeText = l.t || 'Добавить тему';
@@ -931,13 +954,9 @@ function renderMainTable() {
         pBody.appendChild(tr);
     });
 
-    // ===== Заглушки: в шапке (серая) + в теле (белая), после "Итог" =====
     requestAnimationFrame(() => { fillFillers(); });
 }
 
-/* ============================================================
-   Заглушки после колонки "Итог".
-   ============================================================ */
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
