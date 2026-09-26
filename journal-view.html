@@ -77,6 +77,41 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table thead tr:nth-child(2) .col-date { cursor: pointer !important; font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; text-align: center; user-select: none; transition: background 0.15s ease; z-index: 5; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #D6E2F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
+
+/* === Подсветка сегодняшнего дня === */
+.marks-table thead th.col-today {
+    background: #EFF6FF !important;
+    border-left: 1px solid #2563EB !important;
+    border-right: 1px solid #2563EB !important;
+    border-bottom: 1px solid #2563EB !important;
+    color: #2563EB !important;
+    position: relative;
+}
+.marks-table thead tr:first-child th.col-today {
+    border-top: 1px solid #2563EB !important;
+}
+.marks-table thead tr:nth-child(2) th.col-today {
+    border-top: none !important;
+}
+.marks-table thead tr:first-child th.col-today .today-label {
+    display: block;
+    font-size: 10px;
+    color: #64748B;
+    line-height: 1;
+    margin-top: 2px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+}
+.marks-table tbody td.col-today {
+    background: #F8FBFF !important;
+    border-left: 1px solid #2563EB !important;
+    border-right: 1px solid #2563EB !important;
+}
+.marks-table tbody tr:last-child td.col-today {
+    border-bottom: 1px solid #2563EB !important;
+}
+
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 .grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
 .grade-cell input:focus { background: #FFFFFF; outline: 1.5px solid #2563EB; border-radius: 2px; cursor: text; z-index: 5; color: #1E293B !important; }
@@ -427,6 +462,11 @@ function collectSubjectsFromSchedule(schedules, classId) {
     return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 }
 
+function todayIso() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 async function init() {
     const { classId, subjectId } = getUrlParams();
 
@@ -709,6 +749,8 @@ function renderMainTable() {
 
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
 
+    const todayIsoStr = todayIso();
+
     // ===== ФИО (клик по ученику → страница ученика) =====
     STUDENTS.forEach((student, sIdx) => {
         const shortName = formatShortName(student.full_name);
@@ -723,11 +765,18 @@ function renderMainTable() {
         fioBody.appendChild(tr);
     });
 
+    // ===== Верхняя строка шапки: даты =====
     DATES.forEach((d) => {
         const th = document.createElement('th');
-        th.textContent = d.dateNoYear;
         th.className = 'col-date';
         th.title = `Урок №${d.lessonNum}`;
+        const isToday = d.iso === todayIsoStr;
+        if (isToday) {
+            th.classList.add('col-today');
+            th.innerHTML = `<div>${d.dateNoYear}</div><span class="today-label">сегодня</span>`;
+        } else {
+            th.textContent = d.dateNoYear;
+        }
         mRow.appendChild(th);
     });
 
@@ -743,6 +792,7 @@ function renderMainTable() {
     thQtr.textContent = 'Итог';
     mRow.appendChild(thQtr);
 
+    // ===== Вторая строка шапки: тип урока =====
     DATES.forEach((d, dIdx) => {
         const th2 = document.createElement('th');
         th2.className = 'col-date type-lesson-col';
@@ -751,6 +801,8 @@ function renderMainTable() {
         const abbr = JOURNAL.lessonTypes[d.gradeKey] || 'ОТВ';
         th2.textContent = abbr;
         th2.title = 'Нажмите, чтобы выбрать тип урока';
+        const isToday = d.iso === todayIsoStr;
+        if (isToday) th2.classList.add('col-today');
         th2.addEventListener('click', (e) => {
             e.stopPropagation();
             openLessonTypePopup(e.currentTarget, d.gradeKey);
@@ -758,12 +810,15 @@ function renderMainTable() {
         sRow.appendChild(th2);
     });
 
+    // ===== Тело: строки учеников =====
     STUDENTS.forEach((student) => {
         const tr = document.createElement('tr');
         DATES.forEach((d, dIdx) => {
             const td = document.createElement('td');
             td.className = 'col-date';
             td.dataset.col = dIdx;
+            const isToday = d.iso === todayIsoStr;
+            if (isToday) td.classList.add('col-today');
             const value = (JOURNAL.grades[student.id] || {})[d.gradeKey] || '';
             td.innerHTML = `
                 <div class="grade-cell">
@@ -864,7 +919,6 @@ function renderMainTable() {
    - В теле (jBody) — белые пустые ячейки.
    ============================================================ */
 function fillFillers() {
-    // Удаляем старые заглушки
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
 
@@ -888,7 +942,6 @@ function fillFillers() {
     const sRow = document.getElementById('sRow');
     const jBody = document.getElementById('jBody');
 
-    // Заглушки в первой строке шапки (высота 76px через общий стиль thead th)
     for (let i = 0; i < fillerCount; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
@@ -897,7 +950,6 @@ function fillFillers() {
         th.style.maxWidth = FILLER_COL_WIDTH + 'px';
         mRow.appendChild(th);
     }
-    // Заглушки во второй строке шапки
     for (let i = 0; i < fillerCount; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
@@ -906,7 +958,6 @@ function fillFillers() {
         th.style.maxWidth = FILLER_COL_WIDTH + 'px';
         sRow.appendChild(th);
     }
-    // Заглушки в каждой строке тела
     jBody.querySelectorAll('tr').forEach(tr => {
         for (let i = 0; i < fillerCount; i++) {
             const td = document.createElement('td');
