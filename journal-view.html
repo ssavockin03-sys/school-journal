@@ -52,19 +52,17 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 /* === Контейнер: 30px слева и справа === */
 .panels-container { display: flex; gap: 0; width: 100%; align-items: stretch; position: relative; transition: all 0.3s ease; padding: 0 30px; }
 
-/* Левая панель — ровно по ширине содержимого (таблицы), не растягивается */
-.panel-left-wrapper { display: flex; flex-direction: column; flex: 0 0 auto; min-width: 0; transition: max-width 0.35s ease, flex-basis 0.35s ease; overflow: hidden; }
-.panel-left { flex: 1; min-width: 0; max-height: 76vh; overflow: hidden; background: #FFFFFF; border: 1px solid #CBD5E1; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; transition: border-radius 0.35s ease; margin: 8px 0 12px 0; }
+/* Обе панели — ровно 50/50 */
+.panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.35s ease, max-width 0.35s ease; }
 
-/* Правая панель — занимает всё оставшееся место */
-.panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.35s ease, max-width 0.35s ease; }
+.panel-left { flex: 1; min-width: 0; max-height: 76vh; overflow: hidden; background: #FFFFFF; border: 1px solid #CBD5E1; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; transition: border-radius 0.35s ease; margin: 8px 0 12px 0; }
 .panel-right { flex: 1; min-width: 0; overflow: auto; max-height: 76vh; border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; transition: border-radius 0.35s ease; margin: 8px 0 12px 0; }
 
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
-.panels-container.left-collapsed .panel-right-wrapper { flex: 1 1 0; }
+.panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
 .panels-container.left-collapsed .panel-right { border-radius: 8px; border-left: 1px solid #CBD5E1; }
 .panels-container.right-collapsed .panel-right-wrapper { flex: 0 0 0; max-width: 0; }
-.panels-container.right-collapsed .panel-left-wrapper { flex: 1 1 0; }
+.panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
 .panels-container.right-collapsed .panel-left { border-radius: 8px; border-right: 1px solid #CBD5E1; }
 
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-width: thin; scrollbar-color: #CBD5E1 transparent; }
@@ -890,7 +888,53 @@ function renderMainTable() {
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
-    // Заглушки больше не нужны — левая панель сжимается по содержимому
+
+    const journalScroll = document.getElementById('journalScroll');
+    if (!journalScroll) return;
+
+    const scrollWidth = journalScroll.clientWidth;
+    const fioWidth = document.querySelector('.fio-table-wrapper')?.offsetWidth || 210;
+    const marksWrapper = document.querySelector('.marks-table-wrapper');
+    if (!marksWrapper) return;
+
+    const marksWidth = marksWrapper.scrollWidth;
+    const freeSpace = scrollWidth - fioWidth - marksWidth;
+
+    if (freeSpace < FILLER_COL_WIDTH * 0.5) return;
+
+    const fillerCount = Math.floor(freeSpace / FILLER_COL_WIDTH);
+    if (fillerCount <= 0) return;
+
+    const mRow = document.getElementById('mRow');
+    const sRow = document.getElementById('sRow');
+    const jBody = document.getElementById('jBody');
+
+    for (let i = 0; i < fillerCount; i++) {
+        const th = document.createElement('th');
+        th.className = 'col-filler-head';
+        th.style.width = FILLER_COL_WIDTH + 'px';
+        th.style.minWidth = FILLER_COL_WIDTH + 'px';
+        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
+        mRow.appendChild(th);
+    }
+    for (let i = 0; i < fillerCount; i++) {
+        const th = document.createElement('th');
+        th.className = 'col-filler-head';
+        th.style.width = FILLER_COL_WIDTH + 'px';
+        th.style.minWidth = FILLER_COL_WIDTH + 'px';
+        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
+        sRow.appendChild(th);
+    }
+    jBody.querySelectorAll('tr').forEach(tr => {
+        for (let i = 0; i < fillerCount; i++) {
+            const td = document.createElement('td');
+            td.className = 'col-filler-body';
+            td.style.width = FILLER_COL_WIDTH + 'px';
+            td.style.minWidth = FILLER_COL_WIDTH + 'px';
+            td.style.maxWidth = FILLER_COL_WIDTH + 'px';
+            tr.appendChild(td);
+        }
+    });
 }
 
 function getGradeClass(value) {
@@ -1156,7 +1200,7 @@ document.addEventListener('mousedown', (e) => {
     if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup();
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
-window.addEventListener('resize', () => { closeLessonTypePopup(); });
+window.addEventListener('resize', () => { closeLessonTypePopup(); fillFillers(); });
 
 function toggleLeftPanel() {
     const container = document.getElementById('panelsContainer');
@@ -1170,6 +1214,7 @@ function toggleLeftPanel() {
         document.getElementById('tabRight').classList.remove('active');
     }
     updateTabIcons();
+    setTimeout(fillFillers, 380);
 }
 
 function toggleRightPanel() {
@@ -1184,6 +1229,7 @@ function toggleRightPanel() {
         document.getElementById('tabLeft').classList.remove('active');
     }
     updateTabIcons();
+    setTimeout(fillFillers, 380);
 }
 
 function updateTabIcons() {
