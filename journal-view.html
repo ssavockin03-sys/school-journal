@@ -114,9 +114,15 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 
 /* ============================================================
    ЯЧЕЙКА ОЦЕНКИ
+   ------------------------------------------------------------
+   td получает padding сверху и снизу (белые поля).
+   Внутри td лежит .grade-cell, у которого при фокусе
+   появляется синяя рамка 1px.
+   По бокам .grade-cell растянут на всю ширину td → рамка
+   идёт по краям ячейки (совпадает с границей колонки).
    ============================================================ */
 
-/* Гарантированно убираем обводки у input — полоса рисуется у td */
+/* убираем любые обводки у input */
 .grade-cell input,
 .grade-cell input:focus,
 .grade-cell input:focus-visible,
@@ -129,19 +135,33 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     appearance: none;
 }
 
-/* Синяя обводка 1px по краю td */
-.marks-table tbody td.col-date:focus-within {
-    box-shadow: inset 0 0 0 1px #2563EB;
-    background: #FFFFFF !important;
-    z-index: 6;
+/* td: 38px, padding 4px сверху/снизу → контент 30px, вокруг белые поля */
+.marks-table tbody td.col-date {
+    padding: 4px 0;
+    box-sizing: border-box;
+    position: relative;
 }
 
-.grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
+.grade-cell {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    border: 1px solid transparent;   /* зарезервировано под синюю рамку */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-/* Инпут: 26px по центру td, сверху/снизу остаются «поля» */
+/* Синяя рамка появляется при фокусе внутри .grade-cell */
+.marks-table tbody td.col-date:focus-within .grade-cell {
+    border-color: #2563EB;
+    background: #FFFFFF;
+}
+
 .grade-cell input {
     width: 100%;
-    height: 26px;
+    height: 100%;
     text-align: center;
     border: none;
     background: transparent;
@@ -149,8 +169,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     font-weight: 700;
     cursor: pointer;
     position: absolute;
-    top: 5px;
-    left: 0;
+    inset: 0;
     z-index: 5;
     padding: 0;
     color: transparent;
@@ -158,21 +177,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     caret-color: #1E293B;
 }
 
-/* При фокусе: текст виден, фон прозрачный (поля td видны) */
-.grade-cell input:focus {
-    background: transparent;
-    cursor: text;
-    color: #1E293B !important;
-    caret-color: #1E293B;
-    border-radius: 0;
-}
-
-/* Пока идёт ввод — прячем display-layer, чтобы не двоился текст */
-.grade-cell input:focus ~ .display-layer {
-    visibility: hidden;
-}
-
-.display-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.display-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; display: flex; align-items: center; justify-content: center; }
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
@@ -881,8 +886,8 @@ function renderMainTable() {
                 <div class="grade-cell">
                     <div class="display-layer">${makeGradeDisplay(value)}</div>
                     <input type="text" value="${escapeHtml(value)}"
-                        onfocus="hl(this, ${dIdx}, true)"
-                        onblur="hl(this, ${dIdx}, false)"
+                        onfocus="hl(this, ${dIdx}, true); this.style.color='#1E293B'; this.style.caretColor='#1E293B';"
+                        onblur="hl(this, ${dIdx}, false); this.style.color='transparent';"
                         onchange="upg('${student.id}', '${d.gradeKey}', this)">
                 </div>
             `;
@@ -900,6 +905,8 @@ function renderMainTable() {
             <div class="grade-cell">
                 <div class="display-layer">${makeGradeDisplay(qtrValue)}</div>
                 <input type="text" value="${escapeHtml(qtrValue)}"
+                    onfocus="this.style.color='#1E293B'; this.style.caretColor='#1E293B';"
+                    onblur="this.style.color='transparent';"
                     onchange="upqtr('${student.id}', this)">
             </div>
         `;
