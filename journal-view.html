@@ -112,46 +112,55 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     border-bottom: 1px solid #2563EB !important;
 }
 
-/* ВСТАВЬТЕ ЭТОТ КОД ВЗАМЕН УДАЛЕННОГО: */
-.grade-cell {
-display: flex;
-justify-content: center;
-align-items: center;
-width: 100%;
-height: 38px;
-position: relative;
+/* ============================================================
+   ЯЧЕЙКА ОЦЕНКИ
+   ============================================================ */
+
+/* Убираем АБСОЛЮТНО все обводки у инпута — ни outline, ни box-shadow, ни border */
+.grade-cell input,
+.grade-cell input:focus,
+.grade-cell input:focus-visible,
+.grade-cell input:active {
+    outline: none !important;
+    outline-offset: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    -webkit-appearance: none;
+    appearance: none;
 }
+
+/* Синяя обводка ПО КРАЮ САМОЙ ЯЧЕЙКИ (td). Толщина 1px. */
+.marks-table tbody td.col-date:focus-within {
+    box-shadow: inset 1px 0 0 0 #2563EB, inset -1px 0 0 0 #2563EB, inset 0 1px 0 0 #2563EB, inset 0 -1px 0 0 #2563EB;
+    background: #FFFFFF !important;
+    z-index: 6;
+}
+
+.grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 .grade-cell input {
-width: 100%;
-height: 100%;
-text-align: center;
-border: none;
-background: transparent;
-font-size: 11px;
-font-weight: 700;
-cursor: pointer;
-position: absolute;
-top: 0;
-left: 0;
-z-index: 5;
-padding: 0;
-color: transparent;
-font-family: inherit;
-outline: none;
-caret-color: #2563EB;
+    width: 100%;
+    height: 26px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    left: 0;
+    z-index: 5;
+    padding: 0;
+    color: transparent;
+    font-family: inherit;
+    caret-color: #1E293B;
 }
 .grade-cell input:focus {
-background: transparent;
-outline: none;
-cursor: text;
-z-index: 5;
-color: #1E293B !important;
-}
-.marks-table td:has(input:focus) {
-background: #FFFFFF !important;
-box-shadow: inset 0 0 0 2px #2563EB;
-z-index: 6;
-position: relative;
+    background: transparent;
+    cursor: text;
+    color: #1E293B !important;
+    caret-color: #1E293B;
+    border-radius: 0;
 }
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
@@ -790,7 +799,7 @@ function renderMainTable() {
 
     const todayIsoStr = todayIso();
 
-    // ===== ФИО (клик по ученику → страница ученика) =====
+    // ===== ФИО =====
     STUDENTS.forEach((student, sIdx) => {
         const shortName = formatShortName(student.full_name);
         const tr = document.createElement('tr');
@@ -863,8 +872,8 @@ function renderMainTable() {
                 <div class="grade-cell">
                     <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(value)}</div>
                     <input type="text" value="${escapeHtml(value)}"
-                        onfocus="hl(this, ${dIdx}, true); this.style.color='#1E293B';"
-                        onblur="hl(this, ${dIdx}, false); this.style.color='transparent';"
+                        onfocus="hl(this, ${dIdx}, true)"
+                        onblur="hl(this, ${dIdx}, false)"
                         onchange="upg('${student.id}', '${d.gradeKey}', this)">
                 </div>
             `;
@@ -882,8 +891,6 @@ function renderMainTable() {
             <div class="grade-cell">
                 <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(qtrValue)}</div>
                 <input type="text" value="${escapeHtml(qtrValue)}"
-                    onfocus="this.style.color='#1E293B';"
-                    onblur="this.style.color='transparent';"
                     onchange="upqtr('${student.id}', this)">
             </div>
         `;
@@ -915,7 +922,7 @@ function renderMainTable() {
         }
     });
 
-    // ===== Правая панель: № / Дата / Тема / ДЗ =====
+    // ===== Правая панель =====
     DATES.forEach((d, dIdx) => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: '' };
         const themeText = l.t || 'Добавить тему';
@@ -948,15 +955,9 @@ function renderMainTable() {
         pBody.appendChild(tr);
     });
 
-    // ===== Заглушки: в шапке (серая) + в теле (белая), после "Итог" =====
     requestAnimationFrame(() => { fillFillers(); });
 }
 
-/* ============================================================
-   Заглушки после колонки "Итог".
-   - В шапке (mRow + sRow) — серые пустые ячейки как у колонок с датами.
-   - В теле (jBody) — белые пустые ячейки.
-   ============================================================ */
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
