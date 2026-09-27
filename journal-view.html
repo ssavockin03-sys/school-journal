@@ -50,7 +50,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .icon-action-btn .excel-icon { fill: #217346; }
 .panels-container { display: flex; gap: 0; width: 100%; align-items: stretch; position: relative; transition: all 0.3s ease; }
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; transition: flex-basis 0.35s ease, max-width 0.35s ease; overflow: hidden; }
-.panel-left-wrapper { flex: 11; min-width: 0; max-width: 100%; }
+.panel-left-wrapper { flex: 1 1 0; min-width: 0; max-width: 100%; }
 .panel-left { flex: 1; min-width: 0; max-height: 76vh; overflow: hidden; background: #FFFFFF; border-top: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; border-left: 1px solid #CBD5E1; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; transition: border-radius 0.35s ease; margin: 8px 0 12px 30px; }
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
@@ -162,14 +162,14 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 }
 .marks-table tbody tr:nth-child(5n) td.col-filler-body { border-bottom: 1px solid #000000 !important; }
 
-/* === Скролл-бар: делаем оверлейным и прозрачным, без белой полосы === */
+/* === Скролл-бар: оверлейный и прозрачный, без белой полосы === */
 .journal-scroll::-webkit-scrollbar { width: 10px; height: 10px; background: transparent; }
 .journal-scroll::-webkit-scrollbar-track { background: transparent; }
 .journal-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; border: 2px solid transparent; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-thumb:hover { background: #94A3B8; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-corner { background: transparent; }
 
-.panel-right-wrapper { flex: 9; min-width: 0; max-width: 100%; }
+.panel-right-wrapper { flex: 1 1 0; min-width: 0; max-width: 100%; }
 .panel-right { flex: 1; min-width: 0; overflow: auto; max-height: 76vh; border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; transition: border-radius 0.35s ease; margin: 8px 30px 12px 0; }
 .panels-container.right-collapsed .panel-right-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
@@ -771,7 +771,6 @@ function renderMainTable() {
 
     const todayIsoStr = todayIso();
 
-    // ===== ФИО (клик по ученику → страница ученика) =====
     STUDENTS.forEach((student, sIdx) => {
         const shortName = formatShortName(student.full_name);
         const tr = document.createElement('tr');
@@ -785,7 +784,6 @@ function renderMainTable() {
         fioBody.appendChild(tr);
     });
 
-    // ===== Верхняя строка шапки: даты =====
     DATES.forEach((d) => {
         const th = document.createElement('th');
         th.className = 'col-date';
@@ -812,7 +810,6 @@ function renderMainTable() {
     thQtr.textContent = 'Итог';
     mRow.appendChild(thQtr);
 
-    // ===== Вторая строка шапки: тип урока =====
     DATES.forEach((d, dIdx) => {
         const th2 = document.createElement('th');
         th2.className = 'col-date type-lesson-col';
@@ -830,7 +827,6 @@ function renderMainTable() {
         sRow.appendChild(th2);
     });
 
-    // ===== Тело: строки учеников =====
     STUDENTS.forEach((student) => {
         const tr = document.createElement('tr');
         DATES.forEach((d, dIdx) => {
@@ -898,7 +894,6 @@ function renderMainTable() {
         }
     });
 
-    // ===== Правая панель: № / Дата / Тема / ДЗ =====
     DATES.forEach((d, dIdx) => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: '' };
         const themeText = l.t || 'Добавить тему';
@@ -931,15 +926,9 @@ function renderMainTable() {
         pBody.appendChild(tr);
     });
 
-    // ===== Заглушки: в шапке (серая) + в теле (белая), после "Итог" =====
     requestAnimationFrame(() => { fillFillers(); });
 }
 
-/* ============================================================
-   Заглушки после колонки "Итог".
-   - В шапке (mRow + sRow) — серые пустые ячейки как у колонок с датами.
-   - В теле (jBody) — белые пустые ячейки.
-   ============================================================ */
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
@@ -1057,9 +1046,6 @@ function hlQtr(input, active) {
     });
 }
 
-/* ============================================================
-   Навигация стрелочками между ячейками оценок.
-   ============================================================ */
 function getEditableCellsInRow(tr) {
     return Array.from(tr.querySelectorAll('td'))
         .filter(td => td.dataset.col !== undefined || td.classList.contains('col-qtr'));
