@@ -116,7 +116,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
    ЯЧЕЙКА ОЦЕНКИ
    ============================================================ */
 
-/* Гарантированно убираем любые обводки у input */
+/* Гарантированно убираем обводки у input — полоса рисуется у td */
 .grade-cell input,
 .grade-cell input:focus,
 .grade-cell input:focus-visible,
@@ -138,7 +138,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 
-/* Инпут: 26px по центру td → сверху и снизу остаются «поля» по 5-6px белого фона td */
+/* Инпут: 26px по центру td, сверху/снизу остаются «поля» */
 .grade-cell input {
     width: 100%;
     height: 26px;
@@ -158,16 +158,20 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     caret-color: #1E293B;
 }
 
-/* При фокусе: фон остаётся прозрачным → «поля» td видны сверху и снизу */
+/* При фокусе: текст виден, фон прозрачный (поля td видны) */
 .grade-cell input:focus {
     background: transparent;
     cursor: text;
-    color: transparent !important;   /* символы невидимы — их показывает display-layer */
+    color: #1E293B !important;
     caret-color: #1E293B;
     border-radius: 0;
 }
 
-/* display-layer — под инпутом, ничего не перекрывает */
+/* Пока идёт ввод — прячем display-layer, чтобы не двоился текст */
+.grade-cell input:focus ~ .display-layer {
+    visibility: hidden;
+}
+
 .display-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
