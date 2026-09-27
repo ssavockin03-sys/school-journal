@@ -115,6 +115,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 .grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
 .grade-cell input:focus { background: #FFFFFF; cursor: text; z-index: 5; color: #1E293B !important; }
+.grade-cell input::selection { background: #BFDBFE; }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
@@ -842,6 +843,7 @@ function renderMainTable() {
                     <input type="text" value="${escapeHtml(value)}"
                         onfocus="hl(this, ${dIdx}, true); this.style.color='#1E293B';"
                         onblur="hl(this, ${dIdx}, false); this.style.color='transparent';"
+                        onkeydown="handleGradeKeydown(event, this)"
                         onchange="upg('${student.id}', '${d.gradeKey}', this)">
                 </div>
             `;
@@ -861,6 +863,7 @@ function renderMainTable() {
                 <input type="text" value="${escapeHtml(qtrValue)}"
                     onfocus="hlQtr(this, true); this.style.color='#1E293B';"
                     onblur="hlQtr(this, false); this.style.color='transparent';"
+                    onkeydown="handleGradeKeydown(event, this)"
                     onchange="upqtr('${student.id}', this)">
             </div>
         `;
@@ -1049,6 +1052,69 @@ function hlQtr(input, active) {
     document.querySelectorAll('#jBody td.col-qtr').forEach(td => {
         td.classList.toggle('highlight-cross', active);
     });
+}
+
+/* ============================================================
+   Навигация стрелочками между ячейками оценок.
+   - ← / → — влево/вправо по редактируемым ячейкам строки (даты + итог).
+   - ↑ / ↓ — вверх/вниз по тому же столбцу (той же позиции среди редактируемых ячеек).
+   - Если каретка не в крайнем положении — стрелка двигает каретку внутри поля.
+   ============================================================ */
+function getEditableCellsInRow(tr) {
+    return Array.from(tr.querySelectorAll('td'))
+        .filter(td => td.dataset.col !== undefined || td.classList.contains('col-qtr'));
+}
+
+function navigateGradeCell(input, direction) {
+    const td = input.closest('td');
+    if (!td) return;
+    const tr = td.closest('tr');
+    if (!tr) return;
+    const jBody = document.getElementById('jBody');
+    const rows = Array.from(jBody.querySelectorAll('tr'));
+    const rowIdx = rows.indexOf(tr);
+    if (rowIdx === -1) return;
+
+    const cellsInRow = getEditableCellsInRow(tr);
+    const colIdx = cellsInRow.indexOf(td);
+    if (colIdx === -1) return;
+
+    let targetTd = null;
+
+    if (direction === 'left' || direction === 'right') {
+        const nextCol = direction === 'left' ? colIdx - 1 : colIdx + 1;
+        if (nextCol < 0 || nextCol >= cellsInRow.length) return;
+        targetTd = cellsInRow[nextCol];
+    } else if (direction === 'up' || direction === 'down') {
+        const nextRow = direction === 'up' ? rowIdx - 1 : rowIdx + 1;
+        if (nextRow < 0 || nextRow >= rows.length) return;
+        const targetCells = getEditableCellsInRow(rows[nextRow]);
+        targetTd = targetCells[colIdx] || null;
+    }
+
+    if (!targetTd) return;
+    const targetInput = targetTd.querySelector('input');
+    if (!targetInput) return;
+    targetInput.focus();
+    setTimeout(() => { try { targetInput.select(); } catch (e) {} }, 0);
+}
+
+function handleGradeKeydown(e, input) {
+    const key = e.key;
+    if (key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'ArrowUp' && key !== 'ArrowDown') return;
+
+    const val = input.value || '';
+    const start = input.selectionStart ?? 0;
+    const end = input.selectionEnd ?? 0;
+    const atStart = start === 0 && end === 0;
+    const atEnd = start === val.length && end === val.length;
+
+    // По горизонтали уходим из ячейки только если каретка в крайнем положении
+    if (key === 'ArrowLeft' && !atStart) return;
+    if (key === 'ArrowRight' && !atEnd) return;
+
+    e.preventDefault();
+    navigateGradeCell(input, key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : key === 'ArrowUp' ? 'up' : 'down');
 }
 
 async function upg(studentId, gradeKey, inputElement) {
