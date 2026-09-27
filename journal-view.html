@@ -117,12 +117,17 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .grade-cell input:focus { background: #FFFFFF; cursor: text; z-index: 5; color: #1E293B !important; }
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within {
-    outline: 1.5px solid #2563EB;
-    outline-offset: -1.5px;
-    z-index: 6;
     position: relative;
-    border-left-color: transparent !important;
-    border-right-color: transparent !important;
+    z-index: 6;
+}
+.marks-table td.col-date:focus-within::after,
+.marks-table td.col-qtr:focus-within::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid #2563EB;
+    pointer-events: none;
+    z-index: 7;
 }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
