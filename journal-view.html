@@ -114,7 +114,8 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 .grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
-.grade-cell input:focus { background: #FFFFFF; outline: 1.5px solid #2563EB; border-radius: 2px; cursor: text; z-index: 5; color: #1E293B !important; }
+.grade-cell input:focus { background: #FFFFFF; cursor: text; z-index: 5; color: #1E293B !important; }
+.marks-table td.col-date:focus-within { outline: 1.5px solid #2563EB; outline-offset: -1.5px; z-index: 6; }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
