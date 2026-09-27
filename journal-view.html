@@ -115,6 +115,21 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 .grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
 .grade-cell input:focus { background: #FFFFFF; cursor: text; z-index: 5; color: #1E293B !important; }
+.grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
+.grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
+.double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
+.slash-divider { color: #CBD5E1; font-weight: 700; font-size: 10px; margin: 0 -1px; }
+.grade-4, .grade-5 { background: #65A30D !important; color: #FFFFFF !important; }
+.grade-3 { background: #FB923C !important; color: #FFFFFF !important; }
+.bad-grade { background: #DC2626 !important; color: #FFFFFF !important; }
+.status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; font-weight: 400 !important; pointer-events: none; z-index: 4; background: transparent !important; border: none !important; padding: 0 !important; line-height: 1; }
+.marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
+.col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
+.marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
+.col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
+.marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
+
+/* === Синяя рамка у ячейки при фокусе (и даты, и итог) === */
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within {
     position: relative;
@@ -129,19 +144,6 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     pointer-events: none;
     z-index: 7;
 }
-.grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
-.grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
-.double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
-.slash-divider { color: #CBD5E1; font-weight: 700; font-size: 10px; margin: 0 -1px; }
-.grade-4, .grade-5 { background: #65A30D !important; color: #FFFFFF !important; }
-.grade-3 { background: #FB923C !important; color: #FFFFFF !important; }
-.bad-grade { background: #DC2626 !important; color: #FFFFFF !important; }
-.status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; font-weight: 400 !important; pointer-events: none; z-index: 4; background: transparent !important; border: none !important; padding: 0 !important; line-height: 1; }
-.marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
-.col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
-.marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
-.col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
-.marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
 
 /* Заглушки-шапки: серый фон как у колонок с датами */
 .marks-table thead th.col-filler-head {
@@ -857,8 +859,8 @@ function renderMainTable() {
             <div class="grade-cell">
                 <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(qtrValue)}</div>
                 <input type="text" value="${escapeHtml(qtrValue)}"
-                    onfocus="this.style.color='#1E293B';"
-                    onblur="this.style.color='transparent';"
+                    onfocus="hlQtr(this, true); this.style.color='#1E293B';"
+                    onblur="hlQtr(this, false); this.style.color='transparent';"
                     onchange="upqtr('${student.id}', this)">
             </div>
         `;
@@ -1030,6 +1032,21 @@ function hl(input, colIdx, active) {
         }
     }
     document.querySelectorAll(`#jBody td[data-col="${colIdx}"]`).forEach(td => {
+        td.classList.toggle('highlight-cross', active);
+    });
+}
+
+function hlQtr(input, active) {
+    const tr = input.closest('tr');
+    if (tr) {
+        tr.querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
+        const trIndex = Array.from(tr.parentNode.children).indexOf(tr);
+        const fioRows = document.querySelectorAll('#fioBody tr');
+        if (fioRows[trIndex]) {
+            fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
+        }
+    }
+    document.querySelectorAll('#jBody td.col-qtr').forEach(td => {
         td.classList.toggle('highlight-cross', active);
     });
 }
