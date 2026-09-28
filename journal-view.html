@@ -120,8 +120,9 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     align-items: center;
     justify-content: center;
     gap: 5px;
-    height: 195px;               /* ← было 130px, теперь в 1,5 раза больше */
-    padding: 0 4px;
+    height: 130px;             /* ← вернул прежнюю высоту */
+    width: 27px;               /* ← ширина в 1,5 раза больше (было ~18px) */
+    padding: 0;
     background: #3B82F6;
     color: #FFFFFF;
     border: 1px solid #3B82F6;
@@ -141,10 +142,10 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 }
 
 /* ЛЕВАЯ кнопка «Раскрыть поуроч. план» — вылезает ВПРАВО.
-   Скругление СЛЕВА (наружу, к панели оценок). Прямой край справа. */
+   Скругление СЛЕВА. Прямой край справа. */
 .side-toggle-tab.tab-left {
     left: 100%;
-    top: 15%;
+    top: 22%;
     border-radius: 8px 0 0 8px;
     border-right: none;
     transform: rotate(180deg);
@@ -152,10 +153,10 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
 
 /* ПРАВАЯ кнопка «Раскрыть журнал» — вылезает ВЛЕВО.
-   Скругление СПРАВА (наружу, к панели тем). Прямой край слева. */
+   Скругление СПРАВА. Прямой край слева. */
 .side-toggle-tab.tab-right {
     right: 100%;
-    top: 45%;
+    top: 47%;
     border-radius: 0 8px 8px 0;
     border-left: none;
     transform: rotate(180deg);
