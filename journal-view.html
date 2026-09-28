@@ -79,13 +79,13 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table thead { position: sticky; top: 0; z-index: 10; }
 .marks-table thead th { background: #E8EEF5 !important; }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; z-index: 1; }
-.marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; cursor: pointer; font-size: 12px !important; font-weight: 400 !important; text-align: center; z-index: 5; }
-.marks-table thead tr:nth-child(2) .col-date { cursor: pointer !important; font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; text-align: center; user-select: none; transition: background 0.15s ease; z-index: 5; }
+.marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; cursor: pointer; font-size: 12px !important; font-weight: 400 !important; text-align: center; z-index: 5; padding: 0; }
+.marks-table thead tr:nth-child(2) .col-date { cursor: pointer !important; font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; text-align: center; user-select: none; transition: background 0.15s ease; z-index: 5; padding: 0; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #D6E2F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
-/* ============ СЕГОДНЯ: только цвет границ, без изменения размеров ============ */
-/* Никаких border-* — только box-shadow inset. Он не влияет на layout. */
+/* ================= СЕГОДНЯ ================= */
+/* Только box-shadow inset — не влияет на layout */
 .marks-table thead th.col-today,
 .marks-table tbody td.col-today {
     background: #EFF6FF !important;
@@ -93,20 +93,17 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
         inset 1px 0 0 0 #1D4ED8,
         inset -1px 0 0 0 #1D4ED8;
 }
-/* Первая строка шапки — добавляем верхнюю границу */
 .marks-table thead tr:first-child th.col-today {
     box-shadow:
         inset 1px 0 0 0 #1D4ED8,
         inset -1px 0 0 0 #1D4ED8,
         inset 0 1px 0 0 #1D4ED8;
 }
-/* Вторая строка шапки — верхнюю НЕ добавляем (иначе будет двойная линия между строками) */
 .marks-table thead tr:nth-child(2) th.col-today {
     box-shadow:
         inset 1px 0 0 0 #1D4ED8,
         inset -1px 0 0 0 #1D4ED8;
 }
-/* Последняя строка тела — добавляем нижнюю границу */
 .marks-table tbody tr:last-child td.col-today {
     box-shadow:
         inset 1px 0 0 0 #1D4ED8,
@@ -114,28 +111,47 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
         inset 0 -1px 0 0 #1D4ED8;
 }
 
-/* Подпись «сегодня» — абсолютно, не влияет на высоту */
-.marks-table thead tr:first-child th.col-today .today-label {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 1px;
+/* Внутри th.col-today — flex-колонка: дата сверху, подпись снизу.
+   Обе строки имеют одинаковую высоту 38px, но у «сегодня» внутри
+   flex-контейнер, который не меняет саму высоту td/th. */
+.marks-table thead tr:first-child th.col-today {
+    padding: 0;
+    line-height: 1;
+    vertical-align: middle;
+    height: 38px;
+}
+.marks-table thead tr:first-child th.col-today .today-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    line-height: 1;
+    gap: 1px;
+}
+.marks-table thead tr:first-child th.col-today .today-stack .date-line {
+    display: block;
+    font-size: 12px;
+    color: #0EA5E9;
+    font-weight: 400;
+    line-height: 1;
+    /* базовая линия как у остальных колонок: отступ сверху = (38 - 12)/2 ≈ 13px
+       но нам нужно, чтобы дата стояла на той же высоте, что и в соседних th.
+       Соседние th: line-height 36px + height 38px → центр по вертикали.
+       Поэтому в стеке тоже центрируем. */
+}
+.marks-table thead tr:first-child th.col-today .today-stack .today-line {
     display: block;
     font-size: 9px;
     color: #64748B;
-    line-height: 1;
     font-weight: 400;
+    line-height: 1;
     letter-spacing: 0;
     text-transform: none;
-    pointer-events: none;
+    margin-top: 2px;
 }
-/* Чтобы подпись и цифра не пересекались — сдвигаем цифру вверх,
-   но НЕ меняем высоту ячейки, только вертикальное выравнивание текста */
-.marks-table thead tr:first-child th.col-today {
-    line-height: 1;
-    padding-top: 8px;
-}
-/* ============ /СЕГОДНЯ ============ */
+/* ================= /СЕГОДНЯ ================= */
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 .grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
@@ -789,7 +805,11 @@ function renderMainTable() {
         const isToday = d.iso === todayIsoStr;
         if (isToday) {
             th.classList.add('col-today');
-            th.innerHTML = `<span class="today-label">сегодня</span><span style="display:block;">${d.dateNoYear}</span>`;
+            // flex-стек: дата сверху, «сегодня» под ней — на той же высоте, что и у соседей
+            th.innerHTML = `<span class="today-stack">
+                <span class="date-line">${d.dateNoYear}</span>
+                <span class="today-line">сегодня</span>
+            </span>`;
         } else {
             th.textContent = d.dateNoYear;
         }
