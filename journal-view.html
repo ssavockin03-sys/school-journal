@@ -58,7 +58,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     position: relative;
     transition: all 0.3s ease;
     padding: 0 30px;
-    height: calc(100vh - 185px);   /* шапка + отступы; подгоняется автоматически */
+    height: calc(100vh - 185px);
     min-height: 300px;
 }
 .panel-left-wrapper, .panel-right-wrapper {
@@ -89,7 +89,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     min-width: 0;
     height: 100%;
     overflow: auto;
-    overscroll-behavior: contain;   /* колесо не «протекает» на родителя */
+    overscroll-behavior: contain;
     border: 1px solid #CBD5E1;
     background: #FFFFFF;
     border-radius: 0 8px 8px 0;
@@ -105,29 +105,77 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
 .panels-container.right-collapsed .panel-left { border-radius: 8px; border-right: 1px solid #CBD5E1; }
 
+/* ====== Контейнер кнопок раскрытия ======
+   justify-content: space-between → левая кнопка прижата к левому краю (к оценкам),
+   правая кнопка прижата к правому краю (к поуроч. плану).
+   Убрали gap, чтобы кнопки стояли вплотную к панелям. */
 .side-toggle-tabs {
-    width: 42px;
+    width: 32px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
+    align-items: center;
+    justify-content: space-between;   /* ← ключевое */
+    background: transparent;
+    position: relative;
+    padding: 0;
+    margin: 8px 0 12px 0;
+    height: calc(100% - 20px);
+}
+.side-toggle-tab {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #FFFFFF;
-    border-top: 1px solid #CBD5E1;
-    border-bottom: 1px solid #CBD5E1;
-    position: relative;
-    padding: 0 6px;
-    margin: 8px 0;
-    height: calc(100% - 20px);
-    align-self: center;
+    gap: 6px;
+    padding: 22px 6px;
+    background: #3B82F6;
+    color: #FFFFFF;
+    border: 1px solid #3B82F6;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    user-select: none;
+    line-height: 1;
+    letter-spacing: 0.3px;
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25);
 }
+/* Левая кнопка — «Раскрыть поуроч. планирование».
+   В вертикальной раскладке нижний край = основание, обращённое к панели с оценками.
+   Прижимаем её к НИЗУ контейнера (bottom), а основание — влево, к панели оценок. */
+.side-toggle-tab.tab-left {
+    border-radius: 8px 0 0 8px;
+    border-right: none;
+    margin-left: 0;       /* вплотную к левому краю контейнера → к панели оценок */
+    margin-right: auto;   /* прижать влево */
+    margin-top: auto;     /* прижать вниз (к основанию) */
+    margin-bottom: 0;
+}
+.side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
+/* Правая кнопка — «Раскрыть журнал».
+   Прижимаем её к ВЕРХУ контейнера (top), а основание — вправо, к панели с темами. */
+.side-toggle-tab.tab-right {
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+    margin-left: auto;    /* прижать вправо */
+    margin-right: 0;      /* вплотную к правому краю контейнера → к панели тем */
+    margin-top: 0;
+    margin-bottom: auto;  /* прижать вверх (к основанию) */
+}
+.side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
+.side-toggle-tab svg { width: 12px; height: 12px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
 .journal-scroll {
     width: 100%;
     height: 100%;
     overflow: auto;
-    overscroll-behavior: contain;   /* колесо не «протекает» на родителя */
+    overscroll-behavior: contain;
     position: relative;
     scrollbar-width: thin;
     scrollbar-color: #CBD5E1 transparent;
@@ -260,12 +308,6 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .btn-online-inline:hover { background: #F5F3FF; border-color: #A78BFA; color: #6D28D9; opacity: 1; }
 .btn-online-inline svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
 
-.side-toggle-tab { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 24px 8px; background: #3B82F6; color: #FFFFFF; border: 1px solid #3B82F6; font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); white-space: nowrap; user-select: none; line-height: 1; letter-spacing: 0.3px; box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25); }
-.side-toggle-tab.tab-left { border-radius: 8px 0 0 8px; border-right: none; }
-.side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
-.side-toggle-tab.tab-right { border-radius: 0 8px 8px 0; border-left: none; }
-.side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
-.side-toggle-tab svg { width: 12px; height: 12px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 .empty-state { padding: 60px 30px; text-align: center; background: #FFFFFF; border-radius: 10px; border: 1px solid #CBD5E1; margin: 24px 30px; }
 .empty-state svg { width: 56px; height: 56px; fill: #CBD5E1; margin-bottom: 14px; }
 .empty-state h2 { font-size: 17px; font-weight: 700; color: #1E293B; margin-bottom: 8px; }
