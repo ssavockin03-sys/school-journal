@@ -10,13 +10,13 @@
 <style>
 * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
 html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; }
-.top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; background: #FFFFFF; flex-wrap: wrap; }
+body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; display: flex; flex-direction: column; }
+.top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; background: #FFFFFF; flex-wrap: wrap; flex-shrink: 0; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
 .top-nav .sep { color: #CBD5E1; font-size: 12px; }
 .top-nav .current { color: #2563EB; font-weight: 500; cursor: default; }
-.header-bar { background: #FFFFFF; padding: 4px 30px 10px 30px; }
+.header-bar { background: #FFFFFF; padding: 4px 30px 10px 30px; flex-shrink: 0; }
 .header-grid { display: inline-grid; grid-template-columns: max-content max-content; column-gap: 40px; row-gap: 8px; align-items: center; }
 .header-grid .cell { min-width: 0; }
 .dropdown { position: relative; display: inline-block; }
@@ -30,7 +30,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .dropdown-menu-item:hover { background: #EFF6FF; color: #2563EB; }
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; font-weight: 400; white-space: nowrap; }
-.period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; background: #FFFFFF; flex-wrap: wrap; }
+.period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; background: #FFFFFF; flex-wrap: wrap; flex-shrink: 0; }
 .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 3px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; flex-wrap: wrap; }
 .tab-pill { padding: 5px 12px; background: transparent; color: #64748B; font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 6px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
 .tab-pill:hover { background: #F1F5F9; color: #334155; }
@@ -49,10 +49,62 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .icon-action-btn svg { width: 15px; height: 15px; fill: currentColor; }
 .icon-action-btn .excel-icon { fill: #217346; }
 
-.panels-container { display: flex; gap: 0; width: 100%; align-items: stretch; position: relative; transition: all 0.3s ease; padding: 0 30px; }
-.panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.35s ease, max-width 0.35s ease; }
-.panel-left { flex: 1; min-width: 0; max-height: 76vh; overflow: hidden; background: #FFFFFF; border: 1px solid #CBD5E1; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; transition: border-radius 0.35s ease; margin: 8px 0 12px 0; }
-.panel-right { flex: 1; min-width: 0; overflow: auto; max-height: 76vh; border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; transition: border-radius 0.35s ease; margin: 8px 0 12px 0; }
+/* ====== Панели растягиваются на всю оставшуюся высоту ====== */
+#mainContent {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.panels-container {
+    display: flex;
+    gap: 0;
+    width: 100%;
+    align-items: stretch;
+    position: relative;
+    transition: all 0.3s ease;
+    padding: 0 30px;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+.panel-left-wrapper, .panel-right-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    transition: flex-basis 0.35s ease, max-width 0.35s ease;
+    min-height: 0;
+}
+/* Убираем нижний margin, оставляем только верхний отступ 8px.
+   height: 100% + min-height: 0 — панели растягиваются на всю высоту контейнера */
+.panel-left {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    display: flex;
+    flex-direction: column;
+    transition: border-radius 0.35s ease;
+    margin: 8px 0 0 0;
+}
+.panel-right {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
+    border: 1px solid #CBD5E1;
+    background: #FFFFFF;
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+    transition: border-radius 0.35s ease;
+    margin: 8px 0 0 0;
+}
 
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
@@ -60,6 +112,22 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .panels-container.right-collapsed .panel-right-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
 .panels-container.right-collapsed .panel-left { border-radius: 8px; border-right: 1px solid #CBD5E1; }
+
+.side-toggle-tabs {
+    width: 42px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    border-top: 1px solid #CBD5E1;
+    border-bottom: 1px solid #CBD5E1;
+    position: relative;
+    padding: 0 6px;
+    margin: 8px 0 0 0;   /* убрали нижний отступ */
+}
 
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-width: thin; scrollbar-color: #CBD5E1 transparent; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
@@ -120,7 +188,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 4%;            /* ← подняли на 4% */
+    bottom: 4%;
     display: block;
     font-size: 9px;
     color: #64748B;
@@ -185,7 +253,6 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .btn-online-inline:hover { background: #F5F3FF; border-color: #A78BFA; color: #6D28D9; opacity: 1; }
 .btn-online-inline svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
 
-.side-toggle-tabs { width: 42px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; background: #FFFFFF; border-top: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; position: relative; padding: 0 6px; margin: 8px 0; }
 .side-toggle-tab { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 24px 8px; background: #3B82F6; color: #FFFFFF; border: 1px solid #3B82F6; font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); white-space: nowrap; user-select: none; line-height: 1; letter-spacing: 0.3px; box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25); }
 .side-toggle-tab.tab-left { border-radius: 8px 0 0 8px; border-right: none; }
 .side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
@@ -213,9 +280,12 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .lesson-type-popup-item .full { font-size: 12px; color: #1E293B; font-weight: 500; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .lesson-type-popup-item.active .full { font-weight: 600; color: #1D4ED8; }
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
+
 @media (max-width: 1100px) {
-    .panels-container { flex-direction: column; padding: 0; }
-    .panel-left, .panel-right { max-height: 55vh; border-radius: 8px; border-right: 1px solid #CBD5E1; border-left: 1px solid #CBD5E1; margin: 8px 12px; }
+    body { display: block; }
+    #mainContent { display: block; }
+    .panels-container { flex-direction: column; padding: 0; flex: none; }
+    .panel-left, .panel-right { border-radius: 8px; border-right: 1px solid #CBD5E1; border-left: 1px solid #CBD5E1; margin: 8px 12px 0 12px; flex: none; max-height: 55vh; }
     .panel-left-wrapper, .panel-right-wrapper { max-width: 100% !important; flex: 1 1 auto !important; }
     .side-toggle-tabs { display: none; }
     .fio-table thead th { position: static; }
