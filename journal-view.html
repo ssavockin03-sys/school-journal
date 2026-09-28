@@ -126,7 +126,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     background: #3B82F6;
     color: #FFFFFF;
     border: 1px solid #3B82F6;
-    font-size: 8px;
+    font-size: 10px;             /* ← шрифт побольше (было 8px) */
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
@@ -141,9 +141,8 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     z-index: 6;
 }
 
-/* ЛЕВАЯ кнопка «Раскрыть поуроч. план».
-   Опускаем её так, чтобы низ кнопки (130px) соприкоснулся
-   с верхом правой кнопки (top: 47%). → top: calc(47% - 130px). */
+/* ЛЕВАЯ кнопка (верхняя) — теперь «Раскрыть журнал».
+   По-прежнему вылезает ВПРАВО, скругление СЛЕВА. */
 .side-toggle-tab.tab-left {
     left: 100%;
     top: calc(47% - 130px);
@@ -153,7 +152,8 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 }
 .side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
 
-/* ПРАВАЯ кнопка «Раскрыть журнал» — не трогаем. */
+/* ПРАВАЯ кнопка (нижняя) — теперь «Раскрыть поуроч. план».
+   По-прежнему вылезает ВЛЕВО, скругление СПРАВА. */
 .side-toggle-tab.tab-right {
     right: 100%;
     top: 47%;
@@ -163,7 +163,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 }
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
 
-.side-toggle-tab svg { width: 10px; height: 10px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
+.side-toggle-tab svg { width: 11px; height: 11px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
 .journal-scroll {
     width: 100%;
@@ -424,13 +424,13 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
         </div>
 
         <div class="side-toggle-tabs" id="sideToggleTabs">
-            <button type="button" class="side-toggle-tab tab-left" id="tabLeft" onclick="toggleLeftPanel()">
-                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                Раскрыть поуроч. план
-            </button>
-            <button type="button" class="side-toggle-tab tab-right" id="tabRight" onclick="toggleRightPanel()">
+            <button type="button" class="side-toggle-tab tab-left" id="tabLeft" onclick="toggleRightPanel()">
                 <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                 Раскрыть журнал
+            </button>
+            <button type="button" class="side-toggle-tab tab-right" id="tabRight" onclick="toggleLeftPanel()">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                Раскрыть поуроч. план
             </button>
         </div>
 
@@ -1391,8 +1391,8 @@ function updateTabIcons() {
     const iconRight = rightCollapsed
         ? '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>'
         : '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>';
-    tabLeft.innerHTML = `<svg viewBox="0 0 24 24">${iconLeft}</svg>Раскрыть поуроч. план`;
-    tabRight.innerHTML = `<svg viewBox="0 0 24 24">${iconRight}</svg>Раскрыть журнал`;
+    tabLeft.innerHTML = `<svg viewBox="0 0 24 24">${iconLeft}</svg>Раскрыть журнал`;
+    tabRight.innerHTML = `<svg viewBox="0 0 24 24">${iconRight}</svg>Раскрыть поуроч. план`;
 }
 
 function showEmpty(title, text) {
