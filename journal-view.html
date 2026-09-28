@@ -49,7 +49,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .icon-action-btn svg { width: 15px; height: 15px; fill: currentColor; }
 .icon-action-btn .excel-icon { fill: #217346; }
 
-/* ====== Панели: фиксированная высота, независимый скролл ====== */
+/* ====== Панели ====== */
 .panels-container {
     display: flex;
     gap: 0;
@@ -106,9 +106,8 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .panels-container.right-collapsed .panel-left { border-radius: 8px; border-right: 1px solid #CBD5E1; }
 
 /* ====== Контейнер кнопок ======
-   position: relative + width: 0, чтобы кнопки absolute-позиционировались
-   от центра между панелями. Левая кнопка вылезает влево (right: 100%),
-   правая — вправо (left: 100%). Так их основание прилегает к нужной панели. */
+   width: 0 → «нулевая» точка между панелями.
+   Кнопки absolute относительно этого контейнера. */
 .side-toggle-tabs {
     width: 0;
     flex-shrink: 0;
@@ -143,25 +142,25 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 }
 
 /* «Раскрыть поуроч. планирование» — ЛЕВАЯ кнопка.
-   Прижата правым краем к панели оценок: right: 100% (вылезает влево от контейнера).
-   Расположена ВЫШЕ середины. */
+   Теперь прижата ЛЕВЫМ краем к панели оценок: left: 100% (вылезает ВПРАВО,
+   внутрь зазора между панелями). Скругление — снаружи (слева). */
 .side-toggle-tab.tab-left {
-    right: 100%;
+    left: 100%;
     top: 30%;
-    border-radius: 8px 0 0 8px;
-    border-right: none;
+    border-radius: 0 8px 8px 0;
+    border-left: none;
     transform: rotate(180deg);
 }
 .side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
 
 /* «Раскрыть журнал» — ПРАВАЯ кнопка.
-   Прижата левым краем к панели тем/ДЗ: left: 100% (вылезает вправо от контейнера).
-   Расположена НИЖЕ середины. */
+   Теперь прижата ПРАВЫМ краем к панели тем/ДЗ: right: 100% (вылезает ВЛЕВО,
+   внутрь зазора между панелями). Скругление — снаружи (справа). */
 .side-toggle-tab.tab-right {
-    left: 100%;
+    right: 100%;
     top: 55%;
-    border-radius: 0 8px 8px 0;
-    border-left: none;
+    border-radius: 8px 0 0 8px;
+    border-right: none;
     transform: rotate(180deg);
 }
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
