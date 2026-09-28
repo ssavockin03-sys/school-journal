@@ -105,25 +105,20 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
 .panels-container.right-collapsed .panel-left { border-radius: 8px; border-right: 1px solid #CBD5E1; }
 
-/* ====== Контейнер кнопок раскрытия ======
-   justify-content: space-between → левая кнопка прижата к левому краю (к оценкам),
-   правая кнопка прижата к правому краю (к поуроч. плану).
-   Убрали gap, чтобы кнопки стояли вплотную к панелям. */
+/* ====== Контейнер кнопок ======
+   position: relative + width: 0, чтобы кнопки absolute-позиционировались
+   от центра между панелями. Левая кнопка вылезает влево (right: 100%),
+   правая — вправо (left: 100%). Так их основание прилегает к нужной панели. */
 .side-toggle-tabs {
-    width: 32px;
+    width: 0;
     flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    align-items: center;
-    justify-content: space-between;   /* ← ключевое */
-    background: transparent;
     position: relative;
-    padding: 0;
+    background: transparent;
     margin: 8px 0 12px 0;
-    height: calc(100% - 20px);
+    align-self: stretch;
 }
 .side-toggle-tab {
+    position: absolute;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -139,36 +134,38 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     transition: all 0.2s ease;
     writing-mode: vertical-rl;
     text-orientation: mixed;
-    transform: rotate(180deg);
     white-space: nowrap;
     user-select: none;
     line-height: 1;
     letter-spacing: 0.3px;
     box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25);
+    z-index: 6;
 }
-/* Левая кнопка — «Раскрыть поуроч. планирование».
-   В вертикальной раскладке нижний край = основание, обращённое к панели с оценками.
-   Прижимаем её к НИЗУ контейнера (bottom), а основание — влево, к панели оценок. */
+
+/* «Раскрыть поуроч. планирование» — ЛЕВАЯ кнопка.
+   Прижата правым краем к панели оценок: right: 100% (вылезает влево от контейнера).
+   Расположена ВЫШЕ середины. */
 .side-toggle-tab.tab-left {
+    right: 100%;
+    top: 30%;
     border-radius: 8px 0 0 8px;
     border-right: none;
-    margin-left: 0;       /* вплотную к левому краю контейнера → к панели оценок */
-    margin-right: auto;   /* прижать влево */
-    margin-top: auto;     /* прижать вниз (к основанию) */
-    margin-bottom: 0;
+    transform: rotate(180deg);
 }
 .side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
-/* Правая кнопка — «Раскрыть журнал».
-   Прижимаем её к ВЕРХУ контейнера (top), а основание — вправо, к панели с темами. */
+
+/* «Раскрыть журнал» — ПРАВАЯ кнопка.
+   Прижата левым краем к панели тем/ДЗ: left: 100% (вылезает вправо от контейнера).
+   Расположена НИЖЕ середины. */
 .side-toggle-tab.tab-right {
+    left: 100%;
+    top: 55%;
     border-radius: 0 8px 8px 0;
     border-left: none;
-    margin-left: auto;    /* прижать вправо */
-    margin-right: 0;      /* вплотную к правому краю контейнера → к панели тем */
-    margin-top: 0;
-    margin-bottom: auto;  /* прижать вверх (к основанию) */
+    transform: rotate(180deg);
 }
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
+
 .side-toggle-tab svg { width: 12px; height: 12px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
 .journal-scroll {
