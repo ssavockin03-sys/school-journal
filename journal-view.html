@@ -119,13 +119,13 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    height: 130px;             /* одинаковая высота для обеих кнопок */
-    padding: 0 5px;
+    gap: 5px;
+    height: 130px;
+    padding: 0 4px;
     background: #3B82F6;
     color: #FFFFFF;
     border: 1px solid #3B82F6;
-    font-size: 9px;            /* ← уменьшил шрифт */
+    font-size: 8px;              /* ← ещё меньше */
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
@@ -135,34 +135,34 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     white-space: nowrap;
     user-select: none;
     line-height: 1;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25);
     z-index: 6;
 }
 
-/* ЛЕВАЯ кнопка «Раскрыть журнал» — вылезает ВПРАВО.
-   Скругление СПРАВА (наружу, к панели тем). Прямой край слева. */
+/* ЛЕВАЯ кнопка «Раскрыть поуроч. план» — вылезает ВПРАВО.
+   Скругление СЛЕВА (наружу, к панели оценок). Прямой край справа. */
 .side-toggle-tab.tab-left {
     left: 100%;
     top: 22%;
-    border-radius: 0 8px 8px 0;
-    border-left: none;
-    transform: rotate(180deg);
-}
-.side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
-
-/* ПРАВАЯ кнопка «Раскрыть поуроч. план» — вылезает ВЛЕВО.
-   Скругление СЛЕВА (наружу, к панели оценок). Прямой край справа. */
-.side-toggle-tab.tab-right {
-    right: 100%;
-    top: 47%;
     border-radius: 8px 0 0 8px;
     border-right: none;
     transform: rotate(180deg);
 }
+.side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
+
+/* ПРАВАЯ кнопка «Раскрыть журнал» — вылезает ВЛЕВО.
+   Скругление СПРАВА (наружу, к панели тем). Прямой край слева. */
+.side-toggle-tab.tab-right {
+    right: 100%;
+    top: 47%;
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+    transform: rotate(180deg);
+}
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
 
-.side-toggle-tab svg { width: 11px; height: 11px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
+.side-toggle-tab svg { width: 10px; height: 10px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
 .journal-scroll {
     width: 100%;
@@ -425,11 +425,11 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
         <div class="side-toggle-tabs" id="sideToggleTabs">
             <button type="button" class="side-toggle-tab tab-left" id="tabLeft" onclick="toggleLeftPanel()">
                 <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                Раскрыть журнал
+                Раскрыть поуроч. план
             </button>
             <button type="button" class="side-toggle-tab tab-right" id="tabRight" onclick="toggleRightPanel()">
                 <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                Раскрыть поуроч. план
+                Раскрыть журнал
             </button>
         </div>
 
@@ -1390,8 +1390,8 @@ function updateTabIcons() {
     const iconRight = rightCollapsed
         ? '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>'
         : '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>';
-    tabLeft.innerHTML = `<svg viewBox="0 0 24 24">${iconLeft}</svg>Раскрыть журнал`;
-    tabRight.innerHTML = `<svg viewBox="0 0 24 24">${iconRight}</svg>Раскрыть поуроч. план`;
+    tabLeft.innerHTML = `<svg viewBox="0 0 24 24">${iconLeft}</svg>Раскрыть поуроч. план`;
+    tabRight.innerHTML = `<svg viewBox="0 0 24 24">${iconRight}</svg>Раскрыть журнал`;
 }
 
 function showEmpty(title, text) {
