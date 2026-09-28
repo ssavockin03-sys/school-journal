@@ -120,12 +120,12 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     align-items: center;
     justify-content: center;
     gap: 5px;
-    height: 130px;
+    height: 195px;               /* ← было 130px, теперь в 1,5 раза больше */
     padding: 0 4px;
     background: #3B82F6;
     color: #FFFFFF;
     border: 1px solid #3B82F6;
-    font-size: 8px;              /* ← ещё меньше */
+    font-size: 8px;
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
@@ -144,7 +144,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
    Скругление СЛЕВА (наружу, к панели оценок). Прямой край справа. */
 .side-toggle-tab.tab-left {
     left: 100%;
-    top: 22%;
+    top: 15%;
     border-radius: 8px 0 0 8px;
     border-right: none;
     transform: rotate(180deg);
@@ -155,7 +155,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
    Скругление СПРАВА (наружу, к панели тем). Прямой край слева. */
 .side-toggle-tab.tab-right {
     right: 100%;
-    top: 47%;
+    top: 45%;
     border-radius: 0 8px 8px 0;
     border-left: none;
     transform: rotate(180deg);
