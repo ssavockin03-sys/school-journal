@@ -49,12 +49,8 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .icon-action-btn svg { width: 15px; height: 15px; fill: currentColor; }
 .icon-action-btn .excel-icon { fill: #217346; }
 
-/* === Контейнер: 30px слева и справа === */
 .panels-container { display: flex; gap: 0; width: 100%; align-items: stretch; position: relative; transition: all 0.3s ease; padding: 0 30px; }
-
-/* Обе панели — ровно 50/50 */
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.35s ease, max-width 0.35s ease; }
-
 .panel-left { flex: 1; min-width: 0; max-height: 76vh; overflow: hidden; background: #FFFFFF; border: 1px solid #CBD5E1; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; transition: border-radius 0.35s ease; margin: 8px 0 12px 0; }
 .panel-right { flex: 1; min-width: 0; overflow: auto; max-height: 76vh; border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; transition: border-radius 0.35s ease; margin: 8px 0 12px 0; }
 
@@ -88,12 +84,43 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #D6E2F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
-.marks-table thead th.col-today { background: #EFF6FF !important; border-left: 1px solid #2563EB !important; border-right: 1px solid #2563EB !important; border-bottom: 1px solid #2563EB !important; color: #2563EB !important; position: relative; }
-.marks-table thead tr:first-child th.col-today { border-top: 1px solid #2563EB !important; }
-.marks-table thead tr:nth-child(2) th.col-today { border-top: none !important; }
-.marks-table thead tr:first-child th.col-today .today-label { display: block; font-size: 10px; color: #64748B; line-height: 1; margin-top: 2px; font-weight: 400; letter-spacing: 0; text-transform: none; }
-.marks-table tbody td.col-today { background: #F8FBFF !important; border-left: 1px solid #2563EB !important; border-right: 1px solid #2563EB !important; }
-.marks-table tbody tr:last-child td.col-today { border-bottom: 1px solid #2563EB !important; }
+/* ====== Исправление «сегодня» ====== */
+/* Фиксированная высота обеих строк заголовка */
+.marks-table thead tr:first-child th,
+.marks-table thead tr:nth-child(2) th { height: 38px; line-height: 36px; position: relative; }
+
+/* Подсветка «сегодня» через box-shadow inset — не сдвигает соседей */
+.marks-table thead th.col-today,
+.marks-table tbody td.col-today {
+    background: #EFF6FF !important;
+    box-shadow: inset 1px 0 0 0 #2563EB, inset -1px 0 0 0 #2563EB;
+}
+.marks-table thead tr:first-child th.col-today { box-shadow: inset 1px 0 0 0 #2563EB, inset -1px 0 0 0 #2563EB, inset 0 1px 0 0 #2563EB; }
+.marks-table thead tr:nth-child(2) th.col-today { box-shadow: inset 1px 0 0 0 #2563EB, inset -1px 0 0 0 #2563EB; }
+.marks-table thead tr:first-child th.col-today { border-top: none !important; }
+
+/* Подпись «сегодня» — абсолютно, не влияет на высоту */
+.marks-table thead tr:first-child th.col-today .today-label {
+    position: absolute;
+    left: 0; right: 0; bottom: 1px;
+    display: block;
+    font-size: 9px;
+    color: #64748B;
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    pointer-events: none;
+}
+/* Сдвигаем цифру чуть вверх, чтобы подпись не наезжала */
+.marks-table thead tr:first-child th.col-today { padding-bottom: 10px; }
+
+/* для всех остальных ячеек первой строки — обычный padding */
+.marks-table thead tr:first-child th { padding-bottom: 0; }
+
+.marks-table tbody tr:last-child td.col-today { box-shadow: inset 1px 0 0 0 #2563EB, inset -1px 0 0 0 #2563EB, inset 0 -1px 0 0 #2563EB; }
+
+/* ====== /Исправление «сегодня» ====== */
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 .grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
@@ -109,9 +136,9 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; font-weight: 400 !important; pointer-events: none; z-index: 4; background: transparent !important; border: none !important; padding: 0 !important; line-height: 1; }
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 .col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
-.marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
+.marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; padding: 0 4px; }
 .col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
-.marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
+.marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; padding: 0 4px; }
 
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within { position: relative; z-index: 6; }
@@ -747,24 +774,23 @@ function renderMainTable() {
         const isToday = d.iso === todayIsoStr;
         if (isToday) {
             th.classList.add('col-today');
-            th.innerHTML = `<div>${d.dateNoYear}</div><span class="today-label">сегодня</span>`;
+            th.innerHTML = `<span class="today-label">сегодня</span>${d.dateNoYear}`;
         } else {
             th.textContent = d.dateNoYear;
         }
         mRow.appendChild(th);
     });
 
-    const thAvg = document.createElement('th');
-    thAvg.className = 'col-avg';
-    thAvg.setAttribute('rowspan', '2');
-    thAvg.textContent = 'Ср. бал';
-    mRow.appendChild(thAvg);
+    // «Ср. бал» — две отдельные ячейки (в 1-й и 2-й строке)
+    const thAvg1 = document.createElement('th');
+    thAvg1.className = 'col-avg';
+    thAvg1.textContent = '';
+    mRow.appendChild(thAvg1);
 
-    const thQtr = document.createElement('th');
-    thQtr.className = 'col-qtr';
-    thQtr.setAttribute('rowspan', '2');
-    thQtr.textContent = 'Итог';
-    mRow.appendChild(thQtr);
+    const thQtr1 = document.createElement('th');
+    thQtr1.className = 'col-qtr';
+    thQtr1.textContent = '';
+    mRow.appendChild(thQtr1);
 
     DATES.forEach((d, dIdx) => {
         const th2 = document.createElement('th');
@@ -782,6 +808,17 @@ function renderMainTable() {
         });
         sRow.appendChild(th2);
     });
+
+    // «Ср. бал» / «Итог» — во второй строке
+    const thAvg2 = document.createElement('th');
+    thAvg2.className = 'col-avg';
+    thAvg2.textContent = 'Ср. бал';
+    sRow.appendChild(thAvg2);
+
+    const thQtr2 = document.createElement('th');
+    thQtr2.className = 'col-qtr';
+    thQtr2.textContent = 'Итог';
+    sRow.appendChild(thQtr2);
 
     STUDENTS.forEach((student) => {
         const tr = document.createElement('tr');
