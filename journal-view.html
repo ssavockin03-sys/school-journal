@@ -79,13 +79,13 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table thead { position: sticky; top: 0; z-index: 10; }
 .marks-table thead th { background: #E8EEF5 !important; }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; z-index: 1; }
-.marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; cursor: pointer; font-size: 12px !important; font-weight: 400 !important; text-align: center; z-index: 5; padding: 0; }
+.marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; cursor: pointer; font-size: 12px !important; font-weight: 400 !important; text-align: center; z-index: 5; padding: 0; position: relative; }
 .marks-table thead tr:nth-child(2) .col-date { cursor: pointer !important; font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; text-align: center; user-select: none; transition: background 0.15s ease; z-index: 5; padding: 0; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #D6E2F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
 /* ================= СЕГОДНЯ ================= */
-/* Только box-shadow inset — не влияет на layout */
+/* Границы только через box-shadow inset — не влияют на layout */
 .marks-table thead th.col-today,
 .marks-table tbody td.col-today {
     background: #EFF6FF !important;
@@ -111,45 +111,29 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
         inset 0 -1px 0 0 #1D4ED8;
 }
 
-/* Внутри th.col-today — flex-колонка: дата сверху, подпись снизу.
-   Обе строки имеют одинаковую высоту 38px, но у «сегодня» внутри
-   flex-контейнер, который не меняет саму высоту td/th. */
+/* Дата «сегодня» — та же базовая линия, что и у соседей.
+   Соседи: height 38px, line-height 36px → текст по центру по вертикали.
+   Мы делаем так же: line-height 36px, height 38px, а «сегодня» — absolute снизу. */
 .marks-table thead tr:first-child th.col-today {
-    padding: 0;
-    line-height: 1;
-    vertical-align: middle;
+    line-height: 36px;
     height: 38px;
+    padding: 0;
+    vertical-align: middle;
 }
-.marks-table thead tr:first-child th.col-today .today-stack {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    line-height: 1;
-    gap: 1px;
-}
-.marks-table thead tr:first-child th.col-today .today-stack .date-line {
-    display: block;
-    font-size: 12px;
-    color: #0EA5E9;
-    font-weight: 400;
-    line-height: 1;
-    /* базовая линия как у остальных колонок: отступ сверху = (38 - 12)/2 ≈ 13px
-       но нам нужно, чтобы дата стояла на той же высоте, что и в соседних th.
-       Соседние th: line-height 36px + height 38px → центр по вертикали.
-       Поэтому в стеке тоже центрируем. */
-}
-.marks-table thead tr:first-child th.col-today .today-stack .today-line {
+.marks-table thead tr:first-child th.col-today .today-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: block;
     font-size: 9px;
     color: #64748B;
     font-weight: 400;
-    line-height: 1;
+    line-height: 9px;
     letter-spacing: 0;
     text-transform: none;
-    margin-top: 2px;
+    pointer-events: none;
+    text-align: center;
 }
 /* ================= /СЕГОДНЯ ================= */
 
@@ -805,11 +789,9 @@ function renderMainTable() {
         const isToday = d.iso === todayIsoStr;
         if (isToday) {
             th.classList.add('col-today');
-            // flex-стек: дата сверху, «сегодня» под ней — на той же высоте, что и у соседей
-            th.innerHTML = `<span class="today-stack">
-                <span class="date-line">${d.dateNoYear}</span>
-                <span class="today-line">сегодня</span>
-            </span>`;
+            // дата — обычным текстом в потоке (та же линия, что у соседей);
+            // «сегодня» — absolute снизу, не влияет на layout
+            th.innerHTML = `${d.dateNoYear}<span class="today-label">сегодня</span>`;
         } else {
             th.textContent = d.dateNoYear;
         }
