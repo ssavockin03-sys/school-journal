@@ -281,7 +281,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 
 /* ====== Правая панель ====== */
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-.panel-right table thead { position: sticky; top: 0; z-index: 30; }   /* ← было 2, стало 30 */
+.panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th {
     background: #E8EEF5 !important;
     color: #1E293B !important;
@@ -354,7 +354,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     align-items: center;
     gap: 6px;
     box-sizing: border-box;
-    z-index: 1;               /* ← добавлено, чтобы ячейка не перекрывала шапку */
+    z-index: 1;
 }
 .homework-cell .text-area-input {
     flex: 1 1 auto;
@@ -383,7 +383,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     cursor: pointer;
     font-family: inherit;
     white-space: nowrap;
-    z-index: 0;               /* ← было 2, стало 0 */
+    z-index: 0;
     line-height: 1.4;
     transition: all 0.15s ease;
 }
