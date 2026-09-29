@@ -242,7 +242,26 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 /* ================= /СЕГОДНЯ ================= */
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
+.grade-cell input {
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: 16px;            /* увеличено, чтобы каретка была выше; текст прозрачный */
+    line-height: 1.5;           /* каретка ≈ в 1,5 раза длиннее */
+    font-weight: 700;
+    cursor: pointer;
+    position: absolute;
+    top: 3px;
+    left: 0;
+    z-index: 5;
+    padding: 0;
+    color: transparent;
+    font-family: inherit;
+    outline: none;
+    caret-color: #000000;       /* чёрная каретка */
+}
 .grade-cell input:focus { background: #FFFFFF; cursor: text; z-index: 5; color: #1E293B !important; }
 .grade-cell input::selection { background: #BFDBFE; }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
@@ -281,7 +300,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 
 /* ====== Правая панель ====== */
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-.panel-right table thead { position: sticky; top: 0; z-index: 30; }   /* ← было 2, стало 30 */
+.panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th {
     background: #E8EEF5 !important;
     color: #1E293B !important;
@@ -354,7 +373,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     align-items: center;
     gap: 6px;
     box-sizing: border-box;
-    z-index: 1;               /* ← добавлено, чтобы ячейка не перекрывала шапку */
+    z-index: 1;
 }
 .homework-cell .text-area-input {
     flex: 1 1 auto;
@@ -383,7 +402,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     cursor: pointer;
     font-family: inherit;
     white-space: nowrap;
-    z-index: 0;               /* ← было 2, стало 0 */
+    z-index: 0;
     line-height: 1.4;
     transition: all 0.15s ease;
 }
