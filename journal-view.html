@@ -242,29 +242,9 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 /* ================= /СЕГОДНЯ ================= */
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-.grade-cell input {
-    width: 100%;
-    height: 30px;
-    text-align: center;
-    border: none;
-    background: transparent;
-    font-size: 16px;            /* большой font-size = длинная каретка */
-    line-height: 1;
-    font-weight: 700;
-    cursor: pointer;
-    position: absolute;
-    top: 3px;
-    left: 0;
-    z-index: 5;
-    padding: 0;
-    color: transparent !important; /* текст в input всегда невидим */
-    font-family: inherit;
-    outline: none;
-    caret-color: #000000;       /* чёрная каретка */
-}
-/* ВАЖНО: при фокусе фон остаётся прозрачным, иначе перекрывает display-layer */
-.grade-cell input:focus { background: transparent; cursor: text; z-index: 5; color: transparent !important; }
-.grade-cell input::selection { background: transparent; }
+.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #2563EB; }
+.grade-cell input:focus { background: #FFFFFF; cursor: text; z-index: 5; color: #1E293B !important; }
+.grade-cell input::selection { background: #BFDBFE; }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
@@ -273,8 +253,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .grade-3 { background: #FB923C !important; color: #FFFFFF !important; }
 .bad-grade { background: #DC2626 !important; color: #FFFFFF !important; }
 .status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; font-weight: 400 !important; pointer-events: none; z-index: 4; background: transparent !important; border: none !important; padding: 0 !important; line-height: 1; }
-/* Подсветка строки/столбца при фокусе — БЕЛАЯ, чтобы ячейка не голубела */
-.marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #FFFFFF !important; }
+.marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 .col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
 .col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
@@ -283,7 +262,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within { position: relative; z-index: 6; }
 .marks-table td.col-date:focus-within::after,
-.marks-table td.col-qtr:focus-within::after { content: ''; position: absolute; inset: 0; border: 1.5px solid #000000; pointer-events: none; z-index: 7; }
+.marks-table td.col-qtr:focus-within::after { content: ''; position: absolute; inset: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 7; }
 
 .marks-table thead th.col-filler-head { background: #E8EEF5 !important; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; }
 .marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; pointer-events: none; cursor: default; }
@@ -302,7 +281,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 
 /* ====== Правая панель ====== */
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-.panel-right table thead { position: sticky; top: 0; z-index: 30; }
+.panel-right table thead { position: sticky; top: 0; z-index: 30; }   /* ← было 2, стало 30 */
 .panel-right table th {
     background: #E8EEF5 !important;
     color: #1E293B !important;
@@ -375,7 +354,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     align-items: center;
     gap: 6px;
     box-sizing: border-box;
-    z-index: 1;
+    z-index: 1;               /* ← добавлено, чтобы ячейка не перекрывала шапку */
 }
 .homework-cell .text-area-input {
     flex: 1 1 auto;
@@ -404,7 +383,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     cursor: pointer;
     font-family: inherit;
     white-space: nowrap;
-    z-index: 0;
+    z-index: 0;               /* ← было 2, стало 0 */
     line-height: 1.4;
     transition: all 0.15s ease;
 }
@@ -1055,9 +1034,8 @@ function renderMainTable() {
                 <div class="grade-cell">
                     <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(value)}</div>
                     <input type="text" value="${escapeHtml(value)}"
-                        onfocus="hl(this, ${dIdx}, true);"
-                        oninput="liveGradePreview(this)"
-                        onblur="hl(this, ${dIdx}, false);"
+                        onfocus="hl(this, ${dIdx}, true); this.style.color='#1E293B';"
+                        onblur="hl(this, ${dIdx}, false); this.style.color='transparent';"
                         onkeydown="handleGradeKeydown(event, this)"
                         onchange="upg('${student.id}', '${d.gradeKey}', this)">
                 </div>
@@ -1076,9 +1054,8 @@ function renderMainTable() {
             <div class="grade-cell">
                 <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(qtrValue)}</div>
                 <input type="text" value="${escapeHtml(qtrValue)}"
-                    onfocus="hlQtr(this, true);"
-                    oninput="liveGradePreview(this)"
-                    onblur="hlQtr(this, false);"
+                    onfocus="hlQtr(this, true); this.style.color='#1E293B';"
+                    onblur="hlQtr(this, false); this.style.color='transparent';"
                     onkeydown="handleGradeKeydown(event, this)"
                     onchange="upqtr('${student.id}', this)">
             </div>
@@ -1231,15 +1208,6 @@ function makeGradeDisplay(v) {
         `;
     }
     return `${letterPart}<div class="grade-display"><div class="grade-box ${getGradeClass(gradePart)}">${gradePart}</div></div>`;
-}
-
-/* === Живое превью ввода: показываем значение в display-layer, сам input прозрачный === */
-function liveGradePreview(input) {
-    const displayLayer = input.previousElementSibling;
-    if (!displayLayer) return;
-    const up = (input.value || '').toUpperCase().trim();
-    if (!up) { displayLayer.innerHTML = ''; return; }
-    displayLayer.innerHTML = `<div class="grade-display"><div style="color:#475569; font-weight:700; font-size:12px;">${escapeHtml(up)}</div></div>`;
 }
 
 function hl(input, colIdx, active) {
