@@ -242,12 +242,10 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 /* ================= /СЕГОДНЯ ================= */
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-/* ====== input: 13.5px / 400 — совпадает с промежуточной отрисовкой в upg/upqtr ====== */
 .grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 13.5px; font-weight: 400; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #000000; line-height: 1; }
 .grade-cell input:focus { background: #FFFFFF; cursor: text; z-index: 5; color: #1E293B !important; }
 .grade-cell input::selection { background: #BFDBFE; }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
-/* .grade-box / .double-grade-box — финальный вид сохранённой оценки (жирный, как весь журнал) */
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
 .slash-divider { color: #CBD5E1; font-weight: 700; font-size: 10px; margin: 0 -1px; }
@@ -639,6 +637,7 @@ let JOURNAL = null;
 let ALL_CLASSES = [];
 let ALL_CLASS_SUBJECTS = [];
 let ALL_SCHEDULES = [];
+let FILLER_COUNT = 0;
 
 let leftCollapsed = false;
 let rightCollapsed = false;
@@ -681,6 +680,24 @@ function collectSubjectsFromSchedule(schedules, classId) {
 function todayIso() {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/* ==== Расчёт количества filler-колонок ДО отрисовки таблицы ==== */
+function computeFillerCount() {
+    const journalScroll = document.getElementById('journalScroll');
+    if (!journalScroll) return 0;
+
+    const scrollWidth = journalScroll.clientWidth;
+    const fioWidth = 210; // фиксированная ширина .fio-table-wrapper
+    const datesWidth = DATES.length * 46; // .col-date = 46px
+    const avgWidth = 53;  // .col-avg
+    const qtrWidth = 53;  // .col-qtr
+    const marksWidth = datesWidth + avgWidth + qtrWidth;
+    const freeSpace = scrollWidth - fioWidth - marksWidth;
+
+    if (freeSpace < FILLER_COL_WIDTH * 0.5) return 0;
+    const count = Math.floor(freeSpace / FILLER_COL_WIDTH);
+    return count > 0 ? count : 0;
 }
 
 async function init() {
@@ -763,6 +780,9 @@ async function init() {
 
     renderMainTable();
     document.title = `${CLASS_OBJ.name} · ${SUBJECT_NAME} — Журнал`;
+
+    // Пересчёт filler-колонок при изменении размеров окна
+    window.addEventListener('resize', () => { recalcFillers(); });
 }
 
 function findActivePeriodIndex() {
@@ -967,6 +987,9 @@ function renderMainTable() {
 
     const todayIsoStr = todayIso();
 
+    // Считаем количество filler-колонок заранее (учитывая, что свободного места хватит)
+    FILLER_COUNT = computeFillerCount();
+
     STUDENTS.forEach((student, sIdx) => {
         const shortName = formatShortName(student.full_name);
         const tr = document.createElement('tr');
@@ -1006,6 +1029,16 @@ function renderMainTable() {
     thQtr.textContent = 'Итог';
     mRow.appendChild(thQtr);
 
+    // ==== Filler-ячейки в первой строке заголовка (сразу) ====
+    for (let i = 0; i < FILLER_COUNT; i++) {
+        const th = document.createElement('th');
+        th.className = 'col-filler-head';
+        th.style.width = FILLER_COL_WIDTH + 'px';
+        th.style.minWidth = FILLER_COL_WIDTH + 'px';
+        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
+        mRow.appendChild(th);
+    }
+
     DATES.forEach((d, dIdx) => {
         const th2 = document.createElement('th');
         th2.className = 'col-date type-lesson-col';
@@ -1022,6 +1055,16 @@ function renderMainTable() {
         });
         sRow.appendChild(th2);
     });
+
+    // ==== Filler-ячейки во второй строке заголовка (сразу) ====
+    for (let i = 0; i < FILLER_COUNT; i++) {
+        const th = document.createElement('th');
+        th.className = 'col-filler-head';
+        th.style.width = FILLER_COL_WIDTH + 'px';
+        th.style.minWidth = FILLER_COL_WIDTH + 'px';
+        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
+        sRow.appendChild(th);
+    }
 
     STUDENTS.forEach((student) => {
         const tr = document.createElement('tr');
@@ -1063,6 +1106,17 @@ function renderMainTable() {
             </div>
         `;
         tr.appendChild(tdQtr);
+
+        // ==== Filler-ячейки в каждой строке тела (сразу) ====
+        for (let i = 0; i < FILLER_COUNT; i++) {
+            const td = document.createElement('td');
+            td.className = 'col-filler-body';
+            td.style.width = FILLER_COL_WIDTH + 'px';
+            td.style.minWidth = FILLER_COL_WIDTH + 'px';
+            td.style.maxWidth = FILLER_COL_WIDTH + 'px';
+            tr.appendChild(td);
+        }
+
         jBody.appendChild(tr);
     });
 
@@ -1121,35 +1175,25 @@ function renderMainTable() {
         `;
         pBody.appendChild(tr);
     });
-
-    requestAnimationFrame(() => { fillFillers(); });
 }
 
-function fillFillers() {
+/* ==== Пересчёт filler-колонок при resize: удаляем старые, добавляем новые ==== */
+function recalcFillers() {
+    const newCount = computeFillerCount();
+    if (newCount === FILLER_COUNT) return;
+    FILLER_COUNT = newCount;
+
+    // Удаляем старые filler-ячейки
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
 
-    const journalScroll = document.getElementById('journalScroll');
-    if (!journalScroll) return;
-
-    const scrollWidth = journalScroll.clientWidth;
-    const fioWidth = document.querySelector('.fio-table-wrapper')?.offsetWidth || 210;
-    const marksWrapper = document.querySelector('.marks-table-wrapper');
-    if (!marksWrapper) return;
-
-    const marksWidth = marksWrapper.scrollWidth;
-    const freeSpace = scrollWidth - fioWidth - marksWidth;
-
-    if (freeSpace < FILLER_COL_WIDTH * 0.5) return;
-
-    const fillerCount = Math.floor(freeSpace / FILLER_COL_WIDTH);
-    if (fillerCount <= 0) return;
+    if (FILLER_COUNT <= 0) return;
 
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
     const jBody = document.getElementById('jBody');
 
-    for (let i = 0; i < fillerCount; i++) {
+    for (let i = 0; i < FILLER_COUNT; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
         th.style.width = FILLER_COL_WIDTH + 'px';
@@ -1157,7 +1201,7 @@ function fillFillers() {
         th.style.maxWidth = FILLER_COL_WIDTH + 'px';
         mRow.appendChild(th);
     }
-    for (let i = 0; i < fillerCount; i++) {
+    for (let i = 0; i < FILLER_COUNT; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
         th.style.width = FILLER_COL_WIDTH + 'px';
@@ -1166,7 +1210,7 @@ function fillFillers() {
         sRow.appendChild(th);
     }
     jBody.querySelectorAll('tr').forEach(tr => {
-        for (let i = 0; i < fillerCount; i++) {
+        for (let i = 0; i < FILLER_COUNT; i++) {
             const td = document.createElement('td');
             td.className = 'col-filler-body';
             td.style.width = FILLER_COL_WIDTH + 'px';
@@ -1309,7 +1353,6 @@ async function upg(studentId, gradeKey, inputElement) {
         return;
     }
 
-    // Промежуточная отрисовка — та же жирность и размер, что у input (400 / 13.5px)
     const displayLayer = inputElement.previousElementSibling;
     if (displayLayer) {
         displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
@@ -1319,7 +1362,6 @@ async function upg(studentId, gradeKey, inputElement) {
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
         JOURNAL.grades[studentId][gradeKey] = up;
         await saveJournal();
-        // Финальная отрисовка — как весь журнал (жирная, в квадратике)
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     }, 200);
 }
@@ -1333,7 +1375,6 @@ async function upqtr(studentId, inputElement) {
         inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[ACTIVE_PERIOD_INDEX] || '';
         return;
     }
-    // Промежуточная отрисовка — та же жирность и размер, что у input (400 / 13.5px)
     const displayLayer = inputElement.previousElementSibling;
     if (displayLayer) {
         displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
@@ -1443,7 +1484,6 @@ document.addEventListener('mousedown', (e) => {
     if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup();
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
-window.addEventListener('resize', () => { closeLessonTypePopup(); fillFillers(); });
 
 function toggleLeftPanel() {
     const container = document.getElementById('panelsContainer');
@@ -1457,7 +1497,7 @@ function toggleLeftPanel() {
         document.getElementById('tabRight').classList.remove('active');
     }
     updateTabIcons();
-    setTimeout(fillFillers, 380);
+    setTimeout(recalcFillers, 380);
 }
 
 function toggleRightPanel() {
@@ -1472,7 +1512,7 @@ function toggleRightPanel() {
         document.getElementById('tabLeft').classList.remove('active');
     }
     updateTabIcons();
-    setTimeout(fillFillers, 380);
+    setTimeout(recalcFillers, 380);
 }
 
 function updateTabIcons() {
