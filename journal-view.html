@@ -1307,7 +1307,8 @@ async function upg(studentId, gradeKey, inputElement) {
         return;
     }
 
-    // Мгновенно отображаем итоговый вид — без промежуточного уменьшенного шрифта
+    // Промежуточная отрисовка — тот же makeGradeDisplay, что и финальный вид,
+    // поэтому размер цифры не меняется ни во время задержки, ни после неё.
     const displayLayer = inputElement.previousElementSibling;
     if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
 
@@ -1328,7 +1329,7 @@ async function upqtr(studentId, inputElement) {
         return;
     }
 
-    // Мгновенно отображаем итоговый вид — без промежуточного уменьшенного шрифта
+    // То же самое: промежуточная отрисовка идентична финальной.
     const displayLayer = inputElement.previousElementSibling;
     if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
 
