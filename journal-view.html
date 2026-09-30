@@ -637,7 +637,6 @@ let JOURNAL = null;
 let ALL_CLASSES = [];
 let ALL_CLASS_SUBJECTS = [];
 let ALL_SCHEDULES = [];
-let FILLER_COUNT = 0;
 
 let leftCollapsed = false;
 let rightCollapsed = false;
@@ -680,24 +679,6 @@ function collectSubjectsFromSchedule(schedules, classId) {
 function todayIso() {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-/* ==== Расчёт количества filler-колонок ДО отрисовки таблицы ==== */
-function computeFillerCount() {
-    const journalScroll = document.getElementById('journalScroll');
-    if (!journalScroll) return 0;
-
-    const scrollWidth = journalScroll.clientWidth;
-    const fioWidth = 210; // фиксированная ширина .fio-table-wrapper
-    const datesWidth = DATES.length * 46; // .col-date = 46px
-    const avgWidth = 53;  // .col-avg
-    const qtrWidth = 53;  // .col-qtr
-    const marksWidth = datesWidth + avgWidth + qtrWidth;
-    const freeSpace = scrollWidth - fioWidth - marksWidth;
-
-    if (freeSpace < FILLER_COL_WIDTH * 0.5) return 0;
-    const count = Math.floor(freeSpace / FILLER_COL_WIDTH);
-    return count > 0 ? count : 0;
 }
 
 async function init() {
@@ -779,10 +760,18 @@ async function init() {
     }
 
     renderMainTable();
-    document.title = `${CLASS_OBJ.name} · ${SUBJECT_NAME} — Журнал`;
 
-    // Пересчёт filler-колонок при изменении размеров окна
-    window.addEventListener('resize', () => { recalcFillers(); });
+    // Двойной requestAnimationFrame: сначала достраиваем filler-колонки,
+    // когда DOM уже отрисован и размеры контейнера устоялись,
+    // затем ещё раз — на случай, если появился/исчез вертикальный скроллбар.
+    requestAnimationFrame(() => {
+        fillFillers();
+        requestAnimationFrame(() => {
+            fillFillers();
+        });
+    });
+
+    document.title = `${CLASS_OBJ.name} · ${SUBJECT_NAME} — Журнал`;
 }
 
 function findActivePeriodIndex() {
@@ -971,6 +960,11 @@ function renderPeriodTabs() {
             document.getElementById('mainContent').style.display = '';
             document.getElementById('emptyState').style.display = 'none';
             renderMainTable();
+            // Двойной RAF после смены периода
+            requestAnimationFrame(() => {
+                fillFillers();
+                requestAnimationFrame(() => { fillFillers(); });
+            });
         });
         container.appendChild(tab);
     });
@@ -986,9 +980,6 @@ function renderMainTable() {
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
 
     const todayIsoStr = todayIso();
-
-    // Считаем количество filler-колонок заранее (учитывая, что свободного места хватит)
-    FILLER_COUNT = computeFillerCount();
 
     STUDENTS.forEach((student, sIdx) => {
         const shortName = formatShortName(student.full_name);
@@ -1029,16 +1020,6 @@ function renderMainTable() {
     thQtr.textContent = 'Итог';
     mRow.appendChild(thQtr);
 
-    // ==== Filler-ячейки в первой строке заголовка (сразу) ====
-    for (let i = 0; i < FILLER_COUNT; i++) {
-        const th = document.createElement('th');
-        th.className = 'col-filler-head';
-        th.style.width = FILLER_COL_WIDTH + 'px';
-        th.style.minWidth = FILLER_COL_WIDTH + 'px';
-        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
-        mRow.appendChild(th);
-    }
-
     DATES.forEach((d, dIdx) => {
         const th2 = document.createElement('th');
         th2.className = 'col-date type-lesson-col';
@@ -1055,16 +1036,6 @@ function renderMainTable() {
         });
         sRow.appendChild(th2);
     });
-
-    // ==== Filler-ячейки во второй строке заголовка (сразу) ====
-    for (let i = 0; i < FILLER_COUNT; i++) {
-        const th = document.createElement('th');
-        th.className = 'col-filler-head';
-        th.style.width = FILLER_COL_WIDTH + 'px';
-        th.style.minWidth = FILLER_COL_WIDTH + 'px';
-        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
-        sRow.appendChild(th);
-    }
 
     STUDENTS.forEach((student) => {
         const tr = document.createElement('tr');
@@ -1106,17 +1077,6 @@ function renderMainTable() {
             </div>
         `;
         tr.appendChild(tdQtr);
-
-        // ==== Filler-ячейки в каждой строке тела (сразу) ====
-        for (let i = 0; i < FILLER_COUNT; i++) {
-            const td = document.createElement('td');
-            td.className = 'col-filler-body';
-            td.style.width = FILLER_COL_WIDTH + 'px';
-            td.style.minWidth = FILLER_COL_WIDTH + 'px';
-            td.style.maxWidth = FILLER_COL_WIDTH + 'px';
-            tr.appendChild(td);
-        }
-
         jBody.appendChild(tr);
     });
 
@@ -1177,23 +1137,31 @@ function renderMainTable() {
     });
 }
 
-/* ==== Пересчёт filler-колонок при resize: удаляем старые, добавляем новые ==== */
-function recalcFillers() {
-    const newCount = computeFillerCount();
-    if (newCount === FILLER_COUNT) return;
-    FILLER_COUNT = newCount;
-
-    // Удаляем старые filler-ячейки
+function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
 
-    if (FILLER_COUNT <= 0) return;
+    const journalScroll = document.getElementById('journalScroll');
+    if (!journalScroll) return;
+
+    const scrollWidth = journalScroll.clientWidth;
+    const fioWidth = document.querySelector('.fio-table-wrapper')?.offsetWidth || 210;
+    const marksWrapper = document.querySelector('.marks-table-wrapper');
+    if (!marksWrapper) return;
+
+    const marksWidth = marksWrapper.scrollWidth;
+    const freeSpace = scrollWidth - fioWidth - marksWidth;
+
+    if (freeSpace < FILLER_COL_WIDTH * 0.5) return;
+
+    const fillerCount = Math.floor(freeSpace / FILLER_COL_WIDTH);
+    if (fillerCount <= 0) return;
 
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
     const jBody = document.getElementById('jBody');
 
-    for (let i = 0; i < FILLER_COUNT; i++) {
+    for (let i = 0; i < fillerCount; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
         th.style.width = FILLER_COL_WIDTH + 'px';
@@ -1201,7 +1169,7 @@ function recalcFillers() {
         th.style.maxWidth = FILLER_COL_WIDTH + 'px';
         mRow.appendChild(th);
     }
-    for (let i = 0; i < FILLER_COUNT; i++) {
+    for (let i = 0; i < fillerCount; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
         th.style.width = FILLER_COL_WIDTH + 'px';
@@ -1210,7 +1178,7 @@ function recalcFillers() {
         sRow.appendChild(th);
     }
     jBody.querySelectorAll('tr').forEach(tr => {
-        for (let i = 0; i < FILLER_COUNT; i++) {
+        for (let i = 0; i < fillerCount; i++) {
             const td = document.createElement('td');
             td.className = 'col-filler-body';
             td.style.width = FILLER_COL_WIDTH + 'px';
@@ -1484,6 +1452,7 @@ document.addEventListener('mousedown', (e) => {
     if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup();
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
+window.addEventListener('resize', () => { closeLessonTypePopup(); fillFillers(); });
 
 function toggleLeftPanel() {
     const container = document.getElementById('panelsContainer');
@@ -1497,7 +1466,7 @@ function toggleLeftPanel() {
         document.getElementById('tabRight').classList.remove('active');
     }
     updateTabIcons();
-    setTimeout(recalcFillers, 380);
+    setTimeout(fillFillers, 380);
 }
 
 function toggleRightPanel() {
@@ -1512,7 +1481,7 @@ function toggleRightPanel() {
         document.getElementById('tabLeft').classList.remove('active');
     }
     updateTabIcons();
-    setTimeout(recalcFillers, 380);
+    setTimeout(fillFillers, 380);
 }
 
 function updateTabIcons() {
