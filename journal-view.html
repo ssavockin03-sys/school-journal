@@ -268,15 +268,16 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; pointer-events: none; cursor: default; }
 .marks-table tbody tr:nth-child(5n) td.col-filler-body { border-bottom: 1px solid #000000 !important; }
 
-.journal-scroll::-webkit-scrollbar { width: 10px; height: 10px; background: transparent; }
+/* ==== Скроллбары: ширина 20px (в 2 раза шире исходных 10px) ==== */
+.journal-scroll::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
 .journal-scroll::-webkit-scrollbar-track { background: transparent; }
-.journal-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; border: 2px solid transparent; background-clip: padding-box; }
+.journal-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-thumb:hover { background: #94A3B8; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-corner { background: transparent; }
 
-.panel-right::-webkit-scrollbar { width: 10px; height: 10px; background: transparent; }
+.panel-right::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
 .panel-right::-webkit-scrollbar-track { background: transparent; }
-.panel-right::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; border: 2px solid transparent; background-clip: padding-box; }
+.panel-right::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
 .panel-right::-webkit-scrollbar-thumb:hover { background: #94A3B8; background-clip: padding-box; }
 
 /* ====== Правая панель ====== */
@@ -401,8 +402,9 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .lesson-type-popup-search input { width: 100%; height: 30px; padding: 0 10px; font-size: 12.5px; border: 1px solid #CBD5E1; border-radius: 6px; outline: none; font-family: inherit; color: #1E293B; background: #F8FAFC; }
 .lesson-type-popup-search input:focus { border-color: #2563EB; background: #FFFFFF; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
 .lesson-type-popup-list { overflow-y: auto; flex: 1; padding: 4px; }
-.lesson-type-popup-list::-webkit-scrollbar { width: 6px; }
-.lesson-type-popup-list::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+/* ==== Скроллбар в попапе: 12px (в 2 раза шире исходных 6px) ==== */
+.lesson-type-popup-list::-webkit-scrollbar { width: 12px; }
+.lesson-type-popup-list::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; border: 2px solid transparent; background-clip: padding-box; }
 .lesson-type-popup-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; background: transparent; border: none; border-radius: 5px; cursor: pointer; text-align: left; font-family: inherit; transition: background 0.1s ease; }
 .lesson-type-popup-item:hover { background: #EFF6FF; }
 .lesson-type-popup-item.active { background: #DBEAFE; }
@@ -761,9 +763,6 @@ async function init() {
 
     renderMainTable();
 
-    // Двойной requestAnimationFrame: сначала достраиваем filler-колонки,
-    // когда DOM уже отрисован и размеры контейнера устоялись,
-    // затем ещё раз — на случай, если появился/исчез вертикальный скроллбар.
     requestAnimationFrame(() => {
         fillFillers();
         requestAnimationFrame(() => {
@@ -960,7 +959,6 @@ function renderPeriodTabs() {
             document.getElementById('mainContent').style.display = '';
             document.getElementById('emptyState').style.display = 'none';
             renderMainTable();
-            // Двойной RAF после смены периода
             requestAnimationFrame(() => {
                 fillFillers();
                 requestAnimationFrame(() => { fillFillers(); });
