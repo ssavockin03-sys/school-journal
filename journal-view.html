@@ -242,36 +242,12 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 /* ================= /СЕГОДНЯ ================= */
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-/* Скрываем нативную каретку и задаём увеличенный line-height для input */
-.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: transparent; }
+/* ====== input: 13.5px / 400 — совпадает с промежуточной отрисовкой в upg/upqtr ====== */
+.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 13.5px; font-weight: 400; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #000000; line-height: 1; }
 .grade-cell input:focus { background: #FFFFFF; cursor: text; z-index: 5; color: #1E293B !important; }
 .grade-cell input::selection { background: #BFDBFE; }
-
-/* Кастомная каретка: чёрная, в 1,5 раза выше, показывается только при фокусе в ячейке */
-.grade-cell::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 1.5px;
-    height: 24px; /* было ~16px при font-size 11px; 16 × 1.5 = 24px */
-    background: #000000;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 6;
-    opacity: 0;
-    transition: opacity 0.05s ease;
-}
-.grade-cell:focus-within::after {
-    opacity: 1;
-    animation: caretBlink 1s step-end infinite;
-}
-@keyframes caretBlink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
+/* .grade-box / .double-grade-box — финальный вид сохранённой оценки (жирный, как весь журнал) */
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
 .slash-divider { color: #CBD5E1; font-weight: 700; font-size: 10px; margin: 0 -1px; }
@@ -1201,41 +1177,6 @@ function fillFillers() {
     });
 }
 
-/* ===== Автозаполнение пустых колонок ===== */
-/* Наблюдаем за изменениями размеров контейнера журнала и таблицы оценок,
-   чтобы колонки-заполнители появлялись сразу и пересчитывались автоматически. */
-let fillerResizeObserver = null;
-function setupFillerObserver() {
-    if (fillerResizeObserver) fillerResizeObserver.disconnect();
-
-    const targets = [
-        document.getElementById('journalScroll'),
-        document.querySelector('.marks-table-wrapper'),
-        document.getElementById('panelLeft')
-    ].filter(Boolean);
-
-    if (typeof ResizeObserver === 'undefined' || targets.length === 0) return;
-
-    let scheduled = false;
-    fillerResizeObserver = new ResizeObserver(() => {
-        if (scheduled) return;
-        scheduled = true;
-        requestAnimationFrame(() => {
-            scheduled = false;
-            fillFillers();
-        });
-    });
-
-    targets.forEach(t => fillerResizeObserver.observe(t));
-}
-
-/* Пересчёт после загрузки шрифтов (ширина текста меняется) */
-if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => {
-        requestAnimationFrame(() => fillFillers());
-    });
-}
-
 function getGradeClass(value) {
     if (!value || typeof value !== 'string') return '';
     const base = value.trim().charAt(0);
@@ -1368,15 +1309,17 @@ async function upg(studentId, gradeKey, inputElement) {
         return;
     }
 
+    // Промежуточная отрисовка — та же жирность и размер, что у input (400 / 13.5px)
     const displayLayer = inputElement.previousElementSibling;
     if (displayLayer) {
-        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:700; font-size:12px;">${escapeHtml(up)}</div></div>`;
+        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
     }
 
     setTimeout(async () => {
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
         JOURNAL.grades[studentId][gradeKey] = up;
         await saveJournal();
+        // Финальная отрисовка — как весь журнал (жирная, в квадратике)
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     }, 200);
 }
@@ -1390,9 +1333,10 @@ async function upqtr(studentId, inputElement) {
         inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[ACTIVE_PERIOD_INDEX] || '';
         return;
     }
+    // Промежуточная отрисовка — та же жирность и размер, что у input (400 / 13.5px)
     const displayLayer = inputElement.previousElementSibling;
     if (displayLayer) {
-        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:700; font-size:12px;">${escapeHtml(up)}</div></div>`;
+        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
     }
     setTimeout(async () => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
@@ -1556,12 +1500,7 @@ function goBack() {
     window.location.href = 'admin.html';
 }
 
-init().then(() => {
-    /* После первичного рендера включаем автонаблюдение за размерами,
-       чтобы колонки-заполнители появлялись сразу, без раскрывашек. */
-    setupFillerObserver();
-    requestAnimationFrame(() => fillFillers());
-}).catch(err => {
+init().catch(err => {
     console.error('Ошибка init:', err);
     showEmpty('Ошибка', 'Не удалось загрузить журнал. Проверьте консоль (F12).');
 });
