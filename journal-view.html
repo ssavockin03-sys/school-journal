@@ -242,6 +242,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 /* ================= /СЕГОДНЯ ================= */
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
+/* ====== ИЗМЕНЕНО: font-size 15px (каретка выше), font-weight 400 (ввод не жирный) ====== */
 .grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 15px; font-weight: 400; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #000000; line-height: 1; }
 .grade-cell input:focus { background: #FFFFFF; cursor: text; z-index: 5; color: #1E293B !important; }
 .grade-cell input::selection { background: #BFDBFE; }
@@ -1307,15 +1308,16 @@ async function upg(studentId, gradeKey, inputElement) {
         return;
     }
 
-    // Промежуточная отрисовка — тот же makeGradeDisplay, что и финальный вид,
-    // поэтому размер цифры не меняется ни во время задержки, ни после неё.
     const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+    if (displayLayer) {
+        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:700; font-size:12px;">${escapeHtml(up)}</div></div>`;
+    }
 
     setTimeout(async () => {
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
         JOURNAL.grades[studentId][gradeKey] = up;
         await saveJournal();
+        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     }, 200);
 }
 
@@ -1328,15 +1330,15 @@ async function upqtr(studentId, inputElement) {
         inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[ACTIVE_PERIOD_INDEX] || '';
         return;
     }
-
-    // То же самое: промежуточная отрисовка идентична финальной.
     const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-
+    if (displayLayer) {
+        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:700; font-size:12px;">${escapeHtml(up)}</div></div>`;
+    }
     setTimeout(async () => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
         await saveJournal();
+        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     }, 200);
 }
 
