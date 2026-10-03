@@ -265,6 +265,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table thead th.col-filler-head { background: #E8EEF5 !important; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; }
 .marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; pointer-events: none; cursor: default; }
 .marks-table tbody tr:nth-child(5n) td.col-filler-body { border-bottom: 1px solid #000000 !important; }
+/* «Остаточная» колонка — прижимаем вправо, без правого бордера (он и так у края) */
 .marks-table thead th.col-filler-head.col-filler-last { border-right: none; }
 .marks-table tbody td.col-filler-body.col-filler-last { border-right: none; }
 
@@ -337,66 +338,9 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     height: 63px;
     padding: 0 !important;
 }
-
-/* ====== Ячейка ТЕМЫ: инпут с синей кнопкой справа (как на фото) ====== */
-.theme-cell {
-    padding: 0 8px;
-    display: flex;
-    align-items: center;
-    justify-content: stretch;
-    height: 63px;
-}
-.theme-input-wrap {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 40px;
-    background: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 10px;
-    padding: 0 4px 0 12px;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    box-sizing: border-box;
-}
-.theme-input-wrap:focus-within {
-    border-color: #BFDBFE;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-}
-.theme-input {
-    flex: 1 1 auto;
-    min-width: 0;
-    height: 100%;
-    border: none;
-    background: transparent;
-    font-size: 13px;
-    color: #1E293B;
-    font-family: inherit;
-    outline: none;
-    padding: 0;
-    line-height: 1.2;
-}
-.theme-input::placeholder { color: #94A3B8; }
-.theme-input.placeholder-style { color: #94A3B8 !important; font-style: normal; }
-
-.theme-save-btn {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: #2563EB;
-    border: none;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.15s ease;
-    margin-left: 6px;
-}
-.theme-save-btn:hover { background: #1D4ED8; }
-.theme-save-btn:active { background: #1E40AF; }
-.theme-save-btn svg { width: 16px; height: 16px; fill: currentColor; }
+.text-area-input { width: 100%; height: 61px; border: 1px solid transparent; background: transparent; font-size: 13px; padding: 7px 10px; resize: none; text-align: left; cursor: pointer; color: #334155; line-height: 1.4; font-family: inherit; outline: none; border-radius: 4px; box-sizing: border-box; display: block; overflow: hidden; word-wrap: break-word; white-space: pre-wrap; }
+.text-area-input.placeholder-style { color: #0EA5E9 !important; font-style: italic; font-size: 13.5px; text-align: left; }
+.text-area-input:focus { background: #FFFFFF; border-color: #2563EB; cursor: text; color: #1E293B !important; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
 
 /* ====== Ячейка ДЗ: строка [textarea | кнопка] ====== */
 .homework-cell {
@@ -414,14 +358,15 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     box-sizing: border-box;
     z-index: 1;
 }
-.text-area-input { width: 100%; height: 57px; border: 1px solid transparent; background: transparent; font-size: 13px; padding: 4px 4px 4px 0; resize: none; text-align: left; cursor: pointer; color: #334155; line-height: 1.3; font-family: inherit; outline: none; border-radius: 4px; box-sizing: border-box; display: block; overflow: hidden; word-wrap: break-word; white-space: pre-wrap; }
-.text-area-input.placeholder-style { color: #0EA5E9 !important; font-style: italic; font-size: 13.5px; text-align: left; }
-.text-area-input:focus { background: #FFFFFF; border-color: #2563EB; cursor: text; color: #1E293B !important; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
 .homework-cell .text-area-input {
     flex: 1 1 auto;
     min-width: 0;
     width: auto;
     height: 57px;
+    padding: 4px 4px 4px 0;
+    font-size: 13px;
+    line-height: 1.3;
+    box-sizing: border-box;
     align-self: center;
 }
 .btn-online-inline {
@@ -1172,67 +1117,40 @@ function renderMainTable() {
         }
     });
 
-    /* ====== Поурочный план: строка с новым видом темы ====== */
     DATES.forEach((d, dIdx) => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: '' };
-        const themeValue = l.t || '';
+        const themeText = l.t || 'Добавить тему';
         const homeworkText = l.h || '+ ДЗ к след. уроку';
+        const themeClass = !l.t ? 'placeholder-style' : '';
         const homeworkClass = !l.h ? 'placeholder-style' : '';
 
         const tr = document.createElement('tr');
         tr.className = 'lesson-row';
-
-        // № и дата — как раньше
-        const tdNum = document.createElement('td');
-        tdNum.className = 'lesson-num-cell';
-        tdNum.textContent = dIdx + 1;
-        tr.appendChild(tdNum);
-
-        const tdDate = document.createElement('td');
-        tdDate.className = 'lesson-date-cell';
-        tdDate.textContent = d.dateFull;
-        tr.appendChild(tdDate);
-
-        // ==== ТЕМА: инпут с синей кнопкой справа ====
-        const tdTheme = document.createElement('td');
-        tdTheme.className = 'theme-cell';
-        tdTheme.innerHTML = `
-            <div class="theme-input-wrap">
-                <input type="text"
-                       class="theme-input"
-                       placeholder="Добавить тему"
-                       value="${escapeHtml(themeValue)}"
-                       onchange="upl('${d.gradeKey}', 't', this.value)"
-                       onkeydown="if(event.key==='Enter'){this.blur();}">
-                <button type="button"
-                        class="theme-save-btn"
-                        title="Сохранить тему"
-                        onclick="showToast('Сохранение темы — в разработке')">
-                    <svg viewBox="0 0 24 24"><path d="M19 7v4H5.83l3.58-3.59L8 6l-6 6 6 6 1.41-1.41L5.83 13H21V7z"/></svg>
+        tr.innerHTML = `
+            <td class="lesson-num-cell">${dIdx + 1}</td>
+            <td class="lesson-date-cell">${d.dateFull}</td>
+            <td>
+                <textarea class="text-area-input ${themeClass}"
+                    onfocus="handlePlaceholder(this, 'Добавить тему', true)"
+                    onblur="handlePlaceholder(this, 'Добавить тему', false)"
+                    onchange="upl('${d.gradeKey}', 't', this.value)">${escapeHtml(themeText)}</textarea>
+            </td>
+            <td class="homework-cell">
+                <textarea class="text-area-input ${homeworkClass}"
+                    onfocus="handlePlaceholder(this, '+ ДЗ к след. уроку', true)"
+                    onblur="handlePlaceholder(this, '+ ДЗ к след. уроку', false)"
+                    onchange="upl('${d.gradeKey}', 'h', this.value)">${escapeHtml(homeworkText)}</textarea>
+                <button type="button" class="btn-online-inline" onclick="showToast('Выдача онлайн-урока — в разработке')">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    Выдать онлайн
                 </button>
-            </div>
+            </td>
         `;
-        tr.appendChild(tdTheme);
-
-        // ==== ДЗ: как было — textarea + кнопка «Выдать онлайн» ====
-        const tdHw = document.createElement('td');
-        tdHw.className = 'homework-cell';
-        tdHw.innerHTML = `
-            <textarea class="text-area-input ${homeworkClass}"
-                onfocus="handlePlaceholder(this, '+ ДЗ к след. уроку', true)"
-                onblur="handlePlaceholder(this, '+ ДЗ к след. уроку', false)"
-                onchange="upl('${d.gradeKey}', 'h', this.value)">${escapeHtml(homeworkText)}</textarea>
-            <button type="button" class="btn-online-inline" onclick="showToast('Выдача онлайн-урока — в разработке')">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                Выдать онлайн
-            </button>
-        `;
-        tr.appendChild(tdHw);
-
         pBody.appendChild(tr);
     });
 }
 
+/* ==== Заполнение «мёртвых» колонок + «остаточная» колонка под белый зазор ==== */
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
@@ -1263,6 +1181,7 @@ function fillFillers() {
     const sRow = document.getElementById('sRow');
     const jBody = document.getElementById('jBody');
 
+    // Полные «мёртвые» колонки
     for (let i = 0; i < fullCols; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
@@ -1290,6 +1209,7 @@ function fillFillers() {
         }
     });
 
+    // «Остаточная» колонка — только если есть хотя бы пара пикселей остатка
     if (remainder >= 2) {
         const rw = remainder + 'px';
         const thHead1 = document.createElement('th');
