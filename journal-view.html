@@ -9,18 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
-html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
-.top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; background: #FFFFFF; flex-wrap: wrap; }
+html { -webkit-font-smoothing: antialiased; }
+body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
+.top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
 .top-nav .sep { color: #CBD5E1; font-size: 12px; }
-.top-nav .current { color: #2563EB; font-weight: 500; cursor: default; }
-.header-bar { background: #FFFFFF; padding: 4px 30px 10px 30px; }
+.top-nav .current { color: #2563EB; font-weight: 500; }
+.header-bar { padding: 4px 30px 10px 30px; }
 .header-grid { display: inline-grid; grid-template-columns: max-content max-content; column-gap: 40px; row-gap: 8px; align-items: center; }
-.header-grid .cell { min-width: 0; }
 .dropdown { position: relative; display: inline-block; }
-.dropdown-trigger { display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: transparent; border: none; font-size: 17.85px; font-weight: 700; color: #3B82F6; cursor: pointer; font-family: inherit; white-space: nowrap; letter-spacing: -0.4px; line-height: 1.15; }
+.dropdown-trigger { display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: transparent; border: none; font-size: 17.85px; font-weight: 700; color: #3B82F6; cursor: pointer; font-family: inherit; white-space: nowrap; letter-spacing: -0.4px; }
 .dropdown-trigger:hover { color: #2563EB; }
 .dropdown-trigger .chevron { width: 13px; height: 13px; fill: #3B82F6; transition: transform 0.2s ease; margin-top: 3px; }
 .dropdown.open .dropdown-trigger .chevron { transform: rotate(180deg); }
@@ -29,36 +28,32 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .dropdown-menu-item { display: block; width: 100%; padding: 8px 12px; background: transparent; border: none; border-radius: 5px; color: #1E293B; font-size: 14px; font-weight: 500; cursor: pointer; text-align: left; font-family: inherit; }
 .dropdown-menu-item:hover { background: #EFF6FF; color: #2563EB; }
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
-.header-meta-item { font-size: 13px; color: #1E293B; font-weight: 400; white-space: nowrap; }
-.period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; background: #FFFFFF; flex-wrap: wrap; }
-.period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 3px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; flex-wrap: wrap; }
-.tab-pill { padding: 5px 12px; background: transparent; color: #64748B; font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 6px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
+.header-meta-item { font-size: 13px; color: #1E293B; }
+.period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; }
+.period-tabs-group { display: inline-flex; align-items: center; padding: 3px; border: 1px solid #CBD5E1; border-radius: 8px; flex-wrap: wrap; }
+.tab-pill { padding: 5px 12px; background: transparent; color: #64748B; font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 6px; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; }
 .tab-pill:hover { background: #F1F5F9; color: #334155; }
 .tab-pill.active { background: #FFFFFF; color: #2563EB; border-color: #2563EB; font-weight: 600; }
 .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
-.btn-import { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFFFFF; color: #334155; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; }
+.btn-import { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFFFFF; color: #334155; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
 .btn-import:hover { background: #F8FAFC; border-color: #94A3B8; }
 .btn-import svg { width: 14px; height: 14px; fill: #64748B; }
-.btn-text-action { padding: 5px 10px; background: transparent; border: none; color: #2563EB; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border-radius: 6px; white-space: nowrap; transition: all 0.15s ease; }
-.btn-text-action:hover { background: #EFF6FF; color: #1D4ED8; }
-.btn-outlined-blue { padding: 5px 10px; background: #FFFFFF; border: 1px solid #2563EB; color: #2563EB; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border-radius: 6px; white-space: nowrap; transition: all 0.15s ease; }
+.btn-text-action { padding: 5px 10px; background: transparent; border: none; color: #2563EB; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border-radius: 6px; transition: all 0.15s ease; }
+.btn-text-action:hover { background: #EFF6FF; }
+.btn-outlined-blue { padding: 5px 10px; background: #FFFFFF; border: 1px solid #2563EB; color: #2563EB; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border-radius: 6px; transition: all 0.15s ease; }
 .btn-outlined-blue:hover { background: #EFF6FF; }
-.icon-actions { display: inline-flex; align-items: center; gap: 2px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 2px; }
-.icon-action-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: transparent; border: none; border-radius: 4px; color: #64748B; cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
+.icon-actions { display: inline-flex; align-items: center; gap: 2px; border: 1px solid #CBD5E1; border-radius: 6px; padding: 2px; }
+.icon-action-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: transparent; border: none; border-radius: 4px; color: #64748B; cursor: pointer; font-family: inherit; }
 .icon-action-btn:hover { background: #F1F5F9; color: #1E293B; }
 .icon-action-btn svg { width: 15px; height: 15px; fill: currentColor; }
 .icon-action-btn .excel-icon { fill: #217346; }
 
 .panels-container {
     display: flex;
-    gap: 0;
-    width: 100%;
-    align-items: stretch;
-    position: relative;
-    transition: all 0.3s ease;
     padding: 0 30px;
     height: calc(100vh - 185px);
     min-height: 300px;
+    align-items: stretch;
 }
 .panel-left-wrapper, .panel-right-wrapper {
     display: flex;
@@ -66,7 +61,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     flex: 1 1 0;
     min-width: 0;
     overflow: hidden;
-    transition: flex-basis 0.35s ease, max-width 0.35s ease;
+    transition: flex-basis 0.3s ease, max-width 0.3s ease;
     height: 100%;
 }
 .panel-left {
@@ -80,7 +75,6 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     border-radius: 8px 0 0 8px;
     display: flex;
     flex-direction: column;
-    transition: border-radius 0.35s ease;
     margin: 0 0 12px 0;
 }
 .panel-right {
@@ -88,15 +82,12 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     min-width: 0;
     height: 100%;
     overflow: auto;
-    overscroll-behavior: contain;
     border: 1px solid #CBD5E1;
     background: #FFFFFF;
     border-radius: 0 8px 8px 0;
     border-left: none;
-    transition: border-radius 0.35s ease;
     margin: 0 0 12px 0;
 }
-
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
 .panels-container.left-collapsed .panel-right { border-radius: 8px; border-left: 1px solid #CBD5E1; }
@@ -104,150 +95,79 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
 .panels-container.right-collapsed .panel-left { border-radius: 8px; border-right: 1px solid #CBD5E1; }
 
-.side-toggle-tabs {
-    width: 0;
-    flex-shrink: 0;
-    position: relative;
-    background: transparent;
-    margin: 0 0 12px 0;
-    align-self: stretch;
-}
+.side-toggle-tabs { width: 0; flex-shrink: 0; position: relative; margin: 0 0 12px 0; align-self: stretch; }
 .side-toggle-tab {
-    position: absolute;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    height: 130px;
-    width: 27px;
-    padding: 0;
-    background: #3B82F6;
-    color: #FFFFFF;
-    border: 1px solid #3B82F6;
-    font-size: 8.8px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s ease;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    white-space: nowrap;
-    user-select: none;
-    line-height: 1;
-    letter-spacing: 0.2px;
-    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25);
-    z-index: 6;
+    position: absolute; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    height: 130px; width: 27px; padding: 0; background: #3B82F6; color: #FFFFFF;
+    border: 1px solid #3B82F6; font-size: 8.8px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: all 0.2s ease;
+    writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap;
+    user-select: none; line-height: 1; letter-spacing: 0.2px;
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25); z-index: 6;
 }
-.side-toggle-tab.tab-left {
-    left: 100%;
-    top: calc(47% - 130px);
-    border-radius: 8px 0 0 8px;
-    border-right: none;
-    transform: rotate(180deg);
-}
-.side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
-.side-toggle-tab.tab-right {
-    right: 100%;
-    top: 47%;
-    border-radius: 0 8px 8px 0;
-    border-left: none;
-    transform: rotate(180deg);
-}
-.side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
+.side-toggle-tab.tab-left { left: 100%; top: calc(47% - 130px); border-radius: 8px 0 0 8px; border-right: none; transform: rotate(180deg); }
+.side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; }
+.side-toggle-tab.tab-right { right: 100%; top: 47%; border-radius: 0 8px 8px 0; border-left: none; transform: rotate(180deg); }
+.side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; }
 .side-toggle-tab svg { width: 9.8px; height: 9.8px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
-.journal-scroll {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    overscroll-behavior: contain;
-    position: relative;
-}
+.journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 5; }
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CBD5E1; pointer-events: none; z-index: 20; }
-.fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; transform: translateZ(0); }
+.fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
 .fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-bottom: 1px solid #CBD5E1; box-sizing: border-box; }
 .fio-table thead th { background: #E8EEF5 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 10; }
-.fio-table td { padding: 0 10px; color: #1E293B; font-weight: 400; white-space: nowrap; background: #FFFFFF; }
-.fio-table .student-number-text { display: inline-block; width: 22px; color: #1E293B; margin-right: 6px; font-size: 13.65px; font-weight: 400; text-align: right; }
-.fio-table .student-name-text { display: inline-block; font-size: 13.65px; color: #1E293B; font-weight: 400; text-align: left; }
+.fio-table td { padding: 0 10px; color: #1E293B; background: #FFFFFF; }
+.fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
+.fio-table .student-name-text { display: inline-block; font-size: 13.65px; }
 .fio-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
-.marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; transform: translateZ(0); }
-.marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; box-sizing: border-box; overflow: visible; }
-.marks-table th { background: #E8EEF5 !important; font-weight: 600; color: #475569; font-size: 11px; letter-spacing: 0.2px; }
+.marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
+.marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; box-sizing: border-box; }
+.marks-table th { background: #E8EEF5 !important; font-weight: 600; color: #475569; font-size: 11px; }
 .marks-table thead { position: sticky; top: 0; z-index: 10; }
 .marks-table thead th { background: #E8EEF5 !important; }
-.col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; z-index: 1; }
-.marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; cursor: pointer; font-size: 12px !important; font-weight: 400 !important; text-align: center; z-index: 5; padding: 0; position: relative; }
-.marks-table thead tr:nth-child(2) .col-date { cursor: pointer !important; font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; text-align: center; user-select: none; transition: background 0.15s ease; z-index: 5; padding: 0; }
+.col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
+.marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; font-size: 12px !important; font-weight: 400 !important; position: relative; }
+.marks-table thead tr:nth-child(2) .col-date { font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; cursor: pointer !important; user-select: none; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #D6E2F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
 .marks-table thead th.col-today,
 .marks-table tbody td.col-today {
     background: #EFF6FF !important;
-    box-shadow:
-        inset 1px 0 0 0 #1D4ED8,
-        inset -1px 0 0 0 #1D4ED8;
+    box-shadow: inset 1px 0 0 0 #1D4ED8, inset -1px 0 0 0 #1D4ED8;
 }
 .marks-table thead tr:first-child th.col-today {
-    box-shadow:
-        inset 1px 0 0 0 #1D4ED8,
-        inset -1px 0 0 0 #1D4ED8,
-        inset 0 1px 0 0 #1D4ED8;
-}
-.marks-table thead tr:nth-child(2) th.col-today {
-    box-shadow:
-        inset 1px 0 0 0 #1D4ED8,
-        inset -1px 0 0 0 #1D4ED8;
+    box-shadow: inset 1px 0 0 0 #1D4ED8, inset -1px 0 0 0 #1D4ED8, inset 0 1px 0 0 #1D4ED8;
 }
 .marks-table tbody tr:last-child td.col-today {
-    box-shadow:
-        inset 1px 0 0 0 #1D4ED8,
-        inset -1px 0 0 0 #1D4ED8,
-        inset 0 -1px 0 0 #1D4ED8;
-}
-.marks-table thead tr:first-child th.col-today {
-    line-height: 36px;
-    height: 38px;
-    padding: 0;
-    vertical-align: middle;
+    box-shadow: inset 1px 0 0 0 #1D4ED8, inset -1px 0 0 0 #1D4ED8, inset 0 -1px 0 0 #1D4ED8;
 }
 .marks-table thead tr:first-child th.col-today .today-label {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 4%;
-    display: block;
-    font-size: 9px;
-    color: #64748B;
-    font-weight: 400;
-    line-height: 9px;
-    letter-spacing: 0;
-    text-transform: none;
-    pointer-events: none;
-    text-align: center;
+    position: absolute; left: 0; right: 0; bottom: 4%; display: block;
+    font-size: 9px; color: #64748B; font-weight: 400; line-height: 9px;
+    pointer-events: none; text-align: center;
 }
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 13.5px; font-weight: 400; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; caret-color: #000000; line-height: 1; }
-.grade-cell input:focus { background: #FFFFFF; cursor: text; z-index: 5; color: #1E293B !important; }
+.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 13.5px; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; }
+.grade-cell input:focus { background: #FFFFFF; cursor: text; color: #1E293B !important; }
 .grade-cell input::selection { background: #BFDBFE; }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
-.grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; border-radius: 0; line-height: 1; }
-.double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; border-radius: 0; line-height: 1; }
+.grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
+.double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; line-height: 1; }
 .slash-divider { color: #CBD5E1; font-weight: 700; font-size: 10px; margin: 0 -1px; }
-.grade-4, .grade-5 { background: #65A30D !important; color: #FFFFFF !important; }
-.grade-3 { background: #FB923C !important; color: #FFFFFF !important; }
-.bad-grade { background: #DC2626 !important; color: #FFFFFF !important; }
-.status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; font-weight: 400 !important; pointer-events: none; z-index: 4; background: transparent !important; border: none !important; padding: 0 !important; line-height: 1; }
+.grade-4, .grade-5 { background: #65A30D !important; }
+.grade-3 { background: #FB923C !important; }
+.bad-grade { background: #DC2626 !important; }
+.status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; pointer-events: none; z-index: 4; }
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
-.col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
-.marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
-.col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; font-weight: 400 !important; color: #000000 !important; padding: 0 4px; }
-.marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; padding: 0 4px; }
+.col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
+.marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
+.col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
+.marks-table thead .col-qtr { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
 
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within { position: relative; z-index: 6; }
@@ -255,23 +175,17 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .marks-table td.col-qtr:focus-within::after { content: ''; position: absolute; inset: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 7; }
 
 .marks-table thead th.col-filler-head { background: #E8EEF5 !important; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; }
-.marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; pointer-events: none; cursor: default; }
+.marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CBD5E1; border-bottom: 1px solid #CBD5E1; pointer-events: none; }
 .marks-table tbody tr:nth-child(5n) td.col-filler-body { border-bottom: 1px solid #000000 !important; }
-.marks-table thead th.col-filler-head.col-filler-last { border-right: none; }
+.marks-table thead th.col-filler-head.col-filler-last,
 .marks-table tbody td.col-filler-body.col-filler-last { border-right: none; }
 
-.journal-scroll::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
-.journal-scroll::-webkit-scrollbar-track { background: transparent; }
-.journal-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
-.journal-scroll::-webkit-scrollbar-thumb:hover { background: #94A3B8; background-clip: padding-box; }
-.journal-scroll::-webkit-scrollbar-corner { background: transparent; }
+.journal-scroll::-webkit-scrollbar, .panel-right::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
+.journal-scroll::-webkit-scrollbar-thumb, .panel-right::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
+.journal-scroll::-webkit-scrollbar-thumb:hover, .panel-right::-webkit-scrollbar-thumb:hover { background: #94A3B8; background-clip: padding-box; }
+.journal-scroll::-webkit-scrollbar-corner, .panel-right::-webkit-scrollbar-corner { background: transparent; }
 
-.panel-right::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
-.panel-right::-webkit-scrollbar-track { background: transparent; }
-.panel-right::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
-.panel-right::-webkit-scrollbar-thumb:hover { background: #94A3B8; background-clip: padding-box; }
-.panel-right::-webkit-scrollbar-corner { background: transparent; }
-
+/* ====== Правая панель ====== */
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th {
@@ -287,14 +201,12 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     border: none;
     border-right: 1px solid #CBD5E1;
     border-bottom: 1px solid #CBD5E1;
-    position: relative;
 }
 .panel-right table th:last-child { border-right: none; }
-.panel-right table th:nth-child(1) { color: #1E293B !important; width: 40px; }
-.panel-right table th:nth-child(2) { color: #1E293B !important; width: 80px; }
+.panel-right table th:nth-child(1) { width: 40px; }
+.panel-right table th:nth-child(2) { width: 80px; }
 .panel-right table th:nth-child(3) { width: 38%; }
 .panel-right table th:nth-child(4) { width: 47%; }
-.lesson-row { background: #FFFFFF !important; }
 .panel-right tbody td {
     background: #FFFFFF !important;
     border: none;
@@ -302,81 +214,104 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     border-bottom: 1px solid #CBD5E1;
     vertical-align: top;
     text-align: left;
-    padding: 0;
+    padding: 4px 6px;
     box-sizing: border-box;
+    word-wrap: break-word;
 }
 .panel-right tbody td:last-child { border-right: none; }
 .panel-right tbody td.lesson-num-cell {
     font-weight: 600;
     background: #F4F7FB !important;
-    vertical-align: middle !important;
+    vertical-align: middle;
     color: #475569;
     font-size: 12px;
-    text-align: center !important;
+    text-align: center;
     padding: 0 !important;
-    border-right: 1px solid #CBD5E1;
-    border-bottom: 1px solid #CBD5E1;
 }
-.lesson-date-cell {
+.panel-right tbody td.lesson-date-cell {
     font-weight: 600;
     background: #FFFFFF !important;
-    vertical-align: middle !important;
+    vertical-align: middle;
     color: #0EA5E9;
     font-size: 12px;
-    text-align: center !important;
+    text-align: center;
     padding: 0 !important;
 }
 
-/* ====== Ячейки темы и ДЗ ====== */
-.editable-cell {
-    position: relative;
-    vertical-align: top;
-    padding: 4px 6px;
-    background: #FFFFFF !important;
-    text-align: left;
-    box-sizing: border-box;
-    min-height: 63px;
-    height: auto;
-}
-
-/* VIEW-режим */
-.cell-view {
-    display: block;
-    width: 100%;
-    min-height: 34px;
-    padding: 4px 6px;
-    border-radius: 8px;
+/* ====== Ячейки ====== */
+.theme-cell {
     font-size: 13px;
     line-height: 1.35;
     color: #334155;
-    cursor: pointer;
-    transition: background 0.15s ease, box-shadow 0.15s ease;
-    box-sizing: border-box;
-    word-wrap: break-word;
     white-space: pre-wrap;
-    text-align: left;
-    margin: 0;
+    word-wrap: break-word;
+    min-height: 40px;
 }
-.cell-view:hover {
-    background: #F8FAFC;
-    box-shadow: inset 0 0 0 1px #E2E8F0;
-    cursor: pointer;
+.homework-cell-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
-.cell-view.placeholder-style {
+
+.hw-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 1.35;
+    color: #334155;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+.hw-item-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Плейсхолдер-кнопка "Добавить тему" / "+ ДЗ" */
+.placeholder-btn {
+    display: inline-block;
+    padding: 2px 6px;
+    border: none;
+    background: transparent;
     color: #0EA5E9;
     font-style: italic;
     font-size: 13.5px;
+    font-weight: 400;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: inherit;
+    text-align: left;
+    transition: background 0.12s ease;
+    width: 100%;
 }
+.placeholder-btn:hover { background: #F1F5F9; }
 
-/* EDIT-режим */
-.cell-edit {
+.add-hw-btn {
+    display: inline-block;
+    padding: 2px 6px;
+    border: none;
+    background: transparent;
+    color: #0EA5E9;
+    font-style: italic;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: inherit;
+    text-align: left;
+    transition: background 0.12s ease;
+    margin-top: 2px;
+}
+.add-hw-btn:hover { background: #F1F5F9; }
+
+/* Edit-режим */
+.edit-bubble {
     display: flex;
     align-items: flex-start;
     gap: 6px;
     width: 100%;
-    margin: 0;
 }
-.cell-edit-input {
+.edit-bubble textarea {
     flex: 1 1 auto;
     min-width: 0;
     min-height: 32px;
@@ -391,58 +326,38 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     resize: none;
     line-height: 1.35;
     box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
-    box-sizing: border-box;
     overflow: hidden;
     white-space: pre-wrap;
     word-wrap: break-word;
+    box-sizing: border-box;
 }
-.cell-edit-input:focus {
+.edit-bubble textarea:focus {
     border-color: #94A3B8;
     box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1);
 }
-
-.cell-edit-confirm {
+.edit-bubble .confirm-btn {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 26px;
     height: 26px;
-    padding: 0;
     background: #2563EB;
     border: none;
     border-radius: 7px;
     color: #FFFFFF;
     cursor: pointer;
-    transition: background 0.15s ease, transform 0.1s ease;
     margin-top: 3px;
 }
-.cell-edit-confirm:hover { background: #1D4ED8; }
-.cell-edit-confirm:active { transform: scale(0.94); }
-.cell-edit-confirm svg { width: 13px; height: 13px; fill: #FFFFFF; }
+.edit-bubble .confirm-btn:hover { background: #1D4ED8; }
+.edit-bubble .confirm-btn svg { width: 13px; height: 13px; fill: #FFFFFF; }
 
-/* ДЗ-список */
-.homework-cell {
-    display: block;
-}
-.hw-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    margin-bottom: 4px;
-}
-.hw-item:last-child { margin-bottom: 0; }
-.hw-item .cell-view,
-.hw-item .cell-edit {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-.hw-item .btn-online-inline {
+.btn-online-inline {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     gap: 3px;
-    padding: 4px 8px;
+    padding: 3px 7px;
     background: #FFFFFF;
     border: 1px solid #93C5FD;
     border-radius: 6px;
@@ -453,60 +368,36 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     font-family: inherit;
     white-space: nowrap;
     line-height: 1.3;
-    transition: all 0.15s ease;
-    margin-top: 3px;
-}
-.hw-item .btn-online-inline:hover { background: #EFF6FF; border-color: #2563EB; color: #1D4ED8; }
-.hw-item .btn-online-inline svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
-
-/* Кнопка "+ ДЗ к след. уроку" */
-.add-hw-btn {
-    display: inline-block;
-    padding: 4px 6px;
-    border: none;
-    background: transparent;
-    color: #0EA5E9;
-    font-style: italic;
-    font-size: 13.5px;
-    font-weight: 400;
-    cursor: pointer;
-    border-radius: 8px;
-    font-family: inherit;
-    text-align: left;
-    transition: background 0.15s ease;
     margin-top: 2px;
+    transition: all 0.15s ease;
 }
-.add-hw-btn:hover { background: #F8FAFC; }
+.btn-online-inline:hover { background: #EFF6FF; border-color: #2563EB; }
+.btn-online-inline svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
 
-.empty-state { padding: 60px 30px; text-align: center; background: #FFFFFF; border-radius: 10px; border: 1px solid #CBD5E1; margin: 24px 30px; }
+.empty-state { padding: 60px 30px; text-align: center; border-radius: 10px; border: 1px solid #CBD5E1; margin: 24px 30px; }
 .empty-state svg { width: 56px; height: 56px; fill: #CBD5E1; margin-bottom: 14px; }
-.empty-state h2 { font-size: 17px; font-weight: 700; color: #1E293B; margin-bottom: 8px; }
+.empty-state h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
 .empty-state p { font-size: 13px; color: #64748B; max-width: 480px; margin: 0 auto 18px; line-height: 1.6; }
-.lesson-type-popup { position: fixed; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18); z-index: 9999; display: none; flex-direction: column; width: 260px; max-height: 340px; overflow: hidden; animation: popupAppear 0.15s ease; }
+
+.lesson-type-popup { position: fixed; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18); z-index: 9999; display: none; flex-direction: column; width: 260px; max-height: 340px; overflow: hidden; }
 .lesson-type-popup.show { display: flex; }
-@keyframes popupAppear { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 .lesson-type-popup-search { padding: 6px; border-bottom: 1px solid #E2E8F0; flex-shrink: 0; }
-.lesson-type-popup-search input { width: 100%; height: 30px; padding: 0 10px; font-size: 12.5px; border: 1px solid #CBD5E1; border-radius: 6px; outline: none; font-family: inherit; color: #1E293B; background: #F8FAFC; }
-.lesson-type-popup-search input:focus { border-color: #2563EB; background: #FFFFFF; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
+.lesson-type-popup-search input { width: 100%; height: 30px; padding: 0 10px; font-size: 12.5px; border: 1px solid #CBD5E1; border-radius: 6px; outline: none; font-family: inherit; }
+.lesson-type-popup-search input:focus { border-color: #2563EB; }
 .lesson-type-popup-list { overflow-y: auto; flex: 1; padding: 4px; }
-.lesson-type-popup-list::-webkit-scrollbar { width: 12px; background: transparent; }
-.lesson-type-popup-list::-webkit-scrollbar-track { background: transparent; }
-.lesson-type-popup-list::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; border: 2px solid transparent; background-clip: padding-box; }
-.lesson-type-popup-list::-webkit-scrollbar-thumb:hover { background: #94A3B8; background-clip: padding-box; }
-.lesson-type-popup-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; background: transparent; border: none; border-radius: 5px; cursor: pointer; text-align: left; font-family: inherit; transition: background 0.1s ease; }
+.lesson-type-popup-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; background: transparent; border: none; border-radius: 5px; cursor: pointer; text-align: left; font-family: inherit; }
 .lesson-type-popup-item:hover { background: #EFF6FF; }
 .lesson-type-popup-item.active { background: #DBEAFE; }
-.lesson-type-popup-item .abbr { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; height: 20px; padding: 0 6px; background: #F1F5F9; border-radius: 4px; font-size: 10.5px; font-weight: 700; color: #2563EB; font-family: 'Consolas', 'Monaco', monospace; flex-shrink: 0; letter-spacing: 0.2px; }
+.lesson-type-popup-item .abbr { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; height: 20px; padding: 0 6px; background: #F1F5F9; border-radius: 4px; font-size: 10.5px; font-weight: 700; color: #2563EB; font-family: monospace; flex-shrink: 0; }
 .lesson-type-popup-item.active .abbr { background: #2563EB; color: #FFFFFF; }
-.lesson-type-popup-item .full { font-size: 12px; color: #1E293B; font-weight: 500; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.lesson-type-popup-item .full { font-size: 12px; color: #1E293B; font-weight: 500; line-height: 1.25; }
 .lesson-type-popup-item.active .full { font-weight: 600; color: #1D4ED8; }
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
 
 @media (max-width: 1100px) {
     body { overflow: auto; }
-    .panels-container { flex-direction: column; padding: 0; height: auto; min-height: 0; }
-    .panel-left, .panel-right { max-height: 55vh; height: auto; border-radius: 8px; border-right: 1px solid #CBD5E1; border-left: 1px solid #CBD5E1; margin: 8px 12px; }
-    .panel-left-wrapper, .panel-right-wrapper { max-width: 100% !important; flex: 1 1 auto !important; height: auto; }
+    .panels-container { flex-direction: column; padding: 0; height: auto; }
+    .panel-left, .panel-right { max-height: 55vh; height: auto; border-radius: 8px; border: 1px solid #CBD5E1; margin: 8px 12px; }
     .side-toggle-tabs { display: none; }
     .fio-table thead th { position: static; }
     .header-bar { padding: 4px 16px 10px 16px; }
@@ -532,7 +423,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
         <div class="cell">
             <div class="dropdown" id="classDropdown">
                 <button type="button" class="dropdown-trigger" onclick="toggleClassDropdown(event)">
-                    <span class="class-name" id="classDropdownName">—</span>
+                    <span id="classDropdownName">—</span>
                     <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
                 </button>
                 <div class="dropdown-menu" id="classDropdownMenu"></div>
@@ -541,7 +432,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
         <div class="cell">
             <div class="dropdown" id="subjectDropdown">
                 <button type="button" class="dropdown-trigger" onclick="toggleSubjectDropdown(event)">
-                    <span class="subject-name" id="subjectDropdownName">—</span>
+                    <span id="subjectDropdownName">—</span>
                     <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
                 </button>
                 <div class="dropdown-menu" id="subjectDropdownMenu"></div>
@@ -753,10 +644,7 @@ function collectSubjectsFromSchedule(schedules, classId) {
                 Object.values(dayGrid || {}).forEach(lesson => {
                     if (!lesson || !lesson.subject) return;
                     if (!map.has(lesson.subject)) {
-                        map.set(lesson.subject, {
-                            name: lesson.subject,
-                            teacherName: lesson.teacherName || ''
-                        });
+                        map.set(lesson.subject, { name: lesson.subject, teacherName: lesson.teacherName || '' });
                     } else if (!map.get(lesson.subject).teacherName && lesson.teacherName) {
                         map.get(lesson.subject).teacherName = lesson.teacherName;
                     }
@@ -771,35 +659,30 @@ function todayIso() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+/* Нормализация h: строка → массив */
+function normalizeHwList(h) {
+    if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== '');
+    if (typeof h === 'string' && h.trim() !== '') return [h];
+    return [];
+}
+
 async function init() {
     const { classId, subjectId } = getUrlParams();
-
-    if (!classId || !subjectId) {
-        showEmpty('Не заданы параметры', 'В URL отсутствуют параметры class и subject.');
-        return;
-    }
-
+    if (!classId || !subjectId) { showEmpty('Не заданы параметры', 'В URL отсутствуют параметры class и subject.'); return; }
     CLASS_ID = classId;
     SUBJECT_ID = subjectId;
 
     const classes = await DB.getAll('classes');
     ALL_CLASSES = classes;
     CLASS_OBJ = classes.find(c => c.id === CLASS_ID);
-    if (!CLASS_OBJ) {
-        showEmpty('Класс не найден', 'В базе данных нет класса с указанным ID.');
-        return;
-    }
+    if (!CLASS_OBJ) { showEmpty('Класс не найден', 'В базе данных нет класса с указанным ID.'); return; }
 
     const subjects = await DB.getAll('subjects');
     SUBJECT_OBJ = subjects.find(s => s.id === SUBJECT_ID);
-    if (!SUBJECT_OBJ) {
-        showEmpty('Предмет не найден', 'В базе данных нет предмета с указанным ID.');
-        return;
-    }
+    if (!SUBJECT_OBJ) { showEmpty('Предмет не найден', 'В базе данных нет предмета с указанным ID.'); return; }
     SUBJECT_NAME = SUBJECT_OBJ.name;
 
     ALL_SCHEDULES = await DB.getAll('class_schedules');
-
     const classSubjects = collectSubjectsFromSchedule(ALL_SCHEDULES, CLASS_ID);
     const matched = classSubjects.find(s => s.name === SUBJECT_NAME);
     if (matched) TEACHER_NAME = matched.teacherName || '';
@@ -833,53 +716,22 @@ async function init() {
     }
 
     ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
-
     renderHeader();
     renderPeriodTabs();
 
-    if (STUDENTS.length === 0) {
-        showEmpty('В классе нет учеников', 'Добавьте учеников в этот класс через панель администратора.');
-        return;
-    }
+    if (STUDENTS.length === 0) { showEmpty('В классе нет учеников', 'Добавьте учеников в этот класс через панель администратора.'); return; }
 
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-
-    if (DATES.length === 0) {
-        showEmpty('Нет уроков в периоде', 'По расписанию в выбранном периоде нет уроков по этому предмету.');
-        return;
-    }
+    if (DATES.length === 0) { showEmpty('Нет уроков в периоде', 'По расписанию в выбранном периоде нет уроков по этому предмету.'); return; }
 
     renderMainTable();
-
     fillFillers();
-    requestAnimationFrame(() => { fillFillers(); });
-    observeJournalResize();
-
     document.title = `${CLASS_OBJ.name} · ${SUBJECT_NAME} — Журнал`;
-}
-
-let journalResizeObserver = null;
-function observeJournalResize() {
-    const journalScroll = document.getElementById('journalScroll');
-    if (!journalScroll) return;
-    if (typeof ResizeObserver === 'undefined') return;
-
-    if (journalResizeObserver) {
-        journalResizeObserver.disconnect();
-    }
-    journalResizeObserver = new ResizeObserver(() => {
-        fillFillers();
-    });
-    journalResizeObserver.observe(journalScroll);
-
-    const marksWrapper = document.querySelector('.marks-table-wrapper');
-    if (marksWrapper) journalResizeObserver.observe(marksWrapper);
 }
 
 function findActivePeriodIndex() {
     if (PERIODS.length === 0) return 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
     for (let i = 0; i < PERIODS.length; i++) {
         const per = PERIODS[i];
         const start = new Date(per.start + 'T00:00:00');
@@ -894,24 +746,15 @@ async function buildDatesForPeriod(periodIndex) {
     const subPeriod = PERIODS[periodIndex];
     if (!subPeriod) return [];
 
-    const schedules = ALL_SCHEDULES;
-
-    let classSchedule = schedules.find(s =>
-        s.class_id === CLASS_ID && s.period_index === periodIndex
-    );
-
+    let classSchedule = ALL_SCHEDULES.find(s => s.class_id === CLASS_ID && s.period_index === periodIndex);
     if (!classSchedule && periodIndex === 0) {
-        classSchedule = schedules.find(s =>
-            s.class_id === CLASS_ID && s.period_index === undefined
-        );
+        classSchedule = ALL_SCHEDULES.find(s => s.class_id === CLASS_ID && s.period_index === undefined);
     }
-
     if (!classSchedule || !classSchedule.grid) return [];
 
     const grid = classSchedule.grid;
     const result = [];
     const seen = new Set();
-
     const start = new Date(subPeriod.start + 'T00:00:00');
     const end = new Date(subPeriod.end + 'T23:59:59');
     const cursor = new Date(start);
@@ -919,7 +762,6 @@ async function buildDatesForPeriod(periodIndex) {
     while (cursor <= end) {
         const jsDay = cursor.getDay();
         const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
-
         if (dayKey && grid[dayKey]) {
             Object.keys(grid[dayKey]).forEach(lessonNumStr => {
                 const lesson = grid[dayKey][lessonNumStr];
@@ -929,12 +771,8 @@ async function buildDatesForPeriod(periodIndex) {
                     if (!seen.has(key)) {
                         seen.add(key);
                         result.push({
-                            iso: iso,
-                            dateNoYear: formatDateNoYear(cursor),
-                            dateFull: formatDateFull(cursor),
-                            dayKey: dayKey,
-                            lessonNum: parseInt(lessonNumStr, 10),
-                            gradeKey: key
+                            iso, dateNoYear: formatDateNoYear(cursor), dateFull: formatDateFull(cursor),
+                            dayKey, lessonNum: parseInt(lessonNumStr, 10), gradeKey: key
                         });
                     }
                 }
@@ -942,23 +780,13 @@ async function buildDatesForPeriod(periodIndex) {
         }
         cursor.setDate(cursor.getDate() + 1);
     }
-
-    result.sort((a, b) => {
-        if (a.iso !== b.iso) return a.iso.localeCompare(b.iso);
-        return a.lessonNum - b.lessonNum;
-    });
+    result.sort((a, b) => a.iso !== b.iso ? a.iso.localeCompare(b.iso) : a.lessonNum - b.lessonNum);
     return result;
 }
 
-function formatIso(d) {
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-function formatDateNoYear(d) {
-    return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}`;
-}
-function formatDateFull(d) {
-    return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`;
-}
+function formatIso(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function formatDateNoYear(d) { return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}`; }
+function formatDateFull(d) { return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`; }
 
 function renderHeader() {
     document.getElementById('classDropdownName').textContent = CLASS_OBJ.name;
@@ -1032,18 +860,15 @@ document.addEventListener('click', closeAllDropdowns);
 function renderPeriodTabs() {
     const container = document.getElementById('periodTabs');
     container.innerHTML = '';
-
     if (PERIODS.length === 0) {
         const tab = document.createElement('button');
         tab.type = 'button';
         tab.className = 'tab-pill active';
         tab.textContent = 'Периоды не созданы';
         tab.disabled = true;
-        tab.style.cursor = 'default';
         container.appendChild(tab);
         return;
     }
-
     const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
     PERIODS.forEach((p, idx) => {
         const tab = document.createElement('button');
@@ -1055,15 +880,11 @@ function renderPeriodTabs() {
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
             DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-            if (DATES.length === 0) {
-                showEmpty('Нет уроков в периоде', 'По расписанию в выбранном периоде нет уроков по этому предмету.');
-                return;
-            }
+            if (DATES.length === 0) { showEmpty('Нет уроков в периоде', 'По расписанию в выбранном периоде нет уроков по этому предмету.'); return; }
             document.getElementById('mainContent').style.display = '';
             document.getElementById('emptyState').style.display = 'none';
             renderMainTable();
             fillFillers();
-            requestAnimationFrame(() => { fillFillers(); });
         });
         container.appendChild(tab);
     });
@@ -1086,9 +907,7 @@ function renderMainTable() {
         const td = document.createElement('td');
         td.style.cursor = 'pointer';
         td.innerHTML = `<span class="student-number-text">${sIdx + 1}</span><span class="student-name-text">${escapeHtml(shortName)}</span>`;
-        td.addEventListener('click', () => {
-            window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id);
-        });
+        td.addEventListener('click', () => { window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id); });
         tr.appendChild(td);
         fioBody.appendChild(tr);
     });
@@ -1097,8 +916,7 @@ function renderMainTable() {
         const th = document.createElement('th');
         th.className = 'col-date';
         th.title = `Урок №${d.lessonNum}`;
-        const isToday = d.iso === todayIsoStr;
-        if (isToday) {
+        if (d.iso === todayIsoStr) {
             th.classList.add('col-today');
             th.innerHTML = `${d.dateNoYear}<span class="today-label">сегодня</span>`;
         } else {
@@ -1127,12 +945,8 @@ function renderMainTable() {
         const abbr = JOURNAL.lessonTypes[d.gradeKey] || 'ОТВ';
         th2.textContent = abbr;
         th2.title = 'Нажмите, чтобы выбрать тип урока';
-        const isToday = d.iso === todayIsoStr;
-        if (isToday) th2.classList.add('col-today');
-        th2.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openLessonTypePopup(e.currentTarget, d.gradeKey);
-        });
+        if (d.iso === todayIsoStr) th2.classList.add('col-today');
+        th2.addEventListener('click', (e) => { e.stopPropagation(); openLessonTypePopup(e.currentTarget, d.gradeKey); });
         sRow.appendChild(th2);
     });
 
@@ -1142,8 +956,7 @@ function renderMainTable() {
             const td = document.createElement('td');
             td.className = 'col-date';
             td.dataset.col = dIdx;
-            const isToday = d.iso === todayIsoStr;
-            if (isToday) td.classList.add('col-today');
+            if (d.iso === todayIsoStr) td.classList.add('col-today');
             const value = (JOURNAL.grades[student.id] || {})[d.gradeKey] || '';
             td.innerHTML = `
                 <div class="grade-cell">
@@ -1190,10 +1003,7 @@ function renderMainTable() {
                 let gp = v.replace(/[НОБП]|СП/g, '').trim();
                 if (!gp) return;
                 if (gp.includes('/')) {
-                    gp.split('/').forEach(p => {
-                        const n = parseInt(p);
-                        if (!isNaN(n)) { sum += n; count++; }
-                    });
+                    gp.split('/').forEach(p => { const n = parseInt(p); if (!isNaN(n)) { sum += n; count++; } });
                 } else {
                     const n = parseInt(gp);
                     if (!isNaN(n)) { sum += n; count++; }
@@ -1220,243 +1030,237 @@ function renderMainTable() {
         tdDate.textContent = d.dateFull;
         tr.appendChild(tdDate);
 
-        // Тема
         const tdTheme = document.createElement('td');
-        tdTheme.className = 'editable-cell theme-cell';
-        initThemeCell(tdTheme, d.gradeKey, l.t || '');
+        tdTheme.className = 'theme-cell';
+        renderThemeCell(tdTheme, d.gradeKey, l.t || '');
         tr.appendChild(tdTheme);
 
-        // ДЗ — список
         const tdHw = document.createElement('td');
-        tdHw.className = 'editable-cell homework-cell';
-        initHomeworkCell(tdHw, d.gradeKey, normalizeHwList(l.h));
+        tdHw.className = 'homework-cell';
+        renderHomeworkCell(tdHw, d.gradeKey, l.h);
         tr.appendChild(tdHw);
 
         pBody.appendChild(tr);
     });
 }
 
-/* Приводим h к массиву: строку → [строка], null → [] */
-function normalizeHwList(h) {
-    if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== '');
-    if (typeof h === 'string' && h.trim() !== '') return [h];
-    return [];
-}
-
-/* ==== ТЕМА ==== */
-function initThemeCell(cell, gradeKey, value) {
+/* ================= ТЕМА ================= */
+function renderThemeCell(cell, gradeKey, value) {
     cell.innerHTML = '';
-    renderThemeView(cell, gradeKey, value);
-}
-
-function renderThemeView(cell, gradeKey, value) {
     const isEmpty = !value;
-    const view = document.createElement('div');
-    view.className = 'cell-view' + (isEmpty ? ' placeholder-style' : '');
-    view.textContent = isEmpty ? 'Добавить тему' : value;
-    view.title = 'Нажмите, чтобы редактировать';
-    view.addEventListener('click', (e) => {
-        e.stopPropagation();
-        renderThemeEdit(cell, gradeKey, value);
-    });
-    cell.appendChild(view);
+
+    if (isEmpty) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'placeholder-btn';
+        btn.textContent = 'Добавить тему';
+        btn.addEventListener('click', (e) => { e.stopPropagation(); openThemeEdit(cell, gradeKey, ''); });
+        cell.appendChild(btn);
+    } else {
+        const div = document.createElement('div');
+        div.style.cursor = 'pointer';
+        div.style.padding = '2px 4px';
+        div.style.borderRadius = '6px';
+        div.textContent = value;
+        div.title = 'Нажмите, чтобы редактировать';
+        div.addEventListener('mouseenter', () => div.style.background = '#F1F5F9');
+        div.addEventListener('mouseleave', () => div.style.background = 'transparent');
+        div.addEventListener('click', (e) => { e.stopPropagation(); openThemeEdit(cell, gradeKey, value); });
+        cell.appendChild(div);
+    }
 }
 
-function renderThemeEdit(cell, gradeKey, value) {
+function openThemeEdit(cell, gradeKey, value) {
     cell.innerHTML = '';
-    const wrap = document.createElement('div');
-    wrap.className = 'cell-edit';
+    const bubble = document.createElement('div');
+    bubble.className = 'edit-bubble';
 
-    const input = document.createElement('textarea');
-    input.className = 'cell-edit-input';
-    input.rows = 1;
-    input.value = value || '';
-    input.placeholder = '';
+    const ta = document.createElement('textarea');
+    ta.rows = 1;
+    ta.value = value || '';
 
-    const confirmBtn = document.createElement('button');
-    confirmBtn.type = 'button';
-    confirmBtn.className = 'cell-edit-confirm';
-    confirmBtn.title = 'Сохранить';
-    confirmBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+    const ok = document.createElement('button');
+    ok.type = 'button';
+    ok.className = 'confirm-btn';
+    ok.title = 'Сохранить';
+    ok.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
 
-    wrap.appendChild(input);
-    wrap.appendChild(confirmBtn);
-    cell.appendChild(wrap);
+    bubble.appendChild(ta);
+    bubble.appendChild(ok);
+    cell.appendChild(bubble);
 
-    setTimeout(() => {
-        input.focus();
-        input.setSelectionRange(input.value.length, input.value.length);
-        autoGrow(input);
-    }, 0);
-    input.addEventListener('input', () => autoGrow(input));
+    autoGrow(ta);
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
 
-    let saved = false;
+    let done = false;
     const save = async () => {
-        if (saved) return;
-        saved = true;
-        const txt = input.value.trim();
+        if (done) return;
+        done = true;
+        const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         JOURNAL.lessons[gradeKey].t = txt;
         await saveJournal();
-        renderThemeView(cell, gradeKey, txt);
+        renderThemeCell(cell, gradeKey, txt);
     };
     const cancel = () => {
-        if (saved) return;
-        saved = true;
-        renderThemeView(cell, gradeKey, value);
+        if (done) return;
+        done = true;
+        renderThemeCell(cell, gradeKey, value);
     };
-    confirmBtn.addEventListener('mousedown', (e) => e.preventDefault());
-    confirmBtn.addEventListener('click', (e) => { e.stopPropagation(); save(); });
-    input.addEventListener('keydown', (e) => {
+
+    ta.addEventListener('input', () => autoGrow(ta));
+    ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
         if (e.key === 'Escape') { e.preventDefault(); cancel(); }
     });
+    ok.addEventListener('mousedown', (e) => e.preventDefault());
+    ok.addEventListener('click', (e) => { e.stopPropagation(); save(); });
+
     const onOutside = (e) => {
         if (!cell.contains(e.target)) {
             document.removeEventListener('mousedown', onOutside);
             save();
         }
     };
-    setTimeout(() => document.addEventListener('mousedown', onOutside), 50);
+    setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
 }
 
-/* ==== ДЗ (список) ==== */
-function initHomeworkCell(cell, gradeKey, hwList) {
+/* ================= ДЗ (список) ================= */
+function renderHomeworkCell(cell, gradeKey, hwRaw) {
     cell.innerHTML = '';
-    const list = normalizeHwList(hwList);
+    const list = normalizeHwList(hwRaw);
+    const wrap = document.createElement('div');
+    wrap.className = 'homework-cell-inner';
 
     list.forEach((hw, idx) => {
         const item = document.createElement('div');
         item.className = 'hw-item';
         item.dataset.idx = idx;
-        renderHwView(item, cell, gradeKey, idx, hw);
-        cell.appendChild(item);
+        renderHwItemView(item, cell, gradeKey, idx, hw);
+        wrap.appendChild(item);
     });
 
-    // Кнопка "+ ДЗ к след. уроку" — всегда внизу
     const addBtn = document.createElement('button');
     addBtn.type = 'button';
     addBtn.className = 'add-hw-btn';
     addBtn.textContent = '+ ДЗ к след. уроку';
     addBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        addHwItem(cell, gradeKey);
+        addNewHw(cell, gradeKey);
     });
-    cell.appendChild(addBtn);
+    wrap.appendChild(addBtn);
+
+    cell.appendChild(wrap);
 }
 
-function renderHwView(item, cell, gradeKey, idx, value) {
+function renderHwItemView(item, cell, gradeKey, idx, value) {
     item.innerHTML = '';
-    const view = document.createElement('div');
-    view.className = 'cell-view';
-    view.textContent = value || 'Домашнее задание';
-    view.title = 'Нажмите, чтобы редактировать';
-    view.addEventListener('click', (e) => {
-        e.stopPropagation();
-        renderHwEdit(item, cell, gradeKey, idx, value);
-    });
-    item.appendChild(view);
+    const textDiv = document.createElement('div');
+    textDiv.className = 'hw-item-text';
+    textDiv.style.cursor = 'pointer';
+    textDiv.style.padding = '2px 4px';
+    textDiv.style.borderRadius = '6px';
+    textDiv.textContent = value;
+    textDiv.title = 'Нажмите, чтобы редактировать';
+    textDiv.addEventListener('mouseenter', () => textDiv.style.background = '#F1F5F9');
+    textDiv.addEventListener('mouseleave', () => textDiv.style.background = 'transparent');
+    textDiv.addEventListener('click', (e) => { e.stopPropagation(); openHwItemEdit(item, cell, gradeKey, idx, value); });
+    item.appendChild(textDiv);
 
-    // Кнопка «Выдать онлайн» для каждого ДЗ
     const onlineBtn = document.createElement('button');
     onlineBtn.type = 'button';
     onlineBtn.className = 'btn-online-inline';
     onlineBtn.title = 'Выдать онлайн-урок';
     onlineBtn.innerHTML = `
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-        Выдать онлайн
+        Онлайн
     `;
-    onlineBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showToast('Выдача онлайн-урока — в разработке');
-    });
+    onlineBtn.addEventListener('click', (e) => { e.stopPropagation(); showToast('Выдача онлайн-урока — в разработке'); });
     item.appendChild(onlineBtn);
 }
 
-function renderHwEdit(item, cell, gradeKey, idx, value) {
+function openHwItemEdit(item, cell, gradeKey, idx, value) {
     item.innerHTML = '';
-    const wrap = document.createElement('div');
-    wrap.className = 'cell-edit';
+    const bubble = document.createElement('div');
+    bubble.className = 'edit-bubble';
 
-    const input = document.createElement('textarea');
-    input.className = 'cell-edit-input';
-    input.rows = 1;
-    input.value = value || '';
-    input.placeholder = '';
+    const ta = document.createElement('textarea');
+    ta.rows = 1;
+    ta.value = value || '';
 
-    const confirmBtn = document.createElement('button');
-    confirmBtn.type = 'button';
-    confirmBtn.className = 'cell-edit-confirm';
-    confirmBtn.title = 'Сохранить';
-    confirmBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+    const ok = document.createElement('button');
+    ok.type = 'button';
+    ok.className = 'confirm-btn';
+    ok.title = 'Сохранить';
+    ok.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
 
-    wrap.appendChild(input);
-    wrap.appendChild(confirmBtn);
-    item.appendChild(wrap);
+    bubble.appendChild(ta);
+    bubble.appendChild(ok);
+    item.appendChild(bubble);
 
-    setTimeout(() => {
-        input.focus();
-        input.setSelectionRange(input.value.length, input.value.length);
-        autoGrow(input);
-    }, 0);
-    input.addEventListener('input', () => autoGrow(input));
+    autoGrow(ta);
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
 
-    let saved = false;
+    let done = false;
     const save = async () => {
-        if (saved) return;
-        saved = true;
-        const txt = input.value.trim();
+        if (done) return;
+        done = true;
+        const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
         if (txt === '') {
-            // Если очистили — удаляем элемент
             arr.splice(idx, 1);
         } else {
             arr[idx] = txt;
         }
         JOURNAL.lessons[gradeKey].h = arr;
         await saveJournal();
-        // Перерисовываем всю ячейку (могли удалить элемент)
-        initHomeworkCell(cell, gradeKey, arr);
+        renderHomeworkCell(cell, gradeKey, arr);
     };
     const cancel = () => {
-        if (saved) return;
-        saved = true;
-        renderHwView(item, cell, gradeKey, idx, value);
+        if (done) return;
+        done = true;
+        renderHwItemView(item, cell, gradeKey, idx, value);
     };
-    confirmBtn.addEventListener('mousedown', (e) => e.preventDefault());
-    confirmBtn.addEventListener('click', (e) => { e.stopPropagation(); save(); });
-    input.addEventListener('keydown', (e) => {
+
+    ta.addEventListener('input', () => autoGrow(ta));
+    ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
         if (e.key === 'Escape') { e.preventDefault(); cancel(); }
     });
+    ok.addEventListener('mousedown', (e) => e.preventDefault());
+    ok.addEventListener('click', (e) => { e.stopPropagation(); save(); });
+
     const onOutside = (e) => {
         if (!item.contains(e.target)) {
             document.removeEventListener('mousedown', onOutside);
             save();
         }
     };
-    setTimeout(() => document.addEventListener('mousedown', onOutside), 50);
+    setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
 }
 
-function addHwItem(cell, gradeKey) {
+function addNewHw(cell, gradeKey) {
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
     const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-    arr.push(''); // пустое ДЗ — сразу в edit-режим
+    arr.push('__new__'); // временный маркер
     JOURNAL.lessons[gradeKey].h = arr;
 
-    // Перерисовываем ячейку
-    initHomeworkCell(cell, gradeKey, arr);
+    // Перерисовываем и открываем edit для последнего
+    renderHomeworkCell(cell, gradeKey, arr);
 
-    // Открываем edit-режим у последнего элемента
     const items = cell.querySelectorAll('.hw-item');
     const last = items[items.length - 1];
     if (last) {
-        const view = last.querySelector('.cell-view');
-        if (view) view.click();
+        // Временно подменяем пустым значением
+        const idx = arr.length - 1;
+        openHwItemEdit(last, cell, gradeKey, idx, '');
     }
 }
 
+/* Автовысота textarea */
 function autoGrow(el) {
     el.style.height = 'auto';
     el.style.height = Math.max(32, el.scrollHeight) + 'px';
@@ -1470,20 +1274,14 @@ function fillFillers() {
     const journalScroll = document.getElementById('journalScroll');
     if (!journalScroll) return;
 
-    const rect = journalScroll.getBoundingClientRect();
-    const scrollWidth = Math.max(journalScroll.clientWidth, Math.floor(rect.width));
-
+    const scrollWidth = journalScroll.clientWidth;
     const fioWrapper = document.querySelector('.fio-table-wrapper');
     const fioWidth = fioWrapper ? Math.ceil(fioWrapper.getBoundingClientRect().width) : 210;
-
     const marksWrapper = document.querySelector('.marks-table-wrapper');
     if (!marksWrapper) return;
 
-    const marksRect = marksWrapper.getBoundingClientRect();
-    const marksWidth = Math.ceil(marksRect.width);
-
+    const marksWidth = Math.ceil(marksWrapper.getBoundingClientRect().width);
     const freeSpace = scrollWidth - fioWidth - marksWidth;
-
     if (freeSpace <= 0) return;
 
     const fullCols = Math.floor(freeSpace / FILLER_COL_WIDTH);
@@ -1494,20 +1292,14 @@ function fillFillers() {
     const jBody = document.getElementById('jBody');
 
     for (let i = 0; i < fullCols; i++) {
-        const th = document.createElement('th');
-        th.className = 'col-filler-head';
-        th.style.width = FILLER_COL_WIDTH + 'px';
-        th.style.minWidth = FILLER_COL_WIDTH + 'px';
-        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
-        mRow.appendChild(th);
-    }
-    for (let i = 0; i < fullCols; i++) {
-        const th = document.createElement('th');
-        th.className = 'col-filler-head';
-        th.style.width = FILLER_COL_WIDTH + 'px';
-        th.style.minWidth = FILLER_COL_WIDTH + 'px';
-        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
-        sRow.appendChild(th);
+        [mRow, sRow].forEach(row => {
+            const th = document.createElement('th');
+            th.className = 'col-filler-head';
+            th.style.width = FILLER_COL_WIDTH + 'px';
+            th.style.minWidth = FILLER_COL_WIDTH + 'px';
+            th.style.maxWidth = FILLER_COL_WIDTH + 'px';
+            row.appendChild(th);
+        });
     }
     jBody.querySelectorAll('tr').forEach(tr => {
         for (let i = 0; i < fullCols; i++) {
@@ -1522,20 +1314,14 @@ function fillFillers() {
 
     if (remainder >= 2) {
         const rw = remainder + 'px';
-        const thHead1 = document.createElement('th');
-        thHead1.className = 'col-filler-head col-filler-last';
-        thHead1.style.width = rw;
-        thHead1.style.minWidth = rw;
-        thHead1.style.maxWidth = rw;
-        mRow.appendChild(thHead1);
-
-        const thHead2 = document.createElement('th');
-        thHead2.className = 'col-filler-head col-filler-last';
-        thHead2.style.width = rw;
-        thHead2.style.minWidth = rw;
-        thHead2.style.maxWidth = rw;
-        sRow.appendChild(thHead2);
-
+        [mRow, sRow].forEach(row => {
+            const th = document.createElement('th');
+            th.className = 'col-filler-head col-filler-last';
+            th.style.width = rw;
+            th.style.minWidth = rw;
+            th.style.maxWidth = rw;
+            row.appendChild(th);
+        });
         jBody.querySelectorAll('tr').forEach(tr => {
             const td = document.createElement('td');
             td.className = 'col-filler-body col-filler-last';
@@ -1546,6 +1332,13 @@ function fillFillers() {
         });
     }
 }
+
+/* Дебаунс для resize */
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(fillFillers, 150);
+});
 
 function getGradeClass(value) {
     if (!value || typeof value !== 'string') return '';
@@ -1560,24 +1353,18 @@ function makeGradeDisplay(v) {
     if (!v) return '';
     let up = v.toUpperCase().trim();
     if (!up) return '';
-
     let letterPart = '';
-    let foundLetter = up.match(/^(Н|О|Б|П|СП)/);
+    const foundLetter = up.match(/^(Н|О|Б|П|СП)/);
     if (foundLetter) letterPart = `<span class="status-letter">${foundLetter[0]}</span>`;
-
     let gradePart = up.replace(/^(Н|О|Б|П|СП)/, '').trim();
     if (!gradePart) return letterPart;
-
     if (gradePart.includes('/')) {
         const parts = gradePart.split('/');
-        return `
-            ${letterPart}
-            <div class="grade-display">
-                <div class="double-grade-box ${getGradeClass(parts[0])}">${parts[0]}</div>
-                <span class="slash-divider">/</span>
-                <div class="double-grade-box ${getGradeClass(parts[1])}">${parts[1] || ''}</div>
-            </div>
-        `;
+        return `${letterPart}<div class="grade-display">
+            <div class="double-grade-box ${getGradeClass(parts[0])}">${parts[0]}</div>
+            <span class="slash-divider">/</span>
+            <div class="double-grade-box ${getGradeClass(parts[1])}">${parts[1] || ''}</div>
+        </div>`;
     }
     return `${letterPart}<div class="grade-display"><div class="grade-box ${getGradeClass(gradePart)}">${gradePart}</div></div>`;
 }
@@ -1588,13 +1375,9 @@ function hl(input, colIdx, active) {
         tr.querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
         const trIndex = Array.from(tr.parentNode.children).indexOf(tr);
         const fioRows = document.querySelectorAll('#fioBody tr');
-        if (fioRows[trIndex]) {
-            fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
-        }
+        if (fioRows[trIndex]) fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
     }
-    document.querySelectorAll(`#jBody td[data-col="${colIdx}"]`).forEach(td => {
-        td.classList.toggle('highlight-cross', active);
-    });
+    document.querySelectorAll(`#jBody td[data-col="${colIdx}"]`).forEach(td => td.classList.toggle('highlight-cross', active));
 }
 
 function hlQtr(input, active) {
@@ -1603,18 +1386,13 @@ function hlQtr(input, active) {
         tr.querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
         const trIndex = Array.from(tr.parentNode.children).indexOf(tr);
         const fioRows = document.querySelectorAll('#fioBody tr');
-        if (fioRows[trIndex]) {
-            fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
-        }
+        if (fioRows[trIndex]) fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
     }
-    document.querySelectorAll('#jBody td.col-qtr').forEach(td => {
-        td.classList.toggle('highlight-cross', active);
-    });
+    document.querySelectorAll('#jBody td.col-qtr').forEach(td => td.classList.toggle('highlight-cross', active));
 }
 
 function getEditableCellsInRow(tr) {
-    return Array.from(tr.querySelectorAll('td'))
-        .filter(td => td.dataset.col !== undefined || td.classList.contains('col-qtr'));
+    return Array.from(tr.querySelectorAll('td')).filter(td => td.dataset.col !== undefined || td.classList.contains('col-qtr'));
 }
 
 function navigateGradeCell(input, direction) {
@@ -1626,24 +1404,20 @@ function navigateGradeCell(input, direction) {
     const rows = Array.from(jBody.querySelectorAll('tr'));
     const rowIdx = rows.indexOf(tr);
     if (rowIdx === -1) return;
-
     const cellsInRow = getEditableCellsInRow(tr);
     const colIdx = cellsInRow.indexOf(td);
     if (colIdx === -1) return;
-
     let targetTd = null;
-
     if (direction === 'left' || direction === 'right') {
         const nextCol = direction === 'left' ? colIdx - 1 : colIdx + 1;
         if (nextCol < 0 || nextCol >= cellsInRow.length) return;
         targetTd = cellsInRow[nextCol];
-    } else if (direction === 'up' || direction === 'down') {
+    } else {
         const nextRow = direction === 'up' ? rowIdx - 1 : rowIdx + 1;
         if (nextRow < 0 || nextRow >= rows.length) return;
         const targetCells = getEditableCellsInRow(rows[nextRow]);
         targetTd = targetCells[colIdx] || null;
     }
-
     if (!targetTd) return;
     const targetInput = targetTd.querySelector('input');
     if (!targetInput) return;
@@ -1653,17 +1427,14 @@ function navigateGradeCell(input, direction) {
 
 function handleGradeKeydown(e, input) {
     const key = e.key;
-    if (key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'ArrowUp' && key !== 'ArrowDown') return;
-
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key)) return;
     const val = input.value || '';
     const start = input.selectionStart ?? 0;
     const end = input.selectionEnd ?? 0;
     const atStart = start === 0 && end === 0;
     const atEnd = start === val.length && end === val.length;
-
     if (key === 'ArrowLeft' && !atStart) return;
     if (key === 'ArrowRight' && !atEnd) return;
-
     e.preventDefault();
     navigateGradeCell(input, key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : key === 'ArrowUp' ? 'up' : 'down');
 }
@@ -1672,18 +1443,13 @@ async function upg(studentId, gradeKey, inputElement) {
     const v = inputElement.value.trim();
     const up = v.toUpperCase();
     const validRegex = /^(([НОБП]|СП)\s*)?([1-5][+-]?(\/([1-5][+-]?)?)?)?$/i;
-
     if (!validRegex.test(up)) {
         alert('Используйте оценки от 1 до 5 (можно с + или -, двойные через /), буквы отсутствия (Н, О, Б, П, СП)');
         inputElement.value = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
         return;
     }
-
     const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) {
-        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
-    }
-
+    if (displayLayer) displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
     setTimeout(async () => {
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
         JOURNAL.grades[studentId][gradeKey] = up;
@@ -1695,16 +1461,13 @@ async function upg(studentId, gradeKey, inputElement) {
 async function upqtr(studentId, inputElement) {
     const v = inputElement.value.trim();
     const up = v.toUpperCase();
-    const qtrRegex = /^([1-5][+-]?)?$/;
-    if (!qtrRegex.test(up)) {
+    if (!/^([1-5][+-]?)?$/.test(up)) {
         alert('Для итоговой оценки используйте баллы от 1 до 5');
         inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[ACTIVE_PERIOD_INDEX] || '';
         return;
     }
     const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) {
-        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
-    }
+    if (displayLayer) displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
     setTimeout(async () => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
@@ -1739,10 +1502,7 @@ function openLessonTypePopup(anchorEl, gradeKey) {
     if (left < 8) left = 8;
     if (left + popupWidth > window.innerWidth - 8) left = window.innerWidth - popupWidth - 8;
     let top = rect.bottom + 4;
-    if (top + popupMaxHeight > window.innerHeight - 8) {
-        top = rect.top - popupMaxHeight - 4;
-        if (top < 8) top = 8;
-    }
+    if (top + popupMaxHeight > window.innerHeight - 8) { top = rect.top - popupMaxHeight - 4; if (top < 8) top = 8; }
     popup.style.left = left + 'px';
     popup.style.top = top + 'px';
     setTimeout(() => search.focus(), 50);
@@ -1776,24 +1536,19 @@ async function selectLessonType(abbr) {
     closeLessonTypePopup();
 }
 
-function closeLessonTypePopup() {
-    document.getElementById('lessonTypePopup').classList.remove('show');
-}
+function closeLessonTypePopup() { document.getElementById('lessonTypePopup').classList.remove('show'); }
 
 document.addEventListener('click', (e) => {
     const popup = document.getElementById('lessonTypePopup');
-    if (!popup.classList.contains('show')) return;
-    if (popupJustOpened) return;
+    if (!popup.classList.contains('show') || popupJustOpened) return;
     if (!popup.contains(e.target)) closeLessonTypePopup();
 });
 document.addEventListener('mousedown', (e) => {
     const popup = document.getElementById('lessonTypePopup');
-    if (!popup.classList.contains('show')) return;
-    if (popupJustOpened) return;
+    if (!popup.classList.contains('show') || popupJustOpened) return;
     if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup();
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
-window.addEventListener('resize', () => { closeLessonTypePopup(); fillFillers(); });
 
 function toggleLeftPanel() {
     const container = document.getElementById('panelsContainer');
@@ -1807,7 +1562,7 @@ function toggleLeftPanel() {
         document.getElementById('tabRight').classList.remove('active');
     }
     updateTabIcons();
-    setTimeout(fillFillers, 380);
+    setTimeout(fillFillers, 350);
 }
 
 function toggleRightPanel() {
@@ -1822,7 +1577,7 @@ function toggleRightPanel() {
         document.getElementById('tabLeft').classList.remove('active');
     }
     updateTabIcons();
-    setTimeout(fillFillers, 380);
+    setTimeout(fillFillers, 350);
 }
 
 function updateTabIcons() {
@@ -1846,9 +1601,7 @@ function showEmpty(title, text) {
     document.getElementById('emptyText').textContent = text;
 }
 
-function goBack() {
-    window.location.href = 'admin.html';
-}
+function goBack() { window.location.href = 'admin.html'; }
 
 init().catch(err => {
     console.error('Ошибка init:', err);
