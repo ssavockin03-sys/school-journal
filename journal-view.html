@@ -158,7 +158,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     pointer-events: none; text-align: center;
 }
 
-/* ====== ЯЧЕЙКА ОЦЕНКИ ====== */
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 .grade-cell input {
     width: 100%; height: 26px; text-align: center; border: none; background: transparent;
@@ -187,7 +186,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .grade-3 { background: #FB923C !important; }
 .bad-grade { background: #DC2626 !important; }
 
-/* Метка отсутствия (Н, О, Б, П, СП) */
 .status-letter {
     position: absolute;
     top: 0;
@@ -279,7 +277,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     padding: 0 !important;
 }
 
-/* ====== Ячейки Тема и ДЗ ====== */
 .theme-cell {
     font-size: 13px;
     line-height: 1.3;
@@ -290,9 +287,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .homework-cell-inner {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
 }
-
 .hw-item {
     display: flex;
     align-items: flex-start;
@@ -300,8 +296,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     font-size: 13px;
     line-height: 1.3;
     color: #334155;
-    white-space: pre-wrap;
-    word-wrap: break-word;
 }
 .hw-item-text {
     flex: 1 1 auto;
@@ -310,10 +304,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.12s ease;
+    word-wrap: break-word;
+    white-space: pre-wrap;
 }
 .hw-item-text:hover { background: #F1F5F9; }
 
-/* Плейсхолдер "Добавить тему" */
 .placeholder-btn {
     display: inline-block;
     padding: 1px 4px;
@@ -332,7 +327,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .placeholder-btn:hover { background: #F1F5F9; }
 
-/* Кнопка "+ ДЗ к след. уроку" */
 .add-hw-btn {
     display: inline-block;
     padding: 1px 4px;
@@ -352,7 +346,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .add-hw-btn:hover { background: #F1F5F9; }
 
-/* Редактируемый текст (view) */
 .cell-view-inline {
     display: inline-block;
     padding: 1px 4px;
@@ -365,7 +358,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .cell-view-inline:hover { background: #F1F5F9; }
 
-/* Edit-режим — компактное окошко */
 .edit-bubble {
     display: flex;
     align-items: flex-start;
@@ -413,8 +405,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .edit-bubble .confirm-btn:hover { background: #1D4ED8; }
 .edit-bubble .confirm-btn svg { width: 12px; height: 12px; fill: #FFFFFF; }
 
-/* Кнопка "Выдать онлайн" — по одной на каждое ДЗ */
-.hw-item .btn-online-inline,
 .btn-online-inline {
     flex-shrink: 0;
     display: inline-flex;
@@ -1115,14 +1105,22 @@ function renderThemeCell(cell, gradeKey, value) {
         btn.type = 'button';
         btn.className = 'placeholder-btn';
         btn.textContent = 'Добавить тему';
-        btn.addEventListener('click', (e) => { e.stopPropagation(); openThemeEdit(cell, gradeKey, ''); });
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            openThemeEdit(cell, gradeKey, '');
+        });
         cell.appendChild(btn);
     } else {
         const div = document.createElement('div');
         div.className = 'cell-view-inline';
         div.textContent = value;
         div.title = 'Нажмите, чтобы редактировать';
-        div.addEventListener('click', (e) => { e.stopPropagation(); openThemeEdit(cell, gradeKey, value); });
+        div.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            openThemeEdit(cell, gradeKey, value);
+        });
         cell.appendChild(div);
     }
 }
@@ -1185,10 +1183,17 @@ function openThemeEdit(cell, gradeKey, value) {
 
 /* ================= ДЗ ================= */
 function renderHomeworkCell(cell, gradeKey, hwRaw) {
-    cell.innerHTML = '';
+    // Показываем сохранённый список + отдельно хранимую «черновую» строку
     const list = normalizeHwList(hwRaw);
+    // Убираем из JOURNAL черновые значения, если они остались
+    if (JOURNAL.lessons[gradeKey]) {
+        JOURNAL.lessons[gradeKey].h = list;
+    }
+
+    cell.innerHTML = '';
     const wrap = document.createElement('div');
     wrap.className = 'homework-cell-inner';
+    wrap.dataset.gradeKey = gradeKey;
 
     list.forEach((hw, idx) => {
         const item = document.createElement('div');
@@ -1202,6 +1207,11 @@ function renderHomeworkCell(cell, gradeKey, hwRaw) {
     addBtn.type = 'button';
     addBtn.className = 'add-hw-btn';
     addBtn.textContent = '+ ДЗ к след. уроку';
+    // ВАЖНО: вешаем на mousedown, чтобы клик сработал раньше, чем "click outside"
+    addBtn.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+    });
     addBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -1219,10 +1229,14 @@ function renderHwItemView(item, cell, gradeKey, idx, value) {
     textDiv.className = 'hw-item-text';
     textDiv.textContent = value;
     textDiv.title = 'Нажмите, чтобы редактировать';
-    textDiv.addEventListener('click', (e) => { e.stopPropagation(); openHwItemEdit(item, cell, gradeKey, idx, value); });
+    textDiv.addEventListener('mousedown', (e) => e.stopPropagation());
+    textDiv.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        openHwItemEdit(item, cell, gradeKey, idx, value);
+    });
     item.appendChild(textDiv);
 
-    // Одна кнопка "Выдать онлайн" на каждый элемент ДЗ
     const onlineBtn = document.createElement('button');
     onlineBtn.type = 'button';
     onlineBtn.className = 'btn-online-inline';
@@ -1231,8 +1245,15 @@ function renderHwItemView(item, cell, gradeKey, idx, value) {
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
         Онлайн
     `;
-    onlineBtn.addEventListener('mousedown', (e) => e.preventDefault());
-    onlineBtn.addEventListener('click', (e) => { e.stopPropagation(); showToast('Выдача онлайн-урока — в разработке'); });
+    onlineBtn.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+    });
+    onlineBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        showToast('Выдача онлайн-урока — в разработке');
+    });
     item.appendChild(onlineBtn);
 }
 
@@ -1269,7 +1290,8 @@ function openHwItemEdit(item, cell, gradeKey, idx, value) {
         if (txt === '') {
             arr.splice(idx, 1);
         } else {
-            arr[idx] = txt;
+            if (idx >= arr.length) arr.push(txt);
+            else arr[idx] = txt;
         }
         JOURNAL.lessons[gradeKey].h = arr;
         await saveJournal();
@@ -1278,7 +1300,13 @@ function openHwItemEdit(item, cell, gradeKey, idx, value) {
     const cancel = () => {
         if (done) return;
         done = true;
-        renderHwItemView(item, cell, gradeKey, idx, value);
+        // Если это был новый пустой элемент (idx за пределами массива) — просто удаляем его из DOM
+        const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
+        if (idx >= arr.length) {
+            renderHomeworkCell(cell, gradeKey, arr);
+        } else {
+            renderHwItemView(item, cell, gradeKey, idx, value);
+        }
     };
 
     ta.addEventListener('input', () => autoGrow(ta));
@@ -1290,6 +1318,10 @@ function openHwItemEdit(item, cell, gradeKey, idx, value) {
     ok.addEventListener('click', (e) => { e.stopPropagation(); save(); });
 
     const onOutside = (e) => {
+        // Если клик пришёлся на кнопки внутри ячейки — не закрываем
+        if (e.target.closest && (e.target.closest('.add-hw-btn') || e.target.closest('.btn-online-inline'))) {
+            return;
+        }
         if (!item.contains(e.target)) {
             document.removeEventListener('mousedown', onOutside);
             save();
@@ -1299,11 +1331,15 @@ function openHwItemEdit(item, cell, gradeKey, idx, value) {
 }
 
 function addNewHw(cell, gradeKey) {
+    // Сохраняем то, что уже наредактировано
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
     const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-    arr.push('__new__');
+
+    // Добавляем пустой элемент в массив
+    arr.push('');
     JOURNAL.lessons[gradeKey].h = arr;
 
+    // Перерисовываем ячейку
     renderHomeworkCell(cell, gradeKey, arr);
 
     // Открываем edit-режим у последнего элемента
