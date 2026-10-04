@@ -606,18 +606,21 @@ const LESSON_TYPES = [
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
+/* ===== Быстрые утилиты ===== */
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
-    const div = document.createElement('div');
-    div.textContent = String(text);
-    return div.innerHTML;
+    const s = String(text);
+    // Быстрый escape без создания DOM-элемента
+    return s.replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[c]);
 }
 function formatShortName(fullName) {
     if (!fullName) return '';
     const parts = String(fullName).trim().split(/\s+/).filter(Boolean);
     if (parts.length === 0) return '';
     if (parts.length === 1) return parts[0];
-    return `${parts[0]} ${parts[1]}`;
+    return parts[0] + ' ' + parts[1];
 }
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
@@ -677,7 +680,7 @@ function collectSubjectsFromSchedule(schedules, classId) {
 
 function todayIso() {
     const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 
 function normalizeHwList(h) {
@@ -687,27 +690,17 @@ function normalizeHwList(h) {
 }
 
 /* ============================================================
-   ГЛОБАЛЬНЫЙ МЕНЕДЖЕР АКТИВНОГО РЕДАКТИРОВАНИЯ
-   В один момент времени открыт только один edit-bubble.
-   При открытии нового — предыдущий автоматически сохраняется.
+   ГЛОБАЛЬНЫЙ РЕДАКТОР — только один открыт одновременно
    ============================================================ */
-let activeEditor = null; // { finish: function, cancel: function }
+let activeEditor = null;
 
 function closeActiveEditor(saveIt) {
     if (!activeEditor) return;
     const ed = activeEditor;
     activeEditor = null;
-    if (saveIt) ed.finish();
-    else ed.cancel();
+    try { if (saveIt) ed.finish(); else ed.cancel(); } catch (e) { console.error(e); }
 }
 
-function registerActiveEditor(ed) {
-    // Сначала закрываем предыдущий (сохраняем его)
-    closeActiveEditor(true);
-    activeEditor = ed;
-}
-
-/* ================= INIT ================= */
 async function init() {
     const { classId, subjectId } = getUrlParams();
     if (!classId || !subjectId) { showEmpty('Не заданы параметры', 'В URL отсутствуют параметры class и subject.'); return; }
@@ -768,7 +761,7 @@ async function init() {
 
     renderMainTable();
     fillFillers();
-    document.title = `${CLASS_OBJ.name} · ${SUBJECT_NAME} — Журнал`;
+    document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
 }
 
 function findActivePeriodIndex() {
@@ -805,8 +798,9 @@ async function buildDatesForPeriod(periodIndex) {
         const jsDay = cursor.getDay();
         const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
         if (dayKey && grid[dayKey]) {
-            Object.keys(grid[dayKey]).forEach(lessonNumStr => {
-                const lesson = grid[dayKey][lessonNumStr];
+            const dayGrid = grid[dayKey];
+            for (const lessonNumStr in dayGrid) {
+                const lesson = dayGrid[lessonNumStr];
                 if (lesson && lesson.subject === SUBJECT_NAME) {
                     const iso = formatIso(cursor);
                     const key = iso + '_' + lessonNumStr;
@@ -818,7 +812,7 @@ async function buildDatesForPeriod(periodIndex) {
                         });
                     }
                 }
-            });
+            }
         }
         cursor.setDate(cursor.getDate() + 1);
     }
@@ -826,15 +820,15 @@ async function buildDatesForPeriod(periodIndex) {
     return result;
 }
 
-function formatIso(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
-function formatDateNoYear(d) { return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}`; }
-function formatDateFull(d) { return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`; }
+function formatIso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function formatDateNoYear(d) { return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0'); }
+function formatDateFull(d) { return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear(); }
 
 function renderHeader() {
     document.getElementById('classDropdownName').textContent = CLASS_OBJ.name;
     document.getElementById('subjectDropdownName').textContent = SUBJECT_NAME;
     document.getElementById('teacherLabel').textContent = 'Учитель: ' + (TEACHER_NAME || '—');
-    document.getElementById('navChain').textContent = `${CLASS_OBJ.name}, ${SUBJECT_NAME}`;
+    document.getElementById('navChain').textContent = CLASS_OBJ.name + ', ' + SUBJECT_NAME;
     document.getElementById('yearLabel').textContent = '2026/2027 учебный год';
     renderClassDropdownMenu();
     renderSubjectDropdownMenu();
@@ -857,7 +851,7 @@ function renderClassDropdownMenu() {
             const subjects = await DB.getAll('subjects');
             const firstSubjObj = subjects.find(s => s.name === subjList[0].name);
             if (!firstSubjObj) { showToast('Предмет не найден'); return; }
-            window.location.href = `journal-view.html?class=${encodeURIComponent(c.id)}&subject=${encodeURIComponent(firstSubjObj.id)}`;
+            window.location.href = 'journal-view.html?class=' + encodeURIComponent(c.id) + '&subject=' + encodeURIComponent(firstSubjObj.id);
         });
         menu.appendChild(btn);
     });
@@ -874,7 +868,7 @@ function renderSubjectDropdownMenu() {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (s.id === SUBJECT_ID) return;
-            window.location.href = `journal-view.html?class=${encodeURIComponent(CLASS_ID)}&subject=${encodeURIComponent(s.id)}`;
+            window.location.href = 'journal-view.html?class=' + encodeURIComponent(CLASS_ID) + '&subject=' + encodeURIComponent(s.id);
         });
         menu.appendChild(btn);
     });
@@ -917,7 +911,7 @@ function renderPeriodTabs() {
         tab.type = 'button';
         tab.className = 'tab-pill' + (idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
         tab.textContent = labels[idx] || ('Период ' + (idx + 1));
-        tab.title = `${p.start} – ${p.end}`;
+        tab.title = p.start + ' – ' + p.end;
         tab.addEventListener('click', async () => {
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
@@ -948,7 +942,7 @@ function renderMainTable() {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
         td.style.cursor = 'pointer';
-        td.innerHTML = `<span class="student-number-text">${sIdx + 1}</span><span class="student-name-text">${escapeHtml(shortName)}</span>`;
+        td.innerHTML = '<span class="student-number-text">' + (sIdx + 1) + '</span><span class="student-name-text">' + escapeHtml(shortName) + '</span>';
         td.addEventListener('click', () => { window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id); });
         tr.appendChild(td);
         fioBody.appendChild(tr);
@@ -957,10 +951,10 @@ function renderMainTable() {
     DATES.forEach((d) => {
         const th = document.createElement('th');
         th.className = 'col-date';
-        th.title = `Урок №${d.lessonNum}`;
+        th.title = 'Урок №' + d.lessonNum;
         if (d.iso === todayIsoStr) {
             th.classList.add('col-today');
-            th.innerHTML = `${d.dateNoYear}<span class="today-label">сегодня</span>`;
+            th.innerHTML = d.dateNoYear + '<span class="today-label">сегодня</span>';
         } else {
             th.textContent = d.dateNoYear;
         }
@@ -1000,16 +994,14 @@ function renderMainTable() {
             td.dataset.col = dIdx;
             if (d.iso === todayIsoStr) td.classList.add('col-today');
             const value = (JOURNAL.grades[student.id] || {})[d.gradeKey] || '';
-            td.innerHTML = `
-                <div class="grade-cell">
-                    <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(value)}</div>
-                    <input type="text" value="${escapeHtml(value)}"
-                        onfocus="hl(this, ${dIdx}, true); this.style.color='#1E293B';"
-                        onblur="hl(this, ${dIdx}, false); this.style.color='transparent';"
-                        onkeydown="handleGradeKeydown(event, this)"
-                        onchange="upg('${student.id}', '${d.gradeKey}', this)">
-                </div>
-            `;
+            td.innerHTML = '<div class="grade-cell">' +
+                    '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(value) + '</div>' +
+                    '<input type="text" value="' + escapeHtml(value) + '"' +
+                        ' onfocus="hl(this, ' + dIdx + ', true); this.style.color=\'#1E293B\';"' +
+                        ' onblur="hl(this, ' + dIdx + ', false); this.style.color=\'transparent\';"' +
+                        ' onkeydown="handleGradeKeydown(event, this)"' +
+                        ' onchange="upg(\'' + student.id + '\', \'' + d.gradeKey + '\', this)">' +
+                '</div>';
             tr.appendChild(td);
         });
 
@@ -1020,16 +1012,14 @@ function renderMainTable() {
         const qtrValue = (JOURNAL.qtrGrades[student.id] || {})[ACTIVE_PERIOD_INDEX] || '';
         const tdQtr = document.createElement('td');
         tdQtr.className = 'col-qtr qtr-cell';
-        tdQtr.innerHTML = `
-            <div class="grade-cell">
-                <div class="display-layer" style="width:100%; height:100%; pointer-events:none;">${makeGradeDisplay(qtrValue)}</div>
-                <input type="text" value="${escapeHtml(qtrValue)}"
-                    onfocus="hlQtr(this, true); this.style.color='#1E293B';"
-                    onblur="hlQtr(this, false); this.style.color='transparent';"
-                    onkeydown="handleGradeKeydown(event, this)"
-                    onchange="upqtr('${student.id}', this)">
-            </div>
-        `;
+        tdQtr.innerHTML = '<div class="grade-cell">' +
+                '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(qtrValue) + '</div>' +
+                '<input type="text" value="' + escapeHtml(qtrValue) + '"' +
+                    ' onfocus="hlQtr(this, true); this.style.color=\'#1E293B\';"' +
+                    ' onblur="hlQtr(this, false); this.style.color=\'transparent\';"' +
+                    ' onkeydown="handleGradeKeydown(event, this)"' +
+                    ' onchange="upqtr(\'' + student.id + '\', this)">' +
+            '</div>';
         tr.appendChild(tdQtr);
         jBody.appendChild(tr);
     });
@@ -1065,6 +1055,7 @@ function renderLessonPlanRows() {
 
     DATES.forEach((d, dIdx) => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: [] };
+
         const tr = document.createElement('tr');
         tr.className = 'lesson-row';
         tr.dataset.gradeKey = d.gradeKey;
@@ -1081,27 +1072,21 @@ function renderLessonPlanRows() {
 
         const tdTheme = document.createElement('td');
         tdTheme.className = 'theme-cell';
+        tdTheme.dataset.gradeKey = d.gradeKey;
         renderThemeContent(tdTheme, d.gradeKey, l.t || '');
         tr.appendChild(tdTheme);
 
         const tdHw = document.createElement('td');
         tdHw.className = 'homework-cell';
+        tdHw.dataset.gradeKey = d.gradeKey;
         renderHwContent(tdHw, d.gradeKey, normalizeHwList(l.h));
 
         const onlineBtn = document.createElement('button');
         onlineBtn.type = 'button';
         onlineBtn.className = 'cell-online-btn';
         onlineBtn.title = 'Выдать онлайн-урок';
-        onlineBtn.innerHTML = `
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-            Онлайн
-        `;
-        onlineBtn.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-        onlineBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            showToast('Выдача онлайн-урока — в разработке');
-        });
+        onlineBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>Онлайн';
+        onlineBtn.dataset.action = 'online';
         tdHw.appendChild(onlineBtn);
 
         tr.appendChild(tdHw);
@@ -1109,42 +1094,101 @@ function renderLessonPlanRows() {
     });
 }
 
-/* ===== ТЕМА: view / edit ===== */
+/* ================= ДЕЛЕГИРОВАНИЕ СОБЫТИЙ НА ПРАВОЙ ПАНЕЛИ ================= */
+document.addEventListener('DOMContentLoaded', () => {
+    const pBody = document.getElementById('pBody');
+
+    // КЛИК — открытие редактора или кнопки
+    pBody.addEventListener('click', (e) => {
+        const onlineBtn = e.target.closest('.cell-online-btn');
+        if (onlineBtn) {
+            e.stopPropagation();
+            showToast('Выдача онлайн-урока — в разработке');
+            return;
+        }
+        const hwItem = e.target.closest('.hw-list-item');
+        if (hwItem) {
+            e.stopPropagation();
+            const cell = hwItem.closest('.homework-cell');
+            const gradeKey = cell.dataset.gradeKey;
+            const idx = parseInt(hwItem.dataset.idx, 10);
+            openHwItemEdit(cell, gradeKey, idx, hwItem.dataset.value || '');
+            return;
+        }
+        const addHwBtn = e.target.closest('.add-hw-btn');
+        if (addHwBtn) {
+            e.stopPropagation();
+            const cell = addHwBtn.closest('.homework-cell');
+            openNewHwItem(cell, cell.dataset.gradeKey);
+            return;
+        }
+        const placeholderHw = e.target.closest('.homework-cell .placeholder-text');
+        if (placeholderHw) {
+            e.stopPropagation();
+            const cell = placeholderHw.closest('.homework-cell');
+            openNewHwItem(cell, cell.dataset.gradeKey);
+            return;
+        }
+        const themePlaceholder = e.target.closest('.theme-cell .placeholder-text');
+        if (themePlaceholder) {
+            e.stopPropagation();
+            const cell = themePlaceholder.closest('.theme-cell');
+            openThemeEditInline(cell, cell.dataset.gradeKey, '');
+            return;
+        }
+        const themeText = e.target.closest('.theme-cell .theme-text');
+        if (themeText) {
+            e.stopPropagation();
+            const cell = themeText.closest('.theme-cell');
+            openThemeEditInline(cell, cell.dataset.gradeKey, themeText.dataset.value || '');
+            return;
+        }
+    });
+
+    // MOUSEDOWN вне редактора — сохранить активный
+    pBody.addEventListener('mousedown', (e) => {
+        if (!activeEditor) return;
+        const bubble = pBody.querySelector('.edit-bubble');
+        if (bubble && bubble.contains(e.target)) return;
+        // Клик по кнопке — не закрываем (обработчик клика сам сработает)
+        if (e.target.closest('.cell-online-btn') ||
+            e.target.closest('.add-hw-btn') ||
+            e.target.closest('.hw-list-item') ||
+            e.target.closest('.placeholder-text') ||
+            e.target.closest('.confirm-btn')) return;
+        closeActiveEditor(true);
+    });
+});
+
+/* Закрытие редактора при клике вне правой панели */
+document.addEventListener('mousedown', (e) => {
+    if (!activeEditor) return;
+    const panelRight = document.getElementById('panelRight');
+    if (panelRight && panelRight.contains(e.target)) return; // обрабатывается выше
+    closeActiveEditor(true);
+});
+
+/* ===== ТЕМА ===== */
 function renderThemeContent(cell, gradeKey, value) {
     cell.innerHTML = '';
-    const isEmpty = !value;
-
-    if (isEmpty) {
+    if (!value) {
         const ph = document.createElement('span');
         ph.className = 'placeholder-text';
         ph.textContent = 'Добавить тему';
-        ph.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-        ph.addEventListener('click', (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            openThemeEditInline(cell, gradeKey, '');
-        });
         cell.appendChild(ph);
     } else {
         const div = document.createElement('div');
+        div.className = 'theme-text';
         div.textContent = value;
+        div.dataset.value = value;
         div.style.cursor = 'pointer';
         div.style.padding = '1px 4px';
         div.style.borderRadius = '6px';
-        div.addEventListener('mouseenter', () => div.style.background = '#F1F5F9');
-        div.addEventListener('mouseleave', () => div.style.background = 'transparent');
-        div.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-        div.addEventListener('click', (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            openThemeEditInline(cell, gradeKey, value);
-        });
         cell.appendChild(div);
     }
 }
 
 function openThemeEditInline(cell, gradeKey, value) {
-    // Сначала закроем предыдущий редактор (сохранив его)
     closeActiveEditor(true);
 
     cell.innerHTML = '';
@@ -1159,7 +1203,7 @@ function openThemeEditInline(cell, gradeKey, value) {
     ok.type = 'button';
     ok.className = 'confirm-btn';
     ok.title = 'Сохранить';
-    ok.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+    ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
 
     bubble.appendChild(ta);
     bubble.appendChild(ok);
@@ -1173,10 +1217,8 @@ function openThemeEditInline(cell, gradeKey, value) {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         JOURNAL.lessons[gradeKey].t = txt;
-        // Синхронно перерисовать — рамка исчезнет мгновенно
         renderThemeContent(cell, gradeKey, txt);
-        // Сохранение в фоне
-        saveJournal();
+        saveJournal(); // фон
     };
     const cancel = () => {
         renderThemeContent(cell, gradeKey, value);
@@ -1193,7 +1235,7 @@ function openThemeEditInline(cell, gradeKey, value) {
     activeEditor = { finish, cancel };
 }
 
-/* ===== ДЗ: view / edit ===== */
+/* ===== ДЗ ===== */
 function renderHwContent(cell, gradeKey, hwList) {
     const onlineBtn = cell.querySelector('.cell-online-btn');
     cell.innerHTML = '';
@@ -1206,25 +1248,15 @@ function renderHwContent(cell, gradeKey, hwList) {
         const ph = document.createElement('span');
         ph.className = 'placeholder-text';
         ph.textContent = '+ ДЗ к след. уроку';
-        ph.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-        ph.addEventListener('click', (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            openNewHwItem(cell, gradeKey);
-        });
         listWrap.appendChild(ph);
     } else {
         hwList.forEach((hw, idx) => {
             const item = document.createElement('div');
             item.className = 'hw-list-item';
             item.textContent = hw;
+            item.dataset.idx = idx;
+            item.dataset.value = hw;
             item.title = 'Нажмите, чтобы редактировать';
-            item.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-            item.addEventListener('click', (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                openHwItemEdit(cell, gradeKey, idx, hw);
-            });
             listWrap.appendChild(item);
         });
 
@@ -1232,12 +1264,6 @@ function renderHwContent(cell, gradeKey, hwList) {
         addBtn.type = 'button';
         addBtn.className = 'add-hw-btn';
         addBtn.textContent = '+ ДЗ к след. уроку';
-        addBtn.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-        addBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            openNewHwItem(cell, gradeKey);
-        });
         listWrap.appendChild(addBtn);
     }
 
@@ -1245,7 +1271,6 @@ function renderHwContent(cell, gradeKey, hwList) {
 }
 
 function openHwItemEdit(cell, gradeKey, idx, value) {
-    // Сначала закроем предыдущий редактор (сохранив его)
     closeActiveEditor(true);
 
     const listWrap = cell.querySelector('.hw-list');
@@ -1265,12 +1290,12 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     ok.type = 'button';
     ok.className = 'confirm-btn';
     ok.title = 'Сохранить';
-    ok.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+    ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
 
     bubble.appendChild(ta);
     bubble.appendChild(ok);
-
     target.replaceWith(bubble);
+
     autoGrow(ta);
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
@@ -1286,7 +1311,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         }
         JOURNAL.lessons[gradeKey].h = arr;
         renderHwContent(cell, gradeKey, arr);
-        saveJournal();
+        saveJournal(); // фон
     };
     const cancel = () => {
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
@@ -1318,24 +1343,6 @@ function autoGrow(el) {
     el.style.height = 'auto';
     el.style.height = Math.max(28, el.scrollHeight) + 'px';
 }
-
-/* ===== Глобальное закрытие активного редактора по клику вне ===== */
-document.addEventListener('mousedown', (e) => {
-    if (!activeEditor) return;
-    // Клик внутри active edit-bubble — не закрываем
-    const bubble = document.querySelector('.edit-bubble');
-    if (bubble && bubble.contains(e.target)) return;
-    // Клик по любой кнопке внутри ячейки — не закрываем (обработчик кнопки сам всё сделает)
-    if (e.target.closest && (
-        e.target.closest('.cell-online-btn') ||
-        e.target.closest('.add-hw-btn') ||
-        e.target.closest('.hw-list-item') ||
-        e.target.closest('.placeholder-text') ||
-        e.target.closest('.confirm-btn')
-    )) return;
-    // Сохраняем и закрываем
-    closeActiveEditor(true);
-});
 
 /* ==== Заполнение «мёртвых» колонок ==== */
 function fillFillers() {
@@ -1425,18 +1432,18 @@ function makeGradeDisplay(v) {
     if (!up) return '';
     let letterPart = '';
     const foundLetter = up.match(/^(Н|О|Б|П|СП)/);
-    if (foundLetter) letterPart = `<span class="status-letter">${foundLetter[0]}</span>`;
+    if (foundLetter) letterPart = '<span class="status-letter">' + foundLetter[0] + '</span>';
     let gradePart = up.replace(/^(Н|О|Б|П|СП)/, '').trim();
     if (!gradePart) return letterPart;
     if (gradePart.includes('/')) {
         const parts = gradePart.split('/');
-        return `${letterPart}<div class="grade-display">
-            <div class="double-grade-box ${getGradeClass(parts[0])}">${parts[0]}</div>
-            <span class="slash-divider">/</span>
-            <div class="double-grade-box ${getGradeClass(parts[1])}">${parts[1] || ''}</div>
-        </div>`;
+        return letterPart + '<div class="grade-display">' +
+            '<div class="double-grade-box ' + getGradeClass(parts[0]) + '">' + parts[0] + '</div>' +
+            '<span class="slash-divider">/</span>' +
+            '<div class="double-grade-box ' + getGradeClass(parts[1]) + '">' + (parts[1] || '') + '</div>' +
+        '</div>';
     }
-    return `${letterPart}<div class="grade-display"><div class="grade-box ${getGradeClass(gradePart)}">${gradePart}</div></div>`;
+    return letterPart + '<div class="grade-display"><div class="grade-box ' + getGradeClass(gradePart) + '">' + gradePart + '</div></div>';
 }
 
 function hl(input, colIdx, active) {
@@ -1447,7 +1454,7 @@ function hl(input, colIdx, active) {
         const fioRows = document.querySelectorAll('#fioBody tr');
         if (fioRows[trIndex]) fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
     }
-    document.querySelectorAll(`#jBody td[data-col="${colIdx}"]`).forEach(td => td.classList.toggle('highlight-cross', active));
+    document.querySelectorAll('#jBody td[data-col="' + colIdx + '"]').forEach(td => td.classList.toggle('highlight-cross', active));
 }
 
 function hlQtr(input, active) {
@@ -1497,10 +1504,10 @@ function navigateGradeCell(input, direction) {
 
 function handleGradeKeydown(e, input) {
     const key = e.key;
-    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key)) return;
+    if (key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'ArrowUp' && key !== 'ArrowDown') return;
     const val = input.value || '';
-    const start = input.selectionStart ?? 0;
-    const end = input.selectionEnd ?? 0;
+    const start = input.selectionStart || 0;
+    const end = input.selectionEnd || 0;
     const atStart = start === 0 && end === 0;
     const atEnd = start === val.length && end === val.length;
     if (key === 'ArrowLeft' && !atStart) return;
@@ -1519,7 +1526,7 @@ async function upg(studentId, gradeKey, inputElement) {
         return;
     }
     const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
+    if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
         JOURNAL.grades[studentId][gradeKey] = up;
@@ -1537,7 +1544,7 @@ async function upqtr(studentId, inputElement) {
         return;
     }
     const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
+    if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
@@ -1590,7 +1597,7 @@ function renderLessonTypePopupList() {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'lesson-type-popup-item' + (t.abbr === currentAbbr ? ' active' : '');
-        btn.innerHTML = `<span class="abbr">${escapeHtml(t.abbr)}</span><span class="full">${escapeHtml(t.full)}</span>`;
+        btn.innerHTML = '<span class="abbr">' + escapeHtml(t.abbr) + '</span><span class="full">' + escapeHtml(t.full) + '</span>';
         btn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); selectLessonType(t.abbr); });
         list.appendChild(btn);
     });
@@ -1601,7 +1608,7 @@ async function selectLessonType(abbr) {
     if (!gradeKey) return;
     JOURNAL.lessonTypes[gradeKey] = abbr;
     await saveJournal();
-    const th = document.querySelector(`th.type-lesson-col[data-grade-key="${gradeKey}"]`);
+    const th = document.querySelector('th.type-lesson-col[data-grade-key="' + gradeKey + '"]');
     if (th) th.textContent = abbr;
     closeLessonTypePopup();
 }
@@ -1659,8 +1666,8 @@ function updateTabIcons() {
     const iconRight = rightCollapsed
         ? '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>'
         : '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>';
-    tabLeft.innerHTML = `<svg viewBox="0 0 24 24">${iconLeft}</svg>Раскрыть журнал`;
-    tabRight.innerHTML = `<svg viewBox="0 0 24 24">${iconRight}</svg>Раскрыть поуроч. план`;
+    tabLeft.innerHTML = '<svg viewBox="0 0 24 24">' + iconLeft + '</svg>Раскрыть журнал';
+    tabRight.innerHTML = '<svg viewBox="0 0 24 24">' + iconRight + '</svg>Раскрыть поуроч. план';
 }
 
 function showEmpty(title, text) {
