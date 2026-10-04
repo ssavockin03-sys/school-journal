@@ -113,12 +113,19 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
-.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 5; }
-.fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CBD5E1; pointer-events: none; z-index: 20; }
+.fio-table-wrapper {
+    flex-shrink: 0;
+    width: 210px;
+    background: #FFFFFF;
+    position: sticky;
+    left: 0;
+    z-index: 20;
+}
+.fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CBD5E1; pointer-events: none; z-index: 30; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
-.fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-bottom: 1px solid #CBD5E1; box-sizing: border-box; }
-.fio-table thead th { background: #E8EEF5 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 10; }
-.fio-table td { padding: 0 10px; color: #1E293B; background: #FFFFFF; }
+.fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-bottom: 1px solid #CBD5E1; box-sizing: border-box; background: #FFFFFF; }
+.fio-table thead th { background: #E8EEF5 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 25; }
+.fio-table td { padding: 0 10px; color: #1E293B; }
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
 .fio-table .student-name-text { display: inline-block; font-size: 13.65px; }
 .fio-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
@@ -180,11 +187,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .grade-3 { background: #FB923C !important; }
 .bad-grade { background: #DC2626 !important; }
 
-/* Метка отсутствия (Н, О, Б, П, СП) — возвращаем в левый-верхний угол */
+/* Метка отсутствия (Н, О, Б, П, СП) */
 .status-letter {
     position: absolute;
-    top: -2px;
-    left: 2px;
+    top: 0;
+    left: 3px;
     color: #DC2626 !important;
     font-size: 13px !important;
     font-weight: 400 !important;
@@ -247,10 +254,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     border-bottom: 1px solid #CBD5E1;
     vertical-align: top;
     text-align: left;
-    padding: 8px 10px;
+    padding: 4px 8px;
     box-sizing: border-box;
     word-wrap: break-word;
-    min-height: 63px;
+    height: 56px;
 }
 .panel-right tbody td:last-child { border-right: none; }
 .panel-right tbody td.lesson-num-cell {
@@ -275,17 +282,15 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 /* ====== Ячейки Тема и ДЗ ====== */
 .theme-cell {
     font-size: 13px;
-    line-height: 1.35;
+    line-height: 1.3;
     color: #334155;
     white-space: pre-wrap;
     word-wrap: break-word;
-    min-height: 63px;
 }
 .homework-cell-inner {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    min-height: 63px;
+    gap: 2px;
 }
 
 .hw-item {
@@ -293,7 +298,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     align-items: flex-start;
     gap: 6px;
     font-size: 13px;
-    line-height: 1.35;
+    line-height: 1.3;
     color: #334155;
     white-space: pre-wrap;
     word-wrap: break-word;
@@ -301,7 +306,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .hw-item-text {
     flex: 1 1 auto;
     min-width: 0;
-    padding: 2px 4px;
+    padding: 1px 4px;
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.12s ease;
@@ -311,7 +316,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 /* Плейсхолдер "Добавить тему" */
 .placeholder-btn {
     display: inline-block;
-    padding: 2px 6px;
+    padding: 1px 4px;
     border: none;
     background: transparent;
     color: #0EA5E9;
@@ -323,13 +328,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     font-family: inherit;
     text-align: left;
     transition: background 0.12s ease;
+    line-height: 1.3;
 }
 .placeholder-btn:hover { background: #F1F5F9; }
 
-/* Кнопка "+ ДЗ к след. уроку" — одна на ячейку */
+/* Кнопка "+ ДЗ к след. уроку" */
 .add-hw-btn {
     display: inline-block;
-    padding: 2px 6px;
+    padding: 1px 4px;
     border: none;
     background: transparent;
     color: #0EA5E9;
@@ -342,10 +348,24 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     text-align: left;
     transition: background 0.12s ease;
     align-self: flex-start;
+    line-height: 1.3;
 }
 .add-hw-btn:hover { background: #F1F5F9; }
 
-/* Edit-режим */
+/* Редактируемый текст (view) */
+.cell-view-inline {
+    display: inline-block;
+    padding: 1px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    max-width: 100%;
+}
+.cell-view-inline:hover { background: #F1F5F9; }
+
+/* Edit-режим — компактное окошко */
 .edit-bubble {
     display: flex;
     align-items: flex-start;
@@ -355,8 +375,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .edit-bubble textarea {
     flex: 1 1 auto;
     min-width: 0;
-    min-height: 36px;
-    padding: 8px 12px;
+    min-height: 28px;
+    padding: 5px 10px;
     border: 1.5px solid #CBD5E1;
     border-radius: 10px;
     background: #FFFFFF;
@@ -365,7 +385,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     color: #1E293B;
     outline: none;
     resize: none;
-    line-height: 1.35;
+    line-height: 1.3;
     box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
     overflow: hidden;
     white-space: pre-wrap;
@@ -381,25 +401,26 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     background: #2563EB;
     border: none;
-    border-radius: 7px;
+    border-radius: 6px;
     color: #FFFFFF;
     cursor: pointer;
-    margin-top: 4px;
+    margin-top: 2px;
 }
 .edit-bubble .confirm-btn:hover { background: #1D4ED8; }
-.edit-bubble .confirm-btn svg { width: 14px; height: 14px; fill: #FFFFFF; }
+.edit-bubble .confirm-btn svg { width: 12px; height: 12px; fill: #FFFFFF; }
 
-/* Кнопка "Выдать онлайн" — только у темы, одна */
+/* Кнопка "Выдать онлайн" — по одной на каждое ДЗ */
+.hw-item .btn-online-inline,
 .btn-online-inline {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     gap: 3px;
-    padding: 3px 8px;
+    padding: 2px 7px;
     background: #FFFFFF;
     border: 1px solid #93C5FD;
     border-radius: 6px;
@@ -410,7 +431,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     font-family: inherit;
     white-space: nowrap;
     line-height: 1.3;
-    margin-top: 4px;
     transition: all 0.15s ease;
 }
 .btn-online-inline:hover { background: #EFF6FF; border-color: #2563EB; }
@@ -1099,13 +1119,9 @@ function renderThemeCell(cell, gradeKey, value) {
         cell.appendChild(btn);
     } else {
         const div = document.createElement('div');
-        div.style.cursor = 'pointer';
-        div.style.padding = '2px 4px';
-        div.style.borderRadius = '6px';
+        div.className = 'cell-view-inline';
         div.textContent = value;
         div.title = 'Нажмите, чтобы редактировать';
-        div.addEventListener('mouseenter', () => div.style.background = '#F1F5F9');
-        div.addEventListener('mouseleave', () => div.style.background = 'transparent');
         div.addEventListener('click', (e) => { e.stopPropagation(); openThemeEdit(cell, gradeKey, value); });
         cell.appendChild(div);
     }
@@ -1188,6 +1204,7 @@ function renderHomeworkCell(cell, gradeKey, hwRaw) {
     addBtn.textContent = '+ ДЗ к след. уроку';
     addBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        e.preventDefault();
         addNewHw(cell, gradeKey);
     });
     wrap.appendChild(addBtn);
@@ -1197,13 +1214,26 @@ function renderHomeworkCell(cell, gradeKey, hwRaw) {
 
 function renderHwItemView(item, cell, gradeKey, idx, value) {
     item.innerHTML = '';
+
     const textDiv = document.createElement('div');
     textDiv.className = 'hw-item-text';
     textDiv.textContent = value;
     textDiv.title = 'Нажмите, чтобы редактировать';
     textDiv.addEventListener('click', (e) => { e.stopPropagation(); openHwItemEdit(item, cell, gradeKey, idx, value); });
     item.appendChild(textDiv);
-    // Кнопка "Выдать онлайн" у элемента ДЗ НЕ создаётся — она только у темы
+
+    // Одна кнопка "Выдать онлайн" на каждый элемент ДЗ
+    const onlineBtn = document.createElement('button');
+    onlineBtn.type = 'button';
+    onlineBtn.className = 'btn-online-inline';
+    onlineBtn.title = 'Выдать онлайн-урок';
+    onlineBtn.innerHTML = `
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        Онлайн
+    `;
+    onlineBtn.addEventListener('mousedown', (e) => e.preventDefault());
+    onlineBtn.addEventListener('click', (e) => { e.stopPropagation(); showToast('Выдача онлайн-урока — в разработке'); });
+    item.appendChild(onlineBtn);
 }
 
 function openHwItemEdit(item, cell, gradeKey, idx, value) {
@@ -1271,7 +1301,7 @@ function openHwItemEdit(item, cell, gradeKey, idx, value) {
 function addNewHw(cell, gradeKey) {
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
     const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-    arr.push(''); // пустой элемент
+    arr.push('__new__');
     JOURNAL.lessons[gradeKey].h = arr;
 
     renderHomeworkCell(cell, gradeKey, arr);
@@ -1287,7 +1317,7 @@ function addNewHw(cell, gradeKey) {
 
 function autoGrow(el) {
     el.style.height = 'auto';
-    el.style.height = Math.max(36, el.scrollHeight) + 'px';
+    el.style.height = Math.max(28, el.scrollHeight) + 'px';
 }
 
 /* ==== Заполнение «мёртвых» колонок ==== */
