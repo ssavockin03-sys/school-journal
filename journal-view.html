@@ -280,13 +280,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     word-wrap: break-word;
     vertical-align: top;
 }
+.homework-cell { padding-right: 84px !important; }
 
-/* Отступ справа, чтобы текст не залезал под кнопку "Онлайн" */
-.homework-cell {
-    padding-right: 84px !important;
-}
-
-/* Кнопка "Выдать онлайн" — одна на ячейку ДЗ, в правом верхнем углу */
+/* Кнопка "Выдать онлайн" */
 .cell-online-btn {
     position: absolute;
     top: 4px;
@@ -311,10 +307,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .cell-online-btn:hover { background: #EFF6FF; border-color: #2563EB; }
 .cell-online-btn svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
 
-/* Список ДЗ в ячейке */
-.hw-list {
-    display: block;
-}
+/* Список ДЗ */
+.hw-list { display: block; }
 .hw-list-item {
     display: block;
     padding: 1px 4px;
@@ -328,7 +322,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .hw-list-item:hover { background: #F1F5F9; }
 .hw-list-item + .hw-list-item { margin-top: 2px; }
 
-/* Плейсхолдер */
 .placeholder-text {
     display: inline-block;
     padding: 1px 4px;
@@ -340,7 +333,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .placeholder-text:hover { background: #F1F5F9; }
 
-/* Кнопка "+ ДЗ к след. уроку" под уже существующими ДЗ */
 .add-hw-btn {
     display: inline-block;
     padding: 1px 4px;
@@ -1081,7 +1073,7 @@ function renderLessonPlanRows() {
         tdHw.className = 'homework-cell';
         renderHwContent(tdHw, d.gradeKey, normalizeHwList(l.h));
 
-        // Кнопка "Онлайн" — внутри ячейки ДЗ, одна на строку
+        // Кнопка "Онлайн" — одна на строку
         const onlineBtn = document.createElement('button');
         onlineBtn.type = 'button';
         onlineBtn.className = 'cell-online-btn';
@@ -1161,14 +1153,14 @@ function openThemeEditInline(cell, gradeKey, value) {
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
     let done = false;
-    const save = async () => {
+    const save = () => {
         if (done) return;
         done = true;
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         JOURNAL.lessons[gradeKey].t = txt;
-        await saveJournal();
         renderThemeContent(cell, gradeKey, txt);
+        saveJournal(); // без await — не блокируем UI
     };
     const cancel = () => {
         if (done) return;
@@ -1184,7 +1176,6 @@ function openThemeEditInline(cell, gradeKey, value) {
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
     ok.addEventListener('click', (e) => { e.stopPropagation(); save(); });
 
-    // Сохранение по клику вне — но НЕ если клик по кнопке Онлайн или по элементам внутри ячейки
     const onOutside = (e) => {
         if (e.target.closest && (e.target.closest('.cell-online-btn') || e.target.closest('.add-hw-btn') || e.target.closest('.hw-list-item') || e.target.closest('.placeholder-text'))) return;
         if (!cell.contains(e.target)) {
@@ -1192,12 +1183,11 @@ function openThemeEditInline(cell, gradeKey, value) {
             save();
         }
     };
-    setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
+    setTimeout(() => document.addEventListener('mousedown', onOutside), 20);
 }
 
 /* ===== ДЗ: view / edit ===== */
 function renderHwContent(cell, gradeKey, hwList) {
-    // Удаляем старые элементы, но оставляем кнопку Онлайн
     const onlineBtn = cell.querySelector('.cell-online-btn');
     cell.innerHTML = '';
     if (onlineBtn) cell.appendChild(onlineBtn);
@@ -1231,7 +1221,6 @@ function renderHwContent(cell, gradeKey, hwList) {
             listWrap.appendChild(item);
         });
 
-        // Кнопка "+ ДЗ к след. уроку" под существующими ДЗ
         const addBtn = document.createElement('button');
         addBtn.type = 'button';
         addBtn.className = 'add-hw-btn';
@@ -1249,14 +1238,12 @@ function renderHwContent(cell, gradeKey, hwList) {
 }
 
 function openHwItemEdit(cell, gradeKey, idx, value) {
-    const onlineBtn = cell.querySelector('.cell-online-btn');
     const listWrap = cell.querySelector('.hw-list');
     if (!listWrap) return;
     const items = listWrap.querySelectorAll('.hw-list-item, .placeholder-text, .add-hw-btn');
     const target = items[idx];
     if (!target) return;
 
-    // Заменяем элемент на edit-bubble
     const bubble = document.createElement('div');
     bubble.className = 'edit-bubble';
 
@@ -1279,7 +1266,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
     let done = false;
-    const save = async () => {
+    const save = () => {
         if (done) return;
         done = true;
         const txt = ta.value.trim();
@@ -1291,8 +1278,8 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
             arr[idx] = txt;
         }
         JOURNAL.lessons[gradeKey].h = arr;
-        await saveJournal();
         renderHwContent(cell, gradeKey, arr);
+        saveJournal(); // без await — не блокируем UI
     };
     const cancel = () => {
         if (done) return;
@@ -1316,7 +1303,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
             save();
         }
     };
-    setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
+    setTimeout(() => document.addEventListener('mousedown', onOutside), 20);
 }
 
 function openNewHwItem(cell, gradeKey) {
@@ -1325,7 +1312,6 @@ function openNewHwItem(cell, gradeKey) {
     arr.push('');
     JOURNAL.lessons[gradeKey].h = arr;
     renderHwContent(cell, gradeKey, arr);
-    // Открываем edit последнего (пустого)
     openHwItemEdit(cell, gradeKey, arr.length - 1, '');
 }
 
@@ -1404,7 +1390,7 @@ function fillFillers() {
 let resizeTimer = null;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(fillFillers, 150);
+    resizeTimer = setTimeout(fillFillers, 80);
 });
 
 function getGradeClass(value) {
