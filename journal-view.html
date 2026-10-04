@@ -303,7 +303,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .panel-right table th:nth-child(2) { color: #1E293B !important; width: 80px; }
 .panel-right table th:nth-child(3) { width: 38%; }
 .panel-right table th:nth-child(4) { width: 47%; }
-.lesson-row { height: 63px; background: #FFFFFF !important; }
+.lesson-row { background: #FFFFFF !important; }
 .panel-right tbody td {
     background: #FFFFFF !important;
     border: none;
@@ -312,7 +312,6 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     vertical-align: middle;
     text-align: left;
     padding: 0;
-    height: 63px;
 }
 .panel-right tbody td:last-child { border-right: none; }
 .panel-right tbody td.lesson-num-cell {
@@ -322,7 +321,6 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     color: #475569;
     font-size: 12px;
     text-align: center !important;
-    height: 63px;
     padding: 0 !important;
     border-right: 1px solid #CBD5E1;
     border-bottom: 1px solid #CBD5E1;
@@ -334,7 +332,6 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     color: #0EA5E9;
     font-size: 12px;
     text-align: center !important;
-    height: 63px;
     padding: 0 !important;
 }
 
@@ -342,19 +339,16 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .editable-cell {
     position: relative;
     vertical-align: top;
-    height: 63px;
     padding: 4px 6px;
     background: #FFFFFF !important;
-    overflow: hidden;
     text-align: left;
     box-sizing: border-box;
+    min-height: 63px;
 }
 
 /* VIEW-режим — поднят к верху и сдвинут влево */
 .cell-view {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
+    display: block;
     width: 100%;
     min-height: 34px;
     padding: 4px 4px 4px 6px;
@@ -367,7 +361,6 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     box-sizing: border-box;
     word-wrap: break-word;
     white-space: pre-wrap;
-    overflow: hidden;
     text-align: left;
     margin: 0;
 }
@@ -382,10 +375,10 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     font-size: 13.5px;
 }
 
-/* EDIT-режим — компактное закруглённое окошко как на фото */
+/* EDIT-режим — компактное закруглённое окошко с СЕРОЙ обводкой */
 .cell-edit {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 6px;
     width: 100%;
     margin: 0;
@@ -393,9 +386,9 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .cell-edit-input {
     flex: 1 1 auto;
     min-width: 0;
-    height: 36px;
-    padding: 8px 12px;
-    border: 1.5px solid #2563EB;
+    min-height: 32px;
+    padding: 7px 12px;
+    border: 1.5px solid #CBD5E1;
     border-radius: 10px;
     background: #FFFFFF;
     font-size: 13px;
@@ -403,34 +396,39 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     color: #1E293B;
     outline: none;
     resize: none;
-    line-height: 1.3;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12);
+    line-height: 1.35;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
     box-sizing: border-box;
     overflow: hidden;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
+.cell-edit-input:focus {
+    border-color: #94A3B8;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1);
+}
 .cell-edit-input::placeholder { color: #94A3B8; font-style: italic; }
 
-/* Кнопка подтверждения — синий квадрат с галочкой */
+/* Кнопка подтверждения — синий квадрат с галочкой (чуть меньше) */
 .cell-edit-confirm {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
     padding: 0;
     background: #2563EB;
     border: none;
-    border-radius: 8px;
+    border-radius: 7px;
     color: #FFFFFF;
     cursor: pointer;
     transition: background 0.15s ease, transform 0.1s ease;
+    margin-top: 3px;
 }
 .cell-edit-confirm:hover { background: #1D4ED8; }
 .cell-edit-confirm:active { transform: scale(0.94); }
-.cell-edit-confirm svg { width: 15px; height: 15px; fill: #FFFFFF; }
+.cell-edit-confirm svg { width: 13px; height: 13px; fill: #FFFFFF; }
 
 /* Ячейка ДЗ — flex-строка: [view/edit] + [кнопка онлайн] */
 .homework-cell {
@@ -461,7 +459,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     white-space: nowrap;
     line-height: 1.3;
     transition: all 0.15s ease;
-    margin-top: 2px;
+    margin-top: 3px;
 }
 .btn-online-inline:hover { background: #EFF6FF; border-color: #2563EB; color: #1D4ED8; }
 .btn-online-inline svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
@@ -1255,6 +1253,8 @@ function renderViewMode(cell, gradeKey, field, value, placeholder) {
         renderEditMode(cell, gradeKey, field, value, placeholder);
     });
     cell.insertBefore(view, cell.firstChild);
+    // Пересчёт высоты строки
+    adjustRowHeights(cell.closest('tr'));
 }
 
 function renderEditMode(cell, gradeKey, field, value, placeholder) {
@@ -1269,10 +1269,6 @@ function renderEditMode(cell, gradeKey, field, value, placeholder) {
     input.rows = 1;
     input.value = value || '';
     input.placeholder = '';
-    // Плейсхолдер не показываем как значение — пустое поле,
-    // чтобы серая подсказка «Добавить тему» не оставалась внутри.
-    // Но если хотим показывать placeholder — раскомментировать:
-    // input.placeholder = placeholder;
 
     const confirmBtn = document.createElement('button');
     confirmBtn.type = 'button';
@@ -1287,7 +1283,14 @@ function renderEditMode(cell, gradeKey, field, value, placeholder) {
     setTimeout(() => {
         input.focus();
         input.setSelectionRange(input.value.length, input.value.length);
+        autoGrow(input);
+        adjustRowHeights(cell.closest('tr'));
     }, 0);
+
+    input.addEventListener('input', () => {
+        autoGrow(input);
+        adjustRowHeights(cell.closest('tr'));
+    });
 
     let saved = false;
     const save = async () => {
@@ -1316,7 +1319,6 @@ function renderEditMode(cell, gradeKey, field, value, placeholder) {
         if (e.key === 'Escape') { e.preventDefault(); cancel(); }
     });
 
-    // Клик вне окошка — сохранить
     const onOutside = (e) => {
         if (!cell.contains(e.target)) {
             document.removeEventListener('mousedown', onOutside);
@@ -1326,399 +1328,28 @@ function renderEditMode(cell, gradeKey, field, value, placeholder) {
     setTimeout(() => document.addEventListener('mousedown', onOutside), 50);
 }
 
-/* ==== Заполнение «мёртвых» колонок ==== */
-function fillFillers() {
-    document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
-    document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
-
-    const journalScroll = document.getElementById('journalScroll');
-    if (!journalScroll) return;
-
-    const rect = journalScroll.getBoundingClientRect();
-    const scrollWidth = Math.max(journalScroll.clientWidth, Math.floor(rect.width));
-
-    const fioWrapper = document.querySelector('.fio-table-wrapper');
-    const fioWidth = fioWrapper ? Math.ceil(fioWrapper.getBoundingClientRect().width) : 210;
-
-    const marksWrapper = document.querySelector('.marks-table-wrapper');
-    if (!marksWrapper) return;
-
-    const marksRect = marksWrapper.getBoundingClientRect();
-    const marksWidth = Math.ceil(marksRect.width);
-
-    const freeSpace = scrollWidth - fioWidth - marksWidth;
-
-    if (freeSpace <= 0) return;
-
-    const fullCols = Math.floor(freeSpace / FILLER_COL_WIDTH);
-    const remainder = Math.round(freeSpace - fullCols * FILLER_COL_WIDTH);
-
-    const mRow = document.getElementById('mRow');
-    const sRow = document.getElementById('sRow');
-    const jBody = document.getElementById('jBody');
-
-    for (let i = 0; i < fullCols; i++) {
-        const th = document.createElement('th');
-        th.className = 'col-filler-head';
-        th.style.width = FILLER_COL_WIDTH + 'px';
-        th.style.minWidth = FILLER_COL_WIDTH + 'px';
-        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
-        mRow.appendChild(th);
-    }
-    for (let i = 0; i < fullCols; i++) {
-        const th = document.createElement('th');
-        th.className = 'col-filler-head';
-        th.style.width = FILLER_COL_WIDTH + 'px';
-        th.style.minWidth = FILLER_COL_WIDTH + 'px';
-        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
-        sRow.appendChild(th);
-    }
-    jBody.querySelectorAll('tr').forEach(tr => {
-        for (let i = 0; i < fullCols; i++) {
-            const td = document.createElement('td');
-            td.className = 'col-filler-body';
-            td.style.width = FILLER_COL_WIDTH + 'px';
-            td.style.minWidth = FILLER_COL_WIDTH + 'px';
-            td.style.maxWidth = FILLER_COL_WIDTH + 'px';
-            tr.appendChild(td);
-        }
-    });
-
-    if (remainder >= 2) {
-        const rw = remainder + 'px';
-        const thHead1 = document.createElement('th');
-        thHead1.className = 'col-filler-head col-filler-last';
-        thHead1.style.width = rw;
-        thHead1.style.minWidth = rw;
-        thHead1.style.maxWidth = rw;
-        mRow.appendChild(thHead1);
-
-        const thHead2 = document.createElement('th');
-        thHead2.className = 'col-filler-head col-filler-last';
-        thHead2.style.width = rw;
-        thHead2.style.minWidth = rw;
-        thHead2.style.maxWidth = rw;
-        sRow.appendChild(thHead2);
-
-        jBody.querySelectorAll('tr').forEach(tr => {
-            const td = document.createElement('td');
-            td.className = 'col-filler-body col-filler-last';
-            td.style.width = rw;
-            td.style.minWidth = rw;
-            td.style.maxWidth = rw;
-            tr.appendChild(td);
-        });
-    }
+/* Автовысота textarea */
+function autoGrow(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.max(32, el.scrollHeight) + 'px';
 }
 
-function getGradeClass(value) {
-    if (!value || typeof value !== 'string') return '';
-    const base = value.trim().charAt(0);
-    if (base === '1' || base === '2') return 'bad-grade';
-    if (base === '3') return 'grade-3';
-    if (base === '4' || base === '5') return 'grade-4';
-    return '';
-}
-
-function makeGradeDisplay(v) {
-    if (!v) return '';
-    let up = v.toUpperCase().trim();
-    if (!up) return '';
-
-    let letterPart = '';
-    let foundLetter = up.match(/^(Н|О|Б|П|СП)/);
-    if (foundLetter) letterPart = `<span class="status-letter">${foundLetter[0]}</span>`;
-
-    let gradePart = up.replace(/^(Н|О|Б|П|СП)/, '').trim();
-    if (!gradePart) return letterPart;
-
-    if (gradePart.includes('/')) {
-        const parts = gradePart.split('/');
-        return `
-            ${letterPart}
-            <div class="grade-display">
-                <div class="double-grade-box ${getGradeClass(parts[0])}">${parts[0]}</div>
-                <span class="slash-divider">/</span>
-                <div class="double-grade-box ${getGradeClass(parts[1])}">${parts[1] || ''}</div>
-            </div>
-        `;
-    }
-    return `${letterPart}<div class="grade-display"><div class="grade-box ${getGradeClass(gradePart)}">${gradePart}</div></div>`;
-}
-
-function hl(input, colIdx, active) {
-    const tr = input.closest('tr');
-    if (tr) {
-        tr.querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
-        const trIndex = Array.from(tr.parentNode.children).indexOf(tr);
-        const fioRows = document.querySelectorAll('#fioBody tr');
-        if (fioRows[trIndex]) {
-            fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
-        }
-    }
-    document.querySelectorAll(`#jBody td[data-col="${colIdx}"]`).forEach(td => {
-        td.classList.toggle('highlight-cross', active);
-    });
-}
-
-function hlQtr(input, active) {
-    const tr = input.closest('tr');
-    if (tr) {
-        tr.querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
-        const trIndex = Array.from(tr.parentNode.children).indexOf(tr);
-        const fioRows = document.querySelectorAll('#fioBody tr');
-        if (fioRows[trIndex]) {
-            fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
-        }
-    }
-    document.querySelectorAll('#jBody td.col-qtr').forEach(td => {
-        td.classList.toggle('highlight-cross', active);
-    });
-}
-
-function getEditableCellsInRow(tr) {
-    return Array.from(tr.querySelectorAll('td'))
-        .filter(td => td.dataset.col !== undefined || td.classList.contains('col-qtr'));
-}
-
-function navigateGradeCell(input, direction) {
-    const td = input.closest('td');
-    if (!td) return;
-    const tr = td.closest('tr');
+/* Выравнивание высоты обеих ячеек строки урока (тема + ДЗ) */
+function adjustRowHeights(tr) {
     if (!tr) return;
-    const jBody = document.getElementById('jBody');
-    const rows = Array.from(jBody.querySelectorAll('tr'));
-    const rowIdx = rows.indexOf(tr);
-    if (rowIdx === -1) return;
+    // Сбрасываем inline-высоты, чтобы измерить естественные
+    const cells = tr.querySelectorAll('.editable-cell');
+    cells.forEach(c => { c.style.height = ''; });
 
-    const cellsInRow = getEditableCellsInRow(tr);
-    const colIdx = cellsInRow.indexOf(td);
-    if (colIdx === -1) return;
-
-    let targetTd = null;
-
-    if (direction === 'left' || direction === 'right') {
-        const nextCol = direction === 'left' ? colIdx - 1 : colIdx + 1;
-        if (nextCol < 0 || nextCol >= cellsInRow.length) return;
-        targetTd = cellsInRow[nextCol];
-    } else if (direction === 'up' || direction === 'down') {
-        const nextRow = direction === 'up' ? rowIdx - 1 : rowIdx + 1;
-        if (nextRow < 0 || nextRow >= rows.length) return;
-        const targetCells = getEditableCellsInRow(rows[nextRow]);
-        targetTd = targetCells[colIdx] || null;
-    }
-
-    if (!targetTd) return;
-    const targetInput = targetTd.querySelector('input');
-    if (!targetInput) return;
-    targetInput.focus();
-    setTimeout(() => { try { targetInput.select(); } catch (e) {} }, 0);
-}
-
-function handleGradeKeydown(e, input) {
-    const key = e.key;
-    if (key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'ArrowUp' && key !== 'ArrowDown') return;
-
-    const val = input.value || '';
-    const start = input.selectionStart ?? 0;
-    const end = input.selectionEnd ?? 0;
-    const atStart = start === 0 && end === 0;
-    const atEnd = start === val.length && end === val.length;
-
-    if (key === 'ArrowLeft' && !atStart) return;
-    if (key === 'ArrowRight' && !atEnd) return;
-
-    e.preventDefault();
-    navigateGradeCell(input, key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : key === 'ArrowUp' ? 'up' : 'down');
-}
-
-async function upg(studentId, gradeKey, inputElement) {
-    const v = inputElement.value.trim();
-    const up = v.toUpperCase();
-    const validRegex = /^(([НОБП]|СП)\s*)?([1-5][+-]?(\/([1-5][+-]?)?)?)?$/i;
-
-    if (!validRegex.test(up)) {
-        alert('Используйте оценки от 1 до 5 (можно с + или -, двойные через /), буквы отсутствия (Н, О, Б, П, СП)');
-        inputElement.value = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
-        return;
-    }
-
-    const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) {
-        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
-    }
-
-    setTimeout(async () => {
-        if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
-        JOURNAL.grades[studentId][gradeKey] = up;
-        await saveJournal();
-        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-    }, 200);
-}
-
-async function upqtr(studentId, inputElement) {
-    const v = inputElement.value.trim();
-    const up = v.toUpperCase();
-    const qtrRegex = /^([1-5][+-]?)?$/;
-    if (!qtrRegex.test(up)) {
-        alert('Для итоговой оценки используйте баллы от 1 до 5');
-        inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[ACTIVE_PERIOD_INDEX] || '';
-        return;
-    }
-    const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) {
-        displayLayer.innerHTML = !up ? '' : `<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">${escapeHtml(up)}</div></div>`;
-    }
-    setTimeout(async () => {
-        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
-        JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
-        await saveJournal();
-        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-    }, 200);
-}
-
-async function saveJournal() {
-    await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
-        grades: JOURNAL.grades,
-        lessons: JOURNAL.lessons,
-        qtr_grades: JOURNAL.qtrGrades,
-        lesson_types: JOURNAL.lessonTypes
+    // Находим максимальную естественную высоту контента
+    let maxH = 63;
+    cells.forEach(c => {
+        const h = c.scrollHeight;
+        if (h > maxH) maxH = h;
     });
+
+    cells.forEach(c => { c.style.height = maxH + 'px'; });
 }
-
-let currentLessonTypeContext = { gradeKey: null };
-let popupJustOpened = false;
-
-function openLessonTypePopup(anchorEl, gradeKey) {
-    const popup = document.getElementById('lessonTypePopup');
-    const search = document.getElementById('lessonTypePopupSearch');
-    currentLessonTypeContext = { gradeKey };
-    popupJustOpened = true;
-    search.value = '';
-    renderLessonTypePopupList();
-    popup.classList.add('show');
-    const rect = anchorEl.getBoundingClientRect();
-    const popupWidth = 260, popupMaxHeight = 340;
-    let left = rect.left + rect.width / 2 - popupWidth / 2;
-    if (left < 8) left = 8;
-    if (left + popupWidth > window.innerWidth - 8) left = window.innerWidth - popupWidth - 8;
-    let top = rect.bottom + 4;
-    if (top + popupMaxHeight > window.innerHeight - 8) {
-        top = rect.top - popupMaxHeight - 4;
-        if (top < 8) top = 8;
-    }
-    popup.style.left = left + 'px';
-    popup.style.top = top + 'px';
-    setTimeout(() => search.focus(), 50);
-    setTimeout(() => { popupJustOpened = false; }, 100);
-}
-
-function renderLessonTypePopupList() {
-    const list = document.getElementById('lessonTypePopupList');
-    const search = (document.getElementById('lessonTypePopupSearch').value || '').toLowerCase().trim();
-    const currentAbbr = (JOURNAL.lessonTypes || {})[currentLessonTypeContext.gradeKey] || 'ОТВ';
-    list.innerHTML = '';
-    const filtered = LESSON_TYPES.filter(t => !search || t.abbr.toLowerCase().includes(search) || t.full.toLowerCase().includes(search));
-    if (filtered.length === 0) { list.innerHTML = '<div class="lesson-type-popup-empty">Ничего не найдено</div>'; return; }
-    filtered.forEach(t => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'lesson-type-popup-item' + (t.abbr === currentAbbr ? ' active' : '');
-        btn.innerHTML = `<span class="abbr">${escapeHtml(t.abbr)}</span><span class="full">${escapeHtml(t.full)}</span>`;
-        btn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); selectLessonType(t.abbr); });
-        list.appendChild(btn);
-    });
-}
-
-async function selectLessonType(abbr) {
-    const { gradeKey } = currentLessonTypeContext;
-    if (!gradeKey) return;
-    JOURNAL.lessonTypes[gradeKey] = abbr;
-    await saveJournal();
-    const th = document.querySelector(`th.type-lesson-col[data-grade-key="${gradeKey}"]`);
-    if (th) th.textContent = abbr;
-    closeLessonTypePopup();
-}
-
-function closeLessonTypePopup() {
-    document.getElementById('lessonTypePopup').classList.remove('show');
-}
-
-document.addEventListener('click', (e) => {
-    const popup = document.getElementById('lessonTypePopup');
-    if (!popup.classList.contains('show')) return;
-    if (popupJustOpened) return;
-    if (!popup.contains(e.target)) closeLessonTypePopup();
-});
-document.addEventListener('mousedown', (e) => {
-    const popup = document.getElementById('lessonTypePopup');
-    if (!popup.classList.contains('show')) return;
-    if (popupJustOpened) return;
-    if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup();
-});
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
-window.addEventListener('resize', () => { closeLessonTypePopup(); fillFillers(); });
-
-function toggleLeftPanel() {
-    const container = document.getElementById('panelsContainer');
-    const tabLeft = document.getElementById('tabLeft');
-    leftCollapsed = !leftCollapsed;
-    container.classList.toggle('left-collapsed', leftCollapsed);
-    tabLeft.classList.toggle('active', leftCollapsed);
-    if (leftCollapsed) {
-        rightCollapsed = false;
-        container.classList.remove('right-collapsed');
-        document.getElementById('tabRight').classList.remove('active');
-    }
-    updateTabIcons();
-    setTimeout(fillFillers, 380);
-}
-
-function toggleRightPanel() {
-    const container = document.getElementById('panelsContainer');
-    const tabRight = document.getElementById('tabRight');
-    rightCollapsed = !rightCollapsed;
-    container.classList.toggle('right-collapsed', rightCollapsed);
-    tabRight.classList.toggle('active', rightCollapsed);
-    if (rightCollapsed) {
-        leftCollapsed = false;
-        container.classList.remove('left-collapsed');
-        document.getElementById('tabLeft').classList.remove('active');
-    }
-    updateTabIcons();
-    setTimeout(fillFillers, 380);
-}
-
-function updateTabIcons() {
-    const tabLeft = document.getElementById('tabLeft');
-    const tabRight = document.getElementById('tabRight');
-    const iconLeft = leftCollapsed
-        ? '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>'
-        : '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>';
-    const iconRight = rightCollapsed
-        ? '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>'
-        : '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>';
-    tabLeft.innerHTML = `<svg viewBox="0 0 24 24">${iconLeft}</svg>Раскрыть журнал`;
-    tabRight.innerHTML = `<svg viewBox="0 0 24 24">${iconRight}</svg>Раскрыть поуроч. план`;
-}
-
-function showEmpty(title, text) {
-    document.getElementById('mainContent').style.display = 'none';
-    const empty = document.getElementById('emptyState');
-    empty.style.display = 'block';
-    document.getElementById('emptyTitle').textContent = title;
-    document.getElementById('emptyText').textContent = text;
-}
-
-function goBack() {
-    window.location.href = 'admin.html';
-}
-
-init().catch(err => {
-    console.error('Ошибка init:', err);
-    showEmpty('Ошибка', 'Не удалось загрузить журнал. Проверьте консоль (F12).');
-});
-updateTabIcons();
 </script>
 </body>
 </html>
