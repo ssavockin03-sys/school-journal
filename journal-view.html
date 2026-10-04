@@ -216,7 +216,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-scroll::-webkit-scrollbar-thumb:hover, .panel-right::-webkit-scrollbar-thumb:hover { background: #94A3B8; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-corner, .panel-right::-webkit-scrollbar-corner { background: transparent; }
 
-/* ====== Правая панель ====== */
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th {
@@ -271,7 +270,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     padding: 0 !important;
 }
 
-/* ====== Ячейки Тема и ДЗ ====== */
 .theme-cell, .homework-cell {
     font-size: 13px;
     line-height: 1.3;
@@ -282,7 +280,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .homework-cell { padding-right: 84px !important; }
 
-/* Кнопка "Выдать онлайн" */
 .cell-online-btn {
     position: absolute;
     top: 4px;
@@ -307,7 +304,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .cell-online-btn:hover { background: #EFF6FF; border-color: #2563EB; }
 .cell-online-btn svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
 
-/* Список ДЗ */
 .hw-list { display: block; }
 .hw-list-item {
     display: block;
@@ -352,7 +348,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .add-hw-btn:hover { background: #F1F5F9; }
 
-/* Инлайн-редактирование */
 .edit-bubble {
     display: flex;
     align-items: flex-start;
@@ -1062,18 +1057,15 @@ function renderLessonPlanRows() {
         tdDate.textContent = d.dateFull;
         tr.appendChild(tdDate);
 
-        // ===== ТЕМА =====
         const tdTheme = document.createElement('td');
         tdTheme.className = 'theme-cell';
         renderThemeContent(tdTheme, d.gradeKey, l.t || '');
         tr.appendChild(tdTheme);
 
-        // ===== ДЗ =====
         const tdHw = document.createElement('td');
         tdHw.className = 'homework-cell';
         renderHwContent(tdHw, d.gradeKey, normalizeHwList(l.h));
 
-        // Кнопка "Онлайн" — одна на строку
         const onlineBtn = document.createElement('button');
         onlineBtn.type = 'button';
         onlineBtn.className = 'cell-online-btn';
@@ -1153,14 +1145,19 @@ function openThemeEditInline(cell, gradeKey, value) {
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
     let done = false;
-    const save = () => {
+    const finish = (txt) => {
         if (done) return;
         done = true;
+        // СИНХРОННО перерисовываем ячейку — синяя рамка исчезает мгновенно
+        renderThemeContent(cell, gradeKey, txt);
+        // Сохранение в фоне, без await
+        saveJournal();
+    };
+    const save = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         JOURNAL.lessons[gradeKey].t = txt;
-        renderThemeContent(cell, gradeKey, txt);
-        saveJournal(); // без await — не блокируем UI
+        finish(txt);
     };
     const cancel = () => {
         if (done) return;
@@ -1180,10 +1177,12 @@ function openThemeEditInline(cell, gradeKey, value) {
         if (e.target.closest && (e.target.closest('.cell-online-btn') || e.target.closest('.add-hw-btn') || e.target.closest('.hw-list-item') || e.target.closest('.placeholder-text'))) return;
         if (!cell.contains(e.target)) {
             document.removeEventListener('mousedown', onOutside);
+            // Фокус снимаем сразу — рамка исчезнет без задержки
+            if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
             save();
         }
     };
-    setTimeout(() => document.addEventListener('mousedown', onOutside), 20);
+    setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
 }
 
 /* ===== ДЗ: view / edit ===== */
@@ -1266,9 +1265,14 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
     let done = false;
-    const save = () => {
+    const finish = (arr) => {
         if (done) return;
         done = true;
+        // СИНХРОННО перерисовываем — рамка исчезает мгновенно
+        renderHwContent(cell, gradeKey, arr);
+        saveJournal(); // фон
+    };
+    const save = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
@@ -1278,8 +1282,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
             arr[idx] = txt;
         }
         JOURNAL.lessons[gradeKey].h = arr;
-        renderHwContent(cell, gradeKey, arr);
-        saveJournal(); // без await — не блокируем UI
+        finish(arr);
     };
     const cancel = () => {
         if (done) return;
@@ -1300,10 +1303,12 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         if (e.target.closest && (e.target.closest('.cell-online-btn') || e.target.closest('.add-hw-btn') || e.target.closest('.hw-list-item') || e.target.closest('.placeholder-text'))) return;
         if (!cell.contains(e.target)) {
             document.removeEventListener('mousedown', onOutside);
+            // Фокус снимаем сразу
+            if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
             save();
         }
     };
-    setTimeout(() => document.addEventListener('mousedown', onOutside), 20);
+    setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
 }
 
 function openNewHwItem(cell, gradeKey) {
@@ -1390,7 +1395,7 @@ function fillFillers() {
 let resizeTimer = null;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(fillFillers, 80);
+    resizeTimer = setTimeout(fillFillers, 150);
 });
 
 function getGradeClass(value) {
