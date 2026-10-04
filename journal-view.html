@@ -249,6 +249,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     box-sizing: border-box;
     word-wrap: break-word;
     height: 56px;
+    position: relative;
 }
 .panel-right tbody td:last-child { border-right: none; }
 .panel-right tbody td.lesson-num-cell {
@@ -272,25 +273,20 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 /* ====== Ячейки Тема и ДЗ ====== */
 .theme-cell, .homework-cell {
-    cursor: pointer;
     font-size: 13px;
     line-height: 1.3;
     color: #334155;
     white-space: pre-wrap;
     word-wrap: break-word;
-    position: relative;
-    padding-right: 90px;
-}
-.theme-cell:hover, .homework-cell:hover {
-    background: #F8FAFC !important;
-}
-.theme-cell .placeholder-text,
-.homework-cell .placeholder-text {
-    color: #0EA5E9;
-    font-style: italic;
+    vertical-align: top;
 }
 
-/* Кнопка "Выдать онлайн" — одна на ячейку, в правом верхнем углу */
+/* Отступ справа, чтобы текст не залезал под кнопку "Онлайн" */
+.homework-cell {
+    padding-right: 84px !important;
+}
+
+/* Кнопка "Выдать онлайн" — одна на ячейку ДЗ, в правом верхнем углу */
 .cell-online-btn {
     position: absolute;
     top: 4px;
@@ -321,191 +317,96 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .hw-list-item {
     display: block;
-    padding: 0;
+    padding: 1px 4px;
     margin: 0;
+    border-radius: 6px;
+    cursor: pointer;
     white-space: pre-wrap;
     word-wrap: break-word;
+    transition: background 0.12s ease;
 }
-.hw-list-item + .hw-list-item {
-    margin-top: 3px;
-}
+.hw-list-item:hover { background: #F1F5F9; }
+.hw-list-item + .hw-list-item { margin-top: 2px; }
 
-/* ====== Модальное окно редактирования ====== */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(15, 23, 42, 0.35);
-    z-index: 5000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+/* Плейсхолдер */
+.placeholder-text {
+    display: inline-block;
+    padding: 1px 4px;
+    color: #0EA5E9;
+    font-style: italic;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.12s ease;
 }
-.modal-overlay.show { display: flex; }
-.modal-window {
-    background: #FFFFFF;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25);
-    width: 100%;
-    max-width: 540px;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-.modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid #E2E8F0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.modal-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1E293B;
-}
-.modal-close {
-    width: 28px; height: 28px;
-    display: inline-flex; align-items: center; justify-content: center;
-    background: transparent; border: none; border-radius: 6px;
-    color: #64748B; cursor: pointer;
-}
-.modal-close:hover { background: #F1F5F9; color: #1E293B; }
-.modal-close svg { width: 16px; height: 16px; fill: currentColor; }
-.modal-body {
-    padding: 16px 20px;
-    overflow-y: auto;
-    flex: 1;
-}
-.modal-footer {
-    padding: 12px 20px;
-    border-top: 1px solid #E2E8F0;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-}
+.placeholder-text:hover { background: #F1F5F9; }
 
-.field-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: #475569;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
-
-.field-textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 10px 12px;
-    border: 1.5px solid #CBD5E1;
-    border-radius: 8px;
-    background: #FFFFFF;
-    font-size: 13px;
+/* Кнопка "+ ДЗ к след. уроку" под уже существующими ДЗ */
+.add-hw-btn {
+    display: inline-block;
+    padding: 1px 4px;
+    margin-top: 2px;
+    border: none;
+    background: transparent;
+    color: #0EA5E9;
+    font-style: italic;
+    font-size: 13.5px;
+    font-weight: 400;
+    cursor: pointer;
+    border-radius: 6px;
     font-family: inherit;
-    color: #1E293B;
-    outline: none;
-    resize: vertical;
-    line-height: 1.4;
-    box-sizing: border-box;
+    text-align: left;
+    transition: background 0.12s ease;
+    line-height: 1.3;
 }
-.field-textarea:focus {
-    border-color: #2563EB;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-}
+.add-hw-btn:hover { background: #F1F5F9; }
 
-/* Список ДЗ в модалке */
-.hw-modal-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 10px;
-}
-.hw-modal-item {
+/* Инлайн-редактирование */
+.edit-bubble {
     display: flex;
     align-items: flex-start;
     gap: 6px;
+    width: 100%;
 }
-.hw-modal-item textarea {
+.edit-bubble textarea {
     flex: 1 1 auto;
-    min-height: 40px;
-    padding: 8px 12px;
+    min-width: 0;
+    min-height: 28px;
+    padding: 5px 10px;
     border: 1.5px solid #CBD5E1;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #FFFFFF;
     font-size: 13px;
     font-family: inherit;
     color: #1E293B;
     outline: none;
-    resize: vertical;
-    line-height: 1.4;
+    resize: none;
+    line-height: 1.3;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    overflow: hidden;
+    white-space: pre-wrap;
+    word-wrap: break-word;
     box-sizing: border-box;
 }
-.hw-modal-item textarea:focus {
-    border-color: #2563EB;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+.edit-bubble textarea:focus {
+    border-color: #94A3B8;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1);
 }
-.hw-modal-item .remove-btn {
+.edit-bubble .confirm-btn {
     flex-shrink: 0;
-    width: 32px; height: 32px;
-    display: inline-flex; align-items: center; justify-content: center;
-    background: #FFFFFF;
-    border: 1px solid #FCA5A5;
-    border-radius: 8px;
-    color: #DC2626;
-    cursor: pointer;
-    margin-top: 4px;
-}
-.hw-modal-item .remove-btn:hover { background: #FEF2F2; border-color: #DC2626; }
-.hw-modal-item .remove-btn svg { width: 14px; height: 14px; fill: currentColor; }
-
-.btn-add-hw {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 7px 14px;
-    background: #FFFFFF;
-    border: 1.5px dashed #93C5FD;
-    border-radius: 8px;
-    color: #2563EB;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.15s ease;
-    width: 100%;
     justify-content: center;
-}
-.btn-add-hw:hover { background: #EFF6FF; border-color: #2563EB; }
-
-.btn-modal-cancel {
-    padding: 8px 16px;
-    background: #FFFFFF;
-    border: 1px solid #CBD5E1;
-    border-radius: 8px;
-    color: #334155;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: inherit;
-}
-.btn-modal-cancel:hover { background: #F8FAFC; }
-
-.btn-modal-save {
-    padding: 8px 16px;
+    width: 24px;
+    height: 24px;
     background: #2563EB;
-    border: 1px solid #2563EB;
-    border-radius: 8px;
+    border: none;
+    border-radius: 6px;
     color: #FFFFFF;
-    font-size: 13px;
-    font-weight: 600;
     cursor: pointer;
-    font-family: inherit;
+    margin-top: 2px;
 }
-.btn-modal-save:hover { background: #1D4ED8; border-color: #1D4ED8; }
+.edit-bubble .confirm-btn:hover { background: #1D4ED8; }
+.edit-bubble .confirm-btn svg { width: 12px; height: 12px; fill: #FFFFFF; }
 
 .empty-state { padding: 60px 30px; text-align: center; border-radius: 10px; border: 1px solid #CBD5E1; margin: 24px 30px; }
 .empty-state svg { width: 56px; height: 56px; fill: #CBD5E1; margin-bottom: 14px; }
@@ -666,50 +567,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
         <input type="text" id="lessonTypePopupSearch" placeholder="Поиск..." oninput="renderLessonTypePopupList()">
     </div>
     <div class="lesson-type-popup-list" id="lessonTypePopupList"></div>
-</div>
-
-<!-- ========= МОДАЛКА: ТЕМА ========= -->
-<div class="modal-overlay" id="themeModal">
-    <div class="modal-window">
-        <div class="modal-header">
-            <div class="modal-title" id="themeModalTitle">Тема урока</div>
-            <button type="button" class="modal-close" onclick="closeThemeModal()">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
-        <div class="modal-body">
-            <label class="field-label">Тема</label>
-            <textarea class="field-textarea" id="themeModalTextarea" placeholder="Введите тему урока..."></textarea>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn-modal-cancel" onclick="closeThemeModal()">Отмена</button>
-            <button type="button" class="btn-modal-save" onclick="saveThemeModal()">Сохранить</button>
-        </div>
-    </div>
-</div>
-
-<!-- ========= МОДАЛКА: ДЗ ========= -->
-<div class="modal-overlay" id="hwModal">
-    <div class="modal-window">
-        <div class="modal-header">
-            <div class="modal-title" id="hwModalTitle">Домашнее задание</div>
-            <button type="button" class="modal-close" onclick="closeHwModal()">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
-        <div class="modal-body">
-            <label class="field-label">Список заданий</label>
-            <div class="hw-modal-list" id="hwModalList"></div>
-            <button type="button" class="btn-add-hw" onclick="addHwModalItem()">
-                <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                Добавить ещё одно ДЗ
-            </button>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn-modal-cancel" onclick="closeHwModal()">Отмена</button>
-            <button type="button" class="btn-modal-save" onclick="saveHwModal()">Сохранить</button>
-        </div>
-    </div>
 </div>
 
 <div id="toast" style="position:fixed;bottom:24px;right:24px;background:#1E293B;color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(15,23,42,0.2);opacity:0;transform:translateY(20px);transition:all 0.3s ease;z-index:10000;pointer-events:none;font-family:'Inter',sans-serif;"></div>
@@ -1189,12 +1046,19 @@ function renderMainTable() {
         }
     });
 
-    // === Строки поурочного плана ===
+    renderLessonPlanRows();
+}
+
+/* ================= СТРОКИ ПОУРОЧНОГО ПЛАНА ================= */
+function renderLessonPlanRows() {
+    const pBody = document.getElementById('pBody');
+    pBody.innerHTML = '';
+
     DATES.forEach((d, dIdx) => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: [] };
-
         const tr = document.createElement('tr');
         tr.className = 'lesson-row';
+        tr.dataset.gradeKey = d.gradeKey;
 
         const tdNum = document.createElement('td');
         tdNum.className = 'lesson-num-cell';
@@ -1209,50 +1073,15 @@ function renderMainTable() {
         // ===== ТЕМА =====
         const tdTheme = document.createElement('td');
         tdTheme.className = 'theme-cell';
-        const themeVal = l.t || '';
-        if (themeVal) {
-            tdTheme.textContent = themeVal;
-        } else {
-            const ph = document.createElement('span');
-            ph.className = 'placeholder-text';
-            ph.textContent = 'Добавить тему';
-            tdTheme.appendChild(ph);
-        }
-        // Клик по ячейке (кроме кнопки Онлайн) — открыть модалку темы
-        tdTheme.addEventListener('click', (e) => {
-            if (e.target.closest('.cell-online-btn')) return;
-            openThemeModal(d.gradeKey, themeVal);
-        });
+        renderThemeContent(tdTheme, d.gradeKey, l.t || '');
         tr.appendChild(tdTheme);
 
         // ===== ДЗ =====
         const tdHw = document.createElement('td');
         tdHw.className = 'homework-cell';
-        const hwArr = normalizeHwList(l.h);
-        if (hwArr.length === 0) {
-            const ph = document.createElement('span');
-            ph.className = 'placeholder-text';
-            ph.textContent = '+ ДЗ к след. уроку';
-            tdHw.appendChild(ph);
-        } else {
-            const listWrap = document.createElement('div');
-            listWrap.className = 'hw-list';
-            hwArr.forEach(hw => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'hw-list-item';
-                itemDiv.textContent = hw;
-                listWrap.appendChild(itemDiv);
-            });
-            tdHw.appendChild(listWrap);
-        }
-        // Клик по ячейке (кроме кнопки Онлайн) — открыть модалку ДЗ
-        tdHw.addEventListener('click', (e) => {
-            if (e.target.closest('.cell-online-btn')) return;
-            openHwModal(d.gradeKey, hwArr);
-        });
-        tr.appendChild(tdHw);
+        renderHwContent(tdHw, d.gradeKey, normalizeHwList(l.h));
 
-        // ===== Кнопка "Выдать онлайн" — одна на строку, крепится к ячейке ДЗ =====
+        // Кнопка "Онлайн" — внутри ячейки ДЗ, одна на строку
         const onlineBtn = document.createElement('button');
         onlineBtn.type = 'button';
         onlineBtn.className = 'cell-online-btn';
@@ -1261,6 +1090,7 @@ function renderMainTable() {
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
             Онлайн
         `;
+        onlineBtn.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
         onlineBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -1268,200 +1098,240 @@ function renderMainTable() {
         });
         tdHw.appendChild(onlineBtn);
 
-        pBody.appendChild(tr);
-    });
-}
-
-/* ================= МОДАЛКА: ТЕМА ================= */
-let themeModalContext = { gradeKey: null, oldValue: '' };
-
-function openThemeModal(gradeKey, currentValue) {
-    themeModalContext = { gradeKey, oldValue: currentValue };
-    const modal = document.getElementById('themeModal');
-    document.getElementById('themeModalTextarea').value = currentValue;
-    modal.classList.add('show');
-    setTimeout(() => {
-        const ta = document.getElementById('themeModalTextarea');
-        ta.focus();
-        ta.setSelectionRange(ta.value.length, ta.value.length);
-    }, 50);
-}
-
-function closeThemeModal() {
-    document.getElementById('themeModal').classList.remove('show');
-}
-
-async function saveThemeModal() {
-    const ta = document.getElementById('themeModalTextarea');
-    const txt = ta.value.trim();
-    const { gradeKey } = themeModalContext;
-    if (!gradeKey) { closeThemeModal(); return; }
-
-    if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
-    JOURNAL.lessons[gradeKey].t = txt;
-    await saveJournal();
-    closeThemeModal();
-    // Перерисовываем конкретную ячейку
-    refreshThemeCell(gradeKey);
-}
-
-function refreshThemeCell(gradeKey) {
-    const cells = document.querySelectorAll('.theme-cell');
-    cells.forEach(cell => {
-        // Находим строку и в ней gradeKey через data атрибут на tr (нужно связать)
-    });
-    // Проще — перерисовать всю таблицу поурочного плана
-    renderLessonPlanRows();
-}
-
-function renderLessonPlanRows() {
-    const pBody = document.getElementById('pBody');
-    pBody.innerHTML = '';
-    DATES.forEach((d, dIdx) => {
-        const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: [] };
-        const tr = document.createElement('tr');
-        tr.className = 'lesson-row';
-
-        const tdNum = document.createElement('td');
-        tdNum.className = 'lesson-num-cell';
-        tdNum.textContent = dIdx + 1;
-        tr.appendChild(tdNum);
-
-        const tdDate = document.createElement('td');
-        tdDate.className = 'lesson-date-cell';
-        tdDate.textContent = d.dateFull;
-        tr.appendChild(tdDate);
-
-        const tdTheme = document.createElement('td');
-        tdTheme.className = 'theme-cell';
-        const themeVal = l.t || '';
-        if (themeVal) {
-            tdTheme.textContent = themeVal;
-        } else {
-            const ph = document.createElement('span');
-            ph.className = 'placeholder-text';
-            ph.textContent = 'Добавить тему';
-            tdTheme.appendChild(ph);
-        }
-        tdTheme.addEventListener('click', (e) => {
-            if (e.target.closest('.cell-online-btn')) return;
-            openThemeModal(d.gradeKey, themeVal);
-        });
-        tr.appendChild(tdTheme);
-
-        const tdHw = document.createElement('td');
-        tdHw.className = 'homework-cell';
-        const hwArr = normalizeHwList(l.h);
-        if (hwArr.length === 0) {
-            const ph = document.createElement('span');
-            ph.className = 'placeholder-text';
-            ph.textContent = '+ ДЗ к след. уроку';
-            tdHw.appendChild(ph);
-        } else {
-            const listWrap = document.createElement('div');
-            listWrap.className = 'hw-list';
-            hwArr.forEach(hw => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'hw-list-item';
-                itemDiv.textContent = hw;
-                listWrap.appendChild(itemDiv);
-            });
-            tdHw.appendChild(listWrap);
-        }
-        tdHw.addEventListener('click', (e) => {
-            if (e.target.closest('.cell-online-btn')) return;
-            openHwModal(d.gradeKey, hwArr);
-        });
         tr.appendChild(tdHw);
-
-        const onlineBtn = document.createElement('button');
-        onlineBtn.type = 'button';
-        onlineBtn.className = 'cell-online-btn';
-        onlineBtn.title = 'Выдать онлайн-урок';
-        onlineBtn.innerHTML = `
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-            Онлайн
-        `;
-        onlineBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            showToast('Выдача онлайн-урока — в разработке');
-        });
-        tdHw.appendChild(onlineBtn);
-
         pBody.appendChild(tr);
     });
 }
 
-/* ================= МОДАЛКА: ДЗ ================= */
-let hwModalContext = { gradeKey: null, original: [] };
+/* ===== ТЕМА: view / edit ===== */
+function renderThemeContent(cell, gradeKey, value) {
+    cell.innerHTML = '';
+    const isEmpty = !value;
 
-function openHwModal(gradeKey, hwArr) {
-    hwModalContext = { gradeKey, original: [...hwArr] };
-    const modal = document.getElementById('hwModal');
-    const list = document.getElementById('hwModalList');
-    list.innerHTML = '';
-
-    if (hwArr.length === 0) {
-        addHwModalItem();
+    if (isEmpty) {
+        const ph = document.createElement('span');
+        ph.className = 'placeholder-text';
+        ph.textContent = 'Добавить тему';
+        ph.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
+        ph.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            openThemeEditInline(cell, gradeKey, '');
+        });
+        cell.appendChild(ph);
     } else {
-        hwArr.forEach(hw => addHwModalItem(hw));
+        const div = document.createElement('div');
+        div.textContent = value;
+        div.style.cursor = 'pointer';
+        div.style.padding = '1px 4px';
+        div.style.borderRadius = '6px';
+        div.addEventListener('mouseenter', () => div.style.background = '#F1F5F9');
+        div.addEventListener('mouseleave', () => div.style.background = 'transparent');
+        div.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
+        div.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            openThemeEditInline(cell, gradeKey, value);
+        });
+        cell.appendChild(div);
     }
-
-    modal.classList.add('show');
-    setTimeout(() => {
-        const firstTa = list.querySelector('textarea');
-        if (firstTa) firstTa.focus();
-    }, 50);
 }
 
-function addHwModalItem(value) {
-    const list = document.getElementById('hwModalList');
-    const item = document.createElement('div');
-    item.className = 'hw-modal-item';
+function openThemeEditInline(cell, gradeKey, value) {
+    cell.innerHTML = '';
+    const bubble = document.createElement('div');
+    bubble.className = 'edit-bubble';
 
     const ta = document.createElement('textarea');
-    ta.placeholder = 'Введите домашнее задание...';
+    ta.rows = 1;
     ta.value = value || '';
 
-    const removeBtn = document.createElement('button');
-    removeBtn.type = 'button';
-    removeBtn.className = 'remove-btn';
-    removeBtn.title = 'Удалить';
-    removeBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`;
-    removeBtn.addEventListener('click', () => {
-        item.remove();
-        // Если совсем ничего не осталось — добавляем пустое
-        if (list.children.length === 0) addHwModalItem();
+    const ok = document.createElement('button');
+    ok.type = 'button';
+    ok.className = 'confirm-btn';
+    ok.title = 'Сохранить';
+    ok.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+
+    bubble.appendChild(ta);
+    bubble.appendChild(ok);
+    cell.appendChild(bubble);
+
+    autoGrow(ta);
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+
+    let done = false;
+    const save = async () => {
+        if (done) return;
+        done = true;
+        const txt = ta.value.trim();
+        if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
+        JOURNAL.lessons[gradeKey].t = txt;
+        await saveJournal();
+        renderThemeContent(cell, gradeKey, txt);
+    };
+    const cancel = () => {
+        if (done) return;
+        done = true;
+        renderThemeContent(cell, gradeKey, value);
+    };
+
+    ta.addEventListener('input', () => autoGrow(ta));
+    ta.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
+        if (e.key === 'Escape') { e.preventDefault(); cancel(); }
     });
+    ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
+    ok.addEventListener('click', (e) => { e.stopPropagation(); save(); });
 
-    item.appendChild(ta);
-    item.appendChild(removeBtn);
-    list.appendChild(item);
-
-    return ta;
+    // Сохранение по клику вне — но НЕ если клик по кнопке Онлайн или по элементам внутри ячейки
+    const onOutside = (e) => {
+        if (e.target.closest && (e.target.closest('.cell-online-btn') || e.target.closest('.add-hw-btn') || e.target.closest('.hw-list-item') || e.target.closest('.placeholder-text'))) return;
+        if (!cell.contains(e.target)) {
+            document.removeEventListener('mousedown', onOutside);
+            save();
+        }
+    };
+    setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
 }
 
-function closeHwModal() {
-    document.getElementById('hwModal').classList.remove('show');
+/* ===== ДЗ: view / edit ===== */
+function renderHwContent(cell, gradeKey, hwList) {
+    // Удаляем старые элементы, но оставляем кнопку Онлайн
+    const onlineBtn = cell.querySelector('.cell-online-btn');
+    cell.innerHTML = '';
+    if (onlineBtn) cell.appendChild(onlineBtn);
+
+    const listWrap = document.createElement('div');
+    listWrap.className = 'hw-list';
+
+    if (hwList.length === 0) {
+        const ph = document.createElement('span');
+        ph.className = 'placeholder-text';
+        ph.textContent = '+ ДЗ к след. уроку';
+        ph.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
+        ph.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            openNewHwItem(cell, gradeKey);
+        });
+        listWrap.appendChild(ph);
+    } else {
+        hwList.forEach((hw, idx) => {
+            const item = document.createElement('div');
+            item.className = 'hw-list-item';
+            item.textContent = hw;
+            item.title = 'Нажмите, чтобы редактировать';
+            item.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                openHwItemEdit(cell, gradeKey, idx, hw);
+            });
+            listWrap.appendChild(item);
+        });
+
+        // Кнопка "+ ДЗ к след. уроку" под существующими ДЗ
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'add-hw-btn';
+        addBtn.textContent = '+ ДЗ к след. уроку';
+        addBtn.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
+        addBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            openNewHwItem(cell, gradeKey);
+        });
+        listWrap.appendChild(addBtn);
+    }
+
+    cell.appendChild(listWrap);
 }
 
-async function saveHwModal() {
-    const { gradeKey } = hwModalContext;
-    if (!gradeKey) { closeHwModal(); return; }
+function openHwItemEdit(cell, gradeKey, idx, value) {
+    const onlineBtn = cell.querySelector('.cell-online-btn');
+    const listWrap = cell.querySelector('.hw-list');
+    if (!listWrap) return;
+    const items = listWrap.querySelectorAll('.hw-list-item, .placeholder-text, .add-hw-btn');
+    const target = items[idx];
+    if (!target) return;
 
-    const list = document.getElementById('hwModalList');
-    const arr = [];
-    list.querySelectorAll('textarea').forEach(ta => {
-        const v = ta.value.trim();
-        if (v !== '') arr.push(v);
+    // Заменяем элемент на edit-bubble
+    const bubble = document.createElement('div');
+    bubble.className = 'edit-bubble';
+
+    const ta = document.createElement('textarea');
+    ta.rows = 1;
+    ta.value = value || '';
+
+    const ok = document.createElement('button');
+    ok.type = 'button';
+    ok.className = 'confirm-btn';
+    ok.title = 'Сохранить';
+    ok.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+
+    bubble.appendChild(ta);
+    bubble.appendChild(ok);
+
+    target.replaceWith(bubble);
+    autoGrow(ta);
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+
+    let done = false;
+    const save = async () => {
+        if (done) return;
+        done = true;
+        const txt = ta.value.trim();
+        if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
+        const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
+        if (txt === '') {
+            arr.splice(idx, 1);
+        } else {
+            arr[idx] = txt;
+        }
+        JOURNAL.lessons[gradeKey].h = arr;
+        await saveJournal();
+        renderHwContent(cell, gradeKey, arr);
+    };
+    const cancel = () => {
+        if (done) return;
+        done = true;
+        const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
+        renderHwContent(cell, gradeKey, arr);
+    };
+
+    ta.addEventListener('input', () => autoGrow(ta));
+    ta.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
+        if (e.key === 'Escape') { e.preventDefault(); cancel(); }
     });
+    ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
+    ok.addEventListener('click', (e) => { e.stopPropagation(); save(); });
 
+    const onOutside = (e) => {
+        if (e.target.closest && (e.target.closest('.cell-online-btn') || e.target.closest('.add-hw-btn') || e.target.closest('.hw-list-item') || e.target.closest('.placeholder-text'))) return;
+        if (!cell.contains(e.target)) {
+            document.removeEventListener('mousedown', onOutside);
+            save();
+        }
+    };
+    setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
+}
+
+function openNewHwItem(cell, gradeKey) {
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
+    const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
+    arr.push('');
     JOURNAL.lessons[gradeKey].h = arr;
-    await saveJournal();
-    closeHwModal();
-    renderLessonPlanRows();
+    renderHwContent(cell, gradeKey, arr);
+    // Открываем edit последнего (пустого)
+    openHwItemEdit(cell, gradeKey, arr.length - 1, '');
+}
+
+function autoGrow(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.max(28, el.scrollHeight) + 'px';
 }
 
 /* ==== Заполнение «мёртвых» колонок ==== */
@@ -1799,22 +1669,6 @@ function showEmpty(title, text) {
 }
 
 function goBack() { window.location.href = 'admin.html'; }
-
-// Закрытие модалок по Escape
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        if (document.getElementById('themeModal').classList.contains('show')) closeThemeModal();
-        if (document.getElementById('hwModal').classList.contains('show')) closeHwModal();
-    }
-});
-
-// Клик по overlay — закрыть
-document.getElementById('themeModal').addEventListener('click', (e) => {
-    if (e.target.id === 'themeModal') closeThemeModal();
-});
-document.getElementById('hwModal').addEventListener('click', (e) => {
-    if (e.target.id === 'hwModal') closeHwModal();
-});
 
 init().catch(err => {
     console.error('Ошибка init:', err);
