@@ -341,7 +341,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 /* ====== Ячейка темы / ДЗ: view-режим и edit-режим ====== */
 .editable-cell {
     position: relative;
-    vertical-align: middle;
+    vertical-align: top;
     height: 63px;
     padding: 4px 6px;
     background: #FFFFFF !important;
@@ -350,27 +350,31 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     box-sizing: border-box;
 }
 
-/* VIEW-режим */
+/* VIEW-режим — поднят к верху и сдвинут влево */
 .cell-view {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     width: 100%;
-    min-height: 40px;
-    padding: 6px 10px;
+    min-height: 34px;
+    padding: 4px 4px 4px 6px;
     border-radius: 8px;
     font-size: 13px;
     line-height: 1.35;
     color: #334155;
-    cursor: text;
+    cursor: pointer;
     transition: background 0.15s ease, box-shadow 0.15s ease;
     box-sizing: border-box;
     word-wrap: break-word;
     white-space: pre-wrap;
     overflow: hidden;
+    text-align: left;
+    margin: 0;
 }
 .cell-view:hover {
     background: #F8FAFC;
     box-shadow: inset 0 0 0 1px #E2E8F0;
+    cursor: pointer;
 }
 .cell-view.placeholder-style {
     color: #0EA5E9;
@@ -384,11 +388,12 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     align-items: center;
     gap: 6px;
     width: 100%;
+    margin: 0;
 }
 .cell-edit-input {
     flex: 1 1 auto;
     min-width: 0;
-    height: 40px;
+    height: 36px;
     padding: 8px 12px;
     border: 1.5px solid #2563EB;
     border-radius: 10px;
@@ -413,8 +418,8 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     padding: 0;
     background: #2563EB;
     border: none;
@@ -431,7 +436,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .homework-cell {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     gap: 6px;
 }
 .homework-cell .cell-view,
@@ -456,6 +461,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     white-space: nowrap;
     line-height: 1.3;
     transition: all 0.15s ease;
+    margin-top: 2px;
 }
 .btn-online-inline:hover { background: #EFF6FF; border-color: #2563EB; color: #1D4ED8; }
 .btn-online-inline svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
@@ -1262,7 +1268,11 @@ function renderEditMode(cell, gradeKey, field, value, placeholder) {
     input.className = 'cell-edit-input';
     input.rows = 1;
     input.value = value || '';
-    input.placeholder = placeholder;
+    input.placeholder = '';
+    // Плейсхолдер не показываем как значение — пустое поле,
+    // чтобы серая подсказка «Добавить тему» не оставалась внутри.
+    // Но если хотим показывать placeholder — раскомментировать:
+    // input.placeholder = placeholder;
 
     const confirmBtn = document.createElement('button');
     confirmBtn.type = 'button';
