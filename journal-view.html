@@ -686,6 +686,28 @@ function normalizeHwList(h) {
     return [];
 }
 
+/* ============================================================
+   ГЛОБАЛЬНЫЙ МЕНЕДЖЕР АКТИВНОГО РЕДАКТИРОВАНИЯ
+   В один момент времени открыт только один edit-bubble.
+   При открытии нового — предыдущий автоматически сохраняется.
+   ============================================================ */
+let activeEditor = null; // { finish: function, cancel: function }
+
+function closeActiveEditor(saveIt) {
+    if (!activeEditor) return;
+    const ed = activeEditor;
+    activeEditor = null;
+    if (saveIt) ed.finish();
+    else ed.cancel();
+}
+
+function registerActiveEditor(ed) {
+    // Сначала закрываем предыдущий (сохраняем его)
+    closeActiveEditor(true);
+    activeEditor = ed;
+}
+
+/* ================= INIT ================= */
 async function init() {
     const { classId, subjectId } = getUrlParams();
     if (!classId || !subjectId) { showEmpty('Не заданы параметры', 'В URL отсутствуют параметры class и subject.'); return; }
@@ -1122,6 +1144,9 @@ function renderThemeContent(cell, gradeKey, value) {
 }
 
 function openThemeEditInline(cell, gradeKey, value) {
+    // Сначала закроем предыдущий редактор (сохранив его)
+    closeActiveEditor(true);
+
     cell.innerHTML = '';
     const bubble = document.createElement('div');
     bubble.className = 'edit-bubble';
@@ -1144,45 +1169,28 @@ function openThemeEditInline(cell, gradeKey, value) {
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
-    let done = false;
-    const finish = (txt) => {
-        if (done) return;
-        done = true;
-        // СИНХРОННО перерисовываем ячейку — синяя рамка исчезает мгновенно
-        renderThemeContent(cell, gradeKey, txt);
-        // Сохранение в фоне, без await
-        saveJournal();
-    };
-    const save = () => {
+    const finish = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         JOURNAL.lessons[gradeKey].t = txt;
-        finish(txt);
+        // Синхронно перерисовать — рамка исчезнет мгновенно
+        renderThemeContent(cell, gradeKey, txt);
+        // Сохранение в фоне
+        saveJournal();
     };
     const cancel = () => {
-        if (done) return;
-        done = true;
         renderThemeContent(cell, gradeKey, value);
     };
 
     ta.addEventListener('input', () => autoGrow(ta));
     ta.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
-        if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); closeActiveEditor(true); }
+        if (e.key === 'Escape') { e.preventDefault(); closeActiveEditor(false); }
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-    ok.addEventListener('click', (e) => { e.stopPropagation(); save(); });
+    ok.addEventListener('click', (e) => { e.stopPropagation(); closeActiveEditor(true); });
 
-    const onOutside = (e) => {
-        if (e.target.closest && (e.target.closest('.cell-online-btn') || e.target.closest('.add-hw-btn') || e.target.closest('.hw-list-item') || e.target.closest('.placeholder-text'))) return;
-        if (!cell.contains(e.target)) {
-            document.removeEventListener('mousedown', onOutside);
-            // Фокус снимаем сразу — рамка исчезнет без задержки
-            if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-            save();
-        }
-    };
-    setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
+    activeEditor = { finish, cancel };
 }
 
 /* ===== ДЗ: view / edit ===== */
@@ -1237,6 +1245,9 @@ function renderHwContent(cell, gradeKey, hwList) {
 }
 
 function openHwItemEdit(cell, gradeKey, idx, value) {
+    // Сначала закроем предыдущий редактор (сохранив его)
+    closeActiveEditor(true);
+
     const listWrap = cell.querySelector('.hw-list');
     if (!listWrap) return;
     const items = listWrap.querySelectorAll('.hw-list-item, .placeholder-text, .add-hw-btn');
@@ -1264,15 +1275,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
-    let done = false;
-    const finish = (arr) => {
-        if (done) return;
-        done = true;
-        // СИНХРОННО перерисовываем — рамка исчезает мгновенно
-        renderHwContent(cell, gradeKey, arr);
-        saveJournal(); // фон
-    };
-    const save = () => {
+    const finish = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
@@ -1282,36 +1285,27 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
             arr[idx] = txt;
         }
         JOURNAL.lessons[gradeKey].h = arr;
-        finish(arr);
+        renderHwContent(cell, gradeKey, arr);
+        saveJournal();
     };
     const cancel = () => {
-        if (done) return;
-        done = true;
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
         renderHwContent(cell, gradeKey, arr);
     };
 
     ta.addEventListener('input', () => autoGrow(ta));
     ta.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
-        if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); closeActiveEditor(true); }
+        if (e.key === 'Escape') { e.preventDefault(); closeActiveEditor(false); }
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-    ok.addEventListener('click', (e) => { e.stopPropagation(); save(); });
+    ok.addEventListener('click', (e) => { e.stopPropagation(); closeActiveEditor(true); });
 
-    const onOutside = (e) => {
-        if (e.target.closest && (e.target.closest('.cell-online-btn') || e.target.closest('.add-hw-btn') || e.target.closest('.hw-list-item') || e.target.closest('.placeholder-text'))) return;
-        if (!cell.contains(e.target)) {
-            document.removeEventListener('mousedown', onOutside);
-            // Фокус снимаем сразу
-            if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-            save();
-        }
-    };
-    setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
+    activeEditor = { finish, cancel };
 }
 
 function openNewHwItem(cell, gradeKey) {
+    closeActiveEditor(true);
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
     const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
     arr.push('');
@@ -1324,6 +1318,24 @@ function autoGrow(el) {
     el.style.height = 'auto';
     el.style.height = Math.max(28, el.scrollHeight) + 'px';
 }
+
+/* ===== Глобальное закрытие активного редактора по клику вне ===== */
+document.addEventListener('mousedown', (e) => {
+    if (!activeEditor) return;
+    // Клик внутри active edit-bubble — не закрываем
+    const bubble = document.querySelector('.edit-bubble');
+    if (bubble && bubble.contains(e.target)) return;
+    // Клик по любой кнопке внутри ячейки — не закрываем (обработчик кнопки сам всё сделает)
+    if (e.target.closest && (
+        e.target.closest('.cell-online-btn') ||
+        e.target.closest('.add-hw-btn') ||
+        e.target.closest('.hw-list-item') ||
+        e.target.closest('.placeholder-text') ||
+        e.target.closest('.confirm-btn')
+    )) return;
+    // Сохраняем и закрываем
+    closeActiveEditor(true);
+});
 
 /* ==== Заполнение «мёртвых» колонок ==== */
 function fillFillers() {
