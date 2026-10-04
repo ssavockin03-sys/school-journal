@@ -303,6 +303,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     vertical-align: top;
     text-align: left;
     padding: 0;
+    box-sizing: border-box;
 }
 .panel-right tbody td:last-child { border-right: none; }
 .panel-right tbody td.lesson-num-cell {
@@ -326,7 +327,7 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     padding: 0 !important;
 }
 
-/* ====== Ячейка темы / ДЗ ====== */
+/* ====== Ячейки темы и ДЗ ====== */
 .editable-cell {
     position: relative;
     vertical-align: top;
@@ -400,7 +401,6 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1);
 }
 
-/* Кнопка-галочка — чуть меньше */
 .cell-edit-confirm {
     flex-shrink: 0;
     display: inline-flex;
@@ -421,19 +421,23 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
 .cell-edit-confirm:active { transform: scale(0.94); }
 .cell-edit-confirm svg { width: 13px; height: 13px; fill: #FFFFFF; }
 
-/* Ячейка ДЗ */
+/* ДЗ-список */
 .homework-cell {
+    display: block;
+}
+.hw-item {
     display: flex;
-    flex-direction: row;
     align-items: flex-start;
     gap: 6px;
+    margin-bottom: 4px;
 }
-.homework-cell .cell-view,
-.homework-cell .cell-edit {
+.hw-item:last-child { margin-bottom: 0; }
+.hw-item .cell-view,
+.hw-item .cell-edit {
     flex: 1 1 auto;
     min-width: 0;
 }
-.btn-online-inline {
+.hw-item .btn-online-inline {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
@@ -452,8 +456,27 @@ body { background: #FFFFFF; padding: 0; color: #1E293B; min-height: 100vh; font-
     transition: all 0.15s ease;
     margin-top: 3px;
 }
-.btn-online-inline:hover { background: #EFF6FF; border-color: #2563EB; color: #1D4ED8; }
-.btn-online-inline svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
+.hw-item .btn-online-inline:hover { background: #EFF6FF; border-color: #2563EB; color: #1D4ED8; }
+.hw-item .btn-online-inline svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
+
+/* Кнопка "+ ДЗ к след. уроку" */
+.add-hw-btn {
+    display: inline-block;
+    padding: 4px 6px;
+    border: none;
+    background: transparent;
+    color: #0EA5E9;
+    font-style: italic;
+    font-size: 13.5px;
+    font-weight: 400;
+    cursor: pointer;
+    border-radius: 8px;
+    font-family: inherit;
+    text-align: left;
+    transition: background 0.15s ease;
+    margin-top: 2px;
+}
+.add-hw-btn:hover { background: #F8FAFC; }
 
 .empty-state { padding: 60px 30px; text-align: center; background: #FFFFFF; border-radius: 10px; border: 1px solid #CBD5E1; margin: 24px 30px; }
 .empty-state svg { width: 56px; height: 56px; fill: #CBD5E1; margin-bottom: 14px; }
@@ -1180,8 +1203,9 @@ function renderMainTable() {
         }
     });
 
+    // === Строки поурочного плана ===
     DATES.forEach((d, dIdx) => {
-        const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: '' };
+        const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: [] };
 
         const tr = document.createElement('tr');
         tr.className = 'lesson-row';
@@ -1196,60 +1220,50 @@ function renderMainTable() {
         tdDate.textContent = d.dateFull;
         tr.appendChild(tdDate);
 
+        // Тема
         const tdTheme = document.createElement('td');
         tdTheme.className = 'editable-cell theme-cell';
-        initEditableCell(tdTheme, d.gradeKey, 't', l.t || '', 'Добавить тему');
+        initThemeCell(tdTheme, d.gradeKey, l.t || '');
         tr.appendChild(tdTheme);
 
+        // ДЗ — список
         const tdHw = document.createElement('td');
         tdHw.className = 'editable-cell homework-cell';
-        initEditableCell(tdHw, d.gradeKey, 'h', l.h || '', '+ ДЗ к след. уроку');
-
-        const onlineBtn = document.createElement('button');
-        onlineBtn.type = 'button';
-        onlineBtn.className = 'btn-online-inline';
-        onlineBtn.title = 'Выдать онлайн-урок';
-        onlineBtn.innerHTML = `
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-            Выдать онлайн
-        `;
-        onlineBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showToast('Выдача онлайн-урока — в разработке');
-        });
-        tdHw.appendChild(onlineBtn);
-
+        initHomeworkCell(tdHw, d.gradeKey, normalizeHwList(l.h));
         tr.appendChild(tdHw);
+
         pBody.appendChild(tr);
     });
 }
 
-/* ===== Компактное окошко редактирования темы/ДЗ ===== */
-function initEditableCell(cell, gradeKey, field, value, placeholder) {
-    if (!cell) return;
-    cell.innerHTML = '';
-    renderViewMode(cell, gradeKey, field, value, placeholder);
+/* Приводим h к массиву: строку → [строка], null → [] */
+function normalizeHwList(h) {
+    if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== '');
+    if (typeof h === 'string' && h.trim() !== '') return [h];
+    return [];
 }
 
-function renderViewMode(cell, gradeKey, field, value, placeholder) {
+/* ==== ТЕМА ==== */
+function initThemeCell(cell, gradeKey, value) {
+    cell.innerHTML = '';
+    renderThemeView(cell, gradeKey, value);
+}
+
+function renderThemeView(cell, gradeKey, value) {
     const isEmpty = !value;
     const view = document.createElement('div');
     view.className = 'cell-view' + (isEmpty ? ' placeholder-style' : '');
-    view.textContent = isEmpty ? placeholder : value;
+    view.textContent = isEmpty ? 'Добавить тему' : value;
     view.title = 'Нажмите, чтобы редактировать';
     view.addEventListener('click', (e) => {
         e.stopPropagation();
-        renderEditMode(cell, gradeKey, field, value, placeholder);
+        renderThemeEdit(cell, gradeKey, value);
     });
-    cell.insertBefore(view, cell.firstChild);
-    // выравниваем высоту строки
-    syncRowHeight(cell.closest('tr'));
+    cell.appendChild(view);
 }
 
-function renderEditMode(cell, gradeKey, field, value, placeholder) {
-    const view = cell.querySelector('.cell-view');
-    if (view) view.remove();
-
+function renderThemeEdit(cell, gradeKey, value) {
+    cell.innerHTML = '';
     const wrap = document.createElement('div');
     wrap.className = 'cell-edit';
 
@@ -1267,47 +1281,36 @@ function renderEditMode(cell, gradeKey, field, value, placeholder) {
 
     wrap.appendChild(input);
     wrap.appendChild(confirmBtn);
-    cell.insertBefore(wrap, cell.firstChild);
+    cell.appendChild(wrap);
 
     setTimeout(() => {
         input.focus();
         input.setSelectionRange(input.value.length, input.value.length);
         autoGrow(input);
-        syncRowHeight(cell.closest('tr'));
     }, 0);
-
-    input.addEventListener('input', () => {
-        autoGrow(input);
-        syncRowHeight(cell.closest('tr'));
-    });
+    input.addEventListener('input', () => autoGrow(input));
 
     let saved = false;
     const save = async () => {
         if (saved) return;
         saved = true;
         const txt = input.value.trim();
-        if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: '' };
-        JOURNAL.lessons[gradeKey][field] = txt;
+        if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
+        JOURNAL.lessons[gradeKey].t = txt;
         await saveJournal();
-        wrap.remove();
-        renderViewMode(cell, gradeKey, field, txt, placeholder);
+        renderThemeView(cell, gradeKey, txt);
     };
-
     const cancel = () => {
         if (saved) return;
         saved = true;
-        wrap.remove();
-        renderViewMode(cell, gradeKey, field, value, placeholder);
+        renderThemeView(cell, gradeKey, value);
     };
-
-    confirmBtn.addEventListener('mousedown', (e) => { e.preventDefault(); });
+    confirmBtn.addEventListener('mousedown', (e) => e.preventDefault());
     confirmBtn.addEventListener('click', (e) => { e.stopPropagation(); save(); });
-
     input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
         if (e.key === 'Escape') { e.preventDefault(); cancel(); }
     });
-
     const onOutside = (e) => {
         if (!cell.contains(e.target)) {
             document.removeEventListener('mousedown', onOutside);
@@ -1317,30 +1320,146 @@ function renderEditMode(cell, gradeKey, field, value, placeholder) {
     setTimeout(() => document.addEventListener('mousedown', onOutside), 50);
 }
 
+/* ==== ДЗ (список) ==== */
+function initHomeworkCell(cell, gradeKey, hwList) {
+    cell.innerHTML = '';
+    const list = normalizeHwList(hwList);
+
+    list.forEach((hw, idx) => {
+        const item = document.createElement('div');
+        item.className = 'hw-item';
+        item.dataset.idx = idx;
+        renderHwView(item, cell, gradeKey, idx, hw);
+        cell.appendChild(item);
+    });
+
+    // Кнопка "+ ДЗ к след. уроку" — всегда внизу
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'add-hw-btn';
+    addBtn.textContent = '+ ДЗ к след. уроку';
+    addBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        addHwItem(cell, gradeKey);
+    });
+    cell.appendChild(addBtn);
+}
+
+function renderHwView(item, cell, gradeKey, idx, value) {
+    item.innerHTML = '';
+    const view = document.createElement('div');
+    view.className = 'cell-view';
+    view.textContent = value || 'Домашнее задание';
+    view.title = 'Нажмите, чтобы редактировать';
+    view.addEventListener('click', (e) => {
+        e.stopPropagation();
+        renderHwEdit(item, cell, gradeKey, idx, value);
+    });
+    item.appendChild(view);
+
+    // Кнопка «Выдать онлайн» для каждого ДЗ
+    const onlineBtn = document.createElement('button');
+    onlineBtn.type = 'button';
+    onlineBtn.className = 'btn-online-inline';
+    onlineBtn.title = 'Выдать онлайн-урок';
+    onlineBtn.innerHTML = `
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        Выдать онлайн
+    `;
+    onlineBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showToast('Выдача онлайн-урока — в разработке');
+    });
+    item.appendChild(onlineBtn);
+}
+
+function renderHwEdit(item, cell, gradeKey, idx, value) {
+    item.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.className = 'cell-edit';
+
+    const input = document.createElement('textarea');
+    input.className = 'cell-edit-input';
+    input.rows = 1;
+    input.value = value || '';
+    input.placeholder = '';
+
+    const confirmBtn = document.createElement('button');
+    confirmBtn.type = 'button';
+    confirmBtn.className = 'cell-edit-confirm';
+    confirmBtn.title = 'Сохранить';
+    confirmBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+
+    wrap.appendChild(input);
+    wrap.appendChild(confirmBtn);
+    item.appendChild(wrap);
+
+    setTimeout(() => {
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+        autoGrow(input);
+    }, 0);
+    input.addEventListener('input', () => autoGrow(input));
+
+    let saved = false;
+    const save = async () => {
+        if (saved) return;
+        saved = true;
+        const txt = input.value.trim();
+        if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
+        const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
+        if (txt === '') {
+            // Если очистили — удаляем элемент
+            arr.splice(idx, 1);
+        } else {
+            arr[idx] = txt;
+        }
+        JOURNAL.lessons[gradeKey].h = arr;
+        await saveJournal();
+        // Перерисовываем всю ячейку (могли удалить элемент)
+        initHomeworkCell(cell, gradeKey, arr);
+    };
+    const cancel = () => {
+        if (saved) return;
+        saved = true;
+        renderHwView(item, cell, gradeKey, idx, value);
+    };
+    confirmBtn.addEventListener('mousedown', (e) => e.preventDefault());
+    confirmBtn.addEventListener('click', (e) => { e.stopPropagation(); save(); });
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
+        if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+    });
+    const onOutside = (e) => {
+        if (!item.contains(e.target)) {
+            document.removeEventListener('mousedown', onOutside);
+            save();
+        }
+    };
+    setTimeout(() => document.addEventListener('mousedown', onOutside), 50);
+}
+
+function addHwItem(cell, gradeKey) {
+    if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
+    const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
+    arr.push(''); // пустое ДЗ — сразу в edit-режим
+    JOURNAL.lessons[gradeKey].h = arr;
+
+    // Перерисовываем ячейку
+    initHomeworkCell(cell, gradeKey, arr);
+
+    // Открываем edit-режим у последнего элемента
+    const items = cell.querySelectorAll('.hw-item');
+    const last = items[items.length - 1];
+    if (last) {
+        const view = last.querySelector('.cell-view');
+        if (view) view.click();
+    }
+}
+
 function autoGrow(el) {
     el.style.height = 'auto';
     el.style.height = Math.max(32, el.scrollHeight) + 'px';
-}
-
-/* Синхронизация высоты обеих ячеек строки урока */
-function syncRowHeight(tr) {
-    if (!tr) return;
-    const cells = tr.querySelectorAll('.editable-cell');
-    if (!cells.length) return;
-
-    // Сбрасываем inline-высоты для корректного измерения
-    cells.forEach(c => { c.style.height = ''; });
-
-    // Находим максимальную высоту контента
-    let maxContent = 0;
-    cells.forEach(c => {
-        const h = c.scrollHeight;
-        if (h > maxContent) maxContent = h;
-    });
-
-    // Применяем одинаковую высоту
-    const finalH = Math.max(63, maxContent);
-    cells.forEach(c => { c.style.height = finalH + 'px'; });
 }
 
 /* ==== Заполнение «мёртвых» колонок ==== */
