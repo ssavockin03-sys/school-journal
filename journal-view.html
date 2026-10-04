@@ -151,18 +151,51 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     pointer-events: none; text-align: center;
 }
 
+/* ====== ЯЧЕЙКА ОЦЕНКИ ====== */
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 13.5px; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; }
+.grade-cell input {
+    width: 100%; height: 26px; text-align: center; border: none; background: transparent;
+    font-size: 13.5px; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5;
+    padding: 0; color: transparent; font-family: inherit; outline: none;
+}
 .grade-cell input:focus { background: #FFFFFF; cursor: text; color: #1E293B !important; }
 .grade-cell input::selection { background: #BFDBFE; }
-.grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
-.grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
-.double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; line-height: 1; }
+.grade-display {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; height: 100%; pointer-events: none; gap: 1px;
+    z-index: 1; position: absolute; top: 0; left: 0;
+}
+.grade-box {
+    display: flex; align-items: center; justify-content: center;
+    min-width: 14px; height: 16px; padding: 0 2px;
+    color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1;
+}
+.double-grade-box {
+    display: flex; align-items: center; justify-content: center;
+    min-width: 11px; height: 14px; padding: 0 1px;
+    color: #FFFFFF !important; font-weight: 700; font-size: 12px; line-height: 1;
+}
 .slash-divider { color: #CBD5E1; font-weight: 700; font-size: 10px; margin: 0 -1px; }
 .grade-4, .grade-5 { background: #65A30D !important; }
 .grade-3 { background: #FB923C !important; }
 .bad-grade { background: #DC2626 !important; }
-.status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; pointer-events: none; z-index: 4; }
+
+/* Метка отсутствия (Н, О, Б, П, СП) — возвращаем в левый-верхний угол */
+.status-letter {
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    color: #DC2626 !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    pointer-events: none;
+    z-index: 4;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    line-height: 1;
+}
+
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 .col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-avg { background: #E8EEF5 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
@@ -214,9 +247,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     border-bottom: 1px solid #CBD5E1;
     vertical-align: top;
     text-align: left;
-    padding: 4px 6px;
+    padding: 8px 10px;
     box-sizing: border-box;
     word-wrap: break-word;
+    min-height: 63px;
 }
 .panel-right tbody td:last-child { border-right: none; }
 .panel-right tbody td.lesson-num-cell {
@@ -238,19 +272,20 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     padding: 0 !important;
 }
 
-/* ====== Ячейки ====== */
+/* ====== Ячейки Тема и ДЗ ====== */
 .theme-cell {
     font-size: 13px;
     line-height: 1.35;
     color: #334155;
     white-space: pre-wrap;
     word-wrap: break-word;
-    min-height: 40px;
+    min-height: 63px;
 }
 .homework-cell-inner {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 6px;
+    min-height: 63px;
 }
 
 .hw-item {
@@ -266,9 +301,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .hw-item-text {
     flex: 1 1 auto;
     min-width: 0;
+    padding: 2px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.12s ease;
 }
+.hw-item-text:hover { background: #F1F5F9; }
 
-/* Плейсхолдер-кнопка "Добавить тему" / "+ ДЗ" */
+/* Плейсхолдер "Добавить тему" */
 .placeholder-btn {
     display: inline-block;
     padding: 2px 6px;
@@ -283,10 +323,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     font-family: inherit;
     text-align: left;
     transition: background 0.12s ease;
-    width: 100%;
 }
 .placeholder-btn:hover { background: #F1F5F9; }
 
+/* Кнопка "+ ДЗ к след. уроку" — одна на ячейку */
 .add-hw-btn {
     display: inline-block;
     padding: 2px 6px;
@@ -294,13 +334,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     background: transparent;
     color: #0EA5E9;
     font-style: italic;
-    font-size: 13px;
+    font-size: 13.5px;
+    font-weight: 400;
     cursor: pointer;
     border-radius: 6px;
     font-family: inherit;
     text-align: left;
     transition: background 0.12s ease;
-    margin-top: 2px;
+    align-self: flex-start;
 }
 .add-hw-btn:hover { background: #F1F5F9; }
 
@@ -314,8 +355,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .edit-bubble textarea {
     flex: 1 1 auto;
     min-width: 0;
-    min-height: 32px;
-    padding: 7px 12px;
+    min-height: 36px;
+    padding: 8px 12px;
     border: 1.5px solid #CBD5E1;
     border-radius: 10px;
     background: #FFFFFF;
@@ -340,24 +381,25 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     background: #2563EB;
     border: none;
     border-radius: 7px;
     color: #FFFFFF;
     cursor: pointer;
-    margin-top: 3px;
+    margin-top: 4px;
 }
 .edit-bubble .confirm-btn:hover { background: #1D4ED8; }
-.edit-bubble .confirm-btn svg { width: 13px; height: 13px; fill: #FFFFFF; }
+.edit-bubble .confirm-btn svg { width: 14px; height: 14px; fill: #FFFFFF; }
 
+/* Кнопка "Выдать онлайн" — только у темы, одна */
 .btn-online-inline {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     gap: 3px;
-    padding: 3px 7px;
+    padding: 3px 8px;
     background: #FFFFFF;
     border: 1px solid #93C5FD;
     border-radius: 6px;
@@ -368,7 +410,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     font-family: inherit;
     white-space: nowrap;
     line-height: 1.3;
-    margin-top: 2px;
+    margin-top: 4px;
     transition: all 0.15s ease;
 }
 .btn-online-inline:hover { background: #EFF6FF; border-color: #2563EB; }
@@ -659,9 +701,8 @@ function todayIso() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-/* Нормализация h: строка → массив */
 function normalizeHwList(h) {
-    if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== '');
+    if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== '' && x !== '__new__');
     if (typeof h === 'string' && h.trim() !== '') return [h];
     return [];
 }
@@ -1126,7 +1167,7 @@ function openThemeEdit(cell, gradeKey, value) {
     setTimeout(() => document.addEventListener('mousedown', onOutside), 100);
 }
 
-/* ================= ДЗ (список) ================= */
+/* ================= ДЗ ================= */
 function renderHomeworkCell(cell, gradeKey, hwRaw) {
     cell.innerHTML = '';
     const list = normalizeHwList(hwRaw);
@@ -1158,26 +1199,11 @@ function renderHwItemView(item, cell, gradeKey, idx, value) {
     item.innerHTML = '';
     const textDiv = document.createElement('div');
     textDiv.className = 'hw-item-text';
-    textDiv.style.cursor = 'pointer';
-    textDiv.style.padding = '2px 4px';
-    textDiv.style.borderRadius = '6px';
     textDiv.textContent = value;
     textDiv.title = 'Нажмите, чтобы редактировать';
-    textDiv.addEventListener('mouseenter', () => textDiv.style.background = '#F1F5F9');
-    textDiv.addEventListener('mouseleave', () => textDiv.style.background = 'transparent');
     textDiv.addEventListener('click', (e) => { e.stopPropagation(); openHwItemEdit(item, cell, gradeKey, idx, value); });
     item.appendChild(textDiv);
-
-    const onlineBtn = document.createElement('button');
-    onlineBtn.type = 'button';
-    onlineBtn.className = 'btn-online-inline';
-    onlineBtn.title = 'Выдать онлайн-урок';
-    onlineBtn.innerHTML = `
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-        Онлайн
-    `;
-    onlineBtn.addEventListener('click', (e) => { e.stopPropagation(); showToast('Выдача онлайн-урока — в разработке'); });
-    item.appendChild(onlineBtn);
+    // Кнопка "Выдать онлайн" у элемента ДЗ НЕ создаётся — она только у темы
 }
 
 function openHwItemEdit(item, cell, gradeKey, idx, value) {
@@ -1245,25 +1271,23 @@ function openHwItemEdit(item, cell, gradeKey, idx, value) {
 function addNewHw(cell, gradeKey) {
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
     const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-    arr.push('__new__'); // временный маркер
+    arr.push(''); // пустой элемент
     JOURNAL.lessons[gradeKey].h = arr;
 
-    // Перерисовываем и открываем edit для последнего
     renderHomeworkCell(cell, gradeKey, arr);
 
+    // Открываем edit-режим у последнего элемента
     const items = cell.querySelectorAll('.hw-item');
     const last = items[items.length - 1];
     if (last) {
-        // Временно подменяем пустым значением
         const idx = arr.length - 1;
         openHwItemEdit(last, cell, gradeKey, idx, '');
     }
 }
 
-/* Автовысота textarea */
 function autoGrow(el) {
     el.style.height = 'auto';
-    el.style.height = Math.max(32, el.scrollHeight) + 'px';
+    el.style.height = Math.max(36, el.scrollHeight) + 'px';
 }
 
 /* ==== Заполнение «мёртвых» колонок ==== */
@@ -1333,7 +1357,6 @@ function fillFillers() {
     }
 }
 
-/* Дебаунс для resize */
 let resizeTimer = null;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
