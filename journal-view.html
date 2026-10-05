@@ -235,8 +235,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right table th:last-child { border-right: none; }
 .panel-right table th:nth-child(1) { width: 40px; }
 .panel-right table th:nth-child(2) { width: 80px; }
-.panel-right table th:nth-child(3) { width: 38%; }
-.panel-right table th:nth-child(4) { width: 47%; }
+.panel-right table th:nth-child(3) { width: 30%; }
+.panel-right table th:nth-child(4) { width: 55%; }
 .panel-right tbody td {
     background: #FFFFFF !important;
     border: none;
@@ -687,9 +687,6 @@ function normalizeHwList(h) {
     return [];
 }
 
-/* ============================================================
-   ГЛОБАЛЬНЫЙ РЕДАКТОР
-   ============================================================ */
 let activeEditor = null;
 
 function closeActiveEditor(saveIt) {
@@ -1048,12 +1045,10 @@ function renderMainTable() {
     renderLessonPlanRows();
 }
 
-/* ================= СТРОКИ ПОУРОЧНОГО ПЛАНА ================= */
 function renderLessonPlanRows() {
     const pBody = document.getElementById('pBody');
     pBody.innerHTML = '';
 
-    // Удаляем старые «мёртвые» строки
     pBody.querySelectorAll('.plan-filler-row').forEach(r => r.remove());
 
     DATES.forEach((d, dIdx) => {
@@ -1095,15 +1090,12 @@ function renderLessonPlanRows() {
         pBody.appendChild(tr);
     });
 
-    // Заполняем пустое место внизу «мёртвыми» строками
     fillPlanFillers();
 }
 
-/* Заполняет пустое место в поурочном плане «мёртвыми» строками */
 function fillPlanFillers() {
     const pBody = document.getElementById('pBody');
     if (!pBody) return;
-    // Убираем старые filler-строки
     pBody.querySelectorAll('.plan-filler-row').forEach(r => r.remove());
 
     const panelRight = document.getElementById('panelRight');
@@ -1112,7 +1104,6 @@ function fillPlanFillers() {
     const table = document.getElementById('lessonPlanTable');
     if (!table) return;
 
-    // Считаем, сколько места осталось внизу
     const panelRect = panelRight.getBoundingClientRect();
     const tableRect = table.getBoundingClientRect();
     const freeSpace = panelRect.bottom - tableRect.bottom;
@@ -1146,7 +1137,6 @@ function fillPlanFillers() {
     }
 }
 
-/* ================= ДЕЛЕГИРОВАНИЕ ================= */
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
 
@@ -1215,7 +1205,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, true);
 });
 
-/* ===== ТЕМА ===== */
 function renderThemeContent(cell, gradeKey, value) {
     cell.innerHTML = '';
     if (!value) {
@@ -1284,7 +1273,6 @@ function openThemeEditInline(cell, gradeKey, value) {
     activeEditor = { finish, cancel };
 }
 
-/* ===== ДЗ ===== */
 function renderHwContent(cell, gradeKey, hwList) {
     const onlineBtn = cell.querySelector('.cell-online-btn');
     cell.innerHTML = '';
@@ -1395,7 +1383,6 @@ function autoGrow(el) {
     el.style.height = Math.max(28, el.scrollHeight) + 'px';
 }
 
-/* ==== Заполнение «мёртвых» колонок в журнале ==== */
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
