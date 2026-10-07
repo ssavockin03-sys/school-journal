@@ -34,6 +34,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .tab-pill { padding: 5px 12px; background: transparent; color: #64748B; font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 6px; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; }
 .tab-pill:hover { background: #F1F5F9; color: #334155; }
 .tab-pill.active { background: #FFFFFF; color: #2563EB; border-color: #2563EB; font-weight: 600; }
+.tab-pill.summary-tab { border-color: #CBD5E1; }
+.tab-pill.summary-tab.active { background: #FFFFFF; color: #2563EB; border-color: #2563EB; }
 .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
 .btn-import { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFFFFF; color: #334155; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
 .btn-import:hover { background: #F8FAFC; border-color: #94A3B8; }
@@ -129,27 +131,57 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead { position: sticky; top: 0; z-index: 10; }
 .marks-table thead th { background: #EBF0F6 !important; }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
+.col-period { width: 78px; min-width: 78px; max-width: 78px; background: #FFFFFF; }
 .marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; font-size: 12px !important; font-weight: 400 !important; position: relative; }
 .marks-table thead tr:nth-child(2) .col-date { font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; cursor: pointer !important; user-select: none; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #DFE7F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
-.marks-table thead th.col-today,
-.marks-table tbody td.col-today {
-    background: #EFF6FF !important;
-    box-shadow: inset 1px 0 0 0 #1D4ED8, inset -1px 0 0 0 #1D4ED8;
+/* ====== ИТОГОВЫЙ РЕЖИМ ====== */
+.marks-table.period-mode thead { position: sticky; top: 0; }
+.marks-table.period-mode thead tr { height: 76px; }
+.marks-table.period-mode thead th {
+    background: #EBF0F6 !important;
+    font-weight: 600;
+    color: #334155;
+    font-size: 12px;
+    vertical-align: middle;
+    height: 76px;
+    line-height: 18px;
+    padding: 0 6px;
+    white-space: normal;
+    word-wrap: break-word;
 }
-.marks-table thead tr:first-child th.col-today {
-    box-shadow: inset 1px 0 0 0 #1D4ED8, inset -1px 0 0 0 #1D4ED8, inset 0 1px 0 0 #1D4ED8;
+.marks-table.period-mode thead th.col-period-header { font-weight: 600; font-size: 12px; }
+.marks-table.period-mode thead th.col-period-header .period-sub {
+    display: block;
+    font-size: 10px;
+    color: #64748B;
+    font-weight: 400;
+    margin-top: 2px;
 }
-.marks-table tbody tr:last-child td.col-today {
-    box-shadow: inset 1px 0 0 0 #1D4ED8, inset -1px 0 0 0 #1D4ED8, inset 0 -1px 0 0 #1D4ED8;
+.marks-table.period-mode thead th.col-final-header {
+    color: #1E293B;
+    font-weight: 700;
+    font-size: 12px;
+    background: #E8EEF5 !important;
 }
-.marks-table thead tr:first-child th.col-today .today-label {
-    position: absolute; left: 0; right: 0; bottom: 4%; display: block;
-    font-size: 9px; color: #64748B; font-weight: 400; line-height: 9px;
-    pointer-events: none; text-align: center;
+.marks-table.period-mode tbody td.col-period {
+    font-size: 13px;
+    background: #FFFFFF;
+    vertical-align: middle;
+    height: 38px;
 }
+.marks-table.period-mode tbody td.col-final {
+    background: #F8FAFC;
+    font-weight: 600;
+    color: #1E293B;
+}
+
+.col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
+.marks-table thead .col-avg { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
+.col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
+.marks-table thead .col-qtr { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 .grade-cell input {
@@ -195,15 +227,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
-.col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
-.marks-table thead .col-avg { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
-.col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
-.marks-table thead .col-qtr { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
 
 .marks-table td.col-date:focus-within,
-.marks-table td.col-qtr:focus-within { position: relative; z-index: 6; }
+.marks-table td.col-qtr:focus-within,
+.marks-table td.col-period:focus-within { position: relative; z-index: 6; }
 .marks-table td.col-date:focus-within::after,
-.marks-table td.col-qtr:focus-within::after { content: ''; position: absolute; inset: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 7; }
+.marks-table td.col-qtr:focus-within::after,
+.marks-table td.col-period:focus-within::after { content: ''; position: absolute; inset: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 7; }
 
 .marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
 .marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; pointer-events: none; }
@@ -270,10 +300,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     padding: 0 !important;
 }
 
-.plan-filler-cell {
-    background: #FFFFFF !important;
-    pointer-events: none;
-}
+.plan-filler-cell { background: #FFFFFF !important; pointer-events: none; }
 
 .theme-cell, .homework-cell {
     font-size: 13.65px;
@@ -322,7 +349,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .hw-list-item + .hw-list-item { margin-top: 2px; }
 
-/* Плейсхолдеры — кликабельные, без hover-эффекта */
 .placeholder-text {
     display: inline-block;
     color: #0EA5E9;
@@ -350,49 +376,19 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     line-height: 1.3;
 }
 
-.edit-bubble {
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    width: 100%;
-}
+.edit-bubble { display: flex; align-items: flex-start; gap: 6px; width: 100%; }
 .edit-bubble textarea {
-    flex: 1 1 auto;
-    min-width: 0;
-    min-height: 28px;
-    padding: 5px 10px;
-    border: 1.5px solid #CBD5E1;
-    border-radius: 10px;
-    background: #FFFFFF;
-    font-size: 13px;
-    font-family: inherit;
-    color: #1E293B;
-    outline: none;
-    resize: none;
-    line-height: 1.3;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
-    overflow: hidden;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    box-sizing: border-box;
+    flex: 1 1 auto; min-width: 0; min-height: 28px; padding: 5px 10px;
+    border: 1.5px solid #CBD5E1; border-radius: 10px; background: #FFFFFF;
+    font-size: 13px; font-family: inherit; color: #1E293B; outline: none;
+    resize: none; line-height: 1.3; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    overflow: hidden; white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box;
 }
-.edit-bubble textarea:focus {
-    border-color: #94A3B8;
-    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1);
-}
+.edit-bubble textarea:focus { border-color: #94A3B8; box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1); }
 .edit-bubble .confirm-btn {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    background: #2563EB;
-    border: none;
-    border-radius: 6px;
-    color: #FFFFFF;
-    cursor: pointer;
-    margin-top: 2px;
+    flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; background: #2563EB; border: none; border-radius: 6px;
+    color: #FFFFFF; cursor: pointer; margin-top: 2px;
 }
 .edit-bubble .confirm-btn:hover { background: #1D4ED8; }
 .edit-bubble .confirm-btn svg { width: 12px; height: 12px; fill: #FFFFFF; }
@@ -502,7 +498,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
                             </table>
                         </div>
                         <div class="marks-table-wrapper">
-                            <table class="marks-table">
+                            <table class="marks-table" id="marksTable">
                                 <thead>
                                     <tr id="mRow"></tr>
                                     <tr id="sRow"></tr>
@@ -635,6 +631,8 @@ let TEACHER_NAME = '';
 let STUDENTS = [];
 let DATES = [];
 let ACTIVE_PERIOD_INDEX = 0;
+/* SUMMARY_MODE = true когда активна вкладка «Итог» */
+let SUMMARY_MODE = false;
 let PERIODS = [];
 let PERIOD_SYSTEM = '';
 let JOURNAL = null;
@@ -746,17 +744,22 @@ async function init() {
     }
 
     ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
+    SUMMARY_MODE = false;
+
     renderHeader();
     renderPeriodTabs();
 
     if (STUDENTS.length === 0) { showEmpty('В классе нет учеников', 'Добавьте учеников в этот класс через панель администратора.'); return; }
 
-    DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-    if (DATES.length === 0) { showEmpty('Нет уроков в периоде', 'По расписанию в выбранном периоде нет уроков по этому предмету.'); return; }
-
-    renderMainTable();
-    fillFillers();
-    requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
+    if (SUMMARY_MODE) {
+        renderSummaryTable();
+    } else {
+        DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
+        if (DATES.length === 0) { showEmpty('Нет уроков в периоде', 'По расписанию в выбранном периоде нет уроков по этому предмету.'); return; }
+        renderMainTable();
+        fillFillers();
+        requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
+    }
 
     setupObservers();
 
@@ -904,6 +907,9 @@ function closeAllDropdowns() {
 }
 document.addEventListener('click', closeAllDropdowns);
 
+/* ============================================================
+   ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ + «ИТОГ»
+   ============================================================ */
 function renderPeriodTabs() {
     const container = document.getElementById('periodTabs');
     container.innerHTML = '';
@@ -917,13 +923,15 @@ function renderPeriodTabs() {
         return;
     }
     const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
+    /* Обычные периоды */
     PERIODS.forEach((p, idx) => {
         const tab = document.createElement('button');
         tab.type = 'button';
-        tab.className = 'tab-pill' + (idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
+        tab.className = 'tab-pill' + (!SUMMARY_MODE && idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
         tab.textContent = labels[idx] || ('Период ' + (idx + 1));
         tab.title = p.start + ' – ' + p.end;
         tab.addEventListener('click', async () => {
+            SUMMARY_MODE = false;
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
             DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
@@ -936,9 +944,180 @@ function renderPeriodTabs() {
         });
         container.appendChild(tab);
     });
+    /* Кнопка «Итог» */
+    const summaryTab = document.createElement('button');
+    summaryTab.type = 'button';
+    summaryTab.className = 'tab-pill summary-tab' + (SUMMARY_MODE ? ' active' : '');
+    summaryTab.textContent = 'Итог';
+    summaryTab.title = 'Итоговые оценки по всем периодам';
+    summaryTab.addEventListener('click', () => {
+        SUMMARY_MODE = true;
+        renderPeriodTabs();
+        document.getElementById('mainContent').style.display = '';
+        document.getElementById('emptyState').style.display = 'none';
+        renderSummaryTable();
+    });
+    container.appendChild(summaryTab);
 }
 
+/* ============================================================
+   ИТОГОВЫЙ РЕЖИМ (колонки = периоды + «Итог»)
+   ============================================================ */
+function renderSummaryTable() {
+    const mRow = document.getElementById('mRow');
+    const sRow = document.getElementById('sRow');
+    const jBody = document.getElementById('jBody');
+    const fioBody = document.getElementById('fioBody');
+    const pBody = document.getElementById('pBody');
+    const marksTable = document.getElementById('marksTable');
+
+    marksTable.classList.add('period-mode');
+
+    mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
+
+    /* Одна строка заголовков — ФИО будет в отдельной таблице слева */
+    sRow.innerHTML = '';
+
+    const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
+
+    /* Заголовки: для каждого периода + итог */
+    PERIODS.forEach((p, idx) => {
+        const th = document.createElement('th');
+        th.className = 'col-period col-period-header';
+        th.setAttribute('rowspan', '2');
+        const name = labels[idx] || ('Период ' + (idx + 1));
+        th.innerHTML = escapeHtml(name) + '<span class="period-sub">' + escapeHtml(p.end || '') + '</span>';
+        mRow.appendChild(th);
+    });
+
+    const thFinal = document.createElement('th');
+    thFinal.className = 'col-period col-final-header';
+    thFinal.setAttribute('rowspan', '2');
+    thFinal.textContent = 'Итог';
+    mRow.appendChild(thFinal);
+
+    /* Пустая вторая строка (нужна для rowspan) */
+    /* Скрываем её — просто не добавляем ячеек */
+
+    /* Ученики */
+    STUDENTS.forEach((student, sIdx) => {
+        /* ФИО в левой таблице */
+        const fioTr = document.createElement('tr');
+        const fioTd = document.createElement('td');
+        fioTd.style.cursor = 'pointer';
+        fioTd.innerHTML = '<span class="student-number-text">' + (sIdx + 1) + '</span><span class="student-name-text">' + escapeHtml(formatShortName(student.full_name)) + '</span>';
+        fioTd.addEventListener('click', () => { window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id); });
+        fioTr.appendChild(fioTd);
+        fioBody.appendChild(fioTr);
+
+        /* Правая таблица — итоговые оценки по периодам */
+        const tr = document.createElement('tr');
+
+        const qtrs = JOURNAL.qtrGrades[student.id] || {};
+        const numericGrades = [];
+
+        PERIODS.forEach((p, idx) => {
+            const val = qtrs[idx] || qtrs[String(idx)] || '';
+            const td = document.createElement('td');
+            td.className = 'col-period';
+            td.dataset.periodIdx = idx;
+            td.innerHTML = '<div class="grade-cell">' +
+                '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(val) + '</div>' +
+                '<input type="text" value="' + escapeHtml(val) + '"' +
+                    ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
+                    ' onblur="hlSum(this, false); this.style.color=\'transparent\';"' +
+                    ' onkeydown="handleGradeKeydown(event, this)"' +
+                    ' onchange="upqtrSummary(\'' + student.id + '\', ' + idx + ', this)">' +
+            '</div>';
+            tr.appendChild(td);
+            if (val) numericGrades.push(parseInt(String(val)));
+        });
+
+        /* Итог = среднее арифметическое выставленных четвертных */
+        const tdFinal = document.createElement('td');
+        tdFinal.className = 'col-period col-final';
+        let finalVal = '';
+        const validGrades = numericGrades.filter(n => !isNaN(n));
+        if (validGrades.length > 0) {
+            const avg = validGrades.reduce((a, b) => a + b, 0) / validGrades.length;
+            finalVal = String(Math.round(avg));
+        }
+        tdFinal.innerHTML = '<div class="grade-cell">' +
+            '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(finalVal) + '</div>' +
+        '</div>';
+        tr.appendChild(tdFinal);
+
+        jBody.appendChild(tr);
+    });
+
+    /* Правая панель не нужна в итоговом режиме — скрываем */
+    document.getElementById('panelRightWrapper').style.display = 'none';
+    document.getElementById('sideToggleTabs').style.display = 'none';
+    document.getElementById('panelLeftWrapper').style.flex = '1';
+}
+
+/* Возврат к обычному режиму */
+function exitSummaryMode() {
+    document.getElementById('marksTable').classList.remove('period-mode');
+    document.getElementById('panelRightWrapper').style.display = '';
+    document.getElementById('sideToggleTabs').style.display = '';
+}
+
+/* Раскраска/подсветка в итоговом режиме */
+function hlSum(input, active) {
+    const tr = input.closest('tr');
+    if (tr) {
+        tr.querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
+    }
+}
+
+async function upqtrSummary(studentId, periodIdx, inputElement) {
+    const v = inputElement.value.trim();
+    const up = v.toUpperCase();
+    if (!/^([1-5][+-]?)?$/.test(up)) {
+        alert('Для итоговой оценки используйте баллы от 1 до 5');
+        inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[periodIdx] || '';
+        return;
+    }
+    const displayLayer = inputElement.previousElementSibling;
+    if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
+    setTimeout(async () => {
+        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
+        JOURNAL.qtrGrades[studentId][periodIdx] = up;
+        await saveJournal();
+        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+        /* Пересчёт итога для этой строки */
+        recalcFinalForRow(inputElement.closest('tr'), studentId);
+    }, 200);
+}
+
+function recalcFinalForRow(tr, studentId) {
+    if (!tr || !studentId) return;
+    const qtrs = JOURNAL.qtrGrades[studentId] || {};
+    const nums = [];
+    PERIODS.forEach((p, idx) => {
+        const val = qtrs[idx] || qtrs[String(idx)] || '';
+        const n = parseInt(String(val));
+        if (!isNaN(n)) nums.push(n);
+    });
+    const tdFinal = tr.querySelector('.col-final');
+    if (!tdFinal) return;
+    let finalVal = '';
+    if (nums.length > 0) {
+        const avg = nums.reduce((a, b) => a + b, 0) / nums.length;
+        finalVal = String(Math.round(avg));
+    }
+    tdFinal.innerHTML = '<div class="grade-cell">' +
+        '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(finalVal) + '</div>' +
+    '</div>';
+}
+
+/* ============================================================
+   ОБЫЧНЫЙ РЕЖИМ (колонки = даты)
+   ============================================================ */
 function renderMainTable() {
+    exitSummaryMode();
+
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
     const jBody = document.getElementById('jBody');
@@ -1113,6 +1292,7 @@ function fillPlanFillers() {
 
     const panelRight = document.getElementById('panelRight');
     if (!panelRight) return;
+    if (panelRight.style.display === 'none') return;
 
     const table = document.getElementById('lessonPlanTable');
     if (!table) return;
@@ -1250,29 +1430,23 @@ function renderThemeContent(cell, gradeKey, value) {
 
 function openThemeEditInline(cell, gradeKey, value) {
     closeActiveEditor(true);
-
     cell.innerHTML = '';
     const bubble = document.createElement('div');
     bubble.className = 'edit-bubble';
-
     const ta = document.createElement('textarea');
     ta.rows = 1;
     ta.value = value || '';
-
     const ok = document.createElement('button');
     ok.type = 'button';
     ok.className = 'confirm-btn';
     ok.title = 'Сохранить';
     ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-
     bubble.appendChild(ta);
     bubble.appendChild(ok);
     cell.appendChild(bubble);
-
     autoGrow(ta);
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
-
     const finish = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
@@ -1282,10 +1456,7 @@ function openThemeEditInline(cell, gradeKey, value) {
             renderThemeContent(cell, gradeKey, txt);
         }, 200);
     };
-    const cancel = () => {
-        renderThemeContent(cell, gradeKey, value);
-    };
-
+    const cancel = () => { renderThemeContent(cell, gradeKey, value); };
     ta.addEventListener('input', () => autoGrow(ta));
     ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); closeActiveEditor(true); }
@@ -1293,7 +1464,6 @@ function openThemeEditInline(cell, gradeKey, value) {
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
     ok.addEventListener('click', (e) => { e.stopPropagation(); closeActiveEditor(true); });
-
     activeEditor = { finish, cancel };
 }
 
@@ -1301,10 +1471,8 @@ function renderHwContent(cell, gradeKey, hwList) {
     const onlineBtn = cell.querySelector('.cell-online-btn');
     cell.innerHTML = '';
     if (onlineBtn) cell.appendChild(onlineBtn);
-
     const listWrap = document.createElement('div');
     listWrap.className = 'hw-list';
-
     if (hwList.length === 0) {
         const ph = document.createElement('span');
         ph.className = 'placeholder-text';
@@ -1320,56 +1488,43 @@ function renderHwContent(cell, gradeKey, hwList) {
             item.title = 'Нажмите, чтобы редактировать';
             listWrap.appendChild(item);
         });
-
         const addBtn = document.createElement('button');
         addBtn.type = 'button';
         addBtn.className = 'add-hw-btn';
         addBtn.textContent = '+ ДЗ к след. уроку';
         listWrap.appendChild(addBtn);
     }
-
     cell.appendChild(listWrap);
 }
 
 function openHwItemEdit(cell, gradeKey, idx, value) {
     closeActiveEditor(true);
-
     const listWrap = cell.querySelector('.hw-list');
     if (!listWrap) return;
     const items = listWrap.querySelectorAll('.hw-list-item, .placeholder-text, .add-hw-btn');
     const target = items[idx];
     if (!target) return;
-
     const bubble = document.createElement('div');
     bubble.className = 'edit-bubble';
-
     const ta = document.createElement('textarea');
     ta.rows = 1;
     ta.value = value || '';
-
     const ok = document.createElement('button');
     ok.type = 'button';
     ok.className = 'confirm-btn';
     ok.title = 'Сохранить';
     ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-
     bubble.appendChild(ta);
     bubble.appendChild(ok);
     target.replaceWith(bubble);
-
     autoGrow(ta);
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
-
     const finish = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-        if (txt === '') {
-            arr.splice(idx, 1);
-        } else {
-            arr[idx] = txt;
-        }
+        if (txt === '') arr.splice(idx, 1); else arr[idx] = txt;
         JOURNAL.lessons[gradeKey].h = arr;
         setTimeout(async () => {
             await saveJournal();
@@ -1380,7 +1535,6 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
         renderHwContent(cell, gradeKey, arr);
     };
-
     ta.addEventListener('input', () => autoGrow(ta));
     ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); closeActiveEditor(true); }
@@ -1388,7 +1542,6 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
     ok.addEventListener('click', (e) => { e.stopPropagation(); closeActiveEditor(true); });
-
     activeEditor = { finish, cancel };
 }
 
@@ -1413,6 +1566,7 @@ function fillFillers() {
 
     const journalScroll = document.getElementById('journalScroll');
     if (!journalScroll) return;
+    if (SUMMARY_MODE) return; /* В итоговом режиме мёртвые колонки не нужны */
 
     const scrollWidth = journalScroll.clientWidth;
     const fioWrapper = document.querySelector('.fio-table-wrapper');
@@ -1476,7 +1630,7 @@ function fillFillers() {
 let resizeTimer = null;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => { fillFillers(); fillPlanFillers(); }, 100);
+    resizeTimer = setTimeout(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } }, 100);
 });
 
 function getGradeClass(value) {
@@ -1701,9 +1855,9 @@ function toggleLeftPanel() {
         document.getElementById('tabRight').classList.remove('active');
     }
     updateTabIcons();
-    requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
-    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 100);
-    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 350);
+    requestAnimationFrame(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } });
+    setTimeout(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } }, 100);
+    setTimeout(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } }, 350);
 }
 
 function toggleRightPanel() {
@@ -1718,9 +1872,9 @@ function toggleRightPanel() {
         document.getElementById('tabLeft').classList.remove('active');
     }
     updateTabIcons();
-    requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
-    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 100);
-    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 350);
+    requestAnimationFrame(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } });
+    setTimeout(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } }, 100);
+    setTimeout(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } }, 350);
 }
 
 function updateTabIcons() {
