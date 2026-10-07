@@ -96,6 +96,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panels-container.right-collapsed .panel-right-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
 .panels-container.right-collapsed .panel-left { border-radius: 8px; border-right: 1px solid #CFD8E3; }
+/* В режиме "Итог" правая панель скрыта, левая занимает всё */
+.panels-container.summary-mode .panel-right-wrapper { flex: 0 0 0; max-width: 0; }
+.panels-container.summary-mode .panel-left-wrapper { flex: 1; }
+.panels-container.summary-mode .panel-left { border-radius: 8px; border-right: 1px solid #CFD8E3; }
+.panels-container.summary-mode .side-toggle-tabs { display: none; }
 
 .side-toggle-tabs { width: 0; flex-shrink: 0; position: relative; margin: 0 0 12px 0; align-self: stretch; }
 .side-toggle-tab {
@@ -131,46 +136,51 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead { position: sticky; top: 0; z-index: 10; }
 .marks-table thead th { background: #EBF0F6 !important; }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
-.col-period { width: 78px; min-width: 78px; max-width: 78px; background: #FFFFFF; }
+.col-period { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; font-size: 12px !important; font-weight: 400 !important; position: relative; }
 .marks-table thead tr:nth-child(2) .col-date { font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; cursor: pointer !important; user-select: none; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #DFE7F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
 /* ====== ИТОГОВЫЙ РЕЖИМ ====== */
-.marks-table.period-mode thead { position: sticky; top: 0; }
-.marks-table.period-mode thead tr { height: 76px; }
-.marks-table.period-mode thead th {
-    background: #EBF0F6 !important;
-    font-weight: 600;
-    color: #334155;
-    font-size: 12px;
-    vertical-align: middle;
+.marks-table.period-mode thead th.col-period-header {
+    width: 46px;
+    min-width: 46px;
+    max-width: 46px;
     height: 76px;
     line-height: 18px;
-    padding: 0 6px;
+    padding: 4px 2px;
+    vertical-align: middle;
+    font-weight: 600;
+    font-size: 12px;
+    color: #334155;
+    background: #EBF0F6 !important;
     white-space: normal;
     word-wrap: break-word;
 }
-.marks-table.period-mode thead th.col-period-header { font-weight: 600; font-size: 12px; }
-.marks-table.period-mode thead th.col-period-header .period-sub {
-    display: block;
-    font-size: 10px;
-    color: #64748B;
-    font-weight: 400;
-    margin-top: 2px;
-}
 .marks-table.period-mode thead th.col-final-header {
-    color: #1E293B;
+    width: 46px;
+    min-width: 46px;
+    max-width: 46px;
+    height: 76px;
+    line-height: 18px;
+    padding: 4px 2px;
+    vertical-align: middle;
     font-weight: 700;
     font-size: 12px;
-    background: #E8EEF5 !important;
+    color: #1E293B;
+    background: #EBF0F6 !important;
+    white-space: normal;
+    word-wrap: break-word;
 }
 .marks-table.period-mode tbody td.col-period {
     font-size: 13px;
     background: #FFFFFF;
     vertical-align: middle;
     height: 38px;
+    width: 46px;
+    min-width: 46px;
+    max-width: 46px;
 }
 .marks-table.period-mode tbody td.col-final {
     background: #F8FAFC;
@@ -631,7 +641,6 @@ let TEACHER_NAME = '';
 let STUDENTS = [];
 let DATES = [];
 let ACTIVE_PERIOD_INDEX = 0;
-/* SUMMARY_MODE = true когда активна вкладка «Итог» */
 let SUMMARY_MODE = false;
 let PERIODS = [];
 let PERIOD_SYSTEM = '';
@@ -751,15 +760,11 @@ async function init() {
 
     if (STUDENTS.length === 0) { showEmpty('В классе нет учеников', 'Добавьте учеников в этот класс через панель администратора.'); return; }
 
-    if (SUMMARY_MODE) {
-        renderSummaryTable();
-    } else {
-        DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-        if (DATES.length === 0) { showEmpty('Нет уроков в периоде', 'По расписанию в выбранном периоде нет уроков по этому предмету.'); return; }
-        renderMainTable();
-        fillFillers();
-        requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
-    }
+    DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
+
+    renderMainTable();
+    fillFillers();
+    requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
 
     setupObservers();
 
@@ -923,7 +928,6 @@ function renderPeriodTabs() {
         return;
     }
     const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
-    /* Обычные периоды */
     PERIODS.forEach((p, idx) => {
         const tab = document.createElement('button');
         tab.type = 'button';
@@ -935,7 +939,7 @@ function renderPeriodTabs() {
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
             DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-            if (DATES.length === 0) { showEmpty('Нет уроков в периоде', 'По расписанию в выбранном периоде нет уроков по этому предмету.'); return; }
+            document.getElementById('panelsContainer').classList.remove('summary-mode');
             document.getElementById('mainContent').style.display = '';
             document.getElementById('emptyState').style.display = 'none';
             renderMainTable();
@@ -955,6 +959,7 @@ function renderPeriodTabs() {
         renderPeriodTabs();
         document.getElementById('mainContent').style.display = '';
         document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('panelsContainer').classList.add('summary-mode');
         renderSummaryTable();
     });
     container.appendChild(summaryTab);
@@ -975,18 +980,14 @@ function renderSummaryTable() {
 
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
 
-    /* Одна строка заголовков — ФИО будет в отдельной таблице слева */
-    sRow.innerHTML = '';
-
     const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
 
-    /* Заголовки: для каждого периода + итог */
+    /* Заголовки: для каждого периода + итог. Одна строка, rowspan=2 */
     PERIODS.forEach((p, idx) => {
         const th = document.createElement('th');
         th.className = 'col-period col-period-header';
         th.setAttribute('rowspan', '2');
-        const name = labels[idx] || ('Период ' + (idx + 1));
-        th.innerHTML = escapeHtml(name) + '<span class="period-sub">' + escapeHtml(p.end || '') + '</span>';
+        th.textContent = labels[idx] || ('Период ' + (idx + 1));
         mRow.appendChild(th);
     });
 
@@ -996,8 +997,8 @@ function renderSummaryTable() {
     thFinal.textContent = 'Итог';
     mRow.appendChild(thFinal);
 
-    /* Пустая вторая строка (нужна для rowspan) */
-    /* Скрываем её — просто не добавляем ячеек */
+    /* Вторая строка thead не должна содержать ячеек, но нужна для rowspan-совместимости.
+       Оставляем sRow пустой — th с rowspan=2 из первой строки растянутся автоматически. */
 
     /* Ученики */
     STUDENTS.forEach((student, sIdx) => {
@@ -1014,7 +1015,6 @@ function renderSummaryTable() {
         const tr = document.createElement('tr');
 
         const qtrs = JOURNAL.qtrGrades[student.id] || {};
-        const numericGrades = [];
 
         PERIODS.forEach((p, idx) => {
             const val = qtrs[idx] || qtrs[String(idx)] || '';
@@ -1030,47 +1030,56 @@ function renderSummaryTable() {
                     ' onchange="upqtrSummary(\'' + student.id + '\', ' + idx + ', this)">' +
             '</div>';
             tr.appendChild(td);
-            if (val) numericGrades.push(parseInt(String(val)));
         });
 
-        /* Итог = среднее арифметическое выставленных четвертных */
+        /* Итог — учитель выставляет сам, тоже редактируемое поле */
+        const finalVal = qtrs['final'] || qtrs['__final__'] || '';
         const tdFinal = document.createElement('td');
         tdFinal.className = 'col-period col-final';
-        let finalVal = '';
-        const validGrades = numericGrades.filter(n => !isNaN(n));
-        if (validGrades.length > 0) {
-            const avg = validGrades.reduce((a, b) => a + b, 0) / validGrades.length;
-            finalVal = String(Math.round(avg));
-        }
         tdFinal.innerHTML = '<div class="grade-cell">' +
             '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(finalVal) + '</div>' +
+            '<input type="text" value="' + escapeHtml(finalVal) + '"' +
+                ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
+                ' onblur="hlSum(this, false); this.style.color=\'transparent\';"' +
+                ' onkeydown="handleGradeKeydown(event, this)"' +
+                ' onchange="upFinal(\'' + student.id + '\', this)">' +
         '</div>';
         tr.appendChild(tdFinal);
 
         jBody.appendChild(tr);
     });
-
-    /* Правая панель не нужна в итоговом режиме — скрываем */
-    document.getElementById('panelRightWrapper').style.display = 'none';
-    document.getElementById('sideToggleTabs').style.display = 'none';
-    document.getElementById('panelLeftWrapper').style.flex = '1';
 }
 
-/* Возврат к обычному режиму */
-function exitSummaryMode() {
-    document.getElementById('marksTable').classList.remove('period-mode');
-    document.getElementById('panelRightWrapper').style.display = '';
-    document.getElementById('sideToggleTabs').style.display = '';
-}
-
-/* Раскраска/подсветка в итоговом режиме */
+/* Подсветка строки и колонки в итоговом режиме */
 function hlSum(input, active) {
+    const td = input.closest('td');
     const tr = input.closest('tr');
-    if (tr) {
-        tr.querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
+    if (!tr) return;
+
+    /* Подсветка строки ученика */
+    tr.querySelectorAll('td').forEach(x => x.classList.toggle('highlight-cross', active));
+
+    /* Подсветка соответствующей строки ФИО */
+    const jBody = document.getElementById('jBody');
+    const rows = Array.from(jBody.querySelectorAll('tr'));
+    const rowIdx = rows.indexOf(tr);
+    const fioRows = document.querySelectorAll('#fioBody tr');
+    if (fioRows[rowIdx]) {
+        fioRows[rowIdx].querySelectorAll('td').forEach(x => x.classList.toggle('highlight-cross', active));
+    }
+
+    /* Подсветка колонки — для col-period (по data-periodIdx) и для col-final (по классу) */
+    if (td) {
+        if (td.classList.contains('col-final')) {
+            jBody.querySelectorAll('td.col-final').forEach(x => x.classList.toggle('highlight-cross', active));
+        } else if (td.dataset.periodIdx !== undefined) {
+            const pi = td.dataset.periodIdx;
+            jBody.querySelectorAll('td.col-period[data-period-idx="' + pi + '"]').forEach(x => x.classList.toggle('highlight-cross', active));
+        }
     }
 }
 
+/* Сохранение итоговой оценки за период */
 async function upqtrSummary(studentId, periodIdx, inputElement) {
     const v = inputElement.value.trim();
     const up = v.toUpperCase();
@@ -1086,37 +1095,34 @@ async function upqtrSummary(studentId, periodIdx, inputElement) {
         JOURNAL.qtrGrades[studentId][periodIdx] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-        /* Пересчёт итога для этой строки */
-        recalcFinalForRow(inputElement.closest('tr'), studentId);
     }, 200);
 }
 
-function recalcFinalForRow(tr, studentId) {
-    if (!tr || !studentId) return;
-    const qtrs = JOURNAL.qtrGrades[studentId] || {};
-    const nums = [];
-    PERIODS.forEach((p, idx) => {
-        const val = qtrs[idx] || qtrs[String(idx)] || '';
-        const n = parseInt(String(val));
-        if (!isNaN(n)) nums.push(n);
-    });
-    const tdFinal = tr.querySelector('.col-final');
-    if (!tdFinal) return;
-    let finalVal = '';
-    if (nums.length > 0) {
-        const avg = nums.reduce((a, b) => a + b, 0) / nums.length;
-        finalVal = String(Math.round(avg));
+/* Сохранение итоговой оценки (общий столбец «Итог») */
+async function upFinal(studentId, inputElement) {
+    const v = inputElement.value.trim();
+    const up = v.toUpperCase();
+    if (!/^([1-5][+-]?)?$/.test(up)) {
+        alert('Для итоговой оценки используйте баллы от 1 до 5');
+        inputElement.value = (JOURNAL.qtrGrades[studentId] || {})['final'] || '';
+        return;
     }
-    tdFinal.innerHTML = '<div class="grade-cell">' +
-        '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(finalVal) + '</div>' +
-    '</div>';
+    const displayLayer = inputElement.previousElementSibling;
+    if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
+    setTimeout(async () => {
+        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
+        JOURNAL.qtrGrades[studentId]['final'] = up;
+        await saveJournal();
+        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+    }, 200);
 }
 
 /* ============================================================
    ОБЫЧНЫЙ РЕЖИМ (колонки = даты)
    ============================================================ */
 function renderMainTable() {
-    exitSummaryMode();
+    const marksTable = document.getElementById('marksTable');
+    marksTable.classList.remove('period-mode');
 
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
@@ -1292,7 +1298,7 @@ function fillPlanFillers() {
 
     const panelRight = document.getElementById('panelRight');
     if (!panelRight) return;
-    if (panelRight.style.display === 'none') return;
+    if (document.getElementById('panelsContainer').classList.contains('summary-mode')) return;
 
     const table = document.getElementById('lessonPlanTable');
     if (!table) return;
@@ -1566,7 +1572,6 @@ function fillFillers() {
 
     const journalScroll = document.getElementById('journalScroll');
     if (!journalScroll) return;
-    if (SUMMARY_MODE) return; /* В итоговом режиме мёртвые колонки не нужны */
 
     const scrollWidth = journalScroll.clientWidth;
     const fioWrapper = document.querySelector('.fio-table-wrapper');
@@ -1627,10 +1632,79 @@ function fillFillers() {
     }
 }
 
+/* Мёртвые колонки в итоговом режиме — заполняют свободное место справа */
+function fillFillersSummary() {
+    document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
+    document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
+
+    const journalScroll = document.getElementById('journalScroll');
+    if (!journalScroll) return;
+
+    const scrollWidth = journalScroll.clientWidth;
+    const fioWrapper = document.querySelector('.fio-table-wrapper');
+    const fioWidth = fioWrapper ? Math.ceil(fioWrapper.getBoundingClientRect().width) : 210;
+    const marksWrapper = document.querySelector('.marks-table-wrapper');
+    if (!marksWrapper) return;
+
+    const marksWidth = Math.ceil(marksWrapper.getBoundingClientRect().width);
+    const freeSpace = scrollWidth - fioWidth - marksWidth;
+    if (freeSpace <= 0) return;
+
+    const fullCols = Math.floor(freeSpace / FILLER_COL_WIDTH);
+    const remainder = Math.round(freeSpace - fullCols * FILLER_COL_WIDTH);
+
+    const mRow = document.getElementById('mRow');
+    const sRow = document.getElementById('sRow');
+    const jBody = document.getElementById('jBody');
+
+    /* Виток: mRow содержит заголовки с rowspan=2 — добавляем туда th-пустышки */
+    for (let i = 0; i < fullCols; i++) {
+        const th = document.createElement('th');
+        th.className = 'col-filler-head';
+        th.setAttribute('rowspan', '2');
+        th.style.width = FILLER_COL_WIDTH + 'px';
+        th.style.minWidth = FILLER_COL_WIDTH + 'px';
+        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
+        mRow.appendChild(th);
+    }
+    jBody.querySelectorAll('tr').forEach(tr => {
+        for (let i = 0; i < fullCols; i++) {
+            const td = document.createElement('td');
+            td.className = 'col-filler-body';
+            td.style.width = FILLER_COL_WIDTH + 'px';
+            td.style.minWidth = FILLER_COL_WIDTH + 'px';
+            td.style.maxWidth = FILLER_COL_WIDTH + 'px';
+            tr.appendChild(td);
+        }
+    });
+
+    if (remainder >= 2) {
+        const rw = remainder + 'px';
+        const th = document.createElement('th');
+        th.className = 'col-filler-head col-filler-last';
+        th.setAttribute('rowspan', '2');
+        th.style.width = rw;
+        th.style.minWidth = rw;
+        th.style.maxWidth = rw;
+        mRow.appendChild(th);
+        jBody.querySelectorAll('tr').forEach(tr => {
+            const td = document.createElement('td');
+            td.className = 'col-filler-body col-filler-last';
+            td.style.width = rw;
+            td.style.minWidth = rw;
+            td.style.maxWidth = rw;
+            tr.appendChild(td);
+        });
+    }
+}
+
 let resizeTimer = null;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } }, 100);
+    resizeTimer = setTimeout(() => {
+        if (SUMMARY_MODE) { fillFillersSummary(); }
+        else { fillFillers(); fillPlanFillers(); }
+    }, 100);
 });
 
 function getGradeClass(value) {
@@ -1685,7 +1759,7 @@ function hlQtr(input, active) {
 }
 
 function getEditableCellsInRow(tr) {
-    return Array.from(tr.querySelectorAll('td')).filter(td => td.dataset.col !== undefined || td.classList.contains('col-qtr'));
+    return Array.from(tr.querySelectorAll('td')).filter(td => td.dataset.col !== undefined || td.classList.contains('col-qtr') || td.classList.contains('col-period'));
 }
 
 function navigateGradeCell(input, direction) {
@@ -1844,6 +1918,7 @@ document.addEventListener('mousedown', (e) => {
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
 
 function toggleLeftPanel() {
+    if (SUMMARY_MODE) return;
     const container = document.getElementById('panelsContainer');
     const tabLeft = document.getElementById('tabLeft');
     leftCollapsed = !leftCollapsed;
@@ -1861,6 +1936,7 @@ function toggleLeftPanel() {
 }
 
 function toggleRightPanel() {
+    if (SUMMARY_MODE) return;
     const container = document.getElementById('panelsContainer');
     const tabRight = document.getElementById('tabRight');
     rightCollapsed = !rightCollapsed;
