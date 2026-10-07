@@ -128,6 +128,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
 .fio-table .student-name-text { display: inline-block; font-size: 13.65px; }
 .fio-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
+
+/* Маркс-таблица (обычный журнал и итоговый) */
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; }
@@ -142,7 +144,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
 /* ====== ИТОГОВЫЙ РЕЖИМ ====== */
-.marks-table.period-mode thead tr { height: 76px; }
+/* В итоговом режиме в шапке ровно одна строка (mRow с rowspan=2) */
 .marks-table.period-mode thead th.col-period-header {
     width: 46px;
     min-width: 46px;
@@ -183,10 +185,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     min-width: 46px;
     max-width: 46px;
 }
+/* Ячейки итоговых оценок — БЕЛЫЕ, без серой заливки */
 .marks-table.period-mode tbody td.col-final {
-    background: #F8FAFC;
+    background: #FFFFFF;
     font-weight: 600;
     color: #1E293B;
+}
+.marks-table.period-mode tbody td.col-final:focus-within {
+    background: #FFFFFF;
 }
 
 .col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
@@ -772,10 +778,6 @@ async function init() {
     document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
 }
 
-/* ============================================================
-   НАБЛЮДАТЕЛИ — следят за изменением размеров панелей и
-   автоматически пересчитывают мёртвые колонки/строки
-   ============================================================ */
 let planObserver = null;
 let journalObserver = null;
 function setupObservers() {
@@ -975,7 +977,6 @@ function renderPeriodTabs() {
         document.getElementById('emptyState').style.display = 'none';
         document.getElementById('panelsContainer').classList.add('summary-mode');
         renderSummaryTable();
-        /* Сразу несколько раз вызываем — чтобы гарантированно поймать layout */
         requestAnimationFrame(() => {
             fillFillersSummary();
             requestAnimationFrame(fillFillersSummary);
@@ -1003,12 +1004,19 @@ function renderSummaryTable() {
 
     const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
 
-    /* Заголовки периодов (rowspan=2) */
+    /* Заголовки периодов (rowspan=2) — «I четверть», «II четверть» и т.д. */
     PERIODS.forEach((p, idx) => {
         const th = document.createElement('th');
         th.className = 'col-period col-period-header';
         th.setAttribute('rowspan', '2');
-        th.textContent = labels[idx] || ('Период ' + (idx + 1));
+        /* Перенос по 2 строки: "I" / "четверть" */
+        const name = labels[idx] || ('Период ' + (idx + 1));
+        const sp = name.indexOf(' ');
+        if (sp > 0) {
+            th.innerHTML = escapeHtml(name.slice(0, sp)) + '<br>' + escapeHtml(name.slice(sp + 1));
+        } else {
+            th.textContent = name;
+        }
         mRow.appendChild(th);
     });
 
@@ -1018,6 +1026,8 @@ function renderSummaryTable() {
     thFinal.setAttribute('rowspan', '2');
     thFinal.textContent = 'Итог';
     mRow.appendChild(thFinal);
+
+    /* Вторая строка (sRow) остаётся пустой — заголовки из mRow растянуты rowspan=2 */
 
     /* Ученики */
     STUDENTS.forEach((student, sIdx) => {
@@ -1573,9 +1583,6 @@ function autoGrow(el) {
     el.style.height = Math.max(28, el.scrollHeight) + 'px';
 }
 
-/* ============================================================
-   ЗАПОЛНЕНИЕ ПУСТОГО МЕСТА СПРАВА
-   ============================================================ */
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
@@ -1642,7 +1649,6 @@ function fillFillers() {
     }
 }
 
-/* Итоговый режим — заполнение пустого места справа (с rowspan=2) */
 function fillFillersSummary() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
@@ -1666,8 +1672,7 @@ function fillFillersSummary() {
     const mRow = document.getElementById('mRow');
     const jBody = document.getElementById('jBody');
 
-    /* В итоговом режиме в thead ровно одна строка (mRow) с ячейками rowspan=2.
-       Добавляем туда th-пустышки с тем же rowspan. */
+    /* В итоговом режиме в thead одна строка (mRow) с ячейками rowspan=2 */
     for (let i = 0; i < fullCols; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
