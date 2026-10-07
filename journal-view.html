@@ -96,7 +96,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panels-container.right-collapsed .panel-right-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.right-collapsed .panel-left-wrapper { flex: 1; }
 .panels-container.right-collapsed .panel-left { border-radius: 8px; border-right: 1px solid #CFD8E3; }
-/* В режиме "Итог" правая панель скрыта, левая занимает всё */
 .panels-container.summary-mode .panel-right-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.summary-mode .panel-left-wrapper { flex: 1; }
 .panels-container.summary-mode .panel-left { border-radius: 8px; border-right: 1px solid #CFD8E3; }
@@ -143,31 +142,33 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
 /* ====== ИТОГОВЫЙ РЕЖИМ ====== */
+.marks-table.period-mode thead tr { height: 76px; }
 .marks-table.period-mode thead th.col-period-header {
     width: 46px;
     min-width: 46px;
     max-width: 46px;
     height: 76px;
-    line-height: 18px;
+    line-height: 16px;
     padding: 4px 2px;
     vertical-align: middle;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 11px;
     color: #334155;
     background: #EBF0F6 !important;
     white-space: normal;
     word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 .marks-table.period-mode thead th.col-final-header {
     width: 46px;
     min-width: 46px;
     max-width: 46px;
     height: 76px;
-    line-height: 18px;
+    line-height: 16px;
     padding: 4px 2px;
     vertical-align: middle;
     font-weight: 700;
-    font-size: 12px;
+    font-size: 11px;
     color: #1E293B;
     background: #EBF0F6 !important;
     white-space: normal;
@@ -771,16 +772,33 @@ async function init() {
     document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
 }
 
+/* ============================================================
+   НАБЛЮДАТЕЛИ — следят за изменением размеров панелей и
+   автоматически пересчитывают мёртвые колонки/строки
+   ============================================================ */
 let planObserver = null;
+let journalObserver = null;
 function setupObservers() {
     if (typeof ResizeObserver === 'undefined') return;
     const panelRight = document.getElementById('panelRight');
-    if (!panelRight) return;
-    if (planObserver) planObserver.disconnect();
-    planObserver = new ResizeObserver(() => {
-        requestAnimationFrame(fillPlanFillers);
-    });
-    planObserver.observe(panelRight);
+    if (panelRight) {
+        if (planObserver) planObserver.disconnect();
+        planObserver = new ResizeObserver(() => {
+            requestAnimationFrame(fillPlanFillers);
+        });
+        planObserver.observe(panelRight);
+    }
+    const journalScroll = document.getElementById('journalScroll');
+    if (journalScroll) {
+        if (journalObserver) journalObserver.disconnect();
+        journalObserver = new ResizeObserver(() => {
+            requestAnimationFrame(() => {
+                if (SUMMARY_MODE) fillFillersSummary();
+                else fillFillers();
+            });
+        });
+        journalObserver.observe(journalScroll);
+    }
 }
 
 function findActivePeriodIndex() {
@@ -912,9 +930,6 @@ function closeAllDropdowns() {
 }
 document.addEventListener('click', closeAllDropdowns);
 
-/* ============================================================
-   ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ + «ИТОГ»
-   ============================================================ */
 function renderPeriodTabs() {
     const container = document.getElementById('periodTabs');
     container.innerHTML = '';
@@ -948,7 +963,6 @@ function renderPeriodTabs() {
         });
         container.appendChild(tab);
     });
-    /* Кнопка «Итог» */
     const summaryTab = document.createElement('button');
     summaryTab.type = 'button';
     summaryTab.className = 'tab-pill summary-tab' + (SUMMARY_MODE ? ' active' : '');
@@ -961,12 +975,19 @@ function renderPeriodTabs() {
         document.getElementById('emptyState').style.display = 'none';
         document.getElementById('panelsContainer').classList.add('summary-mode');
         renderSummaryTable();
+        /* Сразу несколько раз вызываем — чтобы гарантированно поймать layout */
+        requestAnimationFrame(() => {
+            fillFillersSummary();
+            requestAnimationFrame(fillFillersSummary);
+        });
+        setTimeout(fillFillersSummary, 50);
+        setTimeout(fillFillersSummary, 200);
     });
     container.appendChild(summaryTab);
 }
 
 /* ============================================================
-   ИТОГОВЫЙ РЕЖИМ (колонки = периоды + «Итог»)
+   ИТОГОВЫЙ РЕЖИМ
    ============================================================ */
 function renderSummaryTable() {
     const mRow = document.getElementById('mRow');
@@ -982,7 +1003,7 @@ function renderSummaryTable() {
 
     const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
 
-    /* Заголовки: для каждого периода + итог. Одна строка, rowspan=2 */
+    /* Заголовки периодов (rowspan=2) */
     PERIODS.forEach((p, idx) => {
         const th = document.createElement('th');
         th.className = 'col-period col-period-header';
@@ -991,18 +1012,15 @@ function renderSummaryTable() {
         mRow.appendChild(th);
     });
 
+    /* Заголовок «Итог» */
     const thFinal = document.createElement('th');
     thFinal.className = 'col-period col-final-header';
     thFinal.setAttribute('rowspan', '2');
     thFinal.textContent = 'Итог';
     mRow.appendChild(thFinal);
 
-    /* Вторая строка thead не должна содержать ячеек, но нужна для rowspan-совместимости.
-       Оставляем sRow пустой — th с rowspan=2 из первой строки растянутся автоматически. */
-
     /* Ученики */
     STUDENTS.forEach((student, sIdx) => {
-        /* ФИО в левой таблице */
         const fioTr = document.createElement('tr');
         const fioTd = document.createElement('td');
         fioTd.style.cursor = 'pointer';
@@ -1011,9 +1029,7 @@ function renderSummaryTable() {
         fioTr.appendChild(fioTd);
         fioBody.appendChild(fioTr);
 
-        /* Правая таблица — итоговые оценки по периодам */
         const tr = document.createElement('tr');
-
         const qtrs = JOURNAL.qtrGrades[student.id] || {};
 
         PERIODS.forEach((p, idx) => {
@@ -1032,8 +1048,8 @@ function renderSummaryTable() {
             tr.appendChild(td);
         });
 
-        /* Итог — учитель выставляет сам, тоже редактируемое поле */
-        const finalVal = qtrs['final'] || qtrs['__final__'] || '';
+        /* Итог — учитель выставляет сам */
+        const finalVal = qtrs['final'] || '';
         const tdFinal = document.createElement('td');
         tdFinal.className = 'col-period col-final';
         tdFinal.innerHTML = '<div class="grade-cell">' +
@@ -1050,16 +1066,11 @@ function renderSummaryTable() {
     });
 }
 
-/* Подсветка строки и колонки в итоговом режиме */
 function hlSum(input, active) {
     const td = input.closest('td');
     const tr = input.closest('tr');
     if (!tr) return;
-
-    /* Подсветка строки ученика */
     tr.querySelectorAll('td').forEach(x => x.classList.toggle('highlight-cross', active));
-
-    /* Подсветка соответствующей строки ФИО */
     const jBody = document.getElementById('jBody');
     const rows = Array.from(jBody.querySelectorAll('tr'));
     const rowIdx = rows.indexOf(tr);
@@ -1067,8 +1078,6 @@ function hlSum(input, active) {
     if (fioRows[rowIdx]) {
         fioRows[rowIdx].querySelectorAll('td').forEach(x => x.classList.toggle('highlight-cross', active));
     }
-
-    /* Подсветка колонки — для col-period (по data-periodIdx) и для col-final (по классу) */
     if (td) {
         if (td.classList.contains('col-final')) {
             jBody.querySelectorAll('td.col-final').forEach(x => x.classList.toggle('highlight-cross', active));
@@ -1079,7 +1088,6 @@ function hlSum(input, active) {
     }
 }
 
-/* Сохранение итоговой оценки за период */
 async function upqtrSummary(studentId, periodIdx, inputElement) {
     const v = inputElement.value.trim();
     const up = v.toUpperCase();
@@ -1098,7 +1106,6 @@ async function upqtrSummary(studentId, periodIdx, inputElement) {
     }, 200);
 }
 
-/* Сохранение итоговой оценки (общий столбец «Итог») */
 async function upFinal(studentId, inputElement) {
     const v = inputElement.value.trim();
     const up = v.toUpperCase();
@@ -1118,7 +1125,7 @@ async function upFinal(studentId, inputElement) {
 }
 
 /* ============================================================
-   ОБЫЧНЫЙ РЕЖИМ (колонки = даты)
+   ОБЫЧНЫЙ РЕЖИМ
    ============================================================ */
 function renderMainTable() {
     const marksTable = document.getElementById('marksTable');
@@ -1566,6 +1573,9 @@ function autoGrow(el) {
     el.style.height = Math.max(28, el.scrollHeight) + 'px';
 }
 
+/* ============================================================
+   ЗАПОЛНЕНИЕ ПУСТОГО МЕСТА СПРАВА
+   ============================================================ */
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
@@ -1632,7 +1642,7 @@ function fillFillers() {
     }
 }
 
-/* Мёртвые колонки в итоговом режиме — заполняют свободное место справа */
+/* Итоговый режим — заполнение пустого места справа (с rowspan=2) */
 function fillFillersSummary() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
@@ -1654,10 +1664,10 @@ function fillFillersSummary() {
     const remainder = Math.round(freeSpace - fullCols * FILLER_COL_WIDTH);
 
     const mRow = document.getElementById('mRow');
-    const sRow = document.getElementById('sRow');
     const jBody = document.getElementById('jBody');
 
-    /* Виток: mRow содержит заголовки с rowspan=2 — добавляем туда th-пустышки */
+    /* В итоговом режиме в thead ровно одна строка (mRow) с ячейками rowspan=2.
+       Добавляем туда th-пустышки с тем же rowspan. */
     for (let i = 0; i < fullCols; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
@@ -1930,9 +1940,9 @@ function toggleLeftPanel() {
         document.getElementById('tabRight').classList.remove('active');
     }
     updateTabIcons();
-    requestAnimationFrame(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } });
-    setTimeout(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } }, 100);
-    setTimeout(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } }, 350);
+    requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
+    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 100);
+    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 350);
 }
 
 function toggleRightPanel() {
@@ -1948,9 +1958,9 @@ function toggleRightPanel() {
         document.getElementById('tabLeft').classList.remove('active');
     }
     updateTabIcons();
-    requestAnimationFrame(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } });
-    setTimeout(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } }, 100);
-    setTimeout(() => { if (!SUMMARY_MODE) { fillFillers(); fillPlanFillers(); } }, 350);
+    requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
+    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 100);
+    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 350);
 }
 
 function updateTabIcons() {
