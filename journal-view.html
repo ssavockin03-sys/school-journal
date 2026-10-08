@@ -50,7 +50,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .icon-action-btn svg { width: 15px; height: 15px; fill: currentColor; }
 .icon-action-btn .excel-icon { fill: #217346; }
 
-/* Мобильные табы Журнал/План — изначально скрыты, показываются только на мобилке */
 .mobile-view-tabs { display: none; }
 
 .panels-container {
@@ -311,26 +310,23 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
 
 /* ============================================================
-   МОБИЛЬНЫЙ РЕЖИМ (<= 1100px)
-   Две независимые вкладки: Журнал / Поурочное планирование.
-   Скрываем обе панели, показываем только одну по клику.
+   МОБИЛЬНЫЙ РЕЖИМ
    ============================================================ */
 @media (max-width: 1100px) {
-    body { overflow: auto; }
+    body { overflow: auto; font-size: 12px; }
 
-    /* Верхние переключатели */
     .mobile-view-tabs {
         display: flex;
         gap: 8px;
-        padding: 10px 16px 0 16px;
+        padding: 10px 12px 0 12px;
         margin-bottom: 4px;
         flex-wrap: wrap;
     }
     .mobile-view-tab {
         flex: 1 1 0;
         min-width: 0;
-        padding: 10px 12px;
-        font-size: 13px;
+        padding: 8px 10px;
+        font-size: 12.5px;
         font-weight: 600;
         color: #64748B;
         background: #FFFFFF;
@@ -349,22 +345,21 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
         border-color: #2563EB;
     }
 
-    .header-bar { padding: 4px 16px 10px 16px; }
-    .top-nav { padding: 12px 16px 6px 16px; }
-    .period-tabs-wrapper { padding: 12px 16px 14px 16px; }
+    .header-bar { padding: 4px 12px 8px 12px; }
+    .top-nav { padding: 10px 12px 4px 12px; }
+    .period-tabs-wrapper { padding: 8px 12px 10px 12px; gap: 8px; }
     .dropdown-trigger { font-size: 15.75px; }
-    .header-grid { column-gap: 20px; }
+    .header-grid { column-gap: 16px; row-gap: 6px; }
 
     .side-toggle-tabs { display: none; }
 
     .panels-container {
         flex-direction: column;
-        padding: 0 16px 16px 16px;
+        padding: 0 12px 12px 12px;
         height: auto;
         min-height: 0;
         gap: 0;
     }
-    /* По умолчанию скрываем обе панели — показываем по классу на контейнере */
     .panels-container .panel-left-wrapper,
     .panels-container .panel-right-wrapper {
         max-width: 100% !important;
@@ -375,7 +370,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .panels-container.mobile-show-journal .panel-left-wrapper { display: flex; }
     .panels-container.mobile-show-plan .panel-right-wrapper { display: flex; }
 
-    /* Если активен итоговый режим на мобилке — показываем только левую панель */
     .panels-container.summary-mode .panel-left-wrapper { display: flex !important; }
     .panels-container.summary-mode .panel-right-wrapper { display: none !important; }
     .panels-container.summary-mode .mobile-view-tabs { display: none; }
@@ -389,6 +383,60 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     }
     .fio-table thead th { position: static; }
     .marks-table thead th { position: static; }
+
+    /* Компактнее таблицы */
+    .fio-table th, .fio-table td { height: 32px; line-height: 30px; font-size: 12px; }
+    .fio-table thead th { height: 52px; line-height: 50px; font-size: 12px !important; }
+    .fio-table .student-number-text,
+    .fio-table .student-name-text { font-size: 12.5px; }
+
+    .marks-table th, .marks-table td { height: 32px; line-height: 30px; font-size: 11px; }
+    .marks-table thead tr:first-child .col-date { font-size: 11px !important; }
+    .marks-table thead tr:nth-child(2) .col-date { font-size: 11px !important; }
+    .col-date { width: 42px; min-width: 42px; max-width: 42px; }
+    .col-period { width: 42px; min-width: 42px; max-width: 42px; }
+    .col-avg { width: 48px; min-width: 48px; max-width: 48px; }
+    .col-qtr { width: 48px; min-width: 48px; max-width: 48px; }
+
+    .grade-box { min-width: 12px; height: 14px; font-size: 12px; }
+    .double-grade-box { min-width: 10px; height: 12px; font-size: 11px; }
+    .grade-cell { height: 30px; }
+    .grade-cell input { height: 22px; font-size: 12px; top: 4px; }
+
+    /* Поурочное планирование компактнее */
+    .panel-right table th {
+        height: 52px;
+        line-height: 14px;
+        font-size: 11px !important;
+        padding: 0 5px;
+    }
+    .panel-right tbody td { height: 44px; padding: 3px 5px; }
+    .theme-cell, .homework-cell { font-size: 12px; line-height: 1.25; }
+    .placeholder-text { font-size: 12px; padding: 6px 8px; margin: -6px -8px; }
+    .add-hw-btn { font-size: 12px; padding: 6px 8px; margin: 2px -8px -6px -8px; }
+    .hw-list-item { font-size: 12px; }
+
+    .marks-table thead th.col-filler-head,
+    .marks-table tbody td.col-filler-body { min-width: 42px !important; }
+}
+
+/* Дополнительно на очень узких экранах (< 480px) — ещё чуть компактнее */
+@media (max-width: 480px) {
+    .fio-table th, .fio-table td { height: 30px; line-height: 28px; font-size: 11.5px; }
+    .marks-table th, .marks-table td { height: 30px; line-height: 28px; font-size: 10.5px; }
+    .col-date { width: 38px; min-width: 38px; max-width: 38px; }
+    .col-period { width: 38px; min-width: 38px; max-width: 38px; }
+    .col-avg { width: 44px; min-width: 44px; max-width: 44px; }
+    .col-qtr { width: 44px; min-width: 44px; max-width: 44px; }
+    .grade-cell { height: 28px; }
+    .grade-cell input { height: 20px; font-size: 11px; top: 4px; }
+    .grade-box { min-width: 11px; height: 13px; font-size: 11px; }
+    .panel-right table th { height: 48px; font-size: 10.5px !important; }
+    .panel-right tbody td { height: 40px; padding: 3px 4px; }
+    .theme-cell, .homework-cell { font-size: 11.5px; }
+    .placeholder-text { font-size: 11.5px; }
+    .add-hw-btn { font-size: 11.5px; }
+    .hw-list-item { font-size: 11.5px; }
 }
 </style>
 </head>
@@ -450,7 +498,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     </div>
 </div>
 
-<!-- Мобильные табы (видны только на мобилке) -->
 <div class="mobile-view-tabs" id="mobileViewTabs">
     <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
     <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
@@ -531,8 +578,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 <script>
 const DAYS_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const DAYS_JS_INDEX = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
-const FILLER_COL_WIDTH = 46;
-const PLAN_FILLER_ROW_HEIGHT = 56;
 
 const PERIOD_LABELS = {
     'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
@@ -576,6 +621,14 @@ const LESSON_TYPES = [
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
+/* Динамические размеры: 46px на десктопе, 42px на мобилке */
+function getFillerColWidth() {
+    return window.matchMedia('(max-width: 1100px)').matches ? 42 : 46;
+}
+function getPlanFillerRowHeight() {
+    return window.matchMedia('(max-width: 1100px)').matches ? 44 : 56;
+}
+
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
     const s = String(text);
@@ -613,7 +666,6 @@ let ALL_SCHEDULES = [];
 let leftCollapsed = false;
 let rightCollapsed = false;
 
-/* Мобильный режим: 'journal' | 'plan' */
 let MOBILE_VIEW = 'journal';
 
 let toastTimer = null;
@@ -633,7 +685,6 @@ function isMobileView() {
     return window.matchMedia('(max-width: 1100px)').matches;
 }
 
-/* Переключение мобильных вкладок */
 function switchMobileView(view) {
     MOBILE_VIEW = view;
     const container = document.getElementById('panelsContainer');
@@ -641,7 +692,7 @@ function switchMobileView(view) {
     container.classList.toggle('mobile-show-plan', view === 'plan');
     document.getElementById('mobileTabJournal').classList.toggle('active', view === 'journal');
     document.getElementById('mobileTabPlan').classList.toggle('active', view === 'plan');
-    /* Пересчитываем мертвые колонки/строки под новую ширину */
+    /* Пересчёт мертвых колонок/строк — трижды, чтобы точно поймать layout */
     requestAnimationFrame(() => {
         if (SUMMARY_MODE) fillFillersSummary();
         else { fillFillers(); fillPlanFillers(); }
@@ -650,6 +701,10 @@ function switchMobileView(view) {
         if (SUMMARY_MODE) fillFillersSummary();
         else { fillFillers(); fillPlanFillers(); }
     }, 100);
+    setTimeout(() => {
+        if (SUMMARY_MODE) fillFillersSummary();
+        else { fillFillers(); fillPlanFillers(); }
+    }, 300);
 }
 
 function collectSubjectsFromSchedule(schedules, classId) {
@@ -742,7 +797,6 @@ async function init() {
     ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
     SUMMARY_MODE = false;
 
-    /* Инициализация мобильного режима — показываем «Журнал» по умолчанию */
     MOBILE_VIEW = 'journal';
     const container = document.getElementById('panelsContainer');
     container.classList.add('mobile-show-journal');
@@ -945,13 +999,13 @@ function renderPeriodTabs() {
             document.getElementById('panelsContainer').classList.remove('summary-mode');
             document.getElementById('mainContent').style.display = '';
             document.getElementById('emptyState').style.display = 'none';
-            /* Мобилка: возвращаемся в вид «Журнал» */
             if (isMobileView()) {
                 document.querySelector('.mobile-view-tabs').style.display = '';
                 document.getElementById('panelsContainer').classList.add('mobile-show-journal');
                 document.getElementById('panelsContainer').classList.remove('mobile-show-plan');
                 document.getElementById('mobileTabJournal').classList.add('active');
                 document.getElementById('mobileTabPlan').classList.remove('active');
+                MOBILE_VIEW = 'journal';
             }
             renderMainTable();
             fillFillers();
@@ -970,7 +1024,6 @@ function renderPeriodTabs() {
         document.getElementById('mainContent').style.display = '';
         document.getElementById('emptyState').style.display = 'none';
         document.getElementById('panelsContainer').classList.add('summary-mode');
-        /* Мобилка: скрываем переключатель Журнал/План — показывается только итог */
         if (isMobileView()) {
             document.querySelector('.mobile-view-tabs').style.display = 'none';
         }
@@ -985,9 +1038,6 @@ function renderPeriodTabs() {
     container.appendChild(summaryTab);
 }
 
-/* ============================================================
-   ИТОГОВЫЙ РЕЖИМ
-   ============================================================ */
 function renderSummaryTable() {
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
@@ -1125,9 +1175,6 @@ async function upFinal(studentId, inputElement) {
     }, 200);
 }
 
-/* ============================================================
-   ОБЫЧНЫЙ РЕЖИМ
-   ============================================================ */
 function renderMainTable() {
     const marksTable = document.getElementById('marksTable');
     marksTable.classList.remove('period-mode');
@@ -1317,8 +1364,9 @@ function fillPlanFillers() {
 
     if (freeSpace <= 0) return;
 
-    const fullRows = Math.floor(freeSpace / PLAN_FILLER_ROW_HEIGHT);
-    const remainder = Math.round(freeSpace - fullRows * PLAN_FILLER_ROW_HEIGHT);
+    const rowH = getPlanFillerRowHeight();
+    const fullRows = Math.floor(freeSpace / rowH);
+    const remainder = Math.round(freeSpace - fullRows * rowH);
 
     for (let i = 0; i < fullRows; i++) {
         pBody.appendChild(createPlanFillerRow(null));
@@ -1580,7 +1628,6 @@ function fillFillers() {
 
     const journalScroll = document.getElementById('journalScroll');
     if (!journalScroll) return;
-    /* На мобилке в скрытой панели мертвые колонки не нужны */
     if (isMobileView() && MOBILE_VIEW !== 'journal') return;
 
     const scrollWidth = journalScroll.clientWidth;
@@ -1593,8 +1640,9 @@ function fillFillers() {
     const freeSpace = scrollWidth - fioWidth - marksWidth;
     if (freeSpace <= 0) return;
 
-    const fullCols = Math.floor(freeSpace / FILLER_COL_WIDTH);
-    const remainder = Math.round(freeSpace - fullCols * FILLER_COL_WIDTH);
+    const colW = getFillerColWidth();
+    const fullCols = Math.floor(freeSpace / colW);
+    const remainder = Math.round(freeSpace - fullCols * colW);
 
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
@@ -1604,9 +1652,9 @@ function fillFillers() {
         [mRow, sRow].forEach(row => {
             const th = document.createElement('th');
             th.className = 'col-filler-head';
-            th.style.width = FILLER_COL_WIDTH + 'px';
-            th.style.minWidth = FILLER_COL_WIDTH + 'px';
-            th.style.maxWidth = FILLER_COL_WIDTH + 'px';
+            th.style.width = colW + 'px';
+            th.style.minWidth = colW + 'px';
+            th.style.maxWidth = colW + 'px';
             row.appendChild(th);
         });
     }
@@ -1614,9 +1662,9 @@ function fillFillers() {
         for (let i = 0; i < fullCols; i++) {
             const td = document.createElement('td');
             td.className = 'col-filler-body';
-            td.style.width = FILLER_COL_WIDTH + 'px';
-            td.style.minWidth = FILLER_COL_WIDTH + 'px';
-            td.style.maxWidth = FILLER_COL_WIDTH + 'px';
+            td.style.width = colW + 'px';
+            td.style.minWidth = colW + 'px';
+            td.style.maxWidth = colW + 'px';
             tr.appendChild(td);
         }
     });
@@ -1659,8 +1707,9 @@ function fillFillersSummary() {
     const freeSpace = scrollWidth - fioWidth - marksWidth;
     if (freeSpace <= 0) return;
 
-    const fullCols = Math.floor(freeSpace / FILLER_COL_WIDTH);
-    const remainder = Math.round(freeSpace - fullCols * FILLER_COL_WIDTH);
+    const colW = getFillerColWidth();
+    const fullCols = Math.floor(freeSpace / colW);
+    const remainder = Math.round(freeSpace - fullCols * colW);
 
     const mRow = document.getElementById('mRow');
     const jBody = document.getElementById('jBody');
@@ -1669,18 +1718,18 @@ function fillFillersSummary() {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
         th.setAttribute('rowspan', '2');
-        th.style.width = FILLER_COL_WIDTH + 'px';
-        th.style.minWidth = FILLER_COL_WIDTH + 'px';
-        th.style.maxWidth = FILLER_COL_WIDTH + 'px';
+        th.style.width = colW + 'px';
+        th.style.minWidth = colW + 'px';
+        th.style.maxWidth = colW + 'px';
         mRow.appendChild(th);
     }
     jBody.querySelectorAll('tr').forEach(tr => {
         for (let i = 0; i < fullCols; i++) {
             const td = document.createElement('td');
             td.className = 'col-filler-body';
-            td.style.width = FILLER_COL_WIDTH + 'px';
-            td.style.minWidth = FILLER_COL_WIDTH + 'px';
-            td.style.maxWidth = FILLER_COL_WIDTH + 'px';
+            td.style.width = colW + 'px';
+            td.style.minWidth = colW + 'px';
+            td.style.maxWidth = colW + 'px';
             tr.appendChild(td);
         }
     });
@@ -1712,7 +1761,6 @@ window.addEventListener('resize', () => {
         if (SUMMARY_MODE) { fillFillersSummary(); }
         else {
             if (isMobileView()) {
-                /* На мобилке пересчитываем только активную панель */
                 if (MOBILE_VIEW === 'journal') fillFillers();
                 else fillPlanFillers();
             } else {
@@ -1935,10 +1983,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLesso
 
 function toggleLeftPanel() {
     if (SUMMARY_MODE) return;
-    if (isMobileView()) {
-        switchMobileView('plan');
-        return;
-    }
+    if (isMobileView()) { switchMobileView('plan'); return; }
     const container = document.getElementById('panelsContainer');
     const tabLeft = document.getElementById('tabLeft');
     leftCollapsed = !leftCollapsed;
@@ -1957,10 +2002,7 @@ function toggleLeftPanel() {
 
 function toggleRightPanel() {
     if (SUMMARY_MODE) return;
-    if (isMobileView()) {
-        switchMobileView('journal');
-        return;
-    }
+    if (isMobileView()) { switchMobileView('journal'); return; }
     const container = document.getElementById('panelsContainer');
     const tabRight = document.getElementById('tabRight');
     rightCollapsed = !rightCollapsed;
