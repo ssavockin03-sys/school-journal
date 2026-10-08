@@ -310,10 +310,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
 
 /* ============================================================
-   МОБИЛЬНЫЙ РЕЖИМ
-   Пропорции совпадают с десктопом: соотношение размеров
-   всех ячеек оставлено 1:1 с десктопной версией.
-   Только колонки оценок дат чуть-чуть уже (чтобы влезало).
+   МОБИЛЬНЫЙ РЕЖИМ (только сужаем ширину колонок, высоты строк
+   ОСТАВЛЯЕМ ТАКИМИ ЖЕ, как на десктопе — 38px / 76px / 56px)
    ============================================================ */
 @media (max-width: 1100px) {
     body { overflow: auto; }
@@ -391,82 +389,35 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .fio-table thead th { position: static; }
     .marks-table thead th { position: static; }
 
-    /* ========================================================
-       ПРОПОРЦИИ КАК НА ДЕСКТОПЕ.
-       Десктоп: высота строки 38px, шрифт 13px, колонки 46px.
-       На мобилке: оставляем те же пропорции, но сужаем колонки
-       и чуть-чуть уменьшаем шрифт, чтобы влезало больше.
-       ======================================================== */
+    /* ЕДИНСТВЕННОЕ ОТЛИЧИЕ ОТ ДЕСКТОПА: ширина колонок. Высоты
+       строк ОСТАЮТСЯ точно такими же как на десктопе — 38px. */
+    .fio-table-wrapper { width: 160px; }
+    .fio-table { width: 160px; }
+    .col-date { width: 36px; min-width: 36px; max-width: 36px; }
+    .col-period { width: 36px; min-width: 36px; max-width: 36px; }
+    .col-avg { width: 44px; min-width: 44px; max-width: 44px; }
+    .col-qtr { width: 44px; min-width: 44px; max-width: 44px; }
 
-    /* FIO таблица — как на десктопе, только уже */
-    .fio-table-wrapper { width: 180px; }
-    .fio-table { width: 180px; }
-    .fio-table th, .fio-table td { height: 38px; line-height: 36px; font-size: 12.5px; }
-    .fio-table thead th { height: 76px; line-height: 74px; font-size: 12.5px !important; padding: 0 8px; }
-    .fio-table .student-number-text { font-size: 12.5px; width: 18px; margin-right: 5px; }
-    .fio-table .student-name-text { font-size: 12.5px; }
-    .fio-table td { padding: 0 8px; }
-
-    /* Таблица оценок — как на десктопе */
-    .marks-table th, .marks-table td { height: 38px; line-height: 36px; font-size: 12px; }
-    .marks-table thead tr:first-child th { height: 38px; line-height: 36px; }
-    .marks-table thead tr:nth-child(2) th { height: 38px; line-height: 36px; }
+    /* Чуть уменьшаем шрифты, чтобы влезали слова в узких колонках */
+    .fio-table .student-number-text,
+    .fio-table .student-name-text { font-size: 12px; }
     .marks-table thead tr:first-child .col-date { font-size: 11px !important; }
     .marks-table thead tr:nth-child(2) .col-date { font-size: 10px !important; }
 
-    /* Колонки — чуть уже, чем на десктопе, чтобы влезло больше */
-    .col-date { width: 38px; min-width: 38px; max-width: 38px; }
-    .col-period { width: 38px; min-width: 38px; max-width: 38px; }
-    .col-avg { width: 44px; min-width: 44px; max-width: 44px; font-size: 10.5px !important; }
-    .marks-table thead .col-avg { height: 76px; line-height: 74px; font-size: 10.5px !important; }
-    .col-qtr { width: 44px; min-width: 44px; max-width: 44px; font-size: 10.5px !important; }
-    .marks-table thead .col-qtr { height: 76px; line-height: 74px; font-size: 10.5px !important; }
-
-    /* Оценки — те же пропорции, что и на десктопе */
-    .grade-cell { height: 36px; }
-    .grade-cell input { height: 26px; font-size: 12px; top: 5px; }
-    .grade-box { min-width: 12px; height: 15px; font-size: 12px; }
-    .double-grade-box { min-width: 10px; height: 13px; font-size: 11px; }
-    .status-letter { font-size: 12px !important; left: 3px; }
-
-    /* Итоговая таблица */
-    .marks-table.period-mode thead th.col-period-header,
-    .marks-table.period-mode thead th.col-final-header {
-        height: 76px; line-height: 14px; font-size: 10.5px; padding: 4px 2px;
-    }
-    .marks-table.period-mode tbody td.col-period {
-        height: 38px; font-size: 12px;
-        width: 38px; min-width: 38px; max-width: 38px;
-    }
-
-    /* Поурочное планирование — пропорции как на десктопе */
-    .panel-right table th {
-        height: 76px;
-        line-height: 16px;
-        font-size: 11px !important;
-        padding: 0 6px;
-    }
-    .panel-right tbody td { height: 56px; padding: 4px 6px; }
-    .theme-cell, .homework-cell { font-size: 12.5px; line-height: 1.3; }
-    .placeholder-text { font-size: 12.5px; padding: 6px 8px; margin: -6px -8px; }
-    .add-hw-btn { font-size: 12.5px; padding: 6px 8px; margin: 2px -8px -6px -8px; }
-    .hw-list-item { font-size: 12.5px; }
-    .cell-online-btn { font-size: 9.5px; padding: 2px 6px; }
-
     .marks-table thead th.col-filler-head,
-    .marks-table tbody td.col-filler-body { min-width: 38px !important; }
+    .marks-table tbody td.col-filler-body { min-width: 36px !important; }
 }
 
-/* Дополнительно для очень узких экранов — колонки чуть уже */
+/* Очень узкие экраны — колонки ещё чуть уже */
 @media (max-width: 480px) {
-    .fio-table-wrapper { width: 160px; }
-    .fio-table { width: 160px; }
-    .col-date { width: 34px; min-width: 34px; max-width: 34px; }
-    .col-period { width: 34px; min-width: 34px; max-width: 34px; }
+    .fio-table-wrapper { width: 140px; }
+    .fio-table { width: 140px; }
+    .col-date { width: 32px; min-width: 32px; max-width: 32px; }
+    .col-period { width: 32px; min-width: 32px; max-width: 32px; }
     .col-avg { width: 40px; min-width: 40px; max-width: 40px; }
     .col-qtr { width: 40px; min-width: 40px; max-width: 40px; }
     .marks-table thead th.col-filler-head,
-    .marks-table tbody td.col-filler-body { min-width: 34px !important; }
+    .marks-table tbody td.col-filler-body { min-width: 32px !important; }
 }
 </style>
 </head>
@@ -651,14 +602,14 @@ const LESSON_TYPES = [
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
-/* Ширина мёртвых колонок = ширине обычных колонок в текущем режиме */
+/* Ширина мёртвой колонки = ширине обычной колонки в текущем режиме */
 function getFillerColWidth() {
     const w = window.innerWidth;
-    if (w <= 480) return 34;
-    if (w <= 1100) return 38;
+    if (w <= 480) return 32;
+    if (w <= 1100) return 36;
     return 46;
 }
-/* Высота мёртвых строк поурочного плана = высоте обычных строк */
+/* Высота мёртвой строки поурочного плана = высоте обычной строки — 56px как на десктопе */
 function getPlanFillerRowHeight() {
     return 56;
 }
