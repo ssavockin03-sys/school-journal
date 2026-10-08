@@ -193,12 +193,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
+/* Фокус ячейки — через box-shadow inset, чтобы не влиять на layout таблицы */
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within,
-.marks-table td.col-period:focus-within { position: relative; z-index: 6; }
-.marks-table td.col-date:focus-within::after,
-.marks-table td.col-qtr:focus-within::after,
-.marks-table td.col-period:focus-within::after { content: ''; position: absolute; inset: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 7; box-sizing: border-box; }
+.marks-table td.col-period:focus-within {
+    position: relative;
+    z-index: 6;
+    box-shadow: inset 0 0 0 1.5px #60A5FA;
+}
 
 .marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
 .marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; pointer-events: none; }
@@ -388,34 +390,34 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .fio-table thead th { position: static; }
     .marks-table thead th { position: static; }
 
-    /* Только ширины меняем. Высоты/шрифты/паддинги — как на десктопе. */
-    .fio-table-wrapper { width: 170px; }
-    .fio-table { width: 170px; }
-    .col-date   { width: 40px; min-width: 40px; max-width: 40px; }
-    .col-period { width: 40px; min-width: 40px; max-width: 40px; }
-    .col-avg    { width: 47px; min-width: 47px; max-width: 47px; }
-    .col-qtr    { width: 47px; min-width: 47px; max-width: 47px; }
+    /* Только ширины и уменьшение шрифта ФИО — чтобы имена влезали целиком */
+    .fio-table-wrapper { width: 200px; }
+    .fio-table { width: 200px; }
+    .col-date   { width: 38px; min-width: 38px; max-width: 38px; }
+    .col-period { width: 38px; min-width: 38px; max-width: 38px; }
+    .col-avg    { width: 46px; min-width: 46px; max-width: 46px; }
+    .col-qtr    { width: 46px; min-width: 46px; max-width: 46px; }
 
-    /* ФИО-ячейки: одна строка, без переноса, обрезка с «…» — чтобы не растягивали строку */
-    .fio-table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    /* Имя и номер — компактнее, чтобы в 170px влезало как можно больше символов */
-    .fio-table .student-number-text { width: 16px; margin-right: 4px; font-size: 12px; }
-    .fio-table .student-name-text { font-size: 12px; }
+    /* Имена учеников — компактнее, но читаемо */
+    .fio-table td { padding: 0 6px; }
+    .fio-table .student-number-text { width: 16px; margin-right: 4px; font-size: 11.5px; }
+    .fio-table .student-name-text { font-size: 11.5px; }
 
     .marks-table thead th.col-filler-head,
-    .marks-table tbody td.col-filler-body { min-width: 40px !important; }
+    .marks-table tbody td.col-filler-body { min-width: 38px !important; }
 }
 
 @media (max-width: 480px) {
-    .fio-table-wrapper { width: 145px; }
-    .fio-table { width: 145px; }
-    .col-date   { width: 36px; min-width: 36px; max-width: 36px; }
-    .col-period { width: 36px; min-width: 36px; max-width: 36px; }
-    .col-avg    { width: 44px; min-width: 44px; max-width: 44px; }
-    .col-qtr    { width: 44px; min-width: 44px; max-width: 44px; }
+    .fio-table-wrapper { width: 180px; }
+    .fio-table { width: 180px; }
+    .col-date   { width: 34px; min-width: 34px; max-width: 34px; }
+    .col-period { width: 34px; min-width: 34px; max-width: 34px; }
+    .col-avg    { width: 42px; min-width: 42px; max-width: 42px; }
+    .col-qtr    { width: 42px; min-width: 42px; max-width: 42px; }
+    .fio-table .student-number-text { font-size: 11px; }
+    .fio-table .student-name-text { font-size: 11px; }
     .marks-table thead th.col-filler-head,
-    .marks-table tbody td.col-filler-body { min-width: 36px !important; }
+    .marks-table tbody td.col-filler-body { min-width: 34px !important; }
 }
 </style>
 </head>
@@ -602,8 +604,8 @@ LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
 function getFillerColWidth() {
     const w = window.innerWidth;
-    if (w <= 480) return 36;
-    if (w <= 1100) return 40;
+    if (w <= 480) return 34;
+    if (w <= 1100) return 38;
     return 46;
 }
 function getPlanFillerRowHeight() {
@@ -1120,7 +1122,7 @@ function hlSum(input, active) {
             jBody.querySelectorAll('td.col-period[data-period-idx="' + pi + '"]').forEach(x => x.classList.toggle('highlight-cross', active));
         }
     }
-    requestAnimationFrame(fillFillersSummary);
+    setTimeout(fillFillersSummary, 0);
 }
 
 async function upqtrSummary(studentId, periodIdx, inputElement) {
@@ -1793,9 +1795,9 @@ function hl(input, colIdx, active) {
         if (fioRows[trIndex]) fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
     }
     document.querySelectorAll('#jBody td[data-col="' + colIdx + '"]').forEach(td => td.classList.toggle('highlight-cross', active));
-    /* Пересчитываем мёртвые колонки — при фокусе появляется ::after с border 1.5px,
-       который может «раздвинуть» таблицу и открыть белое пространство справа. */
-    requestAnimationFrame(fillFillers);
+    /* Отложенный пересчёт — таблица не «сдвигается» при фокусе (box-shadow inset),
+       но пересчитаем на всякий случай после снятия/установки фокуса. */
+    setTimeout(fillFillers, 0);
 }
 
 function hlQtr(input, active) {
@@ -1807,7 +1809,7 @@ function hlQtr(input, active) {
         if (fioRows[trIndex]) fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
     }
     document.querySelectorAll('#jBody td.col-qtr').forEach(td => td.classList.toggle('highlight-cross', active));
-    requestAnimationFrame(fillFillers);
+    setTimeout(fillFillers, 0);
 }
 
 function getEditableCellsInRow(tr) {
