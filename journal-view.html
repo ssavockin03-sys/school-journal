@@ -310,8 +310,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
 
 /* ============================================================
-   МОБИЛЬНЫЙ РЕЖИМ (только сужаем ширину колонок, высоты строк
-   ОСТАВЛЯЕМ ТАКИМИ ЖЕ, как на десктопе — 38px / 76px / 56px)
+   МОБИЛЬНЫЙ РЕЖИМ
+   ВАЖНО: здесь я не трогаю НИЧЕГО, кроме:
+     1. переключателя панелей,
+     2. ширины ФИО-таблицы (можно сузить),
+     3. ширины колонок дат (можно сузить).
+   ВСЁ остальное — шрифты, высоты строк, паддинги, границы —
+   ОСТАЁТСЯ ровно таким же, как на десктопе.
    ============================================================ */
 @media (max-width: 1100px) {
     body { overflow: auto; }
@@ -389,35 +394,31 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .fio-table thead th { position: static; }
     .marks-table thead th { position: static; }
 
-    /* ЕДИНСТВЕННОЕ ОТЛИЧИЕ ОТ ДЕСКТОПА: ширина колонок. Высоты
-       строк ОСТАЮТСЯ точно такими же как на десктопе — 38px. */
-    .fio-table-wrapper { width: 160px; }
-    .fio-table { width: 160px; }
-    .col-date { width: 36px; min-width: 36px; max-width: 36px; }
-    .col-period { width: 36px; min-width: 36px; max-width: 36px; }
-    .col-avg { width: 44px; min-width: 44px; max-width: 44px; }
-    .col-qtr { width: 44px; min-width: 44px; max-width: 44px; }
-
-    /* Чуть уменьшаем шрифты, чтобы влезали слова в узких колонках */
-    .fio-table .student-number-text,
-    .fio-table .student-name-text { font-size: 12px; }
-    .marks-table thead tr:first-child .col-date { font-size: 11px !important; }
-    .marks-table thead tr:nth-child(2) .col-date { font-size: 10px !important; }
+    /* ===== ЕДИНСТВЕННЫЕ ИЗМЕНЕНИЯ: ширины ===== */
+    .fio-table-wrapper { width: 170px; }
+    .fio-table { width: 170px; }
+    .col-date   { width: 40px; min-width: 40px; max-width: 40px; }
+    .col-period { width: 40px; min-width: 40px; max-width: 40px; }
+    .col-avg    { width: 47px; min-width: 47px; max-width: 47px; }
+    .col-qtr    { width: 47px; min-width: 47px; max-width: 47px; }
 
     .marks-table thead th.col-filler-head,
-    .marks-table tbody td.col-filler-body { min-width: 36px !important; }
+    .marks-table tbody td.col-filler-body { min-width: 40px !important; }
+
+    /* Высоты строк, размеры шрифтов, паддинги, границы —
+       ВСЁ остаётся как на десктопе. Никаких height/line-height/font-size
+       не переопределяется, чтобы линии совпадали 1:1. */
 }
 
-/* Очень узкие экраны — колонки ещё чуть уже */
 @media (max-width: 480px) {
-    .fio-table-wrapper { width: 140px; }
-    .fio-table { width: 140px; }
-    .col-date { width: 32px; min-width: 32px; max-width: 32px; }
-    .col-period { width: 32px; min-width: 32px; max-width: 32px; }
-    .col-avg { width: 40px; min-width: 40px; max-width: 40px; }
-    .col-qtr { width: 40px; min-width: 40px; max-width: 40px; }
+    .fio-table-wrapper { width: 150px; }
+    .fio-table { width: 150px; }
+    .col-date   { width: 36px; min-width: 36px; max-width: 36px; }
+    .col-period { width: 36px; min-width: 36px; max-width: 36px; }
+    .col-avg    { width: 44px; min-width: 44px; max-width: 44px; }
+    .col-qtr    { width: 44px; min-width: 44px; max-width: 44px; }
     .marks-table thead th.col-filler-head,
-    .marks-table tbody td.col-filler-body { min-width: 32px !important; }
+    .marks-table tbody td.col-filler-body { min-width: 36px !important; }
 }
 </style>
 </head>
@@ -602,14 +603,12 @@ const LESSON_TYPES = [
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
-/* Ширина мёртвой колонки = ширине обычной колонки в текущем режиме */
 function getFillerColWidth() {
     const w = window.innerWidth;
-    if (w <= 480) return 32;
-    if (w <= 1100) return 36;
+    if (w <= 480) return 36;
+    if (w <= 1100) return 40;
     return 46;
 }
-/* Высота мёртвой строки поурочного плана = высоте обычной строки — 56px как на десктопе */
 function getPlanFillerRowHeight() {
     return 56;
 }
