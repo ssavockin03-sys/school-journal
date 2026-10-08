@@ -50,6 +50,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .icon-action-btn svg { width: 15px; height: 15px; fill: currentColor; }
 .icon-action-btn .excel-icon { fill: #217346; }
 
+/* Мобильные табы Журнал/План — изначально скрыты, показываются только на мобилке */
+.mobile-view-tabs { display: none; }
+
 .panels-container {
     display: flex;
     padding: 0 30px;
@@ -129,7 +132,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .fio-table .student-name-text { display: inline-block; font-size: 13.65px; }
 .fio-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
-/* Маркс-таблица (обычный журнал и итоговый) */
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; }
@@ -143,56 +145,24 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #DFE7F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
-/* ====== ИТОГОВЫЙ РЕЖИМ ====== */
-/* В итоговом режиме в шапке ровно одна строка (mRow с rowspan=2) */
 .marks-table.period-mode thead th.col-period-header {
-    width: 46px;
-    min-width: 46px;
-    max-width: 46px;
-    height: 76px;
-    line-height: 16px;
-    padding: 4px 2px;
-    vertical-align: middle;
-    font-weight: 600;
-    font-size: 11px;
-    color: #334155;
-    background: #EBF0F6 !important;
-    white-space: normal;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px;
+    padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px;
+    color: #334155; background: #EBF0F6 !important;
+    white-space: normal; word-wrap: break-word; overflow-wrap: break-word;
 }
 .marks-table.period-mode thead th.col-final-header {
-    width: 46px;
-    min-width: 46px;
-    max-width: 46px;
-    height: 76px;
-    line-height: 16px;
-    padding: 4px 2px;
-    vertical-align: middle;
-    font-weight: 700;
-    font-size: 11px;
-    color: #1E293B;
-    background: #EBF0F6 !important;
-    white-space: normal;
-    word-wrap: break-word;
+    width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px;
+    padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px;
+    color: #1E293B; background: #EBF0F6 !important;
+    white-space: normal; word-wrap: break-word;
 }
 .marks-table.period-mode tbody td.col-period {
-    font-size: 13px;
-    background: #FFFFFF;
-    vertical-align: middle;
-    height: 38px;
-    width: 46px;
-    min-width: 46px;
-    max-width: 46px;
+    font-size: 13px; background: #FFFFFF; vertical-align: middle;
+    height: 38px; width: 46px; min-width: 46px; max-width: 46px;
 }
-/* Ячейки итоговых оценок — БЕЛЫЕ, без серой заливки */
 .marks-table.period-mode tbody td.col-final {
-    background: #FFFFFF;
-    font-weight: 600;
-    color: #1E293B;
-}
-.marks-table.period-mode tbody td.col-final:focus-within {
-    background: #FFFFFF;
+    background: #FFFFFF; font-weight: 600; color: #1E293B;
 }
 
 .col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
@@ -213,35 +183,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     width: 100%; height: 100%; pointer-events: none; gap: 1px;
     z-index: 1; position: absolute; top: 0; left: 0;
 }
-.grade-box {
-    display: flex; align-items: center; justify-content: center;
-    min-width: 14px; height: 16px; padding: 0 2px;
-    color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1;
-}
-.double-grade-box {
-    display: flex; align-items: center; justify-content: center;
-    min-width: 11px; height: 14px; padding: 0 1px;
-    color: #FFFFFF !important; font-weight: 700; font-size: 12px; line-height: 1;
-}
+.grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
+.double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; line-height: 1; }
 .slash-divider { color: #CBD5E1; font-weight: 700; font-size: 10px; margin: 0 -1px; }
 .grade-4, .grade-5 { background: #65A30D !important; }
 .grade-3 { background: #FB923C !important; }
 .bad-grade { background: #DC2626 !important; }
 
-.status-letter {
-    position: absolute;
-    top: 0;
-    left: 3px;
-    color: #DC2626 !important;
-    font-size: 13px !important;
-    font-weight: 400 !important;
-    pointer-events: none;
-    z-index: 4;
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-    line-height: 1;
-}
+.status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; font-weight: 400 !important; pointer-events: none; z-index: 4; background: transparent !important; border: none !important; padding: 0 !important; line-height: 1; }
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
@@ -266,18 +215,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th {
-    background: #EBF0F6 !important;
-    color: #1E293B !important;
-    font-size: 12px !important;
-    font-weight: 600;
-    height: 76px;
-    line-height: 18px;
-    padding: 0 8px;
-    text-align: center;
-    vertical-align: middle;
-    border: none;
-    border-right: 1px solid #CFD8E3;
-    border-bottom: 1px solid #CFD8E3;
+    background: #EBF0F6 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600;
+    height: 76px; line-height: 18px; padding: 0 8px; text-align: center; vertical-align: middle;
+    border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3;
 }
 .panel-right table th:last-child { border-right: none; }
 .panel-right table th:nth-child(1) { width: 40px; }
@@ -285,112 +225,52 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right table th:nth-child(3) { width: 30%; }
 .panel-right table th:nth-child(4) { width: 55%; }
 .panel-right tbody td {
-    background: #FFFFFF !important;
-    border: none;
-    border-right: 1px solid #CFD8E3;
-    border-bottom: 1px solid #CFD8E3;
-    vertical-align: top;
-    text-align: left;
-    padding: 4px 8px;
-    box-sizing: border-box;
-    word-wrap: break-word;
-    height: 56px;
-    position: relative;
+    background: #FFFFFF !important; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3;
+    vertical-align: top; text-align: left; padding: 4px 8px; box-sizing: border-box;
+    word-wrap: break-word; height: 56px; position: relative;
 }
 .panel-right tbody td:last-child { border-right: none; }
 .panel-right tbody td.lesson-num-cell {
-    font-weight: 600;
-    background: #F4F7FB !important;
-    vertical-align: middle;
-    color: #475569;
-    font-size: 12px;
-    text-align: center;
-    padding: 0 !important;
+    font-weight: 600; background: #F4F7FB !important; vertical-align: middle;
+    color: #475569; font-size: 12px; text-align: center; padding: 0 !important;
 }
 .panel-right tbody td.lesson-date-cell {
-    font-weight: 600;
-    background: #FFFFFF !important;
-    vertical-align: middle;
-    color: #0EA5E9;
-    font-size: 12px;
-    text-align: center;
-    padding: 0 !important;
+    font-weight: 600; background: #FFFFFF !important; vertical-align: middle;
+    color: #0EA5E9; font-size: 12px; text-align: center; padding: 0 !important;
 }
 
 .plan-filler-cell { background: #FFFFFF !important; pointer-events: none; }
 
-.theme-cell, .homework-cell {
-    font-size: 13.65px;
-    line-height: 1.3;
-    color: #334155;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    vertical-align: top;
-}
+.theme-cell, .homework-cell { font-size: 13.65px; line-height: 1.3; color: #334155; white-space: pre-wrap; word-wrap: break-word; vertical-align: top; }
 .homework-cell { padding-right: 84px !important; }
 
 .cell-online-btn {
-    position: absolute;
-    top: 4px;
-    right: 6px;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    padding: 2px 7px;
-    background: #FFFFFF;
-    border: 1px solid #93C5FD;
-    border-radius: 6px;
-    color: #2563EB;
-    font-size: 10px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: inherit;
-    white-space: nowrap;
-    line-height: 1.3;
-    transition: all 0.15s ease;
-    z-index: 2;
+    position: absolute; top: 4px; right: 6px;
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 2px 7px; background: #FFFFFF; border: 1px solid #93C5FD; border-radius: 6px;
+    color: #2563EB; font-size: 10px; font-weight: 500; cursor: pointer; font-family: inherit;
+    white-space: nowrap; line-height: 1.3; transition: all 0.15s ease; z-index: 2;
 }
 .cell-online-btn:hover { background: #EFF6FF; border-color: #2563EB; }
 .cell-online-btn svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
 
 .hw-list { display: block; }
 .hw-list-item {
-    display: block;
-    padding: 1px 4px;
-    margin: 0;
-    border-radius: 6px;
-    cursor: pointer;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    transition: background 0.12s ease;
+    display: block; padding: 1px 4px; margin: 0; border-radius: 6px; cursor: pointer;
+    white-space: pre-wrap; word-wrap: break-word; transition: background 0.12s ease;
 }
 .hw-list-item + .hw-list-item { margin-top: 2px; }
 
 .placeholder-text {
-    display: inline-block;
-    color: #0EA5E9;
-    font-style: italic;
-    font-size: 13.65px;
-    cursor: pointer;
-    padding: 8px 12px;
-    margin: -8px -12px;
-    line-height: 1.3;
+    display: inline-block; color: #0EA5E9; font-style: italic; font-size: 13.65px;
+    cursor: pointer; padding: 8px 12px; margin: -8px -12px; line-height: 1.3;
 }
 
 .add-hw-btn {
-    display: inline-block;
-    padding: 8px 12px;
-    margin: 2px -12px -8px -12px;
-    border: none;
-    background: transparent;
-    color: #0EA5E9;
-    font-style: italic;
-    font-size: 13.65px;
-    font-weight: 400;
-    cursor: pointer;
-    font-family: inherit;
-    text-align: left;
-    line-height: 1.3;
+    display: inline-block; padding: 8px 12px; margin: 2px -12px -8px -12px;
+    border: none; background: transparent; color: #0EA5E9; font-style: italic;
+    font-size: 13.65px; font-weight: 400; cursor: pointer; font-family: inherit;
+    text-align: left; line-height: 1.3;
 }
 
 .edit-bubble { display: flex; align-items: flex-start; gap: 6px; width: 100%; }
@@ -430,17 +310,85 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .lesson-type-popup-item.active .full { font-weight: 600; color: #1D4ED8; }
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
 
+/* ============================================================
+   МОБИЛЬНЫЙ РЕЖИМ (<= 1100px)
+   Две независимые вкладки: Журнал / Поурочное планирование.
+   Скрываем обе панели, показываем только одну по клику.
+   ============================================================ */
 @media (max-width: 1100px) {
     body { overflow: auto; }
-    .panels-container { flex-direction: column; padding: 0; height: auto; }
-    .panel-left, .panel-right { max-height: 55vh; height: auto; border-radius: 8px; border: 1px solid #CFD8E3; margin: 8px 12px; }
-    .side-toggle-tabs { display: none; }
-    .fio-table thead th { position: static; }
+
+    /* Верхние переключатели */
+    .mobile-view-tabs {
+        display: flex;
+        gap: 8px;
+        padding: 10px 16px 0 16px;
+        margin-bottom: 4px;
+        flex-wrap: wrap;
+    }
+    .mobile-view-tab {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 10px 12px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #64748B;
+        background: #FFFFFF;
+        border: 1px solid #CBD5E1;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.15s ease;
+        text-align: center;
+        white-space: nowrap;
+    }
+    .mobile-view-tab:hover { background: #F1F5F9; }
+    .mobile-view-tab.active {
+        color: #FFFFFF;
+        background: #2563EB;
+        border-color: #2563EB;
+    }
+
     .header-bar { padding: 4px 16px 10px 16px; }
     .top-nav { padding: 12px 16px 6px 16px; }
     .period-tabs-wrapper { padding: 12px 16px 14px 16px; }
     .dropdown-trigger { font-size: 15.75px; }
     .header-grid { column-gap: 20px; }
+
+    .side-toggle-tabs { display: none; }
+
+    .panels-container {
+        flex-direction: column;
+        padding: 0 16px 16px 16px;
+        height: auto;
+        min-height: 0;
+        gap: 0;
+    }
+    /* По умолчанию скрываем обе панели — показываем по классу на контейнере */
+    .panels-container .panel-left-wrapper,
+    .panels-container .panel-right-wrapper {
+        max-width: 100% !important;
+        flex: 1 1 auto !important;
+        height: auto;
+        display: none;
+    }
+    .panels-container.mobile-show-journal .panel-left-wrapper { display: flex; }
+    .panels-container.mobile-show-plan .panel-right-wrapper { display: flex; }
+
+    /* Если активен итоговый режим на мобилке — показываем только левую панель */
+    .panels-container.summary-mode .panel-left-wrapper { display: flex !important; }
+    .panels-container.summary-mode .panel-right-wrapper { display: none !important; }
+    .panels-container.summary-mode .mobile-view-tabs { display: none; }
+
+    .panel-left, .panel-right {
+        max-height: none;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid #CFD8E3;
+        margin: 0;
+    }
+    .fio-table thead th { position: static; }
+    .marks-table thead th { position: static; }
 }
 </style>
 </head>
@@ -500,6 +448,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
             </button>
         </div>
     </div>
+</div>
+
+<!-- Мобильные табы (видны только на мобилке) -->
+<div class="mobile-view-tabs" id="mobileViewTabs">
+    <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
+    <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
 </div>
 
 <div id="mainContent">
@@ -659,6 +613,9 @@ let ALL_SCHEDULES = [];
 let leftCollapsed = false;
 let rightCollapsed = false;
 
+/* Мобильный режим: 'journal' | 'plan' */
+let MOBILE_VIEW = 'journal';
+
 let toastTimer = null;
 function showToast(message) {
     const toast = document.getElementById('toast');
@@ -670,6 +627,29 @@ function showToast(message) {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(20px)';
     }, 2500);
+}
+
+function isMobileView() {
+    return window.matchMedia('(max-width: 1100px)').matches;
+}
+
+/* Переключение мобильных вкладок */
+function switchMobileView(view) {
+    MOBILE_VIEW = view;
+    const container = document.getElementById('panelsContainer');
+    container.classList.toggle('mobile-show-journal', view === 'journal');
+    container.classList.toggle('mobile-show-plan', view === 'plan');
+    document.getElementById('mobileTabJournal').classList.toggle('active', view === 'journal');
+    document.getElementById('mobileTabPlan').classList.toggle('active', view === 'plan');
+    /* Пересчитываем мертвые колонки/строки под новую ширину */
+    requestAnimationFrame(() => {
+        if (SUMMARY_MODE) fillFillersSummary();
+        else { fillFillers(); fillPlanFillers(); }
+    });
+    setTimeout(() => {
+        if (SUMMARY_MODE) fillFillersSummary();
+        else { fillFillers(); fillPlanFillers(); }
+    }, 100);
 }
 
 function collectSubjectsFromSchedule(schedules, classId) {
@@ -761,6 +741,12 @@ async function init() {
 
     ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
     SUMMARY_MODE = false;
+
+    /* Инициализация мобильного режима — показываем «Журнал» по умолчанию */
+    MOBILE_VIEW = 'journal';
+    const container = document.getElementById('panelsContainer');
+    container.classList.add('mobile-show-journal');
+    document.getElementById('mobileTabJournal').classList.add('active');
 
     renderHeader();
     renderPeriodTabs();
@@ -959,6 +945,14 @@ function renderPeriodTabs() {
             document.getElementById('panelsContainer').classList.remove('summary-mode');
             document.getElementById('mainContent').style.display = '';
             document.getElementById('emptyState').style.display = 'none';
+            /* Мобилка: возвращаемся в вид «Журнал» */
+            if (isMobileView()) {
+                document.querySelector('.mobile-view-tabs').style.display = '';
+                document.getElementById('panelsContainer').classList.add('mobile-show-journal');
+                document.getElementById('panelsContainer').classList.remove('mobile-show-plan');
+                document.getElementById('mobileTabJournal').classList.add('active');
+                document.getElementById('mobileTabPlan').classList.remove('active');
+            }
             renderMainTable();
             fillFillers();
             requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
@@ -976,6 +970,10 @@ function renderPeriodTabs() {
         document.getElementById('mainContent').style.display = '';
         document.getElementById('emptyState').style.display = 'none';
         document.getElementById('panelsContainer').classList.add('summary-mode');
+        /* Мобилка: скрываем переключатель Журнал/План — показывается только итог */
+        if (isMobileView()) {
+            document.querySelector('.mobile-view-tabs').style.display = 'none';
+        }
         renderSummaryTable();
         requestAnimationFrame(() => {
             fillFillersSummary();
@@ -1004,12 +1002,10 @@ function renderSummaryTable() {
 
     const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
 
-    /* Заголовки периодов (rowspan=2) — «I четверть», «II четверть» и т.д. */
     PERIODS.forEach((p, idx) => {
         const th = document.createElement('th');
         th.className = 'col-period col-period-header';
         th.setAttribute('rowspan', '2');
-        /* Перенос по 2 строки: "I" / "четверть" */
         const name = labels[idx] || ('Период ' + (idx + 1));
         const sp = name.indexOf(' ');
         if (sp > 0) {
@@ -1020,16 +1016,12 @@ function renderSummaryTable() {
         mRow.appendChild(th);
     });
 
-    /* Заголовок «Итог» */
     const thFinal = document.createElement('th');
     thFinal.className = 'col-period col-final-header';
     thFinal.setAttribute('rowspan', '2');
     thFinal.textContent = 'Итог';
     mRow.appendChild(thFinal);
 
-    /* Вторая строка (sRow) остаётся пустой — заголовки из mRow растянуты rowspan=2 */
-
-    /* Ученики */
     STUDENTS.forEach((student, sIdx) => {
         const fioTr = document.createElement('tr');
         const fioTd = document.createElement('td');
@@ -1058,7 +1050,6 @@ function renderSummaryTable() {
             tr.appendChild(td);
         });
 
-        /* Итог — учитель выставляет сам */
         const finalVal = qtrs['final'] || '';
         const tdFinal = document.createElement('td');
         tdFinal.className = 'col-period col-final';
@@ -1589,6 +1580,8 @@ function fillFillers() {
 
     const journalScroll = document.getElementById('journalScroll');
     if (!journalScroll) return;
+    /* На мобилке в скрытой панели мертвые колонки не нужны */
+    if (isMobileView() && MOBILE_VIEW !== 'journal') return;
 
     const scrollWidth = journalScroll.clientWidth;
     const fioWrapper = document.querySelector('.fio-table-wrapper');
@@ -1672,7 +1665,6 @@ function fillFillersSummary() {
     const mRow = document.getElementById('mRow');
     const jBody = document.getElementById('jBody');
 
-    /* В итоговом режиме в thead одна строка (mRow) с ячейками rowspan=2 */
     for (let i = 0; i < fullCols; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
@@ -1718,7 +1710,16 @@ window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
         if (SUMMARY_MODE) { fillFillersSummary(); }
-        else { fillFillers(); fillPlanFillers(); }
+        else {
+            if (isMobileView()) {
+                /* На мобилке пересчитываем только активную панель */
+                if (MOBILE_VIEW === 'journal') fillFillers();
+                else fillPlanFillers();
+            } else {
+                fillFillers();
+                fillPlanFillers();
+            }
+        }
     }, 100);
 });
 
@@ -1934,6 +1935,10 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLesso
 
 function toggleLeftPanel() {
     if (SUMMARY_MODE) return;
+    if (isMobileView()) {
+        switchMobileView('plan');
+        return;
+    }
     const container = document.getElementById('panelsContainer');
     const tabLeft = document.getElementById('tabLeft');
     leftCollapsed = !leftCollapsed;
@@ -1952,6 +1957,10 @@ function toggleLeftPanel() {
 
 function toggleRightPanel() {
     if (SUMMARY_MODE) return;
+    if (isMobileView()) {
+        switchMobileView('journal');
+        return;
+    }
     const container = document.getElementById('panelsContainer');
     const tabRight = document.getElementById('tabRight');
     rightCollapsed = !rightCollapsed;
