@@ -313,20 +313,20 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
    МОБИЛЬНЫЙ РЕЖИМ
    ============================================================ */
 @media (max-width: 1100px) {
-    body { overflow: auto; font-size: 12px; }
+    body { overflow: auto; font-size: 11px; }
 
     .mobile-view-tabs {
         display: flex;
-        gap: 8px;
-        padding: 10px 12px 0 12px;
+        gap: 6px;
+        padding: 8px 10px 0 10px;
         margin-bottom: 4px;
         flex-wrap: wrap;
     }
     .mobile-view-tab {
         flex: 1 1 0;
         min-width: 0;
-        padding: 8px 10px;
-        font-size: 12.5px;
+        padding: 7px 8px;
+        font-size: 12px;
         font-weight: 600;
         color: #64748B;
         background: #FFFFFF;
@@ -345,17 +345,18 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
         border-color: #2563EB;
     }
 
-    .header-bar { padding: 4px 12px 8px 12px; }
-    .top-nav { padding: 10px 12px 4px 12px; }
-    .period-tabs-wrapper { padding: 8px 12px 10px 12px; gap: 8px; }
-    .dropdown-trigger { font-size: 15.75px; }
-    .header-grid { column-gap: 16px; row-gap: 6px; }
+    .header-bar { padding: 4px 10px 6px 10px; }
+    .top-nav { padding: 8px 10px 4px 10px; font-size: 12px; }
+    .period-tabs-wrapper { padding: 6px 10px 8px 10px; gap: 6px; }
+    .dropdown-trigger { font-size: 15px; }
+    .header-grid { column-gap: 12px; row-gap: 4px; }
+    .header-meta-item { font-size: 12px; }
 
     .side-toggle-tabs { display: none; }
 
     .panels-container {
         flex-direction: column;
-        padding: 0 12px 12px 12px;
+        padding: 0 8px 8px 8px;
         height: auto;
         min-height: 0;
         gap: 0;
@@ -366,9 +367,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
         flex: 1 1 auto !important;
         height: auto;
         display: none;
+        width: 100%;
     }
-    .panels-container.mobile-show-journal .panel-left-wrapper { display: flex; }
-    .panels-container.mobile-show-plan .panel-right-wrapper { display: flex; }
+    .panels-container.mobile-show-journal .panel-left-wrapper { display: flex; width: 100%; }
+    .panels-container.mobile-show-plan .panel-right-wrapper { display: flex; width: 100%; }
 
     .panels-container.summary-mode .panel-left-wrapper { display: flex !important; }
     .panels-container.summary-mode .panel-right-wrapper { display: none !important; }
@@ -380,63 +382,97 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
         border-radius: 8px;
         border: 1px solid #CFD8E3;
         margin: 0;
+        width: 100%;
+        overflow-x: auto;
     }
+    .journal-scroll { width: 100%; height: auto; overflow: auto; }
+
     .fio-table thead th { position: static; }
     .marks-table thead th { position: static; }
 
-    /* Компактнее таблицы */
-    .fio-table th, .fio-table td { height: 32px; line-height: 30px; font-size: 12px; }
-    .fio-table thead th { height: 52px; line-height: 50px; font-size: 12px !important; }
+    /* ===== Компактные таблицы на мобилке ===== */
+    .fio-table-wrapper { width: 140px; }
+    .fio-table { width: 140px; }
+    .fio-table th, .fio-table td { height: 26px; line-height: 24px; font-size: 10.5px; }
+    .fio-table thead th { height: 42px; line-height: 40px; font-size: 10.5px !important; padding: 0 6px; }
     .fio-table .student-number-text,
-    .fio-table .student-name-text { font-size: 12.5px; }
+    .fio-table .student-name-text { font-size: 10.5px; }
+    .fio-table .student-number-text { width: 16px; margin-right: 4px; }
 
-    .marks-table th, .marks-table td { height: 32px; line-height: 30px; font-size: 11px; }
-    .marks-table thead tr:first-child .col-date { font-size: 11px !important; }
-    .marks-table thead tr:nth-child(2) .col-date { font-size: 11px !important; }
-    .col-date { width: 42px; min-width: 42px; max-width: 42px; }
-    .col-period { width: 42px; min-width: 42px; max-width: 42px; }
-    .col-avg { width: 48px; min-width: 48px; max-width: 48px; }
-    .col-qtr { width: 48px; min-width: 48px; max-width: 48px; }
+    .marks-table th, .marks-table td { height: 26px; line-height: 24px; font-size: 10px; }
+    /* ВАЖНО: заголовки типов урока тоже должны быть маленькими */
+    .marks-table thead tr:nth-child(2) .col-date { height: 26px !important; line-height: 24px !important; font-size: 9px !important; }
+    .marks-table thead tr:first-child .col-date { height: 42px !important; line-height: 40px !important; font-size: 10px !important; }
 
-    .grade-box { min-width: 12px; height: 14px; font-size: 12px; }
-    .double-grade-box { min-width: 10px; height: 12px; font-size: 11px; }
-    .grade-cell { height: 30px; }
-    .grade-cell input { height: 22px; font-size: 12px; top: 4px; }
+    .col-date { width: 32px; min-width: 32px; max-width: 32px; }
+    .col-period { width: 32px; min-width: 32px; max-width: 32px; }
+    .col-avg { width: 38px; min-width: 38px; max-width: 38px; font-size: 10px !important; }
+    .marks-table thead .col-avg { height: 42px !important; line-height: 40px !important; font-size: 10px !important; }
+    .col-qtr { width: 38px; min-width: 38px; max-width: 38px; font-size: 10px !important; }
+    .marks-table thead .col-qtr { height: 42px !important; line-height: 40px !important; font-size: 10px !important; }
+
+    /* Заголовки шапки на мобилке — уменьшить по высоте */
+    .marks-table thead tr:first-child th { height: 42px !important; line-height: 40px !important; }
+    .marks-table thead tr:nth-child(2) th { height: 26px !important; line-height: 24px !important; }
+
+    .grade-box { min-width: 10px; height: 12px; font-size: 10px; padding: 0 1px; }
+    .double-grade-box { min-width: 9px; height: 11px; font-size: 9.5px; }
+    .grade-cell { height: 24px; }
+    .grade-cell input { height: 20px; font-size: 10.5px; top: 2px; }
+    .status-letter { font-size: 11px !important; left: 2px; }
+
+    /* Итоговая таблица на мобилке */
+    .marks-table.period-mode thead th.col-period-header,
+    .marks-table.period-mode thead th.col-final-header {
+        height: 42px !important; line-height: 12px !important;
+        font-size: 9.5px !important; padding: 3px 1px;
+    }
+    .marks-table.period-mode tbody td.col-period {
+        height: 26px !important; font-size: 11px; width: 32px;
+        min-width: 32px; max-width: 32px;
+    }
 
     /* Поурочное планирование компактнее */
     .panel-right table th {
-        height: 52px;
-        line-height: 14px;
-        font-size: 11px !important;
-        padding: 0 5px;
+        height: 42px;
+        line-height: 12px;
+        font-size: 10px !important;
+        padding: 0 4px;
     }
-    .panel-right tbody td { height: 44px; padding: 3px 5px; }
-    .theme-cell, .homework-cell { font-size: 12px; line-height: 1.25; }
-    .placeholder-text { font-size: 12px; padding: 6px 8px; margin: -6px -8px; }
-    .add-hw-btn { font-size: 12px; padding: 6px 8px; margin: 2px -8px -6px -8px; }
-    .hw-list-item { font-size: 12px; }
+    .panel-right tbody td { height: 34px; padding: 2px 4px; }
+    .theme-cell, .homework-cell { font-size: 10.5px; line-height: 1.2; }
+    .placeholder-text { font-size: 10.5px; padding: 4px 6px; margin: -4px -6px; }
+    .add-hw-btn { font-size: 10.5px; padding: 4px 6px; margin: 1px -6px -4px -6px; }
+    .hw-list-item { font-size: 10.5px; padding: 1px 3px; }
+    .cell-online-btn { font-size: 9px; padding: 2px 5px; top: 2px; right: 3px; }
 
     .marks-table thead th.col-filler-head,
-    .marks-table tbody td.col-filler-body { min-width: 42px !important; }
+    .marks-table tbody td.col-filler-body { min-width: 32px !important; }
 }
 
-/* Дополнительно на очень узких экранах (< 480px) — ещё чуть компактнее */
+/* Дополнительно для очень узких экранов (< 480px) */
 @media (max-width: 480px) {
-    .fio-table th, .fio-table td { height: 30px; line-height: 28px; font-size: 11.5px; }
-    .marks-table th, .marks-table td { height: 30px; line-height: 28px; font-size: 10.5px; }
-    .col-date { width: 38px; min-width: 38px; max-width: 38px; }
-    .col-period { width: 38px; min-width: 38px; max-width: 38px; }
-    .col-avg { width: 44px; min-width: 44px; max-width: 44px; }
-    .col-qtr { width: 44px; min-width: 44px; max-width: 44px; }
-    .grade-cell { height: 28px; }
-    .grade-cell input { height: 20px; font-size: 11px; top: 4px; }
-    .grade-box { min-width: 11px; height: 13px; font-size: 11px; }
-    .panel-right table th { height: 48px; font-size: 10.5px !important; }
-    .panel-right tbody td { height: 40px; padding: 3px 4px; }
-    .theme-cell, .homework-cell { font-size: 11.5px; }
-    .placeholder-text { font-size: 11.5px; }
-    .add-hw-btn { font-size: 11.5px; }
-    .hw-list-item { font-size: 11.5px; }
+    body { font-size: 10.5px; }
+    .fio-table-wrapper { width: 120px; }
+    .fio-table { width: 120px; }
+    .fio-table th, .fio-table td { height: 24px; line-height: 22px; font-size: 10px; }
+    .fio-table thead th { height: 38px; line-height: 36px; font-size: 10px !important; }
+    .marks-table th, .marks-table td { height: 24px; line-height: 22px; font-size: 9.5px; }
+    .marks-table thead tr:first-child th { height: 38px !important; line-height: 36px !important; }
+    .marks-table thead tr:nth-child(2) th { height: 24px !important; line-height: 22px !important; }
+    .col-date { width: 30px; min-width: 30px; max-width: 30px; }
+    .col-period { width: 30px; min-width: 30px; max-width: 30px; }
+    .col-avg { width: 34px; min-width: 34px; max-width: 34px; }
+    .col-qtr { width: 34px; min-width: 34px; max-width: 34px; }
+    .grade-cell { height: 22px; }
+    .grade-cell input { height: 18px; font-size: 10px; }
+    .grade-box { min-width: 9px; height: 11px; font-size: 9.5px; }
+    .panel-right table th { height: 38px; font-size: 9.5px !important; }
+    .panel-right tbody td { height: 30px; padding: 2px 3px; }
+    .theme-cell, .homework-cell { font-size: 10px; }
+    .placeholder-text { font-size: 10px; }
+    .add-hw-btn { font-size: 10px; }
+    .hw-list-item { font-size: 10px; }
 }
 </style>
 </head>
@@ -621,12 +657,18 @@ const LESSON_TYPES = [
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
-/* Динамические размеры: 46px на десктопе, 42px на мобилке */
+/* Динамические размеры под ширину экрана */
 function getFillerColWidth() {
-    return window.matchMedia('(max-width: 1100px)').matches ? 42 : 46;
+    const w = window.innerWidth;
+    if (w <= 480) return 30;
+    if (w <= 1100) return 32;
+    return 46;
 }
 function getPlanFillerRowHeight() {
-    return window.matchMedia('(max-width: 1100px)').matches ? 44 : 56;
+    const w = window.innerWidth;
+    if (w <= 480) return 30;
+    if (w <= 1100) return 34;
+    return 56;
 }
 
 function escapeHtml(text) {
@@ -665,7 +707,6 @@ let ALL_SCHEDULES = [];
 
 let leftCollapsed = false;
 let rightCollapsed = false;
-
 let MOBILE_VIEW = 'journal';
 
 let toastTimer = null;
@@ -692,7 +733,7 @@ function switchMobileView(view) {
     container.classList.toggle('mobile-show-plan', view === 'plan');
     document.getElementById('mobileTabJournal').classList.toggle('active', view === 'journal');
     document.getElementById('mobileTabPlan').classList.toggle('active', view === 'plan');
-    /* Пересчёт мертвых колонок/строк — трижды, чтобы точно поймать layout */
+    /* Пересчёт — трижды, чтобы точно попасть в момент, когда панель показана */
     requestAnimationFrame(() => {
         if (SUMMARY_MODE) fillFillersSummary();
         else { fillFillers(); fillPlanFillers(); }
@@ -700,11 +741,15 @@ function switchMobileView(view) {
     setTimeout(() => {
         if (SUMMARY_MODE) fillFillersSummary();
         else { fillFillers(); fillPlanFillers(); }
-    }, 100);
+    }, 50);
     setTimeout(() => {
         if (SUMMARY_MODE) fillFillersSummary();
         else { fillFillers(); fillPlanFillers(); }
-    }, 300);
+    }, 200);
+    setTimeout(() => {
+        if (SUMMARY_MODE) fillFillersSummary();
+        else { fillFillers(); fillPlanFillers(); }
+    }, 400);
 }
 
 function collectSubjectsFromSchedule(schedules, classId) {
