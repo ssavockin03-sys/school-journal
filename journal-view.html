@@ -852,7 +852,8 @@ function normalizeHwList(h) {
 }
 
 /* ============================================================
-   ГЛОБАЛЬНЫЙ РЕДАКТОР.
+   ЕДИНЫЙ РЕДАКТОР.
+   finish() и cancel() работают СИНХРОННО. Никаких setTimeout.
    ============================================================ */
 let activeEditor = null;
 
@@ -860,36 +861,12 @@ function closeActiveEditor(saveIt) {
     if (!activeEditor) return;
     const ed = activeEditor;
     activeEditor = null;
-    try { if (saveIt) ed.finish(); else ed.cancel(); } catch (e) { console.error(e); }
-}
-
-/* Универсальная функция принудительного закрытия ЛЮБЫХ редакторов.
-   Гарантированно:
-   1) закрывает activeEditor (сохраняя);
-   2) проходит по всем оставшимся .edit-bubble в #pBody и перерисовывает их ячейки
-      из данных JOURNAL. Это лечит случай, когда редактор уже оторвался от activeEditor
-      (например, при переключении на другой день).
-   Безопасно вызывать сколько угодно раз. */
-function forceCloseAllEditors() {
-    // 1) активный редактор.
-    if (activeEditor) {
-        closeActiveEditor(true);
+    try {
+        if (saveIt) ed.finish();
+        else ed.cancel();
+    } catch (e) {
+        console.error(e);
     }
-    // 2) любые «висящие» .edit-bubble, которые остались в DOM.
-    const leftovers = document.querySelectorAll('#pBody .edit-bubble');
-    leftovers.forEach(bubble => {
-        const cell = bubble.closest('.homework-cell, .theme-cell');
-        if (!cell) { bubble.remove(); return; }
-        const gradeKey = cell.dataset.gradeKey;
-        if (!gradeKey) { bubble.remove(); return; }
-        if (cell.classList.contains('homework-cell')) {
-            const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
-            renderHwContent(cell, gradeKey, arr);
-        } else if (cell.classList.contains('theme-cell')) {
-            const t = (JOURNAL.lessons[gradeKey] && JOURNAL.lessons[gradeKey].t) || '';
-            renderThemeContent(cell, gradeKey, t);
-        }
-    });
 }
 
 async function init() {
@@ -1143,7 +1120,7 @@ function renderPeriodTabs() {
         tab.textContent = labels[idx] || ('Период ' + (idx + 1));
         tab.title = p.start + ' – ' + p.end;
         tab.addEventListener('click', async () => {
-            forceCloseAllEditors();
+            closeActiveEditor(true);
             SUMMARY_MODE = false;
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
@@ -1175,7 +1152,7 @@ function renderPeriodTabs() {
     summaryTab.textContent = 'Итог';
     summaryTab.title = 'Итоговые оценки по всем периодам';
     summaryTab.addEventListener('click', () => {
-        forceCloseAllEditors();
+        closeActiveEditor(true);
         SUMMARY_MODE = true;
         renderPeriodTabs();
         document.getElementById('mainContent').style.display = '';
@@ -1623,7 +1600,7 @@ function createPlanFillerRow(height) {
 }
 
 /* ============================================================
-   ОБРАБОТЧИКИ КЛИКОВ / MOUSEDOWN.
+   ОБРАБОТЧИК КЛИКОВ НА pBody.
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
@@ -1638,7 +1615,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const hwItem = e.target.closest('.hw-list-item');
         if (hwItem) {
             e.stopPropagation();
-            forceCloseAllEditors();
             const cell = hwItem.closest('.homework-cell');
             const gradeKey = cell.dataset.gradeKey;
             const idx = parseInt(hwItem.dataset.idx, 10);
@@ -1648,7 +1624,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const addHwBtn = e.target.closest('.add-hw-btn');
         if (addHwBtn) {
             e.stopPropagation();
-            forceCloseAllEditors();
             const cell = addHwBtn.closest('.homework-cell');
             openNewHwItem(cell, cell.dataset.gradeKey);
             return;
@@ -1656,7 +1631,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const placeholderHw = e.target.closest('.homework-cell .placeholder-text');
         if (placeholderHw) {
             e.stopPropagation();
-            forceCloseAllEditors();
             const cell = placeholderHw.closest('.homework-cell');
             openNewHwItem(cell, cell.dataset.gradeKey);
             return;
@@ -1664,7 +1638,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const themePlaceholder = e.target.closest('.theme-cell .placeholder-text');
         if (themePlaceholder) {
             e.stopPropagation();
-            forceCloseAllEditors();
             const cell = themePlaceholder.closest('.theme-cell');
             openThemeEditInline(cell, cell.dataset.gradeKey, '');
             return;
@@ -1672,26 +1645,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const themeText = e.target.closest('.theme-cell .theme-text');
         if (themeText) {
             e.stopPropagation();
-            forceCloseAllEditors();
             const cell = themeText.closest('.theme-cell');
             openThemeEditInline(cell, cell.dataset.gradeKey, themeText.dataset.value || '');
             return;
         }
     });
-
-    document.addEventListener('mousedown', (e) => {
-        if (!activeEditor) return;
-        const bubble = document.querySelector('#pBody .edit-bubble');
-        if (bubble && bubble.contains(e.target)) return;
-        if (e.target.closest('.hw-list-item') ||
-            e.target.closest('.add-hw-btn') ||
-            e.target.closest('.placeholder-text') ||
-            e.target.closest('.cell-online-btn') ||
-            e.target.closest('.type-lesson-col') ||
-            e.target.closest('.confirm-btn')) return;
-        closeActiveEditor(true);
-    }, true);
 });
+
+/* Глобальное закрытие редактора при клике вне. */
+document.addEventListener('mousedown', (e) => {
+    if (!activeEditor) return;
+    const bubble = document.querySelector('#pBody .edit-bubble');
+    if (bubble && bubble.contains(e.target)) return;
+    if (e.target.closest('.hw-list-item') ||
+        e.target.closest('.add-hw-btn') ||
+        e.target.closest('.placeholder-text') ||
+        e.target.closest('.cell-online-btn') ||
+        e.target.closest('.type-lesson-col') ||
+        e.target.closest('.confirm-btn')) return;
+    closeActiveEditor(true);
+}, true);
 
 function renderThemeContent(cell, gradeKey, value) {
     cell.innerHTML = '';
@@ -1735,12 +1708,13 @@ function openThemeEditInline(cell, gradeKey, value) {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         JOURNAL.lessons[gradeKey].t = txt;
-        setTimeout(async () => {
-            await saveJournal();
-            renderThemeContent(cell, gradeKey, txt);
-        }, 200);
+        renderThemeContent(cell, gradeKey, txt);
+        saveJournal();
     };
-    const cancel = () => { renderThemeContent(cell, gradeKey, value); };
+    const cancel = () => {
+        const current = (JOURNAL.lessons[gradeKey] && JOURNAL.lessons[gradeKey].t) || value || '';
+        renderThemeContent(cell, gradeKey, current);
+    };
     ta.addEventListener('input', () => autoGrow(ta));
     ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); closeActiveEditor(true); }
@@ -1752,9 +1726,7 @@ function openThemeEditInline(cell, gradeKey, value) {
 }
 
 /* ============================================================
-   ОТРИСОВКА ДОМАШНИХ ЗАДАНИЙ.
-   ДЗ → линия → ДЗ → линия → … → кнопка.
-   У каждого .hw-list-item есть data-idx, чтобы потом находить нужный.
+   ОТРИСОВКА ДЗ.
    ============================================================ */
 function renderHwContent(cell, gradeKey, hwList) {
     const onlineBtn = cell.querySelector('.cell-online-btn');
@@ -1795,9 +1767,6 @@ function renderHwContent(cell, gradeKey, hwList) {
     cell.appendChild(listWrap);
 }
 
-/* Найти .hw-list-item по индексу среди всех элементов списка.
-   НЕ полагаемся на querySelectorAll('.hw-list-item, .placeholder-text, .add-hw-btn'),
-   потому что там вперемешку идут разделители и кнопка, и индексы съезжают. */
 function findHwItemByIndex(listWrap, idx) {
     const items = listWrap.querySelectorAll('.hw-list-item');
     return items[idx] || null;
@@ -1810,8 +1779,6 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     if (!listWrap) return;
 
     const target = findHwItemByIndex(listWrap, idx);
-
-    // Если целевого .hw-list-item нет — перерисуем ячейку и выйдем.
     if (!target) {
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
         renderHwContent(cell, gradeKey, arr);
@@ -1834,16 +1801,15 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     autoGrow(ta);
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
+
     const finish = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
         if (txt === '') arr.splice(idx, 1); else arr[idx] = txt;
         JOURNAL.lessons[gradeKey].h = arr;
-        setTimeout(async () => {
-            await saveJournal();
-            renderHwContent(cell, gradeKey, arr);
-        }, 200);
+        renderHwContent(cell, gradeKey, arr);
+        saveJournal();
     };
     const cancel = () => {
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
@@ -1859,10 +1825,9 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     activeEditor = { finish, cancel };
 }
 
-/* Добавление нового ДЗ. НЕ делаем промежуточный renderHwContent перед
-   открытием редактора — иначе индексы съезжают из-за вставки пустой строки
-   и разделителя. Сразу открываем редактор на новом пустом элементе,
-   который специально вставлен в конец списка ДЗ. */
+/* Добавление ДЗ. Рендерим ячейку СРАЗУ со вставленной пустой строкой,
+   находим новый .hw-list-item по индексу и открываем редактор именно на нём.
+   finish() знает про новую строку и корректно её сохраняет/удаляет. */
 function openNewHwItem(cell, gradeKey) {
     closeActiveEditor(true);
 
@@ -1871,11 +1836,8 @@ function openNewHwItem(cell, gradeKey) {
     const newIdx = arr.length;
     arr.push('');
     JOURNAL.lessons[gradeKey].h = arr;
-
-    // Перерисовываем ячейку с уже добавленной пустой строкой.
     renderHwContent(cell, gradeKey, arr);
 
-    // Открываем редактор на новом элементе (он последний в списке ДЗ).
     const listWrap = cell.querySelector('.hw-list');
     if (!listWrap) return;
     const target = findHwItemByIndex(listWrap, newIdx);
@@ -1901,18 +1863,15 @@ function openNewHwItem(cell, gradeKey) {
     const finish = () => {
         const txt = ta.value.trim();
         const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-        // На момент finish в current уже лежит пустая строка на позиции newIdx.
+        // На момент finish в current лежит пустая строка на позиции newIdx.
         if (txt === '') {
-            // Ничего не ввели — удаляем пустую строку.
             current.splice(newIdx, 1);
         } else {
             current[newIdx] = txt;
         }
         JOURNAL.lessons[gradeKey].h = current;
-        setTimeout(async () => {
-            await saveJournal();
-            renderHwContent(cell, gradeKey, current);
-        }, 200);
+        renderHwContent(cell, gradeKey, current);
+        saveJournal();
     };
     const cancel = () => {
         const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
@@ -2235,7 +2194,7 @@ let currentLessonTypeContext = { gradeKey: null };
 let popupJustOpened = false;
 
 function openLessonTypePopup(anchorEl, gradeKey) {
-    forceCloseAllEditors();
+    closeActiveEditor(true);
     const popup = document.getElementById('lessonTypePopup');
     const search = document.getElementById('lessonTypePopupSearch');
     currentLessonTypeContext = { gradeKey };
