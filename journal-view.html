@@ -685,6 +685,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 const DAYS_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const DAYS_JS_INDEX = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
 
+/* Задержка перед фактическим применением изменений в редакторах. */
+const EDIT_DELAY_MS = 200;
+
 const PERIOD_LABELS = {
     'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
     'Полугодия': ['I полугодие', 'II полугодие'],
@@ -852,21 +855,55 @@ function normalizeHwList(h) {
 }
 
 /* ============================================================
-   ЕДИНЫЙ РЕДАКТОР.
-   finish() и cancel() работают СИНХРОННО. Никаких setTimeout.
+   ЕДИНЫЙ РЕДАКТОР С ЗАДЕРЖКОЙ.
+   activeEditor = { commit(), cancel() }.
+   commit() применяет изменения через EDIT_DELAY_MS.
+   pendingTimer — таймер задержки. Если за это время открывается
+   новый редактор, таймер отменяется, а изменения применяются
+   немедленно (через flushPending()), чтобы не потерять данные.
    ============================================================ */
 let activeEditor = null;
+let pendingTimer = null;
 
+/* Применить отложенные изменения немедленно (без ожидания). */
+function flushPending() {
+    if (pendingTimer) {
+        clearTimeout(pendingTimer);
+        pendingTimer = null;
+    }
+    if (activeEditor) {
+        const ed = activeEditor;
+        activeEditor = null;
+        try { ed.commit(); } catch (e) { console.error(e); }
+    }
+}
+
+/* Отменить отложенные изменения. */
+function cancelPending() {
+    if (pendingTimer) {
+        clearTimeout(pendingTimer);
+        pendingTimer = null;
+    }
+    if (activeEditor) {
+        const ed = activeEditor;
+        activeEditor = null;
+        try { ed.cancel(); } catch (e) { console.error(e); }
+    }
+}
+
+/* Закрыть активный редактор. saveIt=true — сохранить (с задержкой),
+   saveIt=false — отменить (сразу). Если открывается новый редактор,
+   перед этим нужно вызвать flushPending(). */
 function closeActiveEditor(saveIt) {
     if (!activeEditor) return;
+    if (!saveIt) { cancelPending(); return; }
     const ed = activeEditor;
     activeEditor = null;
-    try {
-        if (saveIt) ed.finish();
-        else ed.cancel();
-    } catch (e) {
-        console.error(e);
-    }
+    if (pendingTimer) { clearTimeout(pendingTimer); pendingTimer = null; }
+    pendingTimer = setTimeout(() => {
+        pendingTimer = null;
+        try { ed.commit(); } catch (e) { console.error(e); }
+    }, EDIT_DELAY_MS);
 }
 
 async function init() {
@@ -1120,7 +1157,7 @@ function renderPeriodTabs() {
         tab.textContent = labels[idx] || ('Период ' + (idx + 1));
         tab.title = p.start + ' – ' + p.end;
         tab.addEventListener('click', async () => {
-            closeActiveEditor(true);
+            flushPending();
             SUMMARY_MODE = false;
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
@@ -1152,7 +1189,7 @@ function renderPeriodTabs() {
     summaryTab.textContent = 'Итог';
     summaryTab.title = 'Итоговые оценки по всем периодам';
     summaryTab.addEventListener('click', () => {
-        closeActiveEditor(true);
+        flushPending();
         SUMMARY_MODE = true;
         renderPeriodTabs();
         document.getElementById('mainContent').style.display = '';
@@ -1289,7 +1326,7 @@ async function upqtrSummary(studentId, periodIdx, inputElement) {
         JOURNAL.qtrGrades[studentId][periodIdx] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-    }, 200);
+    }, EDIT_DELAY_MS);
 }
 
 async function upFinal(studentId, inputElement) {
@@ -1307,7 +1344,7 @@ async function upFinal(studentId, inputElement) {
         JOURNAL.qtrGrades[studentId]['final'] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-    }, 200);
+    }, EDIT_DELAY_MS);
 }
 
 function renderMainTable() {
@@ -1600,7 +1637,10 @@ function createPlanFillerRow(height) {
 }
 
 /* ============================================================
-   ОБРАБОТЧИК КЛИКОВ НА pBody.
+   ОБРАБОТЧИК КЛИКОВ.
+   Перед открытием нового редактора всегда flushPending():
+   он применяет отложенные изменения предыдущего редактора
+   НЕМЕДЛЕННО (без ожидания 200 мс), чтобы данные не потерялись.
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
@@ -1615,6 +1655,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hwItem = e.target.closest('.hw-list-item');
         if (hwItem) {
             e.stopPropagation();
+            flushPending();
             const cell = hwItem.closest('.homework-cell');
             const gradeKey = cell.dataset.gradeKey;
             const idx = parseInt(hwItem.dataset.idx, 10);
@@ -1624,6 +1665,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const addHwBtn = e.target.closest('.add-hw-btn');
         if (addHwBtn) {
             e.stopPropagation();
+            flushPending();
             const cell = addHwBtn.closest('.homework-cell');
             openNewHwItem(cell, cell.dataset.gradeKey);
             return;
@@ -1631,6 +1673,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const placeholderHw = e.target.closest('.homework-cell .placeholder-text');
         if (placeholderHw) {
             e.stopPropagation();
+            flushPending();
             const cell = placeholderHw.closest('.homework-cell');
             openNewHwItem(cell, cell.dataset.gradeKey);
             return;
@@ -1638,6 +1681,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const themePlaceholder = e.target.closest('.theme-cell .placeholder-text');
         if (themePlaceholder) {
             e.stopPropagation();
+            flushPending();
             const cell = themePlaceholder.closest('.theme-cell');
             openThemeEditInline(cell, cell.dataset.gradeKey, '');
             return;
@@ -1645,6 +1689,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const themeText = e.target.closest('.theme-cell .theme-text');
         if (themeText) {
             e.stopPropagation();
+            flushPending();
             const cell = themeText.closest('.theme-cell');
             openThemeEditInline(cell, cell.dataset.gradeKey, themeText.dataset.value || '');
             return;
@@ -1652,7 +1697,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* Глобальное закрытие редактора при клике вне. */
 document.addEventListener('mousedown', (e) => {
     if (!activeEditor) return;
     const bubble = document.querySelector('#pBody .edit-bubble');
@@ -1686,7 +1730,7 @@ function renderThemeContent(cell, gradeKey, value) {
 }
 
 function openThemeEditInline(cell, gradeKey, value) {
-    closeActiveEditor(true);
+    flushPending();
     cell.innerHTML = '';
     const bubble = document.createElement('div');
     bubble.className = 'edit-bubble';
@@ -1704,7 +1748,7 @@ function openThemeEditInline(cell, gradeKey, value) {
     autoGrow(ta);
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
-    const finish = () => {
+    const commit = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         JOURNAL.lessons[gradeKey].t = txt;
@@ -1722,7 +1766,7 @@ function openThemeEditInline(cell, gradeKey, value) {
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
     ok.addEventListener('click', (e) => { e.stopPropagation(); closeActiveEditor(true); });
-    activeEditor = { finish, cancel };
+    activeEditor = { commit, cancel };
 }
 
 /* ============================================================
@@ -1773,7 +1817,7 @@ function findHwItemByIndex(listWrap, idx) {
 }
 
 function openHwItemEdit(cell, gradeKey, idx, value) {
-    closeActiveEditor(true);
+    flushPending();
 
     const listWrap = cell.querySelector('.hw-list');
     if (!listWrap) return;
@@ -1802,7 +1846,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
-    const finish = () => {
+    const commit = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
@@ -1822,14 +1866,11 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
     ok.addEventListener('click', (e) => { e.stopPropagation(); closeActiveEditor(true); });
-    activeEditor = { finish, cancel };
+    activeEditor = { commit, cancel };
 }
 
-/* Добавление ДЗ. Рендерим ячейку СРАЗУ со вставленной пустой строкой,
-   находим новый .hw-list-item по индексу и открываем редактор именно на нём.
-   finish() знает про новую строку и корректно её сохраняет/удаляет. */
 function openNewHwItem(cell, gradeKey) {
-    closeActiveEditor(true);
+    flushPending();
 
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
     const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
@@ -1860,10 +1901,9 @@ function openNewHwItem(cell, gradeKey) {
     ta.focus();
     ta.setSelectionRange(0, 0);
 
-    const finish = () => {
+    const commit = () => {
         const txt = ta.value.trim();
         const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-        // На момент finish в current лежит пустая строка на позиции newIdx.
         if (txt === '') {
             current.splice(newIdx, 1);
         } else {
@@ -1886,7 +1926,7 @@ function openNewHwItem(cell, gradeKey) {
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
     ok.addEventListener('click', (e) => { e.stopPropagation(); closeActiveEditor(true); });
-    activeEditor = { finish, cancel };
+    activeEditor = { commit, cancel };
 }
 
 function autoGrow(el) {
@@ -2160,7 +2200,7 @@ async function upg(studentId, gradeKey, inputElement) {
         JOURNAL.grades[studentId][gradeKey] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-    }, 200);
+    }, EDIT_DELAY_MS);
 }
 
 async function upqtr(studentId, inputElement) {
@@ -2178,7 +2218,7 @@ async function upqtr(studentId, inputElement) {
         JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-    }, 200);
+    }, EDIT_DELAY_MS);
 }
 
 async function saveJournal() {
@@ -2194,7 +2234,7 @@ let currentLessonTypeContext = { gradeKey: null };
 let popupJustOpened = false;
 
 function openLessonTypePopup(anchorEl, gradeKey) {
-    closeActiveEditor(true);
+    flushPending();
     const popup = document.getElementById('lessonTypePopup');
     const search = document.getElementById('lessonTypePopupSearch');
     currentLessonTypeContext = { gradeKey };
