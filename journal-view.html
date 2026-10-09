@@ -327,10 +327,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 /* ============================================================
    ВЫДЕЛЕНИЕ СТРОКИ «СЕГОДНЯ» В ПОУРОЧНОМ ПЛАНИРОВАНИИ.
-   Границы рисуем на каждой td строки: слева на ::before,
-   справа на ::after; верх и низ — на первой/последней td.
+   Верхняя/нижняя — через border-top/bottom на каждой td строки.
+   Левая вертикальная — только на первой td (::before).
+   Правая вертикальная — только на последней td (::after).
+   Так на стыках ячеек нет наложения линий, и толщина
+   остаётся 1px, как у остальных границ таблицы.
    ============================================================ */
-.panel-right tbody tr.lesson-row.lesson-today > td::before {
+.panel-right tbody tr.lesson-row.lesson-today > td {
+    border-top: 1px solid #1E40AF !important;
+    border-bottom: 1px solid #1E40AF !important;
+}
+.panel-right tbody tr.lesson-row.lesson-today > td:first-child::before {
     content: '';
     position: absolute;
     top: 0;
@@ -341,7 +348,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     pointer-events: none;
     z-index: 8;
 }
-.panel-right tbody tr.lesson-row.lesson-today > td::after {
+.panel-right tbody tr.lesson-row.lesson-today > td:last-child::after {
     content: '';
     position: absolute;
     top: 0;
@@ -352,12 +359,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     pointer-events: none;
     z-index: 8;
 }
-.panel-right tbody tr.lesson-row.lesson-today > td {
-    border-top: 1px solid #1E40AF !important;
-    border-bottom: 1px solid #1E40AF !important;
-}
 
-/* Шапка-дата для сегодняшнего урока — две строки */
+/* Дата «сегодня» в две строки */
 .panel-right tbody td.lesson-date-cell .today-date {
     display: block;
     font-size: 12px;
