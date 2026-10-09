@@ -168,8 +168,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     letter-spacing: 0.1px;
 }
 
-/* Тёмно-синее выделение колонки «сегодня» — только границы, без изменения фона.
-   Левая граница — на ::before, правая — на ::after. */
+/* Тёмно-синее выделение колонки «сегодня» — только границы, без изменения фона. */
 .marks-table th.col-today::before,
 .marks-table td.col-today::before {
     content: '';
@@ -194,7 +193,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     pointer-events: none;
     z-index: 8;
 }
-/* Верхняя граница — на шапке, нижняя — на последней строке тела */
 .marks-table thead tr:first-child th.col-today {
     border-top: 1px solid #1E40AF !important;
 }
@@ -327,11 +325,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 /* ============================================================
    ВЫДЕЛЕНИЕ СТРОКИ «СЕГОДНЯ» В ПОУРОЧНОМ ПЛАНИРОВАНИИ.
-   Верхняя/нижняя — через border-top/bottom на каждой td строки.
-   Левая вертикальная — только на первой td (::before).
-   Правая вертикальная — только на последней td (::after).
-   Так на стыках ячеек нет наложения линий, и толщина
-   остаётся 1px, как у остальных границ таблицы.
    ============================================================ */
 .panel-right tbody tr.lesson-row.lesson-today > td {
     border-top: 1px solid #1E40AF !important;
@@ -360,7 +353,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     z-index: 8;
 }
 
-/* Дата «сегодня» в две строки */
 .panel-right tbody td.lesson-date-cell .today-date {
     display: block;
     font-size: 12px;
@@ -814,18 +806,22 @@ function switchMobileView(view) {
     requestAnimationFrame(() => {
         if (SUMMARY_MODE) fillFillersSummary();
         else { fillFillers(); fillPlanFillers(); }
+        centerOnToday();
     });
     setTimeout(() => {
         if (SUMMARY_MODE) fillFillersSummary();
         else { fillFillers(); fillPlanFillers(); }
+        centerOnToday();
     }, 50);
     setTimeout(() => {
         if (SUMMARY_MODE) fillFillersSummary();
         else { fillFillers(); fillPlanFillers(); }
+        centerOnToday();
     }, 200);
     setTimeout(() => {
         if (SUMMARY_MODE) fillFillersSummary();
         else { fillFillers(); fillPlanFillers(); }
+        centerOnToday();
     }, 400);
 }
 
@@ -933,7 +929,11 @@ async function init() {
 
     renderMainTable();
     fillFillers();
-    requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
+    requestAnimationFrame(() => {
+        fillFillers();
+        fillPlanFillers();
+        centerOnToday();
+    });
 
     setupObservers();
 
@@ -1131,7 +1131,11 @@ function renderPeriodTabs() {
             }
             renderMainTable();
             fillFillers();
-            requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
+            requestAnimationFrame(() => {
+                fillFillers();
+                fillPlanFillers();
+                centerOnToday();
+            });
         });
         container.appendChild(tab);
     });
@@ -1438,6 +1442,7 @@ function renderLessonPlanRows() {
         const tr = document.createElement('tr');
         tr.className = 'lesson-row' + (isToday ? ' lesson-today' : '');
         tr.dataset.gradeKey = d.gradeKey;
+        tr.dataset.iso = d.iso;
 
         const tdNum = document.createElement('td');
         tdNum.className = 'lesson-num-cell';
@@ -1478,6 +1483,66 @@ function renderLessonPlanRows() {
     });
 
     fillPlanFillers();
+}
+
+/* ============================================================
+   ЦЕНТРИРОВАНИЕ НА «СЕГОДНЯ» ПРИ ЗАГРУЗКЕ.
+   Если сегодня есть в DATES — центрируем на нём.
+   Если нет — центрируем на ближайшем: первый после сегодня,
+   иначе последний до сегодня.
+   ============================================================ */
+function findNearestDateIndex() {
+    if (!DATES || DATES.length === 0) return -1;
+    const t = todayIso();
+    let exact = -1;
+    let firstAfter = -1;
+    let lastBefore = -1;
+    for (let i = 0; i < DATES.length; i++) {
+        if (DATES[i].iso === t) { exact = i; break; }
+        if (DATES[i].iso < t) lastBefore = i;
+        if (DATES[i].iso > t && firstAfter === -1) firstAfter = i;
+    }
+    if (exact !== -1) return exact;
+    if (firstAfter !== -1) return firstAfter;
+    if (lastBefore !== -1) return lastBefore;
+    return -1;
+}
+
+function centerOnToday() {
+    const idx = findNearestDateIndex();
+    if (idx === -1) return;
+
+    // Горизонтальный скролл журнала — центрируем колонку idx в journalScroll.
+    const journalScroll = document.getElementById('journalScroll');
+    if (journalScroll && !SUMMARY_MODE) {
+        const targetCol = document.querySelector('#mRow th.col-date[data-col-idx="' + idx + '"]');
+        // В шапке mRow нет data-col-idx — используем порядковый номер th.col-date.
+        const allDateThs = document.querySelectorAll('#mRow th.col-date');
+        const th = allDateThs[idx];
+        if (th) {
+            const scrollRect = journalScroll.getBoundingClientRect();
+            const thRect = th.getBoundingClientRect();
+            // Позиция центра колонки относительно контента scroll.
+            const contentLeft = thRect.left - scrollRect.left + journalScroll.scrollLeft;
+            const targetScrollLeft = contentLeft + thRect.width / 2 - journalScroll.clientWidth / 2;
+            journalScroll.scrollLeft = Math.max(0, targetScrollLeft);
+        }
+    }
+
+    // Вертикальный скролл поурочного плана — центрируем строку idx в panelRight.
+    const panelRight = document.getElementById('panelRight');
+    if (panelRight) {
+        const pBody = document.getElementById('pBody');
+        const rows = pBody ? pBody.querySelectorAll('tr.lesson-row:not(.plan-filler-row)') : [];
+        const row = rows[idx];
+        if (row) {
+            const panelRect = panelRight.getBoundingClientRect();
+            const rowRect = row.getBoundingClientRect();
+            const contentTop = rowRect.top - panelRect.top + panelRight.scrollTop;
+            const targetScrollTop = contentTop + rowRect.height / 2 - panelRight.clientHeight / 2;
+            panelRight.scrollTop = Math.max(0, targetScrollTop);
+        }
+    }
 }
 
 function fillPlanFillers() {
