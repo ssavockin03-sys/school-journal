@@ -253,10 +253,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 /* ============================================================
    ФОКУС ЯЧЕЙКИ — голубая обводка по краям.
-   У ячеек колонки «сегодня» псевдоэлементы ::before и ::after
-   заняты синими границами. Поэтому для них используем outline,
-   а для всех остальных — ::after. Так обводка не конфликтует
-   с границами «сегодня» и появляется на любых ячейках.
+   Для ячеек ВНЕ колонки «сегодня» используем ::after (он свободен).
+   Для ячеек ВНУТРИ колонки «сегодня» используем outline (::before и
+   ::after там заняты синими границами).
    ============================================================ */
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within,
@@ -279,14 +278,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     z-index: 10;
     box-sizing: border-box;
 }
-/* Ячейки ВНУТРИ колонки «сегодня» — обводка через outline,
-   потому что ::before и ::after уже заняты синими границами.
-   outline-offset: 0 — линия идёт ровно по внешнему периметру td. */
+/* Ячейки ВНУТРИ колонки «сегодня» — обводка через outline.
+   outline-offset: -1.5px сдвигает линию внутрь ровно на её толщину,
+   чтобы она легла по внешнему краю td, а не вылезала наружу. */
 .marks-table td.col-date.col-today:focus-within,
 .marks-table td.col-qtr.col-today:focus-within,
 .marks-table td.col-period.col-today:focus-within {
     outline: 1.5px solid #60A5FA;
-    outline-offset: 0;
+    outline-offset: -1.5px;
 }
 /* Для ячеек «сегодня» отключаем фокусный ::after, чтобы он не рисовался поверх синей правой границы */
 .marks-table td.col-date.col-today:focus-within::after,
