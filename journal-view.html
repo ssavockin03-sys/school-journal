@@ -253,9 +253,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 /* ============================================================
    ФОКУС ЯЧЕЙКИ — голубая обводка по краям.
-   Для ячеек ВНЕ колонки «сегодня» используем ::after (он свободен).
-   Для ячеек ВНУТРИ колонки «сегодня» используем outline (::before и
-   ::after там заняты синими границами).
    ============================================================ */
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within,
@@ -263,7 +260,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     position: relative;
     z-index: 9;
 }
-/* Ячейки ВНЕ колонки «сегодня» — обводка через ::after */
 .marks-table td.col-date:focus-within::after,
 .marks-table td.col-qtr:focus-within::after,
 .marks-table td.col-period:focus-within::after {
@@ -278,16 +274,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     z-index: 10;
     box-sizing: border-box;
 }
-/* Ячейки ВНУТРИ колонки «сегодня» — обводка через outline.
-   outline-offset: -1.5px сдвигает линию внутрь ровно на её толщину,
-   чтобы она легла по внешнему краю td, а не вылезала наружу. */
 .marks-table td.col-date.col-today:focus-within,
 .marks-table td.col-qtr.col-today:focus-within,
 .marks-table td.col-period.col-today:focus-within {
     outline: 1.5px solid #60A5FA;
     outline-offset: -1.5px;
 }
-/* Для ячеек «сегодня» отключаем фокусный ::after, чтобы он не рисовался поверх синей правой границы */
 .marks-table td.col-date.col-today:focus-within::after,
 .marks-table td.col-qtr.col-today:focus-within::after,
 .marks-table td.col-period.col-today:focus-within::after {
@@ -331,6 +323,57 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right tbody td.lesson-date-cell {
     font-weight: 600; background: #FFFFFF !important; vertical-align: middle;
     color: #0EA5E9; font-size: 12px; text-align: center; padding: 0 !important;
+}
+
+/* ============================================================
+   ВЫДЕЛЕНИЕ СТРОКИ «СЕГОДНЯ» В ПОУРОЧНОМ ПЛАНИРОВАНИИ.
+   Границы рисуем на каждой td строки: слева на ::before,
+   справа на ::after; верх и низ — на первой/последней td.
+   ============================================================ */
+.panel-right tbody tr.lesson-row.lesson-today > td::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    left: 0;
+    width: 1px;
+    background: #1E40AF;
+    pointer-events: none;
+    z-index: 8;
+}
+.panel-right tbody tr.lesson-row.lesson-today > td::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    right: -1px;
+    width: 1px;
+    background: #1E40AF;
+    pointer-events: none;
+    z-index: 8;
+}
+.panel-right tbody tr.lesson-row.lesson-today > td {
+    border-top: 1px solid #1E40AF !important;
+    border-bottom: 1px solid #1E40AF !important;
+}
+
+/* Шапка-дата для сегодняшнего урока — две строки */
+.panel-right tbody td.lesson-date-cell .today-date {
+    display: block;
+    font-size: 12px;
+    color: #0EA5E9;
+    font-weight: 500;
+    line-height: 1.1;
+}
+.panel-right tbody td.lesson-date-cell .today-label {
+    display: block;
+    font-size: 9px;
+    color: #475569;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-top: 2px;
+    text-transform: lowercase;
+    letter-spacing: 0.1px;
 }
 
 .plan-filler-cell { background: #FFFFFF !important; pointer-events: none; }
@@ -483,7 +526,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .fio-table thead th { position: static; }
     .marks-table thead th { position: static; }
 
-    /* Только ширины и уменьшение шрифта ФИО — чтобы имена влезали целиком */
     .fio-table-wrapper { width: 200px; }
     .fio-table { width: 200px; }
     .col-date   { width: 38px; min-width: 38px; max-width: 38px; }
@@ -491,7 +533,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .col-avg    { width: 46px; min-width: 46px; max-width: 46px; }
     .col-qtr    { width: 46px; min-width: 46px; max-width: 46px; }
 
-    /* Имена учеников — компактнее, но читаемо */
     .fio-table td { padding: 0 6px; }
     .fio-table .student-number-text { width: 16px; margin-right: 4px; font-size: 11.5px; }
     .fio-table .student-name-text { font-size: 11.5px; }
@@ -1385,11 +1426,14 @@ function renderLessonPlanRows() {
     const pBody = document.getElementById('pBody');
     pBody.innerHTML = '';
 
+    const todayIsoStr = todayIso();
+
     DATES.forEach((d, dIdx) => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: [] };
+        const isToday = d.iso === todayIsoStr;
 
         const tr = document.createElement('tr');
-        tr.className = 'lesson-row';
+        tr.className = 'lesson-row' + (isToday ? ' lesson-today' : '');
         tr.dataset.gradeKey = d.gradeKey;
 
         const tdNum = document.createElement('td');
@@ -1399,7 +1443,13 @@ function renderLessonPlanRows() {
 
         const tdDate = document.createElement('td');
         tdDate.className = 'lesson-date-cell';
-        tdDate.textContent = d.dateFull;
+        if (isToday) {
+            tdDate.innerHTML =
+                '<span class="today-date">' + escapeHtml(d.dateFull) + '</span>' +
+                '<span class="today-label">сегодня</span>';
+        } else {
+            tdDate.textContent = d.dateFull;
+        }
         tr.appendChild(tdDate);
 
         const tdTheme = document.createElement('td');
