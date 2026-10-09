@@ -251,18 +251,23 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* Фокус ячейки — обводка через ::before, растянутая на всю ячейку
-   с компенсацией правого и нижнего бордеров (right/bottom = -1px).
-   ::after НЕ используем, потому что он занят правой границей «сегодня». */
+/* ============================================================
+   ФОКУС ЯЧЕЙКИ — голубая обводка по краям.
+   У ячеек колонки «сегодня» псевдоэлементы ::before и ::after
+   заняты синими границами. Поэтому для них используем outline,
+   а для всех остальных — ::after. Так обводка не конфликтует
+   с границами «сегодня» и появляется на любых ячейках.
+   ============================================================ */
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within,
 .marks-table td.col-period:focus-within {
     position: relative;
     z-index: 9;
 }
-.marks-table td.col-date:focus-within::before,
-.marks-table td.col-qtr:focus-within::before,
-.marks-table td.col-period:focus-within::before {
+/* Ячейки ВНЕ колонки «сегодня» — обводка через ::after */
+.marks-table td.col-date:focus-within::after,
+.marks-table td.col-qtr:focus-within::after,
+.marks-table td.col-period:focus-within::after {
     content: '';
     position: absolute;
     top: 0;
@@ -273,7 +278,22 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     pointer-events: none;
     z-index: 10;
     box-sizing: border-box;
-    background: transparent;
+}
+/* Ячейки ВНУТРИ колонки «сегодня» — обводка через outline,
+   потому что ::before и ::after уже заняты синими границами.
+   outline-offset: 0 — линия идёт ровно по внешнему периметру td. */
+.marks-table td.col-date.col-today:focus-within,
+.marks-table td.col-qtr.col-today:focus-within,
+.marks-table td.col-period.col-today:focus-within {
+    outline: 1.5px solid #60A5FA;
+    outline-offset: 0;
+}
+/* Для ячеек «сегодня» отключаем фокусный ::after, чтобы он не рисовался поверх синей правой границы */
+.marks-table td.col-date.col-today:focus-within::after,
+.marks-table td.col-qtr.col-today:focus-within::after,
+.marks-table td.col-period.col-today:focus-within::after {
+    content: none;
+    border: none;
 }
 
 .marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
