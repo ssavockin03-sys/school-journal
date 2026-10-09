@@ -133,7 +133,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
-.marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; }
+.marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; position: relative; }
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
 .marks-table thead { position: sticky; top: 0; z-index: 10; }
 .marks-table thead th { background: #EBF0F6 !important; }
@@ -143,6 +143,65 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead tr:nth-child(2) .col-date { font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; cursor: pointer !important; user-select: none; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #DFE7F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
+
+/* Шапка с датой и подписью «сегодня» в две строки */
+.marks-table thead tr:first-child th.col-date.col-today {
+    padding: 4px 2px;
+    line-height: 1.15;
+    vertical-align: middle;
+}
+.marks-table thead tr:first-child th.col-date .today-date {
+    display: block;
+    font-size: 12px;
+    color: #0EA5E9;
+    font-weight: 500;
+    line-height: 1.1;
+}
+.marks-table thead tr:first-child th.col-date .today-label {
+    display: block;
+    font-size: 9px;
+    color: #1E40AF;
+    font-weight: 600;
+    line-height: 1.1;
+    margin-top: 2px;
+    text-transform: lowercase;
+    letter-spacing: 0.1px;
+}
+
+/* Тёмно-синее выделение колонки «сегодня» — только границы, без изменения фона.
+   Левая и правая границы рисуются через ::before/::after на каждой ячейке td/th,
+   чтобы не ломать layout таблицы. */
+.marks-table th.col-today::before,
+.marks-table td.col-today::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    left: 0;
+    width: 2px;
+    background: #1E40AF;
+    pointer-events: none;
+    z-index: 8;
+}
+.marks-table th.col-today::after,
+.marks-table td.col-today::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    right: -1px;
+    width: 2px;
+    background: #1E40AF;
+    pointer-events: none;
+    z-index: 8;
+}
+/* Верхняя граница — на шапке, нижняя — на последней строке тела */
+.marks-table thead tr:first-child th.col-today {
+    border-top: 2px solid #1E40AF !important;
+}
+.marks-table tbody tr:last-child td.col-today {
+    border-bottom: 2px solid #1E40AF !important;
+}
 
 .marks-table.period-mode thead th.col-period-header {
     width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px;
@@ -194,9 +253,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
 /* Фокус ячейки — жирная обводка ровно по внешним границам td,
-   включая правый и нижний бордеры. Рисуем через ::after,
-   растянутый на всю ячейку (right/bottom = -1px, чтобы
-   перекрыть border-right и border-bottom самой td). */
+   включая правый и нижний бордеры. */
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within,
 .marks-table td.col-period:focus-within {
@@ -1208,7 +1265,9 @@ function renderMainTable() {
         th.title = 'Урок №' + d.lessonNum;
         if (d.iso === todayIsoStr) {
             th.classList.add('col-today');
-            th.innerHTML = d.dateNoYear + '<span class="today-label">сегодня</span>';
+            th.innerHTML =
+                '<span class="today-date">' + escapeHtml(d.dateNoYear) + '</span>' +
+                '<span class="today-label">сегодня</span>';
         } else {
             th.textContent = d.dateNoYear;
         }
