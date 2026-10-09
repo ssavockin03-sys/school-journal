@@ -193,16 +193,29 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* Фокус ячейки — ровная обводка по краям, перекрывающая правый/нижний бордер.
-   outline не влияет на layout таблицы и с отрицательным outline-offset
-   ложится точно по визуальным границам td. */
+/* Фокус ячейки — жирная обводка ровно по внешним границам td,
+   включая правый и нижний бордеры. Рисуем через ::after,
+   растянутый на всю ячейку (right/bottom = -1px, чтобы
+   перекрыть border-right и border-bottom самой td). */
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within,
 .marks-table td.col-period:focus-within {
     position: relative;
     z-index: 6;
-    outline: 1.5px solid #60A5FA;
-    outline-offset: -2px;
+}
+.marks-table td.col-date:focus-within::after,
+.marks-table td.col-qtr:focus-within::after,
+.marks-table td.col-period:focus-within::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: -1px;
+    bottom: -1px;
+    border: 1.5px solid #60A5FA;
+    pointer-events: none;
+    z-index: 7;
+    box-sizing: border-box;
 }
 
 .marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
