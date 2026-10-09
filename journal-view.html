@@ -159,8 +159,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .marks-table thead tr:first-child th.col-date .today-label {
     display: block;
-    font-size: 9px;
-    color: #1E40AF;
+    font-size: 11px;
+    color: #475569;
     font-weight: 600;
     line-height: 1.1;
     margin-top: 2px;
@@ -169,8 +169,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 
 /* Тёмно-синее выделение колонки «сегодня» — только границы, без изменения фона.
-   Левая и правая границы рисуются через ::before/::after на каждой ячейке td/th,
-   чтобы не ломать layout таблицы. */
+   Жирность 1px — как у обычных бордеров таблицы. */
 .marks-table th.col-today::before,
 .marks-table td.col-today::before {
     content: '';
@@ -178,7 +177,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     top: 0;
     bottom: -1px;
     left: 0;
-    width: 2px;
+    width: 1px;
     background: #1E40AF;
     pointer-events: none;
     z-index: 8;
@@ -190,17 +189,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     top: 0;
     bottom: -1px;
     right: -1px;
-    width: 2px;
+    width: 1px;
     background: #1E40AF;
     pointer-events: none;
     z-index: 8;
 }
 /* Верхняя граница — на шапке, нижняя — на последней строке тела */
 .marks-table thead tr:first-child th.col-today {
-    border-top: 2px solid #1E40AF !important;
+    border-top: 1px solid #1E40AF !important;
 }
 .marks-table tbody tr:last-child td.col-today {
-    border-bottom: 2px solid #1E40AF !important;
+    border-bottom: 1px solid #1E40AF !important;
 }
 
 .marks-table.period-mode thead th.col-period-header {
