@@ -167,8 +167,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     text-transform: lowercase;
     letter-spacing: 0.1px;
 }
+
 /* Тёмно-синее выделение колонки «сегодня» — только границы, без изменения фона.
-   Жирность 1px — как у обычных бордеров таблицы. */
+   Жирность 1px — как у обычных бордеров таблицы.
+   Рисуем левую границу на ::before, правую — на ::after. */
 .marks-table th.col-today::before,
 .marks-table td.col-today::before {
     content: '';
@@ -250,27 +252,16 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* Фокус ячейки — жирная обводка ровно по внешним границам td,
-   включая правый и нижний бордеры. */
+/* Фокус ячейки — обводка через outline, чтобы не конфликтовать
+   с псевдоэлементами границ «сегодня» (::before/::after).
+   outline рисуется поверх всего и не занимает layout. */
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within,
 .marks-table td.col-period:focus-within {
     position: relative;
-    z-index: 6;
-}
-.marks-table td.col-date:focus-within::after,
-.marks-table td.col-qtr:focus-within::after,
-.marks-table td.col-period:focus-within::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: -1px;
-    bottom: -1px;
-    border: 1.5px solid #60A5FA;
-    pointer-events: none;
-    z-index: 7;
-    box-sizing: border-box;
+    z-index: 9; /* выше синих границ «сегодня» (z-index: 8) */
+    outline: 1.5px solid #60A5FA;
+    outline-offset: -1px;
 }
 
 .marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
