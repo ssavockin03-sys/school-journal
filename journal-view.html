@@ -193,13 +193,16 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* Фокус ячейки — через box-shadow inset, чтобы не влиять на layout таблицы */
+/* Фокус ячейки — ровная обводка по краям, перекрывающая правый/нижний бордер.
+   outline не влияет на layout таблицы и с отрицательным outline-offset
+   ложится точно по визуальным границам td. */
 .marks-table td.col-date:focus-within,
 .marks-table td.col-qtr:focus-within,
 .marks-table td.col-period:focus-within {
     position: relative;
     z-index: 6;
-    box-shadow: inset 0 0 0 1.5px #60A5FA;
+    outline: 1.5px solid #60A5FA;
+    outline-offset: -2px;
 }
 
 .marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
@@ -1795,8 +1798,6 @@ function hl(input, colIdx, active) {
         if (fioRows[trIndex]) fioRows[trIndex].querySelectorAll('td').forEach(td => td.classList.toggle('highlight-cross', active));
     }
     document.querySelectorAll('#jBody td[data-col="' + colIdx + '"]').forEach(td => td.classList.toggle('highlight-cross', active));
-    /* Отложенный пересчёт — таблица не «сдвигается» при фокусе (box-shadow inset),
-       но пересчитаем на всякий случай после снятия/установки фокуса. */
     setTimeout(fillFillers, 0);
 }
 
@@ -1888,7 +1889,7 @@ async function upqtr(studentId, inputElement) {
         return;
     }
     const displayLayer = inputElement.previousElementSibling;
-    if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
+    if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
