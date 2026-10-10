@@ -847,47 +847,43 @@ function todayIso() {
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 
+/* ============================================================
+   ХРАНЕНИЕ ДЗ. Раньше это был массив строк. Теперь это массив
+   объектов { id, text }. id уникален для каждого элемента ДЗ,
+   генерируется при создании и сохраняется в JOURNAL.lessons[gradeKey].h.
+   Это позволяет commit-у искать «свой» элемент по id, а не по индексу,
+   и переживать одновременные правки из разных редакторов.
+   ============================================================ */
+function makeHwId() {
+    return 'hw_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+}
+
+/* Приводит h к массиву объектов { id, text }. */
 function normalizeHwList(h) {
-    if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== '');
-    if (typeof h === 'string' && h.trim() !== '') return [h];
-    return [];
+    if (!Array.isArray(h)) {
+        if (typeof h === 'string' && h.trim() !== '') return [{ id: makeHwId(), text: h }];
+        return [];
+    }
+    const out = [];
+    h.forEach(item => {
+        if (item == null) return;
+        if (typeof item === 'string') {
+            if (item.trim() === '') return;
+            out.push({ id: makeHwId(), text: item });
+        } else if (typeof item === 'object') {
+            const text = (item.text != null) ? String(item.text) : '';
+            if (text.trim() === '') return;
+            out.push({ id: item.id || makeHwId(), text });
+        }
+    });
+    return out;
 }
 
 /* ============================================================
-   ЕДИНЫЙ РЕДАКТОР С НЕЗАВИСИМЫМ ТАЙМЕРОМ.
-
-   Каждый редактор хранит свой setTimeout и свой commit().
-   При переключении на новый редактор старый:
-   - удаляется из DOM (чтобы не висел),
-   - НЕ сбрасывается: его таймер продолжает жить
-     и через 200 мс вызывает commit(), который перерисует
-     СВОЮ ячейку из данных JOURNAL.
+   РЕДАКТОРЫ.
    ============================================================ */
-let activeEditor = null; // { commit(), cancel(), dom, timer, scheduleCommit() }
+let activeEditor = null;
 
-/* Мягко закрыть текущий редактор: снять DOM, но НЕ отменять commit.
-   Явно запускаем таймер, если он ещё не запущен — чтобы данные
-   сохранились, даже если blur не успел сработать. */
-function detachActiveEditorDom() {
-    if (!activeEditor) return;
-    const ed = activeEditor;
-    activeEditor = null;
-    // Убираем DOM.
-    if (ed.dom && ed.dom.parentNode) {
-        ed.dom.parentNode.removeChild(ed.dom);
-    }
-    // Гарантированно запускаем commit через 200 мс, если таймер ещё не идёт.
-    if (ed.timer) {
-        // таймер уже запущен — он сам вызовет commit.
-    } else {
-        ed.timer = setTimeout(() => {
-            ed.timer = null;
-            try { ed.commit(); } catch (e) { console.error(e); }
-        }, EDIT_DELAY_MS);
-    }
-}
-
-/* Синхронно применить активный редактор немедленно. */
 function commitActiveEditor() {
     if (!activeEditor) return;
     const ed = activeEditor;
@@ -902,6 +898,23 @@ function cancelActiveEditor() {
     activeEditor = null;
     if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; }
     try { ed.cancel(); } catch (e) { console.error(e); }
+}
+
+/* Мягко отсоединить текущий редактор от DOM, не отменяя commit.
+   Если у редактора ещё нет таймера (blur не успел сработать), запускаем. */
+function detachActiveEditorDom() {
+    if (!activeEditor) return;
+    const ed = activeEditor;
+    activeEditor = null;
+    if (ed.dom && ed.dom.parentNode) {
+        ed.dom.parentNode.removeChild(ed.dom);
+    }
+    if (!ed.timer) {
+        ed.timer = setTimeout(() => {
+            ed.timer = null;
+            try { ed.commit(); } catch (e) { console.error(e); }
+        }, EDIT_DELAY_MS);
+    }
 }
 
 async function init() {
@@ -949,6 +962,12 @@ async function init() {
             qtrGrades: journalRecord.qtr_grades || {},
             lessonTypes: journalRecord.lesson_types || {}
         };
+        // Мигрируем старый формат lessons[*].h в новый (объекты с id).
+        Object.keys(JOURNAL.lessons).forEach(k => {
+            const l = JOURNAL.lessons[k];
+            if (!l) return;
+            l.h = normalizeHwList(l.h);
+        });
     } else {
         JOURNAL = { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
     }
@@ -1512,7 +1531,7 @@ function renderLessonPlanRows() {
         const tdHw = document.createElement('td');
         tdHw.className = 'homework-cell';
         tdHw.dataset.gradeKey = d.gradeKey;
-        renderHwContent(tdHw, d.gradeKey, normalizeHwList(l.h));
+        renderHwContent(tdHw, d.gradeKey, l.h);
 
         const onlineBtn = document.createElement('button');
         onlineBtn.type = 'button';
@@ -1636,9 +1655,6 @@ function createPlanFillerRow(height) {
 
 /* ============================================================
    КЛИКИ.
-   При открытии нового редактора вызывается detachActiveEditorDom(),
-   которая убирает DOM старого, но НЕ отменяет его commit —
-   таймер продолжает идти и применит изменения через 200 мс.
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
@@ -1656,8 +1672,8 @@ document.addEventListener('DOMContentLoaded', () => {
             detachActiveEditorDom();
             const cell = hwItem.closest('.homework-cell');
             const gradeKey = cell.dataset.gradeKey;
-            const idx = parseInt(hwItem.dataset.idx, 10);
-            openHwItemEdit(cell, gradeKey, idx, hwItem.dataset.value || '');
+            const hwId = hwItem.dataset.hwId;
+            openHwItemEdit(cell, gradeKey, hwId, hwItem.dataset.value || '');
             return;
         }
         const addHwBtn = e.target.closest('.add-hw-btn');
@@ -1791,24 +1807,25 @@ function renderHwContent(cell, gradeKey, hwList) {
     const listWrap = document.createElement('div');
     listWrap.className = 'hw-list';
 
-    if (hwList.length === 0) {
+    const list = normalizeHwList(hwList);
+
+    if (list.length === 0) {
         const ph = document.createElement('span');
         ph.className = 'placeholder-text';
         ph.textContent = '+ ДЗ к след. уроку';
         listWrap.appendChild(ph);
     } else {
-        hwList.forEach((hw, idx) => {
+        list.forEach(hw => {
             const item = document.createElement('div');
             item.className = 'hw-list-item';
-            item.textContent = hw;
-            item.dataset.idx = idx;
-            item.dataset.value = hw;
+            item.textContent = hw.text;
+            item.dataset.hwId = hw.id;
+            item.dataset.value = hw.text;
             item.title = 'Нажмите, чтобы редактировать';
             listWrap.appendChild(item);
 
             const divider = document.createElement('span');
             divider.className = 'hw-divider';
-            divider.dataset.afterIdx = idx;
             listWrap.appendChild(divider);
         });
 
@@ -1822,18 +1839,12 @@ function renderHwContent(cell, gradeKey, hwList) {
     cell.appendChild(listWrap);
 }
 
-function findHwItemByIndex(listWrap, idx) {
-    const items = listWrap.querySelectorAll('.hw-list-item');
-    return items[idx] || null;
-}
-
-function openHwItemEdit(cell, gradeKey, idx, value) {
+function openHwItemEdit(cell, gradeKey, hwId, value) {
     const listWrap = cell.querySelector('.hw-list');
     if (!listWrap) return;
-    const target = findHwItemByIndex(listWrap, idx);
+    const target = listWrap.querySelector('.hw-list-item[data-hw-id="' + hwId + '"]');
     if (!target) {
-        const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
-        renderHwContent(cell, gradeKey, arr);
+        renderHwContent(cell, gradeKey, (JOURNAL.lessons[gradeKey] || {}).h);
         return;
     }
 
@@ -1857,15 +1868,22 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     const commit = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
-        const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-        if (txt === '') arr.splice(idx, 1); else arr[idx] = txt;
-        JOURNAL.lessons[gradeKey].h = arr;
-        renderHwContent(cell, gradeKey, arr);
+        const list = normalizeHwList(JOURNAL.lessons[gradeKey].h);
+        // Ищем элемент по id — он не зависит от индексов и от других правок.
+        const pos = list.findIndex(x => x.id === hwId);
+        if (pos === -1) {
+            // Элемент был удалён кем-то другим — ничего не делаем.
+        } else if (txt === '') {
+            list.splice(pos, 1);
+        } else {
+            list[pos] = { id: hwId, text: txt };
+        }
+        JOURNAL.lessons[gradeKey].h = list;
+        renderHwContent(cell, gradeKey, list);
         saveJournal();
     };
     const cancel = () => {
-        const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
-        renderHwContent(cell, gradeKey, arr);
+        renderHwContent(cell, gradeKey, (JOURNAL.lessons[gradeKey] || {}).h);
     };
 
     const ed = { commit, cancel, dom: bubble, timer: null };
@@ -1892,15 +1910,15 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
 
 function openNewHwItem(cell, gradeKey) {
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
-    const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-    const newIdx = arr.length;
-    arr.push('');
-    JOURNAL.lessons[gradeKey].h = arr;
-    renderHwContent(cell, gradeKey, arr);
+    const list = normalizeHwList(JOURNAL.lessons[gradeKey].h);
+    const newId = makeHwId();
+    list.push({ id: newId, text: '' });
+    JOURNAL.lessons[gradeKey].h = list;
+    renderHwContent(cell, gradeKey, list);
 
     const listWrap = cell.querySelector('.hw-list');
     if (!listWrap) return;
-    const target = findHwItemByIndex(listWrap, newIdx);
+    const target = listWrap.querySelector('.hw-list-item[data-hw-id="' + newId + '"]');
     if (!target) return;
 
     const bubble = document.createElement('div');
@@ -1923,10 +1941,13 @@ function openNewHwItem(cell, gradeKey) {
     const commit = () => {
         const txt = ta.value.trim();
         const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-        if (txt === '') {
-            current.splice(newIdx, 1);
+        const pos = current.findIndex(x => x.id === newId);
+        if (pos === -1) {
+            // элемента нет — ничего не делаем
+        } else if (txt === '') {
+            current.splice(pos, 1);
         } else {
-            current[newIdx] = txt;
+            current[pos] = { id: newId, text: txt };
         }
         JOURNAL.lessons[gradeKey].h = current;
         renderHwContent(cell, gradeKey, current);
@@ -1934,7 +1955,8 @@ function openNewHwItem(cell, gradeKey) {
     };
     const cancel = () => {
         const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-        current.splice(newIdx, 1);
+        const pos = current.findIndex(x => x.id === newId);
+        if (pos !== -1) current.splice(pos, 1);
         JOURNAL.lessons[gradeKey].h = current;
         renderHwContent(cell, gradeKey, current);
     };
