@@ -147,14 +147,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     background: #F8FAFC; color: #334155; font-size: 14px; font-weight: 700;
     padding: 8px 10px; border-bottom: 1px solid #E2E8F0; border-right: none; height: auto;
 }
-.journal-table tbody tr:nth-child(5n + 2):not(.class-head-row) td { border-bottom: 1px solid #000000; }
 
 .journal-table .num-col { text-align: center; color: #334155; font-weight: 500; }
 .journal-table .student-col { text-align: left; }
 .journal-table .presence-col { text-align: center; padding: 4px 6px; }
 .journal-table .grade-col { text-align: center; padding: 4px 4px; }
 
-/* Ячейка присутствия — БЕЗ курсора-руки */
 .presence-box {
     display: block; width: 100%; height: 28px; line-height: 28px;
     border-radius: 4px; font-size: 13px; font-weight: 600;
@@ -446,12 +444,8 @@ const LESSON_TYPES = [
     { abbr: 'ЧТ/М', full: 'Чтение молча' }, { abbr: 'ЭКС', full: 'Экскурсия' }, { abbr: 'Я/Т', full: 'Языковая тема' }
 ];
 
-/* Допустимые метки присутствия (вводятся с клавиатуры) */
 const PRESENCE_VALUES = ['Н', 'Б', 'П', 'СП', 'О'];
 
-/* ------------------------------------------------------------
-   Глобальное состояние
-   ------------------------------------------------------------ */
 let CLASS_ID = null;
 let SUBJECT_ID = null;
 let DATE_ISO = null;
@@ -468,9 +462,6 @@ let ALL_CLASSES = [];
 let ALL_CLASS_SUBJECTS = [];
 let ALL_SCHEDULES = [];
 
-/* ------------------------------------------------------------
-   Утилиты
-   ------------------------------------------------------------ */
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
     const s = String(text);
@@ -503,8 +494,6 @@ function getInitials(fullName) {
     const b = parts[1] ? parts[1].charAt(0).toUpperCase() : '';
     return (a + b) || '—';
 }
-
-/* Класс CSS-плашки по метке присутствия */
 function getPresenceCls(val) {
     if (!val) return '';
     if (val === 'Н') return 'h';
@@ -512,8 +501,6 @@ function getPresenceCls(val) {
     if (val === 'О') return 'orange';
     return '';
 }
-
-/* Является ли значение меткой присутствия */
 function isPresenceValue(val) {
     if (!val) return false;
     return PRESENCE_VALUES.includes(String(val).toUpperCase().trim());
@@ -532,9 +519,6 @@ function showToast(message) {
     }, 2500);
 }
 
-/* ------------------------------------------------------------
-   Инициализация
-   ------------------------------------------------------------ */
 async function init() {
     const p = getUrlParams();
     CLASS_ID = p.classId;
@@ -613,9 +597,6 @@ function collectSubjectsFromSchedule(schedules, classId) {
     return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 }
 
-/* ------------------------------------------------------------
-   Шапка
-   ------------------------------------------------------------ */
 function renderHeader() {
     document.getElementById('classDropdownName').textContent = CLASS_OBJ.name;
     document.getElementById('subjectDropdownName').textContent = SUBJECT_NAME;
@@ -686,9 +667,6 @@ function closeAllDropdowns() {
 }
 document.addEventListener('click', closeAllDropdowns);
 
-/* ------------------------------------------------------------
-   Детали урока
-   ------------------------------------------------------------ */
 function renderDetails() {
     document.getElementById('dSubject').textContent = SUBJECT_NAME;
     document.getElementById('dDate').textContent =
@@ -700,17 +678,11 @@ function renderDetails() {
     document.getElementById('dTheme').classList.toggle('empty', !lesson.t);
 }
 
-/* ------------------------------------------------------------
-   Учитель
-   ------------------------------------------------------------ */
 function renderTeacher() {
     document.getElementById('teacherName').textContent = TEACHER_NAME || 'Учитель не назначен';
     document.getElementById('teacherAvatar').textContent = getInitials(TEACHER_NAME);
 }
 
-/* ------------------------------------------------------------
-   Домашние задания
-   ------------------------------------------------------------ */
 function renderHw() {
     const tbody = document.getElementById('hwTableBody');
     tbody.innerHTML = '';
@@ -744,9 +716,6 @@ function renderHw() {
     });
 }
 
-/* ------------------------------------------------------------
-   Работы на уроке
-   ------------------------------------------------------------ */
 function renderWorks() {
     const tbody = document.getElementById('worksTableBody');
     tbody.innerHTML = '';
@@ -772,14 +741,6 @@ function renderWorks() {
     document.getElementById('colHwLabel').textContent = 'ДЗ-1';
 }
 
-/* ------------------------------------------------------------
-   Журнал — таблица учеников
-   ------------------------------------------------------------
-   Присутствие и оценки хранятся в ОДНОМ ключе GRADE_KEY.
-   Если значение — буква из PRESENCE_VALUES, это присутствие.
-   Если значение — оценка 1–5, это оценка.
-   Так одна и та же ячейка видна и в журнале, и на странице урока.
-   ------------------------------------------------------------ */
 function renderJournal() {
     const tbody = document.getElementById('journalBody');
     tbody.innerHTML = '';
@@ -813,7 +774,6 @@ function renderJournal() {
 
         const value = (gradesForLesson[student.id] || {})[GRADE_KEY] || '';
 
-        // Присутствие
         const tdPresence = document.createElement('td');
         tdPresence.className = 'presence-col';
         const presenceBox = document.createElement('span');
@@ -824,7 +784,6 @@ function renderJournal() {
         tdPresence.appendChild(presenceBox);
         tr.appendChild(tdPresence);
 
-        // Дом. задание
         const tdHw = document.createElement('td');
         tdHw.className = 'grade-col';
         const hwBox = makeGradeBox(isPresenceValue(value) ? '' : value);
@@ -832,7 +791,6 @@ function renderJournal() {
         tdHw.appendChild(hwBox);
         tr.appendChild(tdHw);
 
-        // Работа на уроке — та же ячейка данных
         const tdWork = document.createElement('td');
         tdWork.className = 'grade-col';
         const workBox = makeGradeBox(isPresenceValue(value) ? '' : value);
@@ -840,7 +798,6 @@ function renderJournal() {
         tdWork.appendChild(workBox);
         tr.appendChild(tdWork);
 
-        // Комментарий
         const tdComment = document.createElement('td');
         tdComment.className = 'comment-col';
         tdComment.textContent = 'Добавить комментарий';
@@ -869,9 +826,6 @@ function makeGradeBox(val) {
     return box;
 }
 
-/* ------------------------------------------------------------
-   Редактирование присутствия (ввод с клавиатуры)
-   ------------------------------------------------------------ */
 function editPresence(studentId, gradeKey, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
@@ -900,12 +854,10 @@ function editPresence(studentId, gradeKey, boxEl) {
         const v = input.value.trim().toUpperCase();
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
         if (v === '') {
-            // снять метку
             delete JOURNAL.grades[studentId][gradeKey];
         } else if (isPresenceValue(v)) {
             JOURNAL.grades[studentId][gradeKey] = v;
         } else {
-            // неверный ввод — сбрасываем, ничего не сохраняем
             renderJournal();
             return;
         }
@@ -927,9 +879,6 @@ function editPresence(studentId, gradeKey, boxEl) {
     });
 }
 
-/* ------------------------------------------------------------
-   Редактирование оценки
-   ------------------------------------------------------------ */
 function editGrade(studentId, gradeKey, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
@@ -959,7 +908,6 @@ function editGrade(studentId, gradeKey, boxEl) {
         if (v === '') {
             delete JOURNAL.grades[studentId][gradeKey];
         } else if (isPresenceValue(v)) {
-            // не разрешаем вводить метки присутствия в колонку оценки
             renderJournal();
             return;
         } else {
@@ -983,9 +931,6 @@ function editGrade(studentId, gradeKey, boxEl) {
     });
 }
 
-/* ------------------------------------------------------------
-   Сохранение
-   ------------------------------------------------------------ */
 async function saveJournal() {
     await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
         grades: JOURNAL.grades,
@@ -995,17 +940,11 @@ async function saveJournal() {
     });
 }
 
-/* ------------------------------------------------------------
-   Файлы
-   ------------------------------------------------------------ */
 function onFileChosen() {
     const f = document.getElementById('fileInput').files[0];
     document.getElementById('fileName').textContent = f ? f.name : 'Файл не выбран';
 }
 
-/* ------------------------------------------------------------
-   Навигация
-   ------------------------------------------------------------ */
 function goBack(url) { window.location.href = url; }
 function goJournal() {
     window.location.href = 'journal-view.html?class=' + encodeURIComponent(CLASS_ID) + '&subject=' + encodeURIComponent(SUBJECT_ID);
