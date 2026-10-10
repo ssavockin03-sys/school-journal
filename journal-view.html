@@ -140,6 +140,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .col-period { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; font-size: 12px !important; font-weight: 400 !important; position: relative; }
+.marks-table thead tr:first-child .col-date.clickable-date { cursor: pointer; user-select: none; }
+.marks-table thead tr:first-child .col-date.clickable-date:hover { background: #DBEAFE !important; color: #1D4ED8 !important; text-decoration: underline; }
 .marks-table thead tr:nth-child(2) .col-date { font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; cursor: pointer !important; user-select: none; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #DFE7F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
@@ -156,6 +158,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     font-weight: 500;
     line-height: 1.1;
 }
+.marks-table thead tr:first-child th.col-date.col-today.clickable-date:hover .today-date { color: #1D4ED8; }
 .marks-table thead tr:first-child th.col-date .today-label {
     display: block;
     font-size: 9px;
@@ -316,6 +319,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right tbody td.lesson-date-cell {
     font-weight: 600; background: #FFFFFF !important; vertical-align: middle;
     color: #0EA5E9; font-size: 12px; text-align: center; padding: 0 !important;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.panel-right tbody td.lesson-date-cell:hover {
+    background: #EFF6FF !important;
+    color: #1D4ED8;
 }
 
 .panel-right tbody tr.lesson-row.lesson-today > td {
@@ -541,7 +550,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .col-qtr    { width: 42px; min-width: 42px; max-width: 42px; }
     .fio-table .student-number-text { font-size: 11px; }
     .fio-table .student-name-text { font-size: 11px; }
-    .marks-table thead .col-filler-head,
+    .marks-table thead th.col-filler-head,
     .marks-table tbody td.col-filler-body { min-width: 34px !important; }
 }
 </style>
@@ -854,16 +863,7 @@ function normalizeHwList(h) {
 }
 
 /* ============================================================
-   ЕДИНЫЙ РЕДАКТОР.
-
-   Ключевая идея:
-   - commit() старого редактора обновляет данные и вызывает
-     saveJournal(), но НЕ перерисовывает ячейку. Это делает
-     тот, кто вызвал detachActiveEditorDom (openNewHwItem /
-     openHwItemEdit), сразу после того как старый редактор
-     закрыт.
-   - Это исключает ситуацию, когда клик по «+ ДЗ» попадает в
-     кнопку, которая исчезает из-за синхронного рендера.
+   ЕДИНЫЙ РЕДАКТОР С ЗАДЕРЖКОЙ 200 МС.
    ============================================================ */
 let activeEditor = null;
 
@@ -883,9 +883,8 @@ function cancelActiveEditor() {
     try { ed.cancel(); } catch (e) { console.error(e); }
 }
 
-/* Закрывает активный редактор синхронно: сохраняет данные, отменяет
-   таймер, убирает DOM. НЕ перерисовывает ячейку — это делает
-   вызывающий код (openNewHwItem или openHwItemEdit). */
+/* Синхронно коммитим активный редактор (без рендера его ячейки),
+   затем открепляем DOM. Рендер делает вызывающий. */
 function detachActiveEditorDom() {
     if (!activeEditor) return;
     const ed = activeEditor;
@@ -1365,8 +1364,8 @@ function renderMainTable() {
 
     DATES.forEach((d) => {
         const th = document.createElement('th');
-        th.className = 'col-date';
-        th.title = 'Урок №' + d.lessonNum;
+        th.className = 'col-date clickable-date';
+        th.title = 'Открыть страницу урока №' + d.lessonNum;
         if (d.iso === todayIsoStr) {
             th.classList.add('col-today');
             th.innerHTML =
@@ -1375,6 +1374,10 @@ function renderMainTable() {
         } else {
             th.textContent = d.dateNoYear;
         }
+        th.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLessonPage(d);
+        });
         mRow.appendChild(th);
     });
 
@@ -1479,6 +1482,7 @@ function renderLessonPlanRows() {
         tr.className = 'lesson-row' + (isToday ? ' lesson-today' : '');
         tr.dataset.gradeKey = d.gradeKey;
         tr.dataset.iso = d.iso;
+        tr.dataset.lessonNum = d.lessonNum;
 
         const tdNum = document.createElement('td');
         tdNum.className = 'lesson-num-cell';
@@ -1494,6 +1498,11 @@ function renderLessonPlanRows() {
         } else {
             tdDate.textContent = d.dateFull;
         }
+        tdDate.title = 'Открыть страницу урока';
+        tdDate.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLessonPage(d);
+        });
         tr.appendChild(tdDate);
 
         const tdTheme = document.createElement('td');
@@ -1519,6 +1528,16 @@ function renderLessonPlanRows() {
     });
 
     fillPlanFillers();
+}
+
+/* Переход на страницу урока */
+function openLessonPage(d) {
+    const params = new URLSearchParams();
+    params.set('class', CLASS_ID);
+    params.set('subject', SUBJECT_ID);
+    params.set('date', d.iso);
+    params.set('lesson', String(d.lessonNum));
+    window.location.href = 'lesson-view.html?' + params.toString();
 }
 
 function findNearestDateIndex() {
@@ -1628,7 +1647,7 @@ function createPlanFillerRow(height) {
 }
 
 /* ============================================================
-   КЛИКИ.
+   КЛИКИ ПО pBody.
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
@@ -1723,26 +1742,25 @@ function openThemeEditInline(cell, gradeKey, value) {
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
-    const commit = () => {
+    const commitFull = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         JOURNAL.lessons[gradeKey].t = txt;
         renderThemeContent(cell, gradeKey, txt);
         saveJournal();
     };
-    const cancel = () => {
-        const current = (JOURNAL.lessons[gradeKey] && JOURNAL.lessons[gradeKey].t) || value || '';
-        renderThemeContent(cell, gradeKey, current);
-    };
-    /* Для detachActiveEditorDom: сохранить данные, не трогая DOM ячейки. */
     const commitNoRender = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         JOURNAL.lessons[gradeKey].t = txt;
         saveJournal();
     };
+    const cancel = () => {
+        const current = (JOURNAL.lessons[gradeKey] && JOURNAL.lessons[gradeKey].t) || value || '';
+        renderThemeContent(cell, gradeKey, current);
+    };
 
-    const ed = { commit: commitNoRender, cancel, dom: bubble, textarea: ta, timer: null };
+    const ed = { commit: commitNoRender, liveCommit: commitFull, cancel, dom: bubble, textarea: ta, timer: null };
     activeEditor = ed;
 
     const scheduleCommit = () => {
@@ -1750,7 +1768,7 @@ function openThemeEditInline(cell, gradeKey, value) {
         ed.timer = setTimeout(() => {
             ed.timer = null;
             if (activeEditor === ed) activeEditor = null;
-            try { commit(); } catch (e) { console.error(e); }
+            try { ed.liveCommit(); } catch (e) { console.error(e); }
         }, EDIT_DELAY_MS);
     };
 
@@ -1762,18 +1780,6 @@ function openThemeEditInline(cell, gradeKey, value) {
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
     ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
-
-    // «Живой» commit для случая blur — там DOM ячейки ещё валиден,
-    // поэтому используем commit с рендером.
-    ed.liveCommit = commit;
-    ed.scheduleLive = () => {
-        if (ed.timer) return;
-        ed.timer = setTimeout(() => {
-            ed.timer = null;
-            if (activeEditor === ed) activeEditor = null;
-            try { commit(); } catch (e) { console.error(e); }
-        }, EDIT_DELAY_MS);
-    };
 }
 
 function renderHwContent(cell, gradeKey, hwList) {
@@ -1847,7 +1853,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
-    const commit = () => {
+    const commitFull = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
@@ -1856,7 +1862,6 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         renderHwContent(cell, gradeKey, arr);
         saveJournal();
     };
-    /* Commit без рендера — для detach. */
     const commitNoRender = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
@@ -1870,7 +1875,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         renderHwContent(cell, gradeKey, arr);
     };
 
-    const ed = { commit: commitNoRender, cancel, dom: bubble, textarea: ta, timer: null, liveCommit: commit };
+    const ed = { commit: commitNoRender, liveCommit: commitFull, cancel, dom: bubble, textarea: ta, timer: null };
     activeEditor = ed;
 
     const scheduleCommit = () => {
@@ -1878,7 +1883,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         ed.timer = setTimeout(() => {
             ed.timer = null;
             if (activeEditor === ed) activeEditor = null;
-            try { commit(); } catch (e) { console.error(e); }
+            try { ed.liveCommit(); } catch (e) { console.error(e); }
         }, EDIT_DELAY_MS);
     };
 
@@ -1922,7 +1927,7 @@ function openNewHwItem(cell, gradeKey) {
     ta.focus();
     ta.setSelectionRange(0, 0);
 
-    const commit = () => {
+    const commitFull = () => {
         const txt = ta.value.trim();
         const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
         if (txt === '') {
@@ -1952,7 +1957,7 @@ function openNewHwItem(cell, gradeKey) {
         renderHwContent(cell, gradeKey, current);
     };
 
-    const ed = { commit: commitNoRender, cancel, dom: bubble, textarea: ta, timer: null, liveCommit: commit };
+    const ed = { commit: commitNoRender, liveCommit: commitFull, cancel, dom: bubble, textarea: ta, timer: null };
     activeEditor = ed;
 
     const scheduleCommit = () => {
@@ -1960,7 +1965,7 @@ function openNewHwItem(cell, gradeKey) {
         ed.timer = setTimeout(() => {
             ed.timer = null;
             if (activeEditor === ed) activeEditor = null;
-            try { commit(); } catch (e) { console.error(e); }
+            try { ed.liveCommit(); } catch (e) { console.error(e); }
         }, EDIT_DELAY_MS);
     };
 
