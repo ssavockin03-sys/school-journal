@@ -12,7 +12,6 @@
 html { -webkit-font-smoothing: antialiased; }
 body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; }
 
-/* ---------- Шапка страницы (как в журнале) ---------- */
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
@@ -33,7 +32,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; }
 
-/* ---------- Контент страницы ---------- */
 .page-content {
     padding: 8px 30px 40px 30px;
     max-width: 1200px;
@@ -41,7 +39,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 
 .page-title { font-size: 26px; font-weight: 700; color: #1E293B; margin: 4px 0 20px 0; }
-.page-title .sub { font-weight: 400; color: #64748B; font-size: 18px; margin-left: 10px; }
 
 .layout-grid {
     display: grid;
@@ -50,11 +47,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     align-items: start;
     justify-content: center;
 }
-@media (max-width: 1100px) {
-    .layout-grid { grid-template-columns: 1fr; }
-}
+@media (max-width: 1100px) { .layout-grid { grid-template-columns: 1fr; } }
 
-/* ---------- Карточки-блоки ---------- */
 .card {
     background: #FFFFFF;
     border: 1px solid #CFD8E3;
@@ -62,107 +56,38 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     padding: 14px 18px 16px 18px;
     margin-bottom: 18px;
 }
-.card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-}
-.card-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1E293B;
-}
-.card-edit-link {
-    font-size: 12.5px;
-    color: #2563EB;
-    cursor: pointer;
-    text-decoration: none;
-}
+.card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.card-title { font-size: 14px; font-weight: 700; color: #1E293B; }
+.card-edit-link { font-size: 12.5px; color: #2563EB; cursor: pointer; text-decoration: none; }
 .card-edit-link:hover { text-decoration: underline; }
 
-/* Детали урока — таблица слева/справа */
 .details-table { width: 100%; border-collapse: collapse; }
-.details-table td {
-    padding: 6px 0;
-    vertical-align: top;
-    font-size: 13px;
-    border: none;
-}
-.details-table td.label {
-    color: #64748B;
-    width: 150px;
-    white-space: nowrap;
-}
-.details-table td.value {
-    color: #1E293B;
-    font-weight: 500;
-}
-.details-table td.value.link {
-    color: #2563EB;
-    font-weight: 500;
-}
+.details-table td { padding: 6px 0; vertical-align: top; font-size: 13px; border: none; }
+.details-table td.label { color: #64748B; width: 150px; white-space: nowrap; }
+.details-table td.value { color: #1E293B; font-weight: 500; }
+.details-table td.value.link { color: #2563EB; font-weight: 500; }
 .details-table td.value.empty { color: #94A3B8; font-weight: 400; }
 
-/* Файлы */
-.file-form {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-}
-.file-input-label {
-    display: inline-block;
-    padding: 5px 12px;
-    background: #F1F5F9;
-    border: 1px solid #CBD5E1;
-    border-radius: 6px;
-    font-size: 12.5px;
-    color: #334155;
-    cursor: pointer;
-}
+.file-form { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.file-input-label { display: inline-block; padding: 5px 12px; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 12.5px; color: #334155; cursor: pointer; }
 .file-input-label:hover { background: #E2E8F0; }
 .file-input-label input[type="file"] { display: none; }
 .file-name { color: #64748B; font-size: 12.5px; }
 .file-hint { color: #94A3B8; font-size: 11.5px; line-height: 1.5; margin-bottom: 10px; }
-.btn-upload {
-    display: inline-block;
-    padding: 6px 18px;
-    background: #3B82F6;
-    color: #FFFFFF;
-    border: 1px solid #3B82F6;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: inherit;
-}
+.btn-upload { display: inline-block; padding: 6px 18px; background: #3B82F6; color: #FFFFFF; border: 1px solid #3B82F6; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; }
 .btn-upload:hover { background: #2563EB; border-color: #2563EB; }
 
-/* Таблицы в блоках (ДЗ, работы) */
 .flat-table { width: 100%; border-collapse: separate; border-spacing: 0; }
 .flat-table th {
-    background: #F4F7FB;
-    color: #475569;
-    font-size: 11.5px;
-    font-weight: 600;
-    text-align: center;
-    padding: 8px 6px;
-    border-top: 1px solid #E2E8F0;
-    border-bottom: 1px solid #E2E8F0;
-    border-left: 1px solid #E2E8F0;
+    background: #F4F7FB; color: #475569; font-size: 11.5px; font-weight: 600; text-align: center;
+    padding: 8px 6px; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; border-left: 1px solid #E2E8F0;
 }
 .flat-table th:last-child { border-right: 1px solid #E2E8F0; }
 .flat-table th:first-child { border-top-left-radius: 8px; }
 .flat-table th:last-child  { border-top-right-radius: 8px; }
 .flat-table td {
-    padding: 8px 10px;
-    font-size: 12.5px;
-    color: #1E293B;
-    border-bottom: 1px solid #E2E8F0;
-    border-left: 1px solid #E2E8F0;
-    vertical-align: middle;
+    padding: 8px 10px; font-size: 12.5px; color: #1E293B;
+    border-bottom: 1px solid #E2E8F0; border-left: 1px solid #E2E8F0; vertical-align: middle;
 }
 .flat-table td:last-child { border-right: 1px solid #E2E8F0; }
 .flat-table tbody tr:first-child td { background: #FFFFFF; }
@@ -174,75 +99,36 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .flat-table .icon-btn {
     display: inline-flex; align-items: center; justify-content: center;
     width: 22px; height: 22px; background: transparent; border: none;
-    border-radius: 4px; color: #64748B; cursor: pointer; padding: 0;
-    vertical-align: middle;
+    border-radius: 4px; color: #64748B; cursor: pointer; padding: 0; vertical-align: middle;
 }
 .flat-table .icon-btn:hover { background: #EFF6FF; color: #2563EB; }
 .flat-table .icon-btn svg { width: 13px; height: 13px; fill: currentColor; }
 
-.hw-status-pill {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 4px;
-    font-size: 11.5px;
-    font-weight: 500;
-    color: #FFFFFF;
-}
+.hw-status-pill { display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: 11.5px; font-weight: 500; color: #FFFFFF; }
 .hw-status-pill.red { background: #EF4444; }
 .hw-status-pill.green { background: #65A30D; }
 
-.hw-legend {
-    text-align: center;
-    font-size: 11.5px;
-    color: #64748B;
-    padding: 8px 0 0 0;
-}
+.hw-legend { text-align: center; font-size: 11.5px; color: #64748B; padding: 8px 0 0 0; }
 .hw-legend .dot-red { color: #EF4444; }
 .hw-legend .dot-green { color: #65A30D; }
 
-/* Ссылка «Добавить работу» / «Добавить ДЗ» */
-.add-link {
-    color: #2563EB;
-    font-size: 12.5px;
-    cursor: pointer;
-    text-decoration: none;
-}
+.add-link { color: #2563EB; font-size: 12.5px; cursor: pointer; text-decoration: none; }
 .add-link:hover { text-decoration: underline; }
 
-/* ---------- Таблица «Журнал» (нижняя большая) ---------- */
 .journal-wrap { border-radius: 10px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 6px 10px 10px 10px; }
 .journal-top {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #334155;
-    background: #DBEAFE;
-    border-radius: 6px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 6px; font-size: 13px; font-weight: 600;
+    color: #334155; background: #DBEAFE; border-radius: 6px;
 }
 .journal-top input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; }
 .journal-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .journal-table thead th {
-    background: #EBF0F6;
-    color: #334155;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    padding: 6px 8px;
-    border-bottom: 1px solid #CFD8E3;
-    border-right: 1px solid #CFD8E3;
-    vertical-align: middle;
+    background: #EBF0F6; color: #334155; font-size: 12px; font-weight: 600; text-align: center;
+    padding: 6px 8px; border-bottom: 1px solid #CFD8E3; border-right: 1px solid #CFD8E3; vertical-align: middle;
 }
 .journal-table thead th:last-child { border-right: none; }
-.journal-table thead th .subhead {
-    display: block;
-    font-size: 11px;
-    font-weight: 400;
-    color: #0EA5E9;
-    margin-top: 2px;
-}
+.journal-table thead th .subhead { display: block; font-size: 11px; font-weight: 400; color: #0EA5E9; margin-top: 2px; }
 .journal-table thead th.th-num      { width: 40px; }
 .journal-table thead th.th-student  { width: auto; }
 .journal-table thead th.th-presence { width: 110px; }
@@ -251,30 +137,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-table thead th.th-comment  { width: 190px; }
 
 .journal-table tbody td {
-    background: #FFFFFF;
-    font-size: 13px;
-    color: #1E293B;
-    padding: 4px 10px;
-    border-bottom: 1px solid #E2E8F0;
-    border-right: 1px solid #E2E8F0;
-    vertical-align: middle;
-    height: 38px;
-    position: relative;
+    background: #FFFFFF; font-size: 13px; color: #1E293B;
+    padding: 4px 10px; border-bottom: 1px solid #E2E8F0;
+    border-right: 1px solid #E2E8F0; vertical-align: middle;
+    height: 38px; position: relative;
 }
 .journal-table tbody td:last-child { border-right: none; }
 .journal-table tbody tr.class-head-row td {
-    background: #F8FAFC;
-    color: #334155;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 8px 10px;
-    border-bottom: 1px solid #E2E8F0;
-    border-right: none;
-    height: auto;
+    background: #F8FAFC; color: #334155; font-size: 14px; font-weight: 700;
+    padding: 8px 10px; border-bottom: 1px solid #E2E8F0; border-right: none; height: auto;
 }
-.journal-table tbody tr:nth-child(5n + 2):not(.class-head-row) td {
-    border-bottom: 1px solid #000000;
-}
+.journal-table tbody tr:nth-child(5n + 2):not(.class-head-row) td { border-bottom: 1px solid #000000; }
 
 .journal-table .num-col { text-align: center; color: #334155; font-weight: 500; }
 .journal-table .student-col { text-align: left; }
@@ -283,36 +156,21 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 /* Ячейка присутствия — БЕЗ курсора-руки */
 .presence-box {
-    display: block;
-    width: 100%;
-    height: 28px;
-    line-height: 28px;
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #FFFFFF;
-    text-align: center;
-    background: transparent;
-    cursor: default;
-    user-select: none;
+    display: block; width: 100%; height: 28px; line-height: 28px;
+    border-radius: 4px; font-size: 13px; font-weight: 600;
+    color: #FFFFFF; text-align: center;
+    background: transparent; cursor: default; user-select: none;
 }
-.presence-box.empty { background: transparent; cursor: default; }
-.presence-box.h  { background: #F87171; }  /* Н — красный */
-.presence-box.blue { background: #60A5FA; } /* Б, П, СП — голубой */
-.presence-box.orange { background: #FB923C; } /* О — оранжевый */
+.presence-box.empty { background: transparent; }
+.presence-box.h  { background: #F87171; }
+.presence-box.blue { background: #60A5FA; }
+.presence-box.orange { background: #FB923C; }
 
 .grade-box-long {
-    display: block;
-    width: 100%;
-    height: 28px;
-    line-height: 28px;
-    border-radius: 4px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 700;
-    color: #FFFFFF !important;
-    cursor: pointer;
-    user-select: none;
+    display: block; width: 100%; height: 28px; line-height: 28px;
+    border-radius: 4px; text-align: center;
+    font-size: 14px; font-weight: 700; color: #FFFFFF !important;
+    cursor: pointer; user-select: none;
 }
 .grade-box-long.g5 { background: #A3E635; }
 .grade-box-long.g4 { background: #84CC16; }
@@ -321,142 +179,43 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .grade-box-long.g1 { background: #DC2626; }
 .grade-box-long.empty { background: transparent; color: transparent !important; }
 
-.journal-table .comment-col {
-    color: #2563EB;
-    font-size: 12.5px;
-    cursor: pointer;
-    text-align: left;
-}
+.journal-table .comment-col { color: #2563EB; font-size: 12.5px; cursor: pointer; text-align: left; }
 .journal-table .comment-col:hover { text-decoration: underline; }
-.journal-table .comment-col.filled { color: #1E293B; text-decoration: none; }
 
-/* Ячейка ввода */
 .journal-cell-input-wrap { position: relative; }
 .journal-cell-input-wrap input {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    width: 100%; height: 100%;
-    text-align: center;
-    border: 1.5px solid #60A5FA;
-    border-radius: 4px;
-    background: #FFFFFF;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 700;
-    color: #1E293B;
-    outline: none;
-    padding: 0;
-    z-index: 5;
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%; text-align: center;
+    border: 1.5px solid #60A5FA; border-radius: 4px;
+    background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700;
+    color: #1E293B; outline: none; padding: 0; z-index: 5;
+    text-transform: uppercase;
 }
 
-/* ---------- Попап выбора метки присутствия ---------- */
-.presence-popup {
-    position: fixed;
-    background: #FFFFFF;
-    border: 1px solid #CBD5E1;
-    border-radius: 8px;
-    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
-    z-index: 9999;
-    display: none;
-    flex-direction: column;
-    min-width: 180px;
-    padding: 4px;
-}
-.presence-popup.show { display: flex; }
-.presence-popup-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 7px 10px;
-    background: transparent;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: inherit;
-    text-align: left;
-    width: 100%;
-}
-.presence-popup-item:hover { background: #EFF6FF; }
-.presence-popup-item.active { background: #DBEAFE; }
-.presence-popup-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 32px;
-    height: 22px;
-    padding: 0 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #FFFFFF;
-}
-.presence-popup-badge.h { background: #F87171; }
-.presence-popup-badge.blue { background: #60A5FA; }
-.presence-popup-badge.orange { background: #FB923C; }
-.presence-popup-badge.clear { background: #E2E8F0; color: #475569; }
-.presence-popup-text { font-size: 12.5px; color: #1E293B; font-weight: 500; }
-
-/* ---------- Правая колонка ---------- */
 .side-block { margin-bottom: 18px; }
-
 .teacher-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    background: #FFFFFF;
-    border: 1px solid #CFD8E3;
-    border-radius: 8px;
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+    background: #FFFFFF; border: 1px solid #CFD8E3; border-radius: 8px;
 }
 .teacher-avatar {
-    width: 52px; height: 52px;
-    border-radius: 8px;
-    background: #EFF6FF;
-    border: 1px solid #BFDBFE;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #2563EB;
-    font-weight: 700;
-    font-size: 18px;
-    flex-shrink: 0;
+    width: 52px; height: 52px; border-radius: 8px;
+    background: #EFF6FF; border: 1px solid #BFDBFE;
+    display: flex; align-items: center; justify-content: center;
+    color: #2563EB; font-weight: 700; font-size: 18px; flex-shrink: 0;
 }
-.teacher-name {
-    color: #65A30D;
-    font-size: 13.5px;
-    font-weight: 600;
-    line-height: 1.25;
-}
+.teacher-name { color: #65A30D; font-size: 13.5px; font-weight: 600; line-height: 1.25; }
 
-.nav-menu-block {
-    background: #F1F5F9;
-    border-radius: 8px;
-    padding: 14px 18px;
-}
+.nav-menu-block { background: #F1F5F9; border-radius: 8px; padding: 14px 18px; }
 .nav-menu-block a {
-    display: block;
-    color: #2563EB;
-    font-size: 15px;
-    font-weight: 600;
-    text-decoration: none;
-    padding: 5px 0;
-    cursor: pointer;
-    line-height: 1.25;
+    display: block; color: #2563EB; font-size: 15px; font-weight: 600;
+    text-decoration: none; padding: 5px 0; cursor: pointer; line-height: 1.25;
 }
 .nav-menu-block a:hover { text-decoration: underline; }
 
-.help-note {
-    display: flex;
-    gap: 8px;
-    font-size: 12px;
-    color: #64748B;
-    line-height: 1.45;
-    padding: 10px 4px;
-}
+.help-note { display: flex; gap: 8px; font-size: 12px; color: #64748B; line-height: 1.45; padding: 10px 4px; }
 .help-note svg { width: 16px; height: 16px; fill: #94A3B8; flex-shrink: 0; margin-top: 1px; }
 .help-note a { color: #2563EB; text-decoration: underline; cursor: pointer; }
 
-/* ---------- Адаптив ---------- */
 @media (max-width: 700px) {
     .top-nav, .header-bar, .page-content { padding-left: 12px; padding-right: 12px; }
     .page-title { font-size: 20px; }
@@ -469,7 +228,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 </head>
 <body>
 
-<!-- Breadcrumbs -->
 <div class="top-nav">
     <a onclick="goBack('admin.html')">Стартовая учителя</a>
     <span class="sep">›</span>
@@ -480,7 +238,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     <span class="current" id="navChain">Урок</span>
 </div>
 
-<!-- Шапка -->
 <div class="header-bar">
     <div class="header-grid">
         <div class="cell">
@@ -512,44 +269,23 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
     <div class="layout-grid">
 
-        <!-- ЛЕВАЯ КОЛОНКА -->
         <div class="left-col">
 
-            <!-- Детали урока -->
             <div class="card">
                 <div class="card-head">
                     <div class="card-title">Детали урока</div>
                     <a class="card-edit-link" onclick="showToast('Редактирование деталей урока — в разработке')">Редактировать</a>
                 </div>
                 <table class="details-table">
-                    <tr>
-                        <td class="label">Предмет:</td>
-                        <td class="value link" id="dSubject">—</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Дата:</td>
-                        <td class="value" id="dDate">—</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Кто приходит:</td>
-                        <td class="value link" id="dClass">—</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Кабинет:</td>
-                        <td class="value empty" id="dRoom">—</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Тема урока:</td>
-                        <td class="value" id="dTheme">—</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Описание урока:</td>
-                        <td class="value empty" id="dDesc">-</td>
-                    </tr>
+                    <tr><td class="label">Предмет:</td><td class="value link" id="dSubject">—</td></tr>
+                    <tr><td class="label">Дата:</td><td class="value" id="dDate">—</td></tr>
+                    <tr><td class="label">Кто приходит:</td><td class="value link" id="dClass">—</td></tr>
+                    <tr><td class="label">Кабинет:</td><td class="value empty" id="dRoom">—</td></tr>
+                    <tr><td class="label">Тема урока:</td><td class="value" id="dTheme">—</td></tr>
+                    <tr><td class="label">Описание урока:</td><td class="value empty" id="dDesc">-</td></tr>
                 </table>
             </div>
 
-            <!-- Файлы -->
             <div class="card">
                 <div class="card-title" style="margin-bottom:10px;">Файлы</div>
                 <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px;">
@@ -567,7 +303,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
                 </div>
             </div>
 
-            <!-- Домашние задания -->
             <div class="card">
                 <div class="card-head">
                     <div class="card-title">Домашние задания</div>
@@ -589,7 +324,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
                 </div>
             </div>
 
-            <!-- Работы на уроке -->
             <div class="card">
                 <div class="card-head">
                     <div class="card-title">Работы на уроке</div>
@@ -607,7 +341,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
                 </table>
             </div>
 
-            <!-- Журнал -->
             <div class="card" style="padding:14px 12px 14px 12px;">
                 <div class="card-title" style="margin-bottom:10px; padding-left:4px;">Журнал</div>
                 <div class="journal-wrap">
@@ -633,7 +366,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
         </div>
 
-        <!-- ПРАВАЯ КОЛОНКА -->
         <div class="right-col">
 
             <div class="side-block">
@@ -666,16 +398,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 </div>
 
-<!-- Попап выбора метки присутствия -->
-<div class="presence-popup" id="presencePopup"></div>
-
 <div id="toast" style="position:fixed;bottom:24px;right:24px;background:#1E293B;color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(15,23,42,0.2);opacity:0;transform:translateY(20px);transition:all 0.3s ease;z-index:10000;pointer-events:none;font-family:'Inter',sans-serif;"></div>
 
 <script src="supabase-config.js"></script>
 <script>
-/* ============================================================
-   Параметры URL
-   ============================================================ */
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
     return {
@@ -720,15 +446,8 @@ const LESSON_TYPES = [
     { abbr: 'ЧТ/М', full: 'Чтение молча' }, { abbr: 'ЭКС', full: 'Экскурсия' }, { abbr: 'Я/Т', full: 'Языковая тема' }
 ];
 
-/* Возможные метки присутствия */
-const PRESENCE_OPTIONS = [
-    { value: '',  label: 'Присутствует (снять метку)', cls: 'clear' },
-    { value: 'Н', label: 'Н — отсутствует',            cls: 'h' },
-    { value: 'Б', label: 'Б — болеет',                 cls: 'blue' },
-    { value: 'П', label: 'П — пропуск',                cls: 'blue' },
-    { value: 'СП',label: 'СП — спортивные сборы',      cls: 'blue' },
-    { value: 'О', label: 'О — опоздал',                cls: 'orange' }
-];
+/* Допустимые метки присутствия (вводятся с клавиатуры) */
+const PRESENCE_VALUES = ['Н', 'Б', 'П', 'СП', 'О'];
 
 /* ------------------------------------------------------------
    Глобальное состояние
@@ -748,9 +467,6 @@ let JOURNAL = null;
 let ALL_CLASSES = [];
 let ALL_CLASS_SUBJECTS = [];
 let ALL_SCHEDULES = [];
-
-let presencePopupContext = { studentId: null, anchorEl: null };
-let presencePopupJustOpened = false;
 
 /* ------------------------------------------------------------
    Утилиты
@@ -788,6 +504,21 @@ function getInitials(fullName) {
     return (a + b) || '—';
 }
 
+/* Класс CSS-плашки по метке присутствия */
+function getPresenceCls(val) {
+    if (!val) return '';
+    if (val === 'Н') return 'h';
+    if (val === 'Б' || val === 'П' || val === 'СП') return 'blue';
+    if (val === 'О') return 'orange';
+    return '';
+}
+
+/* Является ли значение меткой присутствия */
+function isPresenceValue(val) {
+    if (!val) return false;
+    return PRESENCE_VALUES.includes(String(val).toUpperCase().trim());
+}
+
 let toastTimer = null;
 function showToast(message) {
     const toast = document.getElementById('toast');
@@ -799,17 +530,6 @@ function showToast(message) {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(20px)';
     }, 2500);
-}
-
-/* ------------------------------------------------------------
-   Присутствие: класс метки по значению
-   ------------------------------------------------------------ */
-function getPresenceCls(val) {
-    if (!val) return '';
-    if (val === 'Н') return 'h';
-    if (val === 'Б' || val === 'П' || val === 'СП') return 'blue';
-    if (val === 'О') return 'orange';
-    return '';
 }
 
 /* ------------------------------------------------------------
@@ -1054,6 +774,11 @@ function renderWorks() {
 
 /* ------------------------------------------------------------
    Журнал — таблица учеников
+   ------------------------------------------------------------
+   Присутствие и оценки хранятся в ОДНОМ ключе GRADE_KEY.
+   Если значение — буква из PRESENCE_VALUES, это присутствие.
+   Если значение — оценка 1–5, это оценка.
+   Так одна и та же ячейка видна и в журнале, и на странице урока.
    ------------------------------------------------------------ */
 function renderJournal() {
     const tbody = document.getElementById('journalBody');
@@ -1086,33 +811,31 @@ function renderJournal() {
         tdName.textContent = student.full_name || '';
         tr.appendChild(tdName);
 
-        // Присутствие — БЕЗ курсора-руки
+        const value = (gradesForLesson[student.id] || {})[GRADE_KEY] || '';
+
+        // Присутствие
         const tdPresence = document.createElement('td');
         tdPresence.className = 'presence-col';
-        const presenceVal = (gradesForLesson[student.id] || {})[GRADE_KEY + '_presence'] || '';
         const presenceBox = document.createElement('span');
-        presenceBox.className = 'presence-box ' + getPresenceCls(presenceVal);
-        presenceBox.textContent = presenceVal || '';
-        presenceBox.title = 'Кликните, чтобы выбрать метку';
+        presenceBox.className = 'presence-box ' + getPresenceCls(value);
+        presenceBox.textContent = isPresenceValue(value) ? value : '';
         presenceBox.style.cursor = 'default';
-        presenceBox.addEventListener('click', (e) => openPresencePopup(e.currentTarget, student.id));
+        presenceBox.addEventListener('click', () => editPresence(student.id, GRADE_KEY, presenceBox));
         tdPresence.appendChild(presenceBox);
         tr.appendChild(tdPresence);
 
         // Дом. задание
         const tdHw = document.createElement('td');
         tdHw.className = 'grade-col';
-        const hwVal = (gradesForLesson[student.id] || {})[GRADE_KEY] || '';
-        const hwBox = makeGradeBox(hwVal);
+        const hwBox = makeGradeBox(isPresenceValue(value) ? '' : value);
         hwBox.addEventListener('click', () => editGrade(student.id, GRADE_KEY, hwBox));
         tdHw.appendChild(hwBox);
         tr.appendChild(tdHw);
 
-        // Работа на уроке
+        // Работа на уроке — та же ячейка данных
         const tdWork = document.createElement('td');
         tdWork.className = 'grade-col';
-        const workVal = (gradesForLesson[student.id] || {})[GRADE_KEY] || '';
-        const workBox = makeGradeBox(workVal);
+        const workBox = makeGradeBox(isPresenceValue(value) ? '' : value);
         workBox.addEventListener('click', () => editGrade(student.id, GRADE_KEY, workBox));
         tdWork.appendChild(workBox);
         tr.appendChild(tdWork);
@@ -1147,73 +870,19 @@ function makeGradeBox(val) {
 }
 
 /* ------------------------------------------------------------
-   Попап выбора метки присутствия
+   Редактирование присутствия (ввод с клавиатуры)
    ------------------------------------------------------------ */
-function openPresencePopup(anchorEl, studentId) {
-    presencePopupContext = { studentId, anchorEl };
-    presencePopupJustOpened = true;
-
-    const popup = document.getElementById('presencePopup');
-    popup.innerHTML = '';
-    const currentVal = (JOURNAL.grades[studentId] || {})[GRADE_KEY + '_presence'] || '';
-
-    PRESENCE_OPTIONS.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'presence-popup-item' + (opt.value === currentVal ? ' active' : '');
-        btn.innerHTML =
-            '<span class="presence-popup-badge ' + opt.cls + '">' + (opt.value || '✓') + '</span>' +
-            '<span class="presence-popup-text">' + escapeHtml(opt.label) + '</span>';
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            selectPresence(opt.value);
-        });
-        popup.appendChild(btn);
-    });
-
-    popup.classList.add('show');
-
-    const rect = anchorEl.getBoundingClientRect();
-    const popupWidth = 240, popupMaxHeight = 300;
-    let left = rect.left + rect.width / 2 - popupWidth / 2;
-    if (left < 8) left = 8;
-    if (left + popupWidth > window.innerWidth - 8) left = window.innerWidth - popupWidth - 8;
-    let top = rect.bottom + 4;
-    if (top + popupMaxHeight > window.innerHeight - 8) {
-        top = rect.top - popupMaxHeight - 4;
-        if (top < 8) top = 8;
-    }
-    popup.style.left = left + 'px';
-    popup.style.top = top + 'px';
-
-    setTimeout(() => { presencePopupJustOpened = false; }, 100);
-}
-
-function selectPresence(val) {
-    const { studentId } = presencePopupContext;
-    if (!studentId) return;
-    if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
-    JOURNAL.grades[studentId][GRADE_KEY + '_presence'] = val;
-    saveJournal();
-    closePresencePopup();
-    renderJournal();
-}
-
-function closePresencePopup() {
-    document.getElementById('presencePopup').classList.remove('show');
-}
-
-/* ------------------------------------------------------------
-   Редактирование оценки
-   ------------------------------------------------------------ */
-function editGrade(studentId, gradeKey, boxEl) {
+function editPresence(studentId, gradeKey, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
 
+    const cur = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
     const input = document.createElement('input');
     input.type = 'text';
-    input.value = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
-    input.maxLength = 4;
+    input.value = isPresenceValue(cur) ? cur : '';
+    input.maxLength = 2;
+    input.style.textTransform = 'uppercase';
+
     const wrap = document.createElement('div');
     wrap.className = 'journal-cell-input-wrap';
     wrap.style.width = '100%';
@@ -1223,14 +892,87 @@ function editGrade(studentId, gradeKey, boxEl) {
     input.focus();
     input.select();
 
+    let committed = false;
+
     const commit = () => {
+        if (committed) return;
+        committed = true;
         const v = input.value.trim().toUpperCase();
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
-        JOURNAL.grades[studentId][gradeKey] = v;
+        if (v === '') {
+            // снять метку
+            delete JOURNAL.grades[studentId][gradeKey];
+        } else if (isPresenceValue(v)) {
+            JOURNAL.grades[studentId][gradeKey] = v;
+        } else {
+            // неверный ввод — сбрасываем, ничего не сохраняем
+            renderJournal();
+            return;
+        }
         saveJournal();
         renderJournal();
     };
-    const cancel = () => { renderJournal(); };
+    const cancel = () => {
+        if (committed) return;
+        committed = true;
+        renderJournal();
+    };
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); commit(); }
+        if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+    });
+    input.addEventListener('blur', () => {
+        setTimeout(() => { if (td.contains(input)) commit(); }, 100);
+    });
+}
+
+/* ------------------------------------------------------------
+   Редактирование оценки
+   ------------------------------------------------------------ */
+function editGrade(studentId, gradeKey, boxEl) {
+    const td = boxEl.parentNode;
+    td.innerHTML = '';
+
+    const cur = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = isPresenceValue(cur) ? '' : cur;
+    input.maxLength = 4;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'journal-cell-input-wrap';
+    wrap.style.width = '100%';
+    wrap.style.height = '28px';
+    wrap.appendChild(input);
+    td.appendChild(wrap);
+    input.focus();
+    input.select();
+
+    let committed = false;
+
+    const commit = () => {
+        if (committed) return;
+        committed = true;
+        const v = input.value.trim().toUpperCase();
+        if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
+        if (v === '') {
+            delete JOURNAL.grades[studentId][gradeKey];
+        } else if (isPresenceValue(v)) {
+            // не разрешаем вводить метки присутствия в колонку оценки
+            renderJournal();
+            return;
+        } else {
+            JOURNAL.grades[studentId][gradeKey] = v;
+        }
+        saveJournal();
+        renderJournal();
+    };
+    const cancel = () => {
+        if (committed) return;
+        committed = true;
+        renderJournal();
+    };
 
     input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') { e.preventDefault(); commit(); }
@@ -1269,26 +1011,6 @@ function goJournal() {
     window.location.href = 'journal-view.html?class=' + encodeURIComponent(CLASS_ID) + '&subject=' + encodeURIComponent(SUBJECT_ID);
 }
 
-/* ------------------------------------------------------------
-   Закрытие попапа присутствия по клику вне
-   ------------------------------------------------------------ */
-document.addEventListener('click', (e) => {
-    const popup = document.getElementById('presencePopup');
-    if (!popup.classList.contains('show')) return;
-    if (presencePopupJustOpened) return;
-    if (!popup.contains(e.target)) closePresencePopup();
-});
-document.addEventListener('mousedown', (e) => {
-    const popup = document.getElementById('presencePopup');
-    if (!popup.classList.contains('show')) return;
-    if (presencePopupJustOpened) return;
-    if (!popup.contains(e.target) && !e.target.closest('.presence-box')) closePresencePopup();
-});
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePresencePopup(); });
-
-/* ------------------------------------------------------------
-   Старт
-   ------------------------------------------------------------ */
 init().catch(err => {
     console.error('Ошибка init:', err);
     alert('Не удалось загрузить страницу урока. Проверьте консоль (F12).');
