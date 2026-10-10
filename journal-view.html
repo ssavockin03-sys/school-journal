@@ -541,7 +541,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .col-qtr    { width: 42px; min-width: 42px; max-width: 42px; }
     .fio-table .student-number-text { font-size: 11px; }
     .fio-table .student-name-text { font-size: 11px; }
-    .marks-table thead th.col-filler-head,
+    .marks-table thead .col-filler-head,
     .marks-table tbody td.col-filler-body { min-width: 34px !important; }
 }
 </style>
@@ -855,12 +855,15 @@ function normalizeHwList(h) {
 
 /* ============================================================
    ЕДИНЫЙ РЕДАКТОР.
-   Ключевое: detachActiveEditorDom() СНАЧАЛА коммитит активный
-   редактор немедленно (без ожидания таймера), и только потом
-   отвязывает его DOM. Это исключает потерю данных, когда
-   пользователь сразу после ввода нажимает «+ ДЗ».
-   При этом обычная задержка 200 мс при blur сохраняется:
-   blur → scheduleCommit() → таймер → commit.
+
+   Ключевая идея:
+   - commit() старого редактора обновляет данные и вызывает
+     saveJournal(), но НЕ перерисовывает ячейку. Это делает
+     тот, кто вызвал detachActiveEditorDom (openNewHwItem /
+     openHwItemEdit), сразу после того как старый редактор
+     закрыт.
+   - Это исключает ситуацию, когда клик по «+ ДЗ» попадает в
+     кнопку, которая исчезает из-за синхронного рендера.
    ============================================================ */
 let activeEditor = null;
 
@@ -880,17 +883,15 @@ function cancelActiveEditor() {
     try { ed.cancel(); } catch (e) { console.error(e); }
 }
 
-/* Немедленно коммитим текущий редактор (если есть) и удаляем DOM. */
+/* Закрывает активный редактор синхронно: сохраняет данные, отменяет
+   таймер, убирает DOM. НЕ перерисовывает ячейку — это делает
+   вызывающий код (openNewHwItem или openHwItemEdit). */
 function detachActiveEditorDom() {
     if (!activeEditor) return;
     const ed = activeEditor;
     activeEditor = null;
-    // Отменяем отложенный таймер, если он был запущен blur-ом, —
-    // коммитим СРАЗУ, чтобы массив успел обновиться до того,
-    // как openNewHwItem / openHwItemEdit начнут с ним работать.
     if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; }
     try { ed.commit(); } catch (e) { console.error(e); }
-    // DOM commit уже перерисовал, но на всякий случай уберём остатки.
     if (ed.dom && ed.dom.parentNode) {
         ed.dom.parentNode.removeChild(ed.dom);
     }
@@ -1733,8 +1734,15 @@ function openThemeEditInline(cell, gradeKey, value) {
         const current = (JOURNAL.lessons[gradeKey] && JOURNAL.lessons[gradeKey].t) || value || '';
         renderThemeContent(cell, gradeKey, current);
     };
+    /* Для detachActiveEditorDom: сохранить данные, не трогая DOM ячейки. */
+    const commitNoRender = () => {
+        const txt = ta.value.trim();
+        if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
+        JOURNAL.lessons[gradeKey].t = txt;
+        saveJournal();
+    };
 
-    const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
+    const ed = { commit: commitNoRender, cancel, dom: bubble, textarea: ta, timer: null };
     activeEditor = ed;
 
     const scheduleCommit = () => {
@@ -1754,6 +1762,18 @@ function openThemeEditInline(cell, gradeKey, value) {
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
     ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
+
+    // «Живой» commit для случая blur — там DOM ячейки ещё валиден,
+    // поэтому используем commit с рендером.
+    ed.liveCommit = commit;
+    ed.scheduleLive = () => {
+        if (ed.timer) return;
+        ed.timer = setTimeout(() => {
+            ed.timer = null;
+            if (activeEditor === ed) activeEditor = null;
+            try { commit(); } catch (e) { console.error(e); }
+        }, EDIT_DELAY_MS);
+    };
 }
 
 function renderHwContent(cell, gradeKey, hwList) {
@@ -1836,12 +1856,21 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         renderHwContent(cell, gradeKey, arr);
         saveJournal();
     };
+    /* Commit без рендера — для detach. */
+    const commitNoRender = () => {
+        const txt = ta.value.trim();
+        if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
+        const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
+        if (txt === '') arr.splice(idx, 1); else arr[idx] = txt;
+        JOURNAL.lessons[gradeKey].h = arr;
+        saveJournal();
+    };
     const cancel = () => {
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
         renderHwContent(cell, gradeKey, arr);
     };
 
-    const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
+    const ed = { commit: commitNoRender, cancel, dom: bubble, textarea: ta, timer: null, liveCommit: commit };
     activeEditor = ed;
 
     const scheduleCommit = () => {
@@ -1905,6 +1934,17 @@ function openNewHwItem(cell, gradeKey) {
         renderHwContent(cell, gradeKey, current);
         saveJournal();
     };
+    const commitNoRender = () => {
+        const txt = ta.value.trim();
+        const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
+        if (txt === '') {
+            current.splice(newIdx, 1);
+        } else {
+            current[newIdx] = txt;
+        }
+        JOURNAL.lessons[gradeKey].h = current;
+        saveJournal();
+    };
     const cancel = () => {
         const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
         current.splice(newIdx, 1);
@@ -1912,7 +1952,7 @@ function openNewHwItem(cell, gradeKey) {
         renderHwContent(cell, gradeKey, current);
     };
 
-    const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
+    const ed = { commit: commitNoRender, cancel, dom: bubble, textarea: ta, timer: null, liveCommit: commit };
     activeEditor = ed;
 
     const scheduleCommit = () => {
