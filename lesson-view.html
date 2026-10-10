@@ -46,6 +46,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     gap: 24px;
     align-items: start;
     justify-content: center;
+    margin-bottom: 18px;
 }
 @media (max-width: 1100px) { .layout-grid { grid-template-columns: 1fr; } }
 
@@ -56,6 +57,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     padding: 14px 18px 16px 18px;
     margin-bottom: 18px;
 }
+.card:last-child { margin-bottom: 0; }
 .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .card-title { font-size: 14px; font-weight: 700; color: #1E293B; }
 .card-edit-link { font-size: 12.5px; color: #2563EB; cursor: pointer; text-decoration: none; }
@@ -115,6 +117,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .add-link { color: #2563EB; font-size: 12.5px; cursor: pointer; text-decoration: none; }
 .add-link:hover { text-decoration: underline; }
 
+/* ============================================================
+   Журнал — на всю ширину страницы
+   ============================================================ */
+.journal-full-width {
+    margin-top: 0;
+}
+
 .journal-wrap { border-radius: 10px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 6px 10px 10px 10px; }
 .journal-top {
     display: flex; align-items: center; gap: 8px;
@@ -129,12 +138,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .journal-table thead th:last-child { border-right: none; }
 .journal-table thead th .subhead { display: block; font-size: 11px; font-weight: 400; color: #0EA5E9; margin-top: 2px; }
-.journal-table thead th.th-num      { width: 40px; }
-.journal-table thead th.th-student  { width: auto; }
+.journal-table thead th.th-num      { width: 50px; }
+.journal-table thead th.th-student  { width: 28%; }
 .journal-table thead th.th-presence { width: 110px; }
-.journal-table thead th.th-hw       { width: 110px; }
-.journal-table thead th.th-work     { width: 130px; }
-.journal-table thead th.th-comment  { width: 190px; }
+.journal-table thead th.th-hw       { width: 120px; }
+.journal-table thead th.th-work     { width: 140px; }
+.journal-table thead th.th-comment  { width: auto; }
 
 .journal-table tbody td {
     background: #FFFFFF; font-size: 13px; color: #1E293B;
@@ -190,7 +199,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     text-transform: uppercase;
 }
 
+/* ============================================================
+   Правая колонка
+   ============================================================ */
 .side-block { margin-bottom: 18px; }
+.side-block:last-child { margin-bottom: 0; }
+
 .teacher-card {
     display: flex; align-items: center; gap: 12px; padding: 12px 14px;
     background: #FFFFFF; border: 1px solid #CFD8E3; border-radius: 8px;
@@ -265,6 +279,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
     <h1 class="page-title">Страница урока</h1>
 
+    <!-- Верхняя часть: 2 колонки -->
     <div class="layout-grid">
 
         <div class="left-col">
@@ -339,29 +354,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
                 </table>
             </div>
 
-            <div class="card" style="padding:14px 12px 14px 12px;">
-                <div class="card-title" style="margin-bottom:10px; padding-left:4px;">Журнал</div>
-                <div class="journal-wrap">
-                    <div class="journal-top">
-                        <input type="checkbox" id="lessonHeld" checked>
-                        <label for="lessonHeld" style="cursor:pointer;">Урок проведен.</label>
-                    </div>
-                    <table class="journal-table">
-                        <thead>
-                            <tr>
-                                <th class="th-num">№</th>
-                                <th class="th-student">Список учеников</th>
-                                <th class="th-presence">Присутствие</th>
-                                <th class="th-hw">Дом. задания<span class="subhead" id="colHwLabel">ДЗ-1</span></th>
-                                <th class="th-work">Работа на уроке<span class="subhead" id="colWorkLabel">ОТВ</span></th>
-                                <th class="th-comment">Комментарии к уроку</th>
-                            </tr>
-                        </thead>
-                        <tbody id="journalBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
         </div>
 
         <div class="right-col">
@@ -391,6 +383,30 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
                 <div>Дополнительная информация <a onclick="showToast('Памятка — в разработке')">в памятке по заполнению журнала.</a></div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- Нижняя часть: Журнал на всю ширину -->
+    <div class="card journal-full-width">
+        <div class="card-title" style="margin-bottom:10px;">Журнал</div>
+        <div class="journal-wrap">
+            <div class="journal-top">
+                <input type="checkbox" id="lessonHeld" checked>
+                <label for="lessonHeld" style="cursor:pointer;">Урок проведен.</label>
+            </div>
+            <table class="journal-table">
+                <thead>
+                    <tr>
+                        <th class="th-num">№</th>
+                        <th class="th-student">Список учеников</th>
+                        <th class="th-presence">Присутствие</th>
+                        <th class="th-hw">Дом. задания<span class="subhead" id="colHwLabel">ДЗ-1</span></th>
+                        <th class="th-work">Работа на уроке<span class="subhead" id="colWorkLabel">ОТВ</span></th>
+                        <th class="th-comment">Комментарии к уроку</th>
+                    </tr>
+                </thead>
+                <tbody id="journalBody"></tbody>
+            </table>
         </div>
     </div>
 
