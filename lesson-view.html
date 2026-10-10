@@ -34,7 +34,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .header-meta-item { font-size: 13px; color: #1E293B; }
 
 /* ---------- Контент страницы ---------- */
-.page-content { padding: 8px 30px 40px 30px; max-width: 1400px; }
+.page-content {
+    padding: 8px 30px 40px 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
 .page-title { font-size: 26px; font-weight: 700; color: #1E293B; margin: 4px 0 20px 0; }
 .page-title .sub { font-weight: 400; color: #64748B; font-size: 18px; margin-left: 10px; }
@@ -44,6 +48,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     grid-template-columns: minmax(0, 1fr) 340px;
     gap: 24px;
     align-items: start;
+    justify-content: center;
 }
 @media (max-width: 1100px) {
     .layout-grid { grid-template-columns: 1fr; }
@@ -947,7 +952,6 @@ function renderHw() {
     const hwList = normalizeHwList(lesson.h);
 
     if (hwList.length === 0) {
-        // Пустая строка-заглушка
         const tr = document.createElement('tr');
         tr.innerHTML = '<td colspan="4" style="text-align:center; color:#94A3B8; padding:14px;">Домашних заданий нет</td>';
         tbody.appendChild(tr);
@@ -958,7 +962,6 @@ function renderHw() {
         const tr = document.createElement('tr');
         tr.className = 'hw-row-' + ((i % 2) + 1);
 
-        // Описание: "ДЗ-1" + номер + иконка скрепки
         tr.innerHTML =
             '<td style="color:#2563EB; font-weight:600;">ДЗ-' + (i + 1) + ' <svg style="width:12px;height:12px;fill:#64748B;vertical-align:middle;margin-left:4px;" viewBox="0 0 24 24"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg></td>' +
             '<td class="col-center"><span style="color:#EF4444; font-weight:600;">30</span> &nbsp; <span style="color:#65A30D; font-weight:600;">0</span> &nbsp; <span style="color:#65A30D; font-weight:600;">1</span></td>' +
@@ -1010,7 +1013,6 @@ function renderJournal() {
     const tbody = document.getElementById('journalBody');
     tbody.innerHTML = '';
 
-    // Строка с названием класса
     const classRow = document.createElement('tr');
     classRow.className = 'class-head-row';
     classRow.innerHTML = '<td colspan="6">Класс (' + escapeHtml(CLASS_OBJ.name) + ')</td>';
@@ -1024,24 +1026,20 @@ function renderJournal() {
     }
 
     const gradesForLesson = JOURNAL.grades || {};
-    const abbr = JOURNAL.lessonTypes[GRADE_KEY] || 'ОТВ';
 
     STUDENTS.forEach((student, idx) => {
         const tr = document.createElement('tr');
 
-        // №
         const tdNum = document.createElement('td');
         tdNum.className = 'num-col';
         tdNum.textContent = idx + 1;
         tr.appendChild(tdNum);
 
-        // ФИО (полное)
         const tdName = document.createElement('td');
         tdName.className = 'student-col';
         tdName.textContent = student.full_name || '';
         tr.appendChild(tdName);
 
-        // Присутствие
         const tdPresence = document.createElement('td');
         tdPresence.className = 'presence-col';
         const presenceVal = (gradesForLesson[student.id] || {})[GRADE_KEY + '_presence'] || '';
@@ -1053,7 +1051,6 @@ function renderJournal() {
         tdPresence.appendChild(presenceBox);
         tr.appendChild(tdPresence);
 
-        // Дом. задания — оценка
         const tdHw = document.createElement('td');
         tdHw.className = 'grade-col';
         const hwVal = (gradesForLesson[student.id] || {})[GRADE_KEY] || '';
@@ -1062,7 +1059,6 @@ function renderJournal() {
         tdHw.appendChild(hwBox);
         tr.appendChild(tdHw);
 
-        // Работа на уроке — оценка
         const tdWork = document.createElement('td');
         tdWork.className = 'grade-col';
         const workVal = (gradesForLesson[student.id] || {})[GRADE_KEY] || '';
@@ -1071,7 +1067,6 @@ function renderJournal() {
         tdWork.appendChild(workBox);
         tr.appendChild(tdWork);
 
-        // Комментарий
         const tdComment = document.createElement('td');
         tdComment.className = 'comment-col';
         tdComment.textContent = 'Добавить комментарий';
