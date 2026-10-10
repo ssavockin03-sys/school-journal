@@ -541,7 +541,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .col-qtr    { width: 42px; min-width: 42px; max-width: 42px; }
     .fio-table .student-number-text { font-size: 11px; }
     .fio-table .student-name-text { font-size: 11px; }
-    .marks-table thead .col-filler-head,
+    .marks-table thead th.col-filler-head,
     .marks-table tbody td.col-filler-body { min-width: 34px !important; }
 }
 </style>
@@ -854,13 +854,13 @@ function normalizeHwList(h) {
 }
 
 /* ============================================================
-   ЕДИНЫЙ РЕДАКТОР С ЗАДЕРЖКОЙ 200 МС.
-   НИКАКИХ глобальных mousedown-перехватчиков.
-   Редактор закрывается:
-   - по blur textarea (автоматически, через 200 мс),
-   - по клику на галочку (немедленно),
-   - по Enter (немедленно) / Esc (отмена),
-   - при открытии нового редактора (сначала blur → таймер → потом DOM).
+   ЕДИНЫЙ РЕДАКТОР.
+   Ключевое: detachActiveEditorDom() СНАЧАЛА коммитит активный
+   редактор немедленно (без ожидания таймера), и только потом
+   отвязывает его DOM. Это исключает потерю данных, когда
+   пользователь сразу после ввода нажимает «+ ДЗ».
+   При этом обычная задержка 200 мс при blur сохраняется:
+   blur → scheduleCommit() → таймер → commit.
    ============================================================ */
 let activeEditor = null;
 
@@ -880,22 +880,19 @@ function cancelActiveEditor() {
     try { ed.cancel(); } catch (e) { console.error(e); }
 }
 
-/* Мягко закрыть текущий редактор:
-   1. Снимаем фокус с textarea — сработает штатный blur → таймер.
-   2. Удаляем DOM.
-   Таймер продолжит жить и через 200 мс вызовет commit(). */
+/* Немедленно коммитим текущий редактор (если есть) и удаляем DOM. */
 function detachActiveEditorDom() {
     if (!activeEditor) return;
     const ed = activeEditor;
     activeEditor = null;
-    if (ed.textarea && typeof ed.textarea.blur === 'function') {
-        try { ed.textarea.blur(); } catch (e) {}
-    }
+    // Отменяем отложенный таймер, если он был запущен blur-ом, —
+    // коммитим СРАЗУ, чтобы массив успел обновиться до того,
+    // как openNewHwItem / openHwItemEdit начнут с ним работать.
+    if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; }
+    try { ed.commit(); } catch (e) { console.error(e); }
+    // DOM commit уже перерисовал, но на всякий случай уберём остатки.
     if (ed.dom && ed.dom.parentNode) {
         ed.dom.parentNode.removeChild(ed.dom);
-    }
-    if (!ed.timer) {
-        try { ed.commit(); } catch (e) { console.error(e); }
     }
 }
 
@@ -1630,7 +1627,7 @@ function createPlanFillerRow(height) {
 }
 
 /* ============================================================
-   КЛИКИ по pBody. НИКАКИХ глобальных mousedown-перехватчиков.
+   КЛИКИ.
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
@@ -1752,11 +1749,11 @@ function openThemeEditInline(cell, gradeKey, value) {
     ta.addEventListener('input', () => autoGrow(ta));
     ta.addEventListener('blur', () => { scheduleCommit(); });
     ta.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); }
-        if (e.key === 'Escape') { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } cancelActiveEditor(); }
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); }
+        if (e.key === 'Escape') { e.preventDefault(); cancelActiveEditor(); }
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-    ok.addEventListener('click', (e) => { e.stopPropagation(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); });
+    ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
 }
 
 function renderHwContent(cell, gradeKey, hwList) {
@@ -1859,11 +1856,11 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     ta.addEventListener('input', () => autoGrow(ta));
     ta.addEventListener('blur', () => { scheduleCommit(); });
     ta.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); }
-        if (e.key === 'Escape') { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } cancelActiveEditor(); }
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); }
+        if (e.key === 'Escape') { e.preventDefault(); cancelActiveEditor(); }
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-    ok.addEventListener('click', (e) => { e.stopPropagation(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); });
+    ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
 }
 
 function openNewHwItem(cell, gradeKey) {
@@ -1930,11 +1927,11 @@ function openNewHwItem(cell, gradeKey) {
     ta.addEventListener('input', () => autoGrow(ta));
     ta.addEventListener('blur', () => { scheduleCommit(); });
     ta.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); }
-        if (e.key === 'Escape') { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } cancelActiveEditor(); }
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); }
+        if (e.key === 'Escape') { e.preventDefault(); cancelActiveEditor(); }
     });
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-    ok.addEventListener('click', (e) => { e.stopPropagation(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); });
+    ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
 }
 
 function autoGrow(el) {
