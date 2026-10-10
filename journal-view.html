@@ -541,7 +541,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .col-qtr    { width: 42px; min-width: 42px; max-width: 42px; }
     .fio-table .student-number-text { font-size: 11px; }
     .fio-table .student-name-text { font-size: 11px; }
-    .marks-table thead th.col-filler-head,
+    .marks-table thead .col-filler-head,
     .marks-table tbody td.col-filler-body { min-width: 34px !important; }
 }
 </style>
@@ -855,6 +855,12 @@ function normalizeHwList(h) {
 
 /* ============================================================
    ЕДИНЫЙ РЕДАКТОР С ЗАДЕРЖКОЙ 200 МС.
+   НИКАКИХ глобальных mousedown-перехватчиков.
+   Редактор закрывается:
+   - по blur textarea (автоматически, через 200 мс),
+   - по клику на галочку (немедленно),
+   - по Enter (немедленно) / Esc (отмена),
+   - при открытии нового редактора (сначала blur → таймер → потом DOM).
    ============================================================ */
 let activeEditor = null;
 
@@ -874,24 +880,20 @@ function cancelActiveEditor() {
     try { ed.cancel(); } catch (e) { console.error(e); }
 }
 
-/* Единственная правка по сравнению с рабочей версией:
-   перед тем как убрать DOM редактора, снимаем фокус с textarea.
-   Это заставит сработать штатный blur → scheduleCommit() → таймер 200 мс.
-   После этого можно безопасно удалить DOM: таймер сам докоммитит. */
+/* Мягко закрыть текущий редактор:
+   1. Снимаем фокус с textarea — сработает штатный blur → таймер.
+   2. Удаляем DOM.
+   Таймер продолжит жить и через 200 мс вызовет commit(). */
 function detachActiveEditorDom() {
     if (!activeEditor) return;
     const ed = activeEditor;
     activeEditor = null;
-    // Снимаем фокус, чтобы сработал blur и запустился таймер.
     if (ed.textarea && typeof ed.textarea.blur === 'function') {
         try { ed.textarea.blur(); } catch (e) {}
     }
-    // Убираем DOM из ячейки.
     if (ed.dom && ed.dom.parentNode) {
         ed.dom.parentNode.removeChild(ed.dom);
     }
-    // Если по каким-то причинам таймер не запустился (blur не сработал) —
-    // запускаем commit немедленно, чтобы не потерять данные.
     if (!ed.timer) {
         try { ed.commit(); } catch (e) { console.error(e); }
     }
@@ -1628,7 +1630,7 @@ function createPlanFillerRow(height) {
 }
 
 /* ============================================================
-   КЛИКИ.
+   КЛИКИ по pBody. НИКАКИХ глобальных mousedown-перехватчиков.
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
@@ -1684,19 +1686,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-document.addEventListener('mousedown', (e) => {
-    if (!activeEditor) return;
-    const bubble = activeEditor.dom;
-    if (bubble && bubble.contains(e.target)) return;
-    if (e.target.closest('.hw-list-item') ||
-        e.target.closest('.add-hw-btn') ||
-        e.target.closest('.placeholder-text') ||
-        e.target.closest('.cell-online-btn') ||
-        e.target.closest('.type-lesson-col') ||
-        e.target.closest('.confirm-btn')) return;
-    commitActiveEditor();
-}, true);
 
 function renderThemeContent(cell, gradeKey, value) {
     cell.innerHTML = '';
@@ -1770,9 +1759,6 @@ function openThemeEditInline(cell, gradeKey, value) {
     ok.addEventListener('click', (e) => { e.stopPropagation(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); });
 }
 
-/* ============================================================
-   ОТРИСОВКА ДЗ.
-   ============================================================ */
 function renderHwContent(cell, gradeKey, hwList) {
     const onlineBtn = cell.querySelector('.cell-online-btn');
     cell.innerHTML = '';
