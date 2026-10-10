@@ -854,15 +854,7 @@ function normalizeHwList(h) {
 }
 
 /* ============================================================
-   ЕДИНЫЙ РЕДАКТОР С НЕЗАВИСИМЫМ ТАЙМЕРОМ.
-
-   activeEditor = { commit(), cancel(), dom, timer }.
-   - finish() запускает commit() через EDIT_DELAY_MS.
-   - При переключении на новый редактор старый НЕ отменяется:
-     его DOM удаляется, а таймер продолжает идти.
-   - Если таймер ещё не был запущен (blur не успел сработать),
-     в detachActiveEditorDom() запускаем commit немедленно,
-     потому что DOM удалён и blur уже не сработает.
+   ЕДИНЫЙ РЕДАКТОР С ЗАДЕРЖКОЙ 200 МС.
    ============================================================ */
 let activeEditor = null;
 
@@ -882,21 +874,25 @@ function cancelActiveEditor() {
     try { ed.cancel(); } catch (e) { console.error(e); }
 }
 
-/* Мягко отсоединить текущий редактор от DOM, НЕ отменяя данные.
-   Если таймер ещё не был запущен — коммитим СРАЗУ, потому что
-   после удаления DOM событие blur уже не сработает.
-   Если таймер уже идёт — просто убираем DOM, таймер сам докоммитит. */
+/* Единственная правка по сравнению с рабочей версией:
+   перед тем как убрать DOM редактора, снимаем фокус с textarea.
+   Это заставит сработать штатный blur → scheduleCommit() → таймер 200 мс.
+   После этого можно безопасно удалить DOM: таймер сам докоммитит. */
 function detachActiveEditorDom() {
     if (!activeEditor) return;
     const ed = activeEditor;
     activeEditor = null;
+    // Снимаем фокус, чтобы сработал blur и запустился таймер.
+    if (ed.textarea && typeof ed.textarea.blur === 'function') {
+        try { ed.textarea.blur(); } catch (e) {}
+    }
+    // Убираем DOM из ячейки.
     if (ed.dom && ed.dom.parentNode) {
         ed.dom.parentNode.removeChild(ed.dom);
     }
-    if (ed.timer) {
-        // таймер уже идёт — оставляем, commit сработает через EDIT_DELAY_MS
-    } else {
-        // таймера нет — коммитим немедленно
+    // Если по каким-то причинам таймер не запустился (blur не сработал) —
+    // запускаем commit немедленно, чтобы не потерять данные.
+    if (!ed.timer) {
         try { ed.commit(); } catch (e) { console.error(e); }
     }
 }
@@ -1752,7 +1748,7 @@ function openThemeEditInline(cell, gradeKey, value) {
         renderThemeContent(cell, gradeKey, current);
     };
 
-    const ed = { commit, cancel, dom: bubble, timer: null };
+    const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
     activeEditor = ed;
 
     const scheduleCommit = () => {
@@ -1862,7 +1858,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         renderHwContent(cell, gradeKey, arr);
     };
 
-    const ed = { commit, cancel, dom: bubble, timer: null };
+    const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
     activeEditor = ed;
 
     const scheduleCommit = () => {
@@ -1933,7 +1929,7 @@ function openNewHwItem(cell, gradeKey) {
         renderHwContent(cell, gradeKey, current);
     };
 
-    const ed = { commit, cancel, dom: bubble, timer: null };
+    const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
     activeEditor = ed;
 
     const scheduleCommit = () => {
