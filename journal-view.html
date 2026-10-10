@@ -856,36 +856,38 @@ function normalizeHwList(h) {
 /* ============================================================
    ЕДИНЫЙ РЕДАКТОР С НЕЗАВИСИМЫМ ТАЙМЕРОМ.
 
-   Каждый редактор:
-   - сам держит свой setTimeout на 200 мс;
-   - при commit() перерисовывает СВОЮ ячейку (ту, где был открыт);
-   - отмена — до срабатывания таймера;
-   - открытие нового редактора НЕ трогает чужой таймер:
-     просто убирает «мёртвый» textarea из DOM, оставляя таймер жить.
-
-   Так задержка сохраняется всегда, при любом переключении,
-   и старые изменения не теряются.
+   Каждый редактор хранит свой setTimeout и свой commit().
+   При переключении на новый редактор старый:
+   - удаляется из DOM (чтобы не висел),
+   - НЕ сбрасывается: его таймер продолжает жить
+     и через 200 мс вызывает commit(), который перерисует
+     СВОЮ ячейку из данных JOURNAL.
    ============================================================ */
-let activeEditor = null; // { commit(), cancel(), dom }
+let activeEditor = null; // { commit(), cancel(), dom, timer, scheduleCommit() }
 
-/* Мягко закрыть текущий редактор: убрать его DOM (textarea + bubble),
-   но НЕ вызывать commit/cancel. Если активный редактор всё ещё виден
-   в DOM (например, из-за того, что мы открыли новый в этот же момент),
-   просто удалим узел — таймер сам вызовет commit() позже. */
+/* Мягко закрыть текущий редактор: снять DOM, но НЕ отменять commit.
+   Явно запускаем таймер, если он ещё не запущен — чтобы данные
+   сохранились, даже если blur не успел сработать. */
 function detachActiveEditorDom() {
     if (!activeEditor) return;
-    if (activeEditor.dom && activeEditor.dom.parentNode) {
-        activeEditor.dom.parentNode.removeChild(activeEditor.dom);
-    }
-    // Не сбрасываем activeEditor: таймер всё ещё виснет и должен
-    // вызвать commit(). Но перед открытием нового редактора мы
-    // переназначим activeEditor на новый — старый объект уйдёт
-    // в замыкание setTimeout и останется жить до срабатывания.
+    const ed = activeEditor;
     activeEditor = null;
+    // Убираем DOM.
+    if (ed.dom && ed.dom.parentNode) {
+        ed.dom.parentNode.removeChild(ed.dom);
+    }
+    // Гарантированно запускаем commit через 200 мс, если таймер ещё не идёт.
+    if (ed.timer) {
+        // таймер уже запущен — он сам вызовет commit.
+    } else {
+        ed.timer = setTimeout(() => {
+            ed.timer = null;
+            try { ed.commit(); } catch (e) { console.error(e); }
+        }, EDIT_DELAY_MS);
+    }
 }
 
-/* Синхронно применить активный редактор (при клике по кнопке ОК,
-   при Esc, при переключении, при клике вне, при смене периода и т.д.). */
+/* Синхронно применить активный редактор немедленно. */
 function commitActiveEditor() {
     if (!activeEditor) return;
     const ed = activeEditor;
@@ -1634,10 +1636,9 @@ function createPlanFillerRow(height) {
 
 /* ============================================================
    КЛИКИ.
-   При открытии нового редактора ЗАКРЫВАЕМ DOM предыдущего
-   (убираем textarea), но НЕ вызываем его commit() и НЕ трогаем
-   его таймер. Таймер сам сработает через 200 мс и применит
-   изменения.
+   При открытии нового редактора вызывается detachActiveEditorDom(),
+   которая убирает DOM старого, но НЕ отменяет его commit —
+   таймер продолжает идти и применит изменения через 200 мс.
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
@@ -1694,7 +1695,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* Глобальное закрытие редактора при клике вне. */
 document.addEventListener('mousedown', (e) => {
     if (!activeEditor) return;
     const bubble = activeEditor.dom;
@@ -1762,7 +1762,7 @@ function openThemeEditInline(cell, gradeKey, value) {
     activeEditor = ed;
 
     const scheduleCommit = () => {
-        if (ed.timer) clearTimeout(ed.timer);
+        if (ed.timer) return;
         ed.timer = setTimeout(() => {
             ed.timer = null;
             if (activeEditor === ed) activeEditor = null;
@@ -1771,17 +1771,7 @@ function openThemeEditInline(cell, gradeKey, value) {
     };
 
     ta.addEventListener('input', () => autoGrow(ta));
-    ta.addEventListener('blur', () => {
-        // Клик по галочке или по интерактиву — не запускаем таймер;
-        // закрытие произойдёт через closeActiveEditor.
-        // Но если произошёл реальный blur без участия наших кнопок —
-        // запускаем отложенное сохранение.
-        if (ed.timer) return;
-        // Если произошёл клик по confirm-btn или по другому интерактиву —
-        // обработчик mousedown не даст blur-у обработаться раньше времени,
-        // но на всякий случай проверим активный элемент.
-        scheduleCommit();
-    });
+    ta.addEventListener('blur', () => { scheduleCommit(); });
     ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); }
         if (e.key === 'Escape') { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } cancelActiveEditor(); }
@@ -1837,13 +1827,21 @@ function findHwItemByIndex(listWrap, idx) {
     return items[idx] || null;
 }
 
-/* Применить редактор к ячейке (общая часть для openHwItemEdit и openNewHwItem). */
-function attachHwEditor(cell, gradeKey, target, initialValue, commitFn, cancelFn) {
+function openHwItemEdit(cell, gradeKey, idx, value) {
+    const listWrap = cell.querySelector('.hw-list');
+    if (!listWrap) return;
+    const target = findHwItemByIndex(listWrap, idx);
+    if (!target) {
+        const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
+        renderHwContent(cell, gradeKey, arr);
+        return;
+    }
+
     const bubble = document.createElement('div');
     bubble.className = 'edit-bubble';
     const ta = document.createElement('textarea');
     ta.rows = 1;
-    ta.value = initialValue || '';
+    ta.value = value || '';
     const ok = document.createElement('button');
     ok.type = 'button';
     ok.className = 'confirm-btn';
@@ -1855,43 +1853,6 @@ function attachHwEditor(cell, gradeKey, target, initialValue, commitFn, cancelFn
     autoGrow(ta);
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
-
-    const ed = { commit: commitFn, cancel: cancelFn, dom: bubble, timer: null };
-    activeEditor = ed;
-
-    const scheduleCommit = () => {
-        if (ed.timer) clearTimeout(ed.timer);
-        ed.timer = setTimeout(() => {
-            ed.timer = null;
-            if (activeEditor === ed) activeEditor = null;
-            try { commitFn(); } catch (e) { console.error(e); }
-        }, EDIT_DELAY_MS);
-    };
-
-    ta.addEventListener('input', () => autoGrow(ta));
-    ta.addEventListener('blur', () => {
-        if (ed.timer) return;
-        scheduleCommit();
-    });
-    ta.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); }
-        if (e.key === 'Escape') { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } cancelActiveEditor(); }
-    });
-    ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-    ok.addEventListener('click', (e) => { e.stopPropagation(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); });
-
-    return ed;
-}
-
-function openHwItemEdit(cell, gradeKey, idx, value) {
-    const listWrap = cell.querySelector('.hw-list');
-    if (!listWrap) return;
-    const target = findHwItemByIndex(listWrap, idx);
-    if (!target) {
-        const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
-        renderHwContent(cell, gradeKey, arr);
-        return;
-    }
 
     const commit = () => {
         const txt = ta.value.trim();
@@ -1907,30 +1868,11 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         renderHwContent(cell, gradeKey, arr);
     };
 
-    // ta должен быть доступен в commit — вынесем через замыкание.
-    let ta = null;
-    const bubble = document.createElement('div');
-    bubble.className = 'edit-bubble';
-    ta = document.createElement('textarea');
-    ta.rows = 1;
-    ta.value = value || '';
-    const ok = document.createElement('button');
-    ok.type = 'button';
-    ok.className = 'confirm-btn';
-    ok.title = 'Сохранить';
-    ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-    bubble.appendChild(ta);
-    bubble.appendChild(ok);
-    target.replaceWith(bubble);
-    autoGrow(ta);
-    ta.focus();
-    ta.setSelectionRange(ta.value.length, ta.value.length);
-
     const ed = { commit, cancel, dom: bubble, timer: null };
     activeEditor = ed;
 
     const scheduleCommit = () => {
-        if (ed.timer) clearTimeout(ed.timer);
+        if (ed.timer) return;
         ed.timer = setTimeout(() => {
             ed.timer = null;
             if (activeEditor === ed) activeEditor = null;
@@ -1939,10 +1881,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     };
 
     ta.addEventListener('input', () => autoGrow(ta));
-    ta.addEventListener('blur', () => {
-        if (ed.timer) return;
-        scheduleCommit();
-    });
+    ta.addEventListener('blur', () => { scheduleCommit(); });
     ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); }
         if (e.key === 'Escape') { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } cancelActiveEditor(); }
@@ -1964,6 +1903,23 @@ function openNewHwItem(cell, gradeKey) {
     const target = findHwItemByIndex(listWrap, newIdx);
     if (!target) return;
 
+    const bubble = document.createElement('div');
+    bubble.className = 'edit-bubble';
+    const ta = document.createElement('textarea');
+    ta.rows = 1;
+    ta.value = '';
+    const ok = document.createElement('button');
+    ok.type = 'button';
+    ok.className = 'confirm-btn';
+    ok.title = 'Сохранить';
+    ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+    bubble.appendChild(ta);
+    bubble.appendChild(ok);
+    target.replaceWith(bubble);
+    autoGrow(ta);
+    ta.focus();
+    ta.setSelectionRange(0, 0);
+
     const commit = () => {
         const txt = ta.value.trim();
         const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
@@ -1983,29 +1939,11 @@ function openNewHwItem(cell, gradeKey) {
         renderHwContent(cell, gradeKey, current);
     };
 
-    let ta = null;
-    const bubble = document.createElement('div');
-    bubble.className = 'edit-bubble';
-    ta = document.createElement('textarea');
-    ta.rows = 1;
-    ta.value = '';
-    const ok = document.createElement('button');
-    ok.type = 'button';
-    ok.className = 'confirm-btn';
-    ok.title = 'Сохранить';
-    ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-    bubble.appendChild(ta);
-    bubble.appendChild(ok);
-    target.replaceWith(bubble);
-    autoGrow(ta);
-    ta.focus();
-    ta.setSelectionRange(0, 0);
-
     const ed = { commit, cancel, dom: bubble, timer: null };
     activeEditor = ed;
 
     const scheduleCommit = () => {
-        if (ed.timer) clearTimeout(ed.timer);
+        if (ed.timer) return;
         ed.timer = setTimeout(() => {
             ed.timer = null;
             if (activeEditor === ed) activeEditor = null;
@@ -2014,10 +1952,7 @@ function openNewHwItem(cell, gradeKey) {
     };
 
     ta.addEventListener('input', () => autoGrow(ta));
-    ta.addEventListener('blur', () => {
-        if (ed.timer) return;
-        scheduleCommit();
-    });
+    ta.addEventListener('blur', () => { scheduleCommit(); });
     ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } commitActiveEditor(); }
         if (e.key === 'Escape') { e.preventDefault(); if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } cancelActiveEditor(); }
