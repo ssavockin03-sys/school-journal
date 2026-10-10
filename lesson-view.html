@@ -1,1 +1,1183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Страница урока — Дневник.ру</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; }
+body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; }
 
+/* ---------- Шапка страницы (как в журнале) ---------- */
+.top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
+.top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
+.top-nav .sep { color: #CBD5E1; font-size: 12px; }
+.top-nav .current { color: #2563EB; font-weight: 500; }
+
+.header-bar { padding: 4px 30px 10px 30px; }
+.header-grid { display: inline-grid; grid-template-columns: max-content max-content; column-gap: 40px; row-gap: 8px; align-items: center; }
+.dropdown { position: relative; display: inline-block; }
+.dropdown-trigger { display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: transparent; border: none; font-size: 17.85px; font-weight: 700; color: #3B82F6; cursor: pointer; font-family: inherit; white-space: nowrap; letter-spacing: -0.4px; }
+.dropdown-trigger:hover { color: #2563EB; }
+.dropdown-trigger .chevron { width: 13px; height: 13px; fill: #3B82F6; transition: transform 0.2s ease; margin-top: 3px; }
+.dropdown.open .dropdown-trigger .chevron { transform: rotate(180deg); }
+.dropdown-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12); padding: 4px; z-index: 200; display: none; max-height: 320px; overflow-y: auto; }
+.dropdown.open .dropdown-menu { display: block; }
+.dropdown-menu-item { display: block; width: 100%; padding: 8px 12px; background: transparent; border: none; border-radius: 5px; color: #1E293B; font-size: 14px; font-weight: 500; cursor: pointer; text-align: left; font-family: inherit; }
+.dropdown-menu-item:hover { background: #EFF6FF; color: #2563EB; }
+.dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
+.header-meta-item { font-size: 13px; color: #1E293B; }
+
+/* ---------- Контент страницы ---------- */
+.page-content { padding: 8px 30px 40px 30px; max-width: 1400px; }
+
+.page-title { font-size: 26px; font-weight: 700; color: #1E293B; margin: 4px 0 20px 0; }
+.page-title .sub { font-weight: 400; color: #64748B; font-size: 18px; margin-left: 10px; }
+
+.layout-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 24px;
+    align-items: start;
+}
+@media (max-width: 1100px) {
+    .layout-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- Карточки-блоки ---------- */
+.card {
+    background: #FFFFFF;
+    border: 1px solid #CFD8E3;
+    border-radius: 8px;
+    padding: 14px 18px 16px 18px;
+    margin-bottom: 18px;
+}
+.card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+.card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1E293B;
+}
+.card-edit-link {
+    font-size: 12.5px;
+    color: #2563EB;
+    cursor: pointer;
+    text-decoration: none;
+}
+.card-edit-link:hover { text-decoration: underline; }
+
+/* Детали урока — таблица слева/справа */
+.details-table { width: 100%; border-collapse: collapse; }
+.details-table td {
+    padding: 6px 0;
+    vertical-align: top;
+    font-size: 13px;
+    border: none;
+}
+.details-table td.label {
+    color: #64748B;
+    width: 150px;
+    white-space: nowrap;
+}
+.details-table td.value {
+    color: #1E293B;
+    font-weight: 500;
+}
+.details-table td.value.link {
+    color: #2563EB;
+    font-weight: 500;
+}
+.details-table td.value.empty { color: #94A3B8; font-weight: 400; }
+
+/* Файлы */
+.file-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+.file-input-label {
+    display: inline-block;
+    padding: 5px 12px;
+    background: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    font-size: 12.5px;
+    color: #334155;
+    cursor: pointer;
+}
+.file-input-label:hover { background: #E2E8F0; }
+.file-input-label input[type="file"] { display: none; }
+.file-name { color: #64748B; font-size: 12.5px; }
+.file-hint { color: #94A3B8; font-size: 11.5px; line-height: 1.5; margin-bottom: 10px; }
+.btn-upload {
+    display: inline-block;
+    padding: 6px 18px;
+    background: #3B82F6;
+    color: #FFFFFF;
+    border: 1px solid #3B82F6;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+}
+.btn-upload:hover { background: #2563EB; border-color: #2563EB; }
+
+/* Таблицы в блоках (ДЗ, работы) */
+.flat-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.flat-table th {
+    background: #F4F7FB;
+    color: #475569;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-align: center;
+    padding: 8px 6px;
+    border-top: 1px solid #E2E8F0;
+    border-bottom: 1px solid #E2E8F0;
+    border-left: 1px solid #E2E8F0;
+}
+.flat-table th:last-child { border-right: 1px solid #E2E8F0; }
+.flat-table th:first-child { border-top-left-radius: 8px; }
+.flat-table th:last-child  { border-top-right-radius: 8px; }
+.flat-table td {
+    padding: 8px 10px;
+    font-size: 12.5px;
+    color: #1E293B;
+    border-bottom: 1px solid #E2E8F0;
+    border-left: 1px solid #E2E8F0;
+    vertical-align: middle;
+}
+.flat-table td:last-child { border-right: 1px solid #E2E8F0; }
+.flat-table tbody tr:first-child td { background: #FFFFFF; }
+.flat-table tbody tr.hw-row-1 td { background: #FEF3C7; }
+.flat-table tbody tr.hw-row-2 td { background: #FFFFFF; }
+.flat-table tbody tr:last-child td:first-child { border-bottom-left-radius: 8px; }
+.flat-table tbody tr:last-child td:last-child  { border-bottom-right-radius: 8px; }
+.flat-table .col-center { text-align: center; }
+.flat-table .icon-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; background: transparent; border: none;
+    border-radius: 4px; color: #64748B; cursor: pointer; padding: 0;
+    vertical-align: middle;
+}
+.flat-table .icon-btn:hover { background: #EFF6FF; color: #2563EB; }
+.flat-table .icon-btn svg { width: 13px; height: 13px; fill: currentColor; }
+
+.hw-status-pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+.hw-status-pill.red { background: #EF4444; }
+.hw-status-pill.green { background: #65A30D; }
+
+.hw-legend {
+    text-align: center;
+    font-size: 11.5px;
+    color: #64748B;
+    padding: 8px 0 0 0;
+}
+.hw-legend .dot-red { color: #EF4444; }
+.hw-legend .dot-green { color: #65A30D; }
+
+/* Ссылка «Добавить работу» / «Добавить ДЗ» */
+.add-link {
+    color: #2563EB;
+    font-size: 12.5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.add-link:hover { text-decoration: underline; }
+
+/* ---------- Таблица «Журнал» (нижняя большая) ---------- */
+.journal-wrap { border-radius: 10px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 6px 10px 10px 10px; }
+.journal-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    background: #DBEAFE;
+    border-radius: 6px;
+}
+.journal-top input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; }
+.journal-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+.journal-table thead th {
+    background: #EBF0F6;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    padding: 6px 8px;
+    border-bottom: 1px solid #CFD8E3;
+    border-right: 1px solid #CFD8E3;
+    vertical-align: middle;
+}
+.journal-table thead th:last-child { border-right: none; }
+.journal-table thead th .subhead {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: #0EA5E9;
+    margin-top: 2px;
+}
+.journal-table thead th.th-num      { width: 40px; }
+.journal-table thead th.th-student  { width: auto; }
+.journal-table thead th.th-presence { width: 110px; }
+.journal-table thead th.th-hw       { width: 110px; }
+.journal-table thead th.th-work     { width: 130px; }
+.journal-table thead th.th-comment  { width: 190px; }
+
+.journal-table tbody td {
+    background: #FFFFFF;
+    font-size: 13px;
+    color: #1E293B;
+    padding: 4px 10px;
+    border-bottom: 1px solid #E2E8F0;
+    border-right: 1px solid #E2E8F0;
+    vertical-align: middle;
+    height: 38px;
+    position: relative;
+}
+.journal-table tbody td:last-child { border-right: none; }
+.journal-table tbody tr.class-head-row td {
+    background: #F8FAFC;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 8px 10px;
+    border-bottom: 1px solid #E2E8F0;
+    border-right: none;
+    height: auto;
+}
+.journal-table tbody tr:nth-child(5n + 2):not(.class-head-row) td {
+    border-bottom: 1px solid #000000;
+}
+
+.journal-table .num-col { text-align: center; color: #334155; font-weight: 500; }
+.journal-table .student-col { text-align: left; }
+.journal-table .presence-col { text-align: center; padding: 4px 6px; }
+.journal-table .grade-col { text-align: center; padding: 4px 4px; }
+
+.presence-box {
+    display: block;
+    width: 100%;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-align: center;
+    background: transparent;
+    cursor: pointer;
+    user-select: none;
+}
+.presence-box.h { background: #F87171; }
+
+.grade-box-long {
+    display: block;
+    width: 100%;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #FFFFFF !important;
+    cursor: pointer;
+    user-select: none;
+}
+.grade-box-long.g5 { background: #A3E635; }
+.grade-box-long.g4 { background: #84CC16; }
+.grade-box-long.g3 { background: #FB923C; }
+.grade-box-long.g2 { background: #EF4444; }
+.grade-box-long.g1 { background: #DC2626; }
+.grade-box-long.empty { background: transparent; color: transparent !important; }
+
+.journal-table .comment-col {
+    color: #2563EB;
+    font-size: 12.5px;
+    cursor: pointer;
+    text-align: left;
+}
+.journal-table .comment-col:hover { text-decoration: underline; }
+.journal-table .comment-col.filled { color: #1E293B; text-decoration: none; }
+
+/* Ячейка ввода (скрытый input поверх плашки) */
+.journal-cell-input-wrap { position: relative; }
+.journal-cell-input-wrap input {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%;
+    text-align: center;
+    border: 1.5px solid #60A5FA;
+    border-radius: 4px;
+    background: #FFFFFF;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1E293B;
+    outline: none;
+    padding: 0;
+    z-index: 5;
+}
+
+/* ---------- Правая колонка ---------- */
+.side-block { margin-bottom: 18px; }
+
+.teacher-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #FFFFFF;
+    border: 1px solid #CFD8E3;
+    border-radius: 8px;
+}
+.teacher-avatar {
+    width: 52px; height: 52px;
+    border-radius: 8px;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563EB;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+.teacher-name {
+    color: #65A30D;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.nav-menu-block {
+    background: #F1F5F9;
+    border-radius: 8px;
+    padding: 14px 18px;
+}
+.nav-menu-block a {
+    display: block;
+    color: #2563EB;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 5px 0;
+    cursor: pointer;
+    line-height: 1.25;
+}
+.nav-menu-block a:hover { text-decoration: underline; }
+
+.help-note {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    color: #64748B;
+    line-height: 1.45;
+    padding: 10px 4px;
+}
+.help-note svg { width: 16px; height: 16px; fill: #94A3B8; flex-shrink: 0; margin-top: 1px; }
+.help-note a { color: #2563EB; text-decoration: underline; cursor: pointer; }
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 700px) {
+    .top-nav, .header-bar, .page-content { padding-left: 12px; padding-right: 12px; }
+    .page-title { font-size: 20px; }
+    .journal-table thead th.th-presence,
+    .journal-table thead th.th-hw,
+    .journal-table thead th.th-work { width: 70px; font-size: 10px; }
+    .journal-table thead th.th-comment { width: 120px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Breadcrumbs -->
+<div class="top-nav">
+    <a onclick="goBack('admin.html')">Стартовая учителя</a>
+    <span class="sep">›</span>
+    <a onclick="goBack('admin.html')">Журналы</a>
+    <span class="sep">›</span>
+    <a id="navJournalLink">Класс, Предмет</a>
+    <span class="sep">›</span>
+    <span class="current" id="navChain">Урок</span>
+</div>
+
+<!-- Шапка -->
+<div class="header-bar">
+    <div class="header-grid">
+        <div class="cell">
+            <div class="dropdown" id="classDropdown">
+                <button type="button" class="dropdown-trigger" onclick="toggleClassDropdown(event)">
+                    <span id="classDropdownName">—</span>
+                    <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                </button>
+                <div class="dropdown-menu" id="classDropdownMenu"></div>
+            </div>
+        </div>
+        <div class="cell">
+            <div class="dropdown" id="subjectDropdown">
+                <button type="button" class="dropdown-trigger" onclick="toggleSubjectDropdown(event)">
+                    <span id="subjectDropdownName">—</span>
+                    <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                </button>
+                <div class="dropdown-menu" id="subjectDropdownMenu"></div>
+            </div>
+        </div>
+        <div class="cell"><span class="header-meta-item" id="yearLabel">2026/2027 учебный год</span></div>
+        <div class="cell"><span class="header-meta-item" id="teacherLabel">Учитель: —</span></div>
+    </div>
+</div>
+
+<div class="page-content">
+
+    <h1 class="page-title">Страница урока</h1>
+
+    <div class="layout-grid">
+
+        <!-- ЛЕВАЯ КОЛОНКА -->
+        <div class="left-col">
+
+            <!-- Детали урока -->
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-title">Детали урока</div>
+                    <a class="card-edit-link" onclick="showToast('Редактирование деталей урока — в разработке')">Редактировать</a>
+                </div>
+                <table class="details-table">
+                    <tr>
+                        <td class="label">Предмет:</td>
+                        <td class="value link" id="dSubject">—</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Дата:</td>
+                        <td class="value" id="dDate">—</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Кто приходит:</td>
+                        <td class="value link" id="dClass">—</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Кабинет:</td>
+                        <td class="value empty" id="dRoom">—</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Тема урока:</td>
+                        <td class="value" id="dTheme">—</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Описание урока:</td>
+                        <td class="value empty" id="dDesc">-</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Файлы -->
+            <div class="card">
+                <div class="card-title" style="margin-bottom:10px;">Файлы</div>
+                <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px;">
+                    <div class="file-form">
+                        <label class="file-input-label">
+                            Выберите файл
+                            <input type="file" id="fileInput" onchange="onFileChosen()">
+                        </label>
+                        <span class="file-name" id="fileName">Файл не выбран</span>
+                    </div>
+                    <div class="file-hint">
+                        Допустимые форматы файлов: .jpg (.jpeg), .gif, .png, .mp3, .doc (.docx), .xls (.xlsx), .ppt (.pptx), .txt, .rtf, .pdf, .odt, .odf, .odp, .ods, .odg, .zip, .rar, .tar, .gz, .bz2, .epub, .mobi, .fb2
+                    </div>
+                    <button type="button" class="btn-upload" onclick="showToast('Загрузка файлов — в разработке')">Загрузить</button>
+                </div>
+            </div>
+
+            <!-- Домашние задания -->
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-title">Домашние задания</div>
+                    <a class="add-link" onclick="showToast('Добавление ДЗ — в разработке')">Добавить ДЗ</a>
+                </div>
+                <table class="flat-table">
+                    <thead>
+                        <tr>
+                            <th style="width:80px;">Описание</th>
+                            <th style="width:180px;">Выполнение</th>
+                            <th style="width:110px;">Статус</th>
+                            <th style="width:60px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="hwTableBody">
+                        <!-- сюда рендерится ДЗ -->
+                    </tbody>
+                </table>
+                <div class="hw-legend">
+                    Выполнение: <span class="dot-red">в работе</span>, <span class="dot-green">выполнено</span>, проверено/закрыто
+                </div>
+            </div>
+
+            <!-- Работы на уроке -->
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-title">Работы на уроке</div>
+                    <a class="add-link" onclick="showToast('Добавление работы — в разработке')">Добавить работу</a>
+                </div>
+                <table class="flat-table">
+                    <thead>
+                        <tr>
+                            <th style="width:110px;">Тип</th>
+                            <th>Описание</th>
+                            <th style="width:60px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="worksTableBody">
+                        <!-- сюда рендерятся работы -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Журнал -->
+            <div class="card" style="padding:14px 12px 14px 12px;">
+                <div class="card-title" style="margin-bottom:10px; padding-left:4px;">Журнал</div>
+                <div class="journal-wrap">
+                    <div class="journal-top">
+                        <input type="checkbox" id="lessonHeld" checked>
+                        <label for="lessonHeld" style="cursor:pointer;">Урок проведен.</label>
+                    </div>
+                    <table class="journal-table">
+                        <thead>
+                            <tr>
+                                <th class="th-num">№</th>
+                                <th class="th-student">Список учеников</th>
+                                <th class="th-presence">Присутствие</th>
+                                <th class="th-hw">Дом. задания<span class="subhead" id="colHwLabel">ДЗ-1</span></th>
+                                <th class="th-work">Работа на уроке<span class="subhead" id="colWorkLabel">ОТВ</span></th>
+                                <th class="th-comment">Комментарии к уроку</th>
+                            </tr>
+                        </thead>
+                        <tbody id="journalBody">
+                            <!-- сюда рендерится класс и ученики -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА -->
+        <div class="right-col">
+
+            <div class="side-block">
+                <div class="card-head" style="margin-bottom:8px;">
+                    <div class="card-title">Учитель</div>
+                </div>
+                <div class="teacher-card">
+                    <div class="teacher-avatar" id="teacherAvatar">—</div>
+                    <div class="teacher-name" id="teacherName">—</div>
+                </div>
+            </div>
+
+            <div class="side-block">
+                <div class="nav-menu-block">
+                    <a onclick="showToast('ДЗ к следующему уроку — в разработке')">ДЗ к следующему уроку</a>
+                    <a onclick="showToast('Журнал уроков за день — в разработке')">Журнал уроков за день</a>
+                    <a onclick="showToast('Журнал уроков за неделю — в разработке')">Журнал уроков за неделю</a>
+                    <a onclick="goJournal()">Журнал предмета</a>
+                    <a onclick="goJournal()">Поурочное планирование</a>
+                </div>
+            </div>
+
+            <div class="help-note">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 10.9 13 11.5 13 13h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+                <div>Дополнительная информация <a onclick="showToast('Памятка — в разработке')">в памятке по заполнению журнала.</a></div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div id="toast" style="position:fixed;bottom:24px;right:24px;background:#1E293B;color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(15,23,42,0.2);opacity:0;transform:translateY(20px);transition:all 0.3s ease;z-index:10000;pointer-events:none;font-family:'Inter',sans-serif;"></div>
+
+<script src="supabase-config.js"></script>
+<script>
+/* ============================================================
+   Параметры URL:
+   ?class=<classId>&subject=<subjectId>&date=<YYYY-MM-DD>&lesson=<num>
+   ============================================================ */
+function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+        classId: params.get('class'),
+        subjectId: params.get('subject'),
+        date: params.get('date'),
+        lessonNum: parseInt(params.get('lesson') || '1', 10)
+    };
+}
+
+const DAYS_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const DAYS_JS_INDEX = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+
+const PERIOD_LABELS = {
+    'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
+    'Полугодия': ['I полугодие', 'II полугодие'],
+    'Триместры': ['I триместр', 'II триместр', 'III триместр'],
+    'Семестры':  ['I семестр', 'II семестр']
+};
+
+const LESSON_TYPES = [
+    { abbr: 'АК/Р', full: 'Административная контрольная работа' }, { abbr: 'АД', full: 'Арифметический диктант' },
+    { abbr: 'АУД', full: 'Аудирование' }, { abbr: 'ВКР', full: 'Входная контрольная работа' },
+    { abbr: 'ВКД', full: 'Входной контрольный диктант' }, { abbr: 'ГОВОР', full: 'Говорение' },
+    { abbr: 'ГИА', full: 'Государственная итоговая аттестация' }, { abbr: 'ГЗ', full: 'Грамматическое задание' },
+    { abbr: 'ДИАЛ', full: 'Диалогическая речь' }, { abbr: 'Д', full: 'Диктант' }, { abbr: 'ДУ', full: 'Дистанционный урок' },
+    { abbr: 'ДОК', full: 'Доклад' }, { abbr: 'Д/Р', full: 'Домашняя работа' }, { abbr: 'Зчт', full: 'Зачет' },
+    { abbr: 'И', full: 'Изложение' }, { abbr: 'ИПр', full: 'Индивидуальный проект' },
+    { abbr: 'ИК/Р', full: 'Итоговая контрольная работа' }, { abbr: 'ИКД', full: 'Итоговый контрольный диктант' },
+    { abbr: 'КПр', full: 'Коллективный проект' }, { abbr: 'ККР', full: 'Комплексная контрольная работа' },
+    { abbr: 'КАТ', full: 'Комплексный анализ текста' }, { abbr: 'КОНС', full: 'Консультация' },
+    { abbr: 'К/Р', full: 'Контрольная работа' }, { abbr: 'КС', full: 'Контрольное списывание' },
+    { abbr: 'КД', full: 'Контрольный диктант' }, { abbr: 'КОРР', full: 'Корректированная' },
+    { abbr: 'КП', full: 'Курсовая работа' }, { abbr: 'Л/Р', full: 'Лабораторная работа' },
+    { abbr: 'ЛЗ', full: 'Лабораторное занятие' }, { abbr: 'ЛЕК', full: 'Лекция' },
+    { abbr: 'М/Д', full: 'Математический диктант' }, { abbr: 'МЗ', full: 'Модульный зачет' },
+    { abbr: 'МИУД', full: 'Мониторинг индивидуальных учебных достижений' }, { abbr: 'Наиз', full: 'Наизусть' },
+    { abbr: 'Н/З', full: 'Недельное задание' }, { abbr: 'ОЗ', full: 'Обзорное занятие' },
+    { abbr: 'ОИ', full: 'Обучающее изложение' }, { abbr: 'ОИКП', full: 'Обучающее изложение по коллективно составленному плану' },
+    { abbr: 'ОС', full: 'Обучающее сочинение' }, { abbr: 'О', full: 'Опрос' }, { abbr: 'ОР', full: 'Орфографическая работа' },
+    { abbr: 'ОТВ', full: 'Ответ на уроке' }, { abbr: 'ПрЗ', full: 'Практическое занятие' },
+    { abbr: 'ПР', full: 'Проверочная работа' }, { abbr: 'ПрЗд', full: 'Продуктивные задания' },
+    { abbr: 'Пр-т', full: 'Проект' }, { abbr: 'ПА', full: 'Промежуточная аттестация' },
+    { abbr: 'Р/У', full: 'Работа на уроке' }, { abbr: 'РНО', full: 'Работа над ошибками' },
+    { abbr: 'К/К', full: 'Работа с контурными картами' }, { abbr: 'РСТ', full: 'Работа с таблицами' },
+    { abbr: 'Р/Т', full: 'Рабочая тетрадь' }, { abbr: 'РЕФ', full: 'Реферат' }, { abbr: 'С/Р', full: 'Самостоятельная работа' },
+    { abbr: 'СЕМ', full: 'Семинар' }, { abbr: 'СД', full: 'Словарный диктант' }, { abbr: 'СОЧ', full: 'Сочинение' },
+    { abbr: 'СК', full: 'Сочинение по картине' }, { abbr: 'СПИС', full: 'Списывание' }, { abbr: 'ТР', full: 'Творческая работа' },
+    { abbr: 'Тест', full: 'Тест' }, { abbr: 'ТЧ', full: 'Техника чтения' }, { abbr: 'УР', full: 'Урок' },
+    { abbr: 'У/И', full: 'Устное изложение' }, { abbr: 'У/С', full: 'Устное сочинение' }, { abbr: 'УС', full: 'Устный счет' },
+    { abbr: 'ФВ', full: 'Факультатив' }, { abbr: 'ЧИТ', full: 'Чтение' }, { abbr: 'ЧТ/В', full: 'Чтение вслух' },
+    { abbr: 'ЧТ/М', full: 'Чтение молча' }, { abbr: 'ЭКС', full: 'Экскурсия' }, { abbr: 'Я/Т', full: 'Языковая тема' }
+];
+
+/* ------------------------------------------------------------
+   Глобальное состояние страницы
+   ------------------------------------------------------------ */
+let CLASS_ID = null;
+let SUBJECT_ID = null;
+let DATE_ISO = null;
+let LESSON_NUM = 1;
+let GRADE_KEY = null;   // iso + '_' + lessonNum
+
+let CLASS_OBJ = null;
+let SUBJECT_OBJ = null;
+let SUBJECT_NAME = '';
+let TEACHER_NAME = '';
+let STUDENTS = [];
+let JOURNAL = null;      // { grades, lessons, qtrGrades, lessonTypes }
+let ALL_CLASSES = [];
+let ALL_CLASS_SUBJECTS = [];
+let ALL_SCHEDULES = [];
+
+let lessonHeld = true;
+
+/* ------------------------------------------------------------
+   Утилиты
+   ------------------------------------------------------------ */
+function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    const s = String(text);
+    return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+function normalizeHwList(h) {
+    if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== '');
+    if (typeof h === 'string' && h.trim() !== '') return [h];
+    return [];
+}
+function formatIso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function formatDateFullFromIso(iso) {
+    const parts = iso.split('-');
+    if (parts.length !== 3) return iso;
+    return parts[2] + '.' + parts[1] + '.' + parts[0];
+}
+function formatDateHumanFromIso(iso) {
+    const MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+                    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+    const parts = iso.split('-');
+    if (parts.length !== 3) return iso;
+    const d = parseInt(parts[2], 10);
+    const m = parseInt(parts[1], 10);
+    const y = parts[0];
+    return d + ' ' + (MONTHS[m - 1] || '') + ' ' + y;
+}
+function formatShortName(fullName) {
+    if (!fullName) return '';
+    const parts = String(fullName).trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return '';
+    if (parts.length === 1) return parts[0];
+    return parts[0] + ' ' + parts[1];
+}
+function getInitials(fullName) {
+    if (!fullName) return '—';
+    const parts = String(fullName).trim().split(/\s+/).filter(Boolean);
+    const a = parts[0] ? parts[0].charAt(0).toUpperCase() : '';
+    const b = parts[1] ? parts[1].charAt(0).toUpperCase() : '';
+    return (a + b) || '—';
+}
+
+let toastTimer = null;
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+    }, 2500);
+}
+
+/* ------------------------------------------------------------
+   Инициализация
+   ------------------------------------------------------------ */
+async function init() {
+    const p = getUrlParams();
+    CLASS_ID = p.classId;
+    SUBJECT_ID = p.subjectId;
+    DATE_ISO = p.date;
+    LESSON_NUM = p.lessonNum || 1;
+
+    if (!CLASS_ID || !SUBJECT_ID || !DATE_ISO) {
+        alert('Не заданы параметры class, subject или date.');
+        return;
+    }
+    GRADE_KEY = DATE_ISO + '_' + LESSON_NUM;
+
+    // Загружаем классы
+    const classes = await DB.getAll('classes');
+    ALL_CLASSES = classes;
+    CLASS_OBJ = classes.find(c => c.id === CLASS_ID);
+    if (!CLASS_OBJ) { alert('Класс не найден'); return; }
+
+    // Предметы
+    const subjects = await DB.getAll('subjects');
+    SUBJECT_OBJ = subjects.find(s => s.id === SUBJECT_ID);
+    if (!SUBJECT_OBJ) { alert('Предмет не найден'); return; }
+    SUBJECT_NAME = SUBJECT_OBJ.name;
+
+    // Расписания
+    ALL_SCHEDULES = await DB.getAll('class_schedules');
+    const classSubjects = collectSubjectsFromSchedule(ALL_SCHEDULES, CLASS_ID);
+    const matched = classSubjects.find(s => s.name === SUBJECT_NAME);
+    if (matched) TEACHER_NAME = matched.teacherName || '';
+
+    ALL_CLASS_SUBJECTS = [];
+    classSubjects.forEach(cs => {
+        const subjObj = subjects.find(s => s.name === cs.name);
+        if (subjObj) ALL_CLASS_SUBJECTS.push({ id: subjObj.id, name: cs.name });
+    });
+
+    // Ученики
+    const allStudents = await DB.getAll('students');
+    STUDENTS = allStudents
+        .filter(s => s.class_id === CLASS_ID)
+        .sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
+
+    // Журнал
+    const journalRecord = await DB.getJournal(CLASS_ID, SUBJECT_ID);
+    if (journalRecord) {
+        JOURNAL = {
+            grades: journalRecord.grades || {},
+            lessons: journalRecord.lessons || {},
+            qtrGrades: journalRecord.qtr_grades || {},
+            lessonTypes: journalRecord.lesson_types || {}
+        };
+    } else {
+        JOURNAL = { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
+    }
+
+    renderHeader();
+    renderDetails();
+    renderTeacher();
+    renderHw();
+    renderWorks();
+    renderJournal();
+}
+
+function collectSubjectsFromSchedule(schedules, classId) {
+    const map = new Map();
+    schedules
+        .filter(s => s.class_id === classId && s.grid)
+        .forEach(s => {
+            Object.values(s.grid).forEach(dayGrid => {
+                Object.values(dayGrid || {}).forEach(lesson => {
+                    if (!lesson || !lesson.subject) return;
+                    if (!map.has(lesson.subject)) {
+                        map.set(lesson.subject, { name: lesson.subject, teacherName: lesson.teacherName || '' });
+                    } else if (!map.get(lesson.subject).teacherName && lesson.teacherName) {
+                        map.get(lesson.subject).teacherName = lesson.teacherName;
+                    }
+                });
+            });
+        });
+    return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+}
+
+/* ------------------------------------------------------------
+   Шапка
+   ------------------------------------------------------------ */
+function renderHeader() {
+    document.getElementById('classDropdownName').textContent = CLASS_OBJ.name;
+    document.getElementById('subjectDropdownName').textContent = SUBJECT_NAME;
+    document.getElementById('teacherLabel').textContent = 'Учитель: ' + (TEACHER_NAME || '—');
+    document.getElementById('yearLabel').textContent = '2026/2027 учебный год';
+    document.getElementById('navJournalLink').textContent = CLASS_OBJ.name + ', ' + SUBJECT_NAME;
+    document.title = 'Урок ' + formatDateFullFromIso(DATE_ISO) + ' — ' + CLASS_OBJ.name + ' · ' + SUBJECT_NAME;
+    renderClassDropdownMenu();
+    renderSubjectDropdownMenu();
+}
+
+function renderClassDropdownMenu() {
+    const menu = document.getElementById('classDropdownMenu');
+    menu.innerHTML = '';
+    ALL_CLASSES.forEach(c => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'dropdown-menu-item' + (c.id === CLASS_ID ? ' active' : '');
+        btn.textContent = c.name;
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (c.id === CLASS_ID) return;
+            const schedules = await DB.getAll('class_schedules');
+            const subjList = collectSubjectsFromSchedule(schedules, c.id);
+            if (subjList.length === 0) { showToast('В классе нет расписания'); return; }
+            const subjects = await DB.getAll('subjects');
+            const firstSubjObj = subjects.find(s => s.name === subjList[0].name);
+            if (!firstSubjObj) { showToast('Предмет не найден'); return; }
+            window.location.href = 'journal-view.html?class=' + encodeURIComponent(c.id) + '&subject=' + encodeURIComponent(firstSubjObj.id);
+        });
+        menu.appendChild(btn);
+    });
+}
+
+function renderSubjectDropdownMenu() {
+    const menu = document.getElementById('subjectDropdownMenu');
+    menu.innerHTML = '';
+    ALL_CLASS_SUBJECTS.forEach(s => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'dropdown-menu-item' + (s.id === SUBJECT_ID ? ' active' : '');
+        btn.textContent = s.name;
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (s.id === SUBJECT_ID) return;
+            window.location.href = 'journal-view.html?class=' + encodeURIComponent(CLASS_ID) + '&subject=' + encodeURIComponent(s.id);
+        });
+        menu.appendChild(btn);
+    });
+}
+
+function toggleClassDropdown(e) {
+    e.stopPropagation();
+    const dd = document.getElementById('classDropdown');
+    const isOpen = dd.classList.contains('open');
+    closeAllDropdowns();
+    if (!isOpen) dd.classList.add('open');
+}
+function toggleSubjectDropdown(e) {
+    e.stopPropagation();
+    const dd = document.getElementById('subjectDropdown');
+    const isOpen = dd.classList.contains('open');
+    closeAllDropdowns();
+    if (!isOpen) dd.classList.add('open');
+}
+function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+}
+document.addEventListener('click', closeAllDropdowns);
+
+/* ------------------------------------------------------------
+   Детали урока
+   ------------------------------------------------------------ */
+function renderDetails() {
+    document.getElementById('dSubject').textContent = SUBJECT_NAME;
+    document.getElementById('dDate').textContent =
+        formatDateHumanFromIso(DATE_ISO) + ', ' + LESSON_NUM + ' урок';
+    document.getElementById('dClass').textContent = CLASS_OBJ.name;
+
+    const lesson = JOURNAL.lessons[GRADE_KEY] || { t: '', h: [] };
+    document.getElementById('dTheme').textContent = lesson.t || '—';
+    document.getElementById('dTheme').classList.toggle('empty', !lesson.t);
+}
+
+/* ------------------------------------------------------------
+   Учитель
+   ------------------------------------------------------------ */
+function renderTeacher() {
+    document.getElementById('teacherName').textContent = TEACHER_NAME || 'Учитель не назначен';
+    document.getElementById('teacherAvatar').textContent = getInitials(TEACHER_NAME);
+}
+
+/* ------------------------------------------------------------
+   Блок «Домашние задания»
+   ------------------------------------------------------------ */
+function renderHw() {
+    const tbody = document.getElementById('hwTableBody');
+    tbody.innerHTML = '';
+    const lesson = JOURNAL.lessons[GRADE_KEY] || { t: '', h: [] };
+    const hwList = normalizeHwList(lesson.h);
+
+    if (hwList.length === 0) {
+        // Пустая строка-заглушка
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="4" style="text-align:center; color:#94A3B8; padding:14px;">Домашних заданий нет</td>';
+        tbody.appendChild(tr);
+        return;
+    }
+
+    hwList.forEach((hw, i) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hw-row-' + ((i % 2) + 1);
+
+        // Описание: "ДЗ-1" + номер + иконка скрепки
+        tr.innerHTML =
+            '<td style="color:#2563EB; font-weight:600;">ДЗ-' + (i + 1) + ' <svg style="width:12px;height:12px;fill:#64748B;vertical-align:middle;margin-left:4px;" viewBox="0 0 24 24"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg></td>' +
+            '<td class="col-center"><span style="color:#EF4444; font-weight:600;">30</span> &nbsp; <span style="color:#65A30D; font-weight:600;">0</span> &nbsp; <span style="color:#65A30D; font-weight:600;">1</span></td>' +
+            '<td class="col-center"><span class="hw-status-pill red">Выдано</span></td>' +
+            '<td class="col-center">' +
+                '<button type="button" class="icon-btn" title="Редактировать" onclick="showToast(\'Редактирование ДЗ — в разработке\')">' +
+                    '<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>' +
+                '</button>' +
+                '<button type="button" class="icon-btn" title="Удалить" onclick="showToast(\'Удаление ДЗ — в разработке\')">' +
+                    '<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>' +
+                '</button>' +
+            '</td>';
+        tbody.appendChild(tr);
+    });
+}
+
+/* ------------------------------------------------------------
+   Блок «Работы на уроке»
+   ------------------------------------------------------------ */
+function renderWorks() {
+    const tbody = document.getElementById('worksTableBody');
+    tbody.innerHTML = '';
+    const abbr = JOURNAL.lessonTypes[GRADE_KEY] || 'ОТВ';
+    const fullName = (LESSON_TYPES.find(t => t.abbr === abbr) || { full: 'Ответ на уроке' }).full;
+
+    const tr = document.createElement('tr');
+    tr.className = 'hw-row-2';
+    tr.innerHTML =
+        '<td style="color:#2563EB; font-weight:600;">' + escapeHtml(abbr) + '</td>' +
+        '<td>' + escapeHtml(fullName) + '</td>' +
+        '<td class="col-center">' +
+            '<button type="button" class="icon-btn" title="Редактировать" onclick="showToast(\'Редактирование работы — в разработке\')">' +
+                '<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>' +
+            '</button>' +
+            '<button type="button" class="icon-btn" title="Удалить" onclick="showToast(\'Удаление работы — в разработке\')">' +
+                '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>' +
+            '</button>' +
+        '</td>';
+    tbody.appendChild(tr);
+
+    document.getElementById('colWorkLabel').textContent = abbr;
+    document.getElementById('colHwLabel').textContent = 'ДЗ-1';
+}
+
+/* ------------------------------------------------------------
+   Блок «Журнал» — таблица учеников
+   ------------------------------------------------------------ */
+function renderJournal() {
+    const tbody = document.getElementById('journalBody');
+    tbody.innerHTML = '';
+
+    // Строка с названием класса
+    const classRow = document.createElement('tr');
+    classRow.className = 'class-head-row';
+    classRow.innerHTML = '<td colspan="6">Класс (' + escapeHtml(CLASS_OBJ.name) + ')</td>';
+    tbody.appendChild(classRow);
+
+    if (STUDENTS.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="6" style="text-align:center; color:#94A3B8; padding:14px;">В классе нет учеников</td>';
+        tbody.appendChild(tr);
+        return;
+    }
+
+    const gradesForLesson = JOURNAL.grades || {};
+    const abbr = JOURNAL.lessonTypes[GRADE_KEY] || 'ОТВ';
+
+    STUDENTS.forEach((student, idx) => {
+        const tr = document.createElement('tr');
+
+        // №
+        const tdNum = document.createElement('td');
+        tdNum.className = 'num-col';
+        tdNum.textContent = idx + 1;
+        tr.appendChild(tdNum);
+
+        // ФИО (полное)
+        const tdName = document.createElement('td');
+        tdName.className = 'student-col';
+        tdName.textContent = student.full_name || '';
+        tr.appendChild(tdName);
+
+        // Присутствие
+        const tdPresence = document.createElement('td');
+        tdPresence.className = 'presence-col';
+        const presenceVal = (gradesForLesson[student.id] || {})[GRADE_KEY + '_presence'] || '';
+        const presenceBox = document.createElement('span');
+        presenceBox.className = 'presence-box' + (presenceVal === 'Н' ? ' h' : '');
+        presenceBox.textContent = presenceVal === 'Н' ? 'Н' : '';
+        presenceBox.title = 'Кликните, чтобы отметить отсутствие (Н)';
+        presenceBox.addEventListener('click', () => togglePresence(student.id));
+        tdPresence.appendChild(presenceBox);
+        tr.appendChild(tdPresence);
+
+        // Дом. задания — оценка
+        const tdHw = document.createElement('td');
+        tdHw.className = 'grade-col';
+        const hwVal = (gradesForLesson[student.id] || {})[GRADE_KEY] || '';
+        const hwBox = makeGradeBox(hwVal);
+        hwBox.addEventListener('click', () => editGrade(student.id, GRADE_KEY, hwBox));
+        tdHw.appendChild(hwBox);
+        tr.appendChild(tdHw);
+
+        // Работа на уроке — оценка
+        const tdWork = document.createElement('td');
+        tdWork.className = 'grade-col';
+        const workVal = (gradesForLesson[student.id] || {})[GRADE_KEY] || '';
+        const workBox = makeGradeBox(workVal);
+        workBox.addEventListener('click', () => editGrade(student.id, GRADE_KEY, workBox));
+        tdWork.appendChild(workBox);
+        tr.appendChild(tdWork);
+
+        // Комментарий
+        const tdComment = document.createElement('td');
+        tdComment.className = 'comment-col';
+        tdComment.textContent = 'Добавить комментарий';
+        tdComment.addEventListener('click', () => showToast('Комментарии — в разработке'));
+        tr.appendChild(tdComment);
+
+        tbody.appendChild(tr);
+    });
+}
+
+function makeGradeBox(val) {
+    const box = document.createElement('span');
+    box.className = 'grade-box-long';
+    if (!val) {
+        box.classList.add('empty');
+        box.textContent = '';
+    } else {
+        box.textContent = val;
+        const first = String(val).trim().charAt(0);
+        if (first === '5') box.classList.add('g5');
+        else if (first === '4') box.classList.add('g4');
+        else if (first === '3') box.classList.add('g3');
+        else if (first === '2') box.classList.add('g2');
+        else if (first === '1') box.classList.add('g1');
+    }
+    return box;
+}
+
+function togglePresence(studentId) {
+    if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
+    const cur = JOURNAL.grades[studentId][GRADE_KEY + '_presence'] || '';
+    JOURNAL.grades[studentId][GRADE_KEY + '_presence'] = cur === 'Н' ? '' : 'Н';
+    saveJournal();
+    renderJournal();
+}
+
+function editGrade(studentId, gradeKey, boxEl) {
+    const td = boxEl.parentNode;
+    td.innerHTML = '';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
+    input.maxLength = 4;
+    const wrap = document.createElement('div');
+    wrap.className = 'journal-cell-input-wrap';
+    wrap.style.width = '100%';
+    wrap.style.height = '28px';
+    wrap.appendChild(input);
+    td.appendChild(wrap);
+    input.focus();
+    input.select();
+
+    const commit = () => {
+        const v = input.value.trim().toUpperCase();
+        if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
+        JOURNAL.grades[studentId][gradeKey] = v;
+        saveJournal();
+        renderJournal();
+    };
+    const cancel = () => { renderJournal(); };
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); commit(); }
+        if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+    });
+    input.addEventListener('blur', () => {
+        setTimeout(() => { if (td.contains(input)) commit(); }, 100);
+    });
+}
+
+/* ------------------------------------------------------------
+   Сохранение
+   ------------------------------------------------------------ */
+async function saveJournal() {
+    await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
+        grades: JOURNAL.grades,
+        lessons: JOURNAL.lessons,
+        qtr_grades: JOURNAL.qtrGrades,
+        lesson_types: JOURNAL.lessonTypes
+    });
+}
+
+/* ------------------------------------------------------------
+   Файлы
+   ------------------------------------------------------------ */
+function onFileChosen() {
+    const f = document.getElementById('fileInput').files[0];
+    document.getElementById('fileName').textContent = f ? f.name : 'Файл не выбран';
+}
+
+/* ------------------------------------------------------------
+   Навигация
+   ------------------------------------------------------------ */
+function goBack(url) { window.location.href = url; }
+function goJournal() {
+    window.location.href = 'journal-view.html?class=' + encodeURIComponent(CLASS_ID) + '&subject=' + encodeURIComponent(SUBJECT_ID);
+}
+
+/* ------------------------------------------------------------
+   Старт
+   ------------------------------------------------------------ */
+init().catch(err => {
+    console.error('Ошибка init:', err);
+    alert('Не удалось загрузить страницу урока. Проверьте консоль (F12).');
+});
+</script>
+</body>
+</html>
