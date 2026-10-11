@@ -138,32 +138,36 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .journal-table thead th:last-child { border-right: none; }
 .journal-table thead th .subhead { display: block; font-size: 11px; font-weight: 400; color: #0EA5E9; margin-top: 2px; }
-.journal-table thead th.th-num      { width: 50px; }
-.journal-table thead th.th-student  { width: 28%; }
-.journal-table thead th.th-presence { width: 110px; }
-.journal-table thead th.th-hw       { width: 120px; }
-.journal-table thead th.th-work     { width: 140px; }
-.journal-table thead th.th-comment  { width: auto; }
 
+/* Ширины колонок: комментарии сжаты вдвое, освободившееся отдано ДЗ и работе */
+.journal-table thead th.th-num      { width: 50px; }
+.journal-table thead th.th-student  { width: 26%; }
+.journal-table thead th.th-presence { width: 110px; }
+.journal-table thead th.th-hw       { width: 190px; }
+.journal-table thead th.th-work     { width: 210px; }
+.journal-table thead th.th-comment  { width: 150px; }
+
+/* Высота строк учеников — чуть меньше */
 .journal-table tbody td {
     background: #FFFFFF; font-size: 13px; color: #1E293B;
-    padding: 4px 10px; border-bottom: 1px solid #E2E8F0;
+    padding: 3px 10px; border-bottom: 1px solid #E2E8F0;
     border-right: 1px solid #E2E8F0; vertical-align: middle;
-    height: 38px; position: relative;
+    height: 34px; position: relative;
 }
 .journal-table tbody td:last-child { border-right: none; }
 .journal-table tbody tr.class-head-row td {
     background: #F8FAFC; color: #334155; font-size: 14px; font-weight: 700;
-    padding: 8px 10px; border-bottom: 1px solid #E2E8F0; border-right: none; height: auto;
+    padding: 7px 10px; border-bottom: 1px solid #E2E8F0; border-right: none; height: auto;
 }
 
 .journal-table .num-col { text-align: center; color: #334155; font-weight: 500; }
 .journal-table .student-col { text-align: left; }
-.journal-table .presence-col { text-align: center; padding: 4px 6px; }
-.journal-table .grade-col { text-align: center; padding: 4px 4px; }
+.journal-table .presence-col { text-align: center; padding: 3px 6px; }
+.journal-table .grade-col { text-align: center; padding: 3px 4px; }
 
+/* Присутствие — без курсора-руки */
 .presence-box {
-    display: block; width: 100%; height: 28px; line-height: 28px;
+    display: block; width: 100%; height: 26px; line-height: 26px;
     border-radius: 4px; font-size: 13px; font-weight: 600;
     color: #FFFFFF; text-align: center;
     background: transparent; cursor: default; user-select: none;
@@ -173,11 +177,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .presence-box.blue { background: #60A5FA; }
 .presence-box.orange { background: #FB923C; }
 
+/* Оценки — без курсора-руки */
 .grade-box-long {
-    display: block; width: 100%; height: 28px; line-height: 28px;
+    display: block; width: 100%; height: 26px; line-height: 26px;
     border-radius: 4px; text-align: center;
     font-size: 14px; font-weight: 700; color: #FFFFFF !important;
-    cursor: pointer; user-select: none;
+    cursor: default; user-select: none;
 }
 .grade-box-long.g5 { background: #A3E635; }
 .grade-box-long.g4 { background: #84CC16; }
@@ -233,8 +238,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .page-title { font-size: 20px; }
     .journal-table thead th.th-presence,
     .journal-table thead th.th-hw,
-    .journal-table thead th.th-work { width: 70px; font-size: 10px; }
-    .journal-table thead th.th-comment { width: 120px; }
+    .journal-table thead th.th-work { width: 80px; font-size: 10px; }
+    .journal-table thead th.th-comment { width: 110px; }
 }
 </style>
 </head>
@@ -279,7 +284,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
     <h1 class="page-title">Страница урока</h1>
 
-    <!-- Верхняя часть: 2 колонки -->
     <div class="layout-grid">
 
         <div class="left-col">
@@ -386,7 +390,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
         </div>
     </div>
 
-    <!-- Нижняя часть: Журнал на всю ширину -->
     <div class="card journal-full-width">
         <div class="card-title" style="margin-bottom:10px;">Журнал</div>
         <div class="journal-wrap">
@@ -856,7 +859,7 @@ function editPresence(studentId, gradeKey, boxEl) {
     const wrap = document.createElement('div');
     wrap.className = 'journal-cell-input-wrap';
     wrap.style.width = '100%';
-    wrap.style.height = '28px';
+    wrap.style.height = '26px';
     wrap.appendChild(input);
     td.appendChild(wrap);
     input.focus();
@@ -908,7 +911,7 @@ function editGrade(studentId, gradeKey, boxEl) {
     const wrap = document.createElement('div');
     wrap.className = 'journal-cell-input-wrap';
     wrap.style.width = '100%';
-    wrap.style.height = '28px';
+    wrap.style.height = '26px';
     wrap.appendChild(input);
     td.appendChild(wrap);
     input.focus();
