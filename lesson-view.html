@@ -120,9 +120,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 /* ============================================================
    Журнал — на всю ширину страницы
    ============================================================ */
-.journal-full-width {
-    margin-top: 0;
-}
+.journal-full-width { margin-top: 0; }
 
 .journal-wrap { border-radius: 10px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 6px 10px 10px 10px; }
 .journal-top {
@@ -131,7 +129,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     color: #334155; background: #DBEAFE; border-radius: 6px;
 }
 .journal-top input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; }
-.journal-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+
+.journal-scroll-x {
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+.journal-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; min-width: 100%; }
 .journal-table thead th {
     background: #EBF0F6; color: #334155; font-size: 12px; font-weight: 600; text-align: center;
     padding: 6px 8px; border-bottom: 1px solid #CFD8E3; border-right: 1px solid #CFD8E3; vertical-align: middle;
@@ -139,15 +143,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-table thead th:last-child { border-right: none; }
 .journal-table thead th .subhead { display: block; font-size: 11px; font-weight: 400; color: #0EA5E9; margin-top: 2px; }
 
-/* Ширины колонок: комментарии сжаты вдвое, освободившееся отдано ДЗ и работе */
 .journal-table thead th.th-num      { width: 50px; }
 .journal-table thead th.th-student  { width: 26%; }
 .journal-table thead th.th-presence { width: 110px; }
-.journal-table thead th.th-hw       { width: 190px; }
-.journal-table thead th.th-work     { width: 210px; }
+.journal-table thead th.th-hw-col   { width: 110px; }
+.journal-table thead th.th-work     { width: 160px; }
 .journal-table thead th.th-comment  { width: 150px; }
 
-/* Высота строк учеников — чуть меньше */
 .journal-table tbody td {
     background: #FFFFFF; font-size: 13px; color: #1E293B;
     padding: 3px 10px; border-bottom: 1px solid #E2E8F0;
@@ -165,7 +167,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-table .presence-col { text-align: center; padding: 3px 6px; }
 .journal-table .grade-col { text-align: center; padding: 3px 4px; }
 
-/* Присутствие — без курсора-руки */
 .presence-box {
     display: block; width: 100%; height: 26px; line-height: 26px;
     border-radius: 4px; font-size: 13px; font-weight: 600;
@@ -177,7 +178,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .presence-box.blue { background: #60A5FA; }
 .presence-box.orange { background: #FB923C; }
 
-/* Оценки — без курсора-руки */
 .grade-box-long {
     display: block; width: 100%; height: 26px; line-height: 26px;
     border-radius: 4px; text-align: center;
@@ -236,10 +236,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 @media (max-width: 700px) {
     .top-nav, .header-bar, .page-content { padding-left: 12px; padding-right: 12px; }
     .page-title { font-size: 20px; }
-    .journal-table thead th.th-presence,
-    .journal-table thead th.th-hw,
-    .journal-table thead th.th-work { width: 80px; font-size: 10px; }
-    .journal-table thead th.th-comment { width: 110px; }
 }
 </style>
 </head>
@@ -397,19 +393,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
                 <input type="checkbox" id="lessonHeld" checked>
                 <label for="lessonHeld" style="cursor:pointer;">Урок проведен.</label>
             </div>
-            <table class="journal-table">
-                <thead>
-                    <tr>
-                        <th class="th-num">№</th>
-                        <th class="th-student">Список учеников</th>
-                        <th class="th-presence">Присутствие</th>
-                        <th class="th-hw">Дом. задания<span class="subhead" id="colHwLabel">ДЗ-1</span></th>
-                        <th class="th-work">Работа на уроке<span class="subhead" id="colWorkLabel">ОТВ</span></th>
-                        <th class="th-comment">Комментарии к уроку</th>
-                    </tr>
-                </thead>
-                <tbody id="journalBody"></tbody>
-            </table>
+            <div class="journal-scroll-x">
+                <table class="journal-table" id="journalTable">
+                    <thead>
+                        <tr id="journalHeadRow"></tr>
+                    </thead>
+                    <tbody id="journalBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -469,7 +460,9 @@ let CLASS_ID = null;
 let SUBJECT_ID = null;
 let DATE_ISO = null;
 let LESSON_NUM = 1;
-let GRADE_KEY = null;
+let GRADE_KEY = null;      // 2026-10-21_3   — работа на уроке (и колонка даты в журнале)
+let PRES_KEY = null;       // 2026-10-21_3_pres — присутствие
+let HW_KEYS = [];          // [2026-10-21_3_hw_1, 2026-10-21_3_hw_2, ...]
 
 let CLASS_OBJ = null;
 let SUBJECT_OBJ = null;
@@ -550,6 +543,7 @@ async function init() {
         return;
     }
     GRADE_KEY = DATE_ISO + '_' + LESSON_NUM;
+    PRES_KEY = GRADE_KEY + '_pres';
 
     const classes = await DB.getAll('classes');
     ALL_CLASSES = classes;
@@ -589,12 +583,22 @@ async function init() {
         JOURNAL = { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
     }
 
+    rebuildHwKeys();
+
     renderHeader();
     renderDetails();
     renderTeacher();
     renderHw();
     renderWorks();
+    renderJournalHead();
     renderJournal();
+}
+
+/* Собираем массив ключей для ДЗ — по количеству элементов в lessons[GRADE_KEY].h */
+function rebuildHwKeys() {
+    const lesson = JOURNAL.lessons[GRADE_KEY] || { t: '', h: [] };
+    const hwList = normalizeHwList(lesson.h);
+    HW_KEYS = hwList.map((_, i) => GRADE_KEY + '_hw_' + (i + 1));
 }
 
 function collectSubjectsFromSchedule(schedules, classId) {
@@ -755,68 +759,118 @@ function renderWorks() {
             '</button>' +
         '</td>';
     tbody.appendChild(tr);
+}
 
-    document.getElementById('colWorkLabel').textContent = abbr;
-    document.getElementById('colHwLabel').textContent = 'ДЗ-1';
+/* ============================================================
+   Шапка таблицы «Журнал». Колонки:
+   № | Список учеников | Присутствие | ДЗ-1 | ДЗ-2 | ... | Работа на уроке | Комментарии к уроку
+   ============================================================ */
+function renderJournalHead() {
+    const row = document.getElementById('journalHeadRow');
+    row.innerHTML = '';
+
+    const thNum = document.createElement('th');
+    thNum.className = 'th-num';
+    thNum.textContent = '№';
+    row.appendChild(thNum);
+
+    const thStudent = document.createElement('th');
+    thStudent.className = 'th-student';
+    thStudent.textContent = 'Список учеников';
+    row.appendChild(thStudent);
+
+    const thPres = document.createElement('th');
+    thPres.className = 'th-presence';
+    thPres.textContent = 'Присутствие';
+    row.appendChild(thPres);
+
+    // По одной колонке на каждое ДЗ
+    HW_KEYS.forEach((key, i) => {
+        const thHw = document.createElement('th');
+        thHw.className = 'th-hw-col';
+        thHw.innerHTML = 'Дом. задания<span class="subhead">ДЗ-' + (i + 1) + '</span>';
+        row.appendChild(thHw);
+    });
+
+    const thWork = document.createElement('th');
+    thWork.className = 'th-work';
+    const abbr = JOURNAL.lessonTypes[GRADE_KEY] || 'ОТВ';
+    thWork.innerHTML = 'Работа на уроке<span class="subhead">' + escapeHtml(abbr) + '</span>';
+    row.appendChild(thWork);
+
+    const thComment = document.createElement('th');
+    thComment.className = 'th-comment';
+    thComment.textContent = 'Комментарии к уроку';
+    row.appendChild(thComment);
 }
 
 function renderJournal() {
     const tbody = document.getElementById('journalBody');
     tbody.innerHTML = '';
 
+    const totalCols = 4 + HW_KEYS.length; // № + ФИО + Присутствие + (ДЗ×N) + Работа + Комментарии
+
     const classRow = document.createElement('tr');
     classRow.className = 'class-head-row';
-    classRow.innerHTML = '<td colspan="6">Класс (' + escapeHtml(CLASS_OBJ.name) + ')</td>';
+    classRow.innerHTML = '<td colspan="' + totalCols + '">Класс (' + escapeHtml(CLASS_OBJ.name) + ')</td>';
     tbody.appendChild(classRow);
 
     if (STUDENTS.length === 0) {
         const tr = document.createElement('tr');
-        tr.innerHTML = '<td colspan="6" style="text-align:center; color:#94A3B8; padding:14px;">В классе нет учеников</td>';
+        tr.innerHTML = '<td colspan="' + totalCols + '" style="text-align:center; color:#94A3B8; padding:14px;">В классе нет учеников</td>';
         tbody.appendChild(tr);
         return;
     }
 
-    const gradesForLesson = JOURNAL.grades || {};
-
     STUDENTS.forEach((student, idx) => {
         const tr = document.createElement('tr');
+        const sg = JOURNAL.grades[student.id] || {};
 
+        // №
         const tdNum = document.createElement('td');
         tdNum.className = 'num-col';
         tdNum.textContent = idx + 1;
         tr.appendChild(tdNum);
 
+        // ФИО
         const tdName = document.createElement('td');
         tdName.className = 'student-col';
         tdName.textContent = student.full_name || '';
         tr.appendChild(tdName);
 
-        const value = (gradesForLesson[student.id] || {})[GRADE_KEY] || '';
-
+        // Присутствие — из PRES_KEY
+        const presVal = sg[PRES_KEY] || '';
         const tdPresence = document.createElement('td');
         tdPresence.className = 'presence-col';
         const presenceBox = document.createElement('span');
-        presenceBox.className = 'presence-box ' + getPresenceCls(value);
-        presenceBox.textContent = isPresenceValue(value) ? value : '';
+        presenceBox.className = 'presence-box ' + getPresenceCls(presVal);
+        presenceBox.textContent = isPresenceValue(presVal) ? presVal : '';
         presenceBox.style.cursor = 'default';
-        presenceBox.addEventListener('click', () => editPresence(student.id, GRADE_KEY, presenceBox));
+        presenceBox.addEventListener('click', () => editPresence(student.id, PRES_KEY, presenceBox));
         tdPresence.appendChild(presenceBox);
         tr.appendChild(tdPresence);
 
-        const tdHw = document.createElement('td');
-        tdHw.className = 'grade-col';
-        const hwBox = makeGradeBox(isPresenceValue(value) ? '' : value);
-        hwBox.addEventListener('click', () => editGrade(student.id, GRADE_KEY, hwBox));
-        tdHw.appendChild(hwBox);
-        tr.appendChild(tdHw);
+        // Одна колонка на каждое ДЗ — из HW_KEYS[i]
+        HW_KEYS.forEach(hwKey => {
+            const tdHw = document.createElement('td');
+            tdHw.className = 'grade-col';
+            const hwVal = sg[hwKey] || '';
+            const hwBox = makeGradeBox(hwVal);
+            hwBox.addEventListener('click', () => editGrade(student.id, hwKey, hwBox));
+            tdHw.appendChild(hwBox);
+            tr.appendChild(tdHw);
+        });
 
+        // Работа на уроке — из GRADE_KEY
+        const workVal = sg[GRADE_KEY] || '';
         const tdWork = document.createElement('td');
         tdWork.className = 'grade-col';
-        const workBox = makeGradeBox(isPresenceValue(value) ? '' : value);
+        const workBox = makeGradeBox(isPresenceValue(workVal) ? '' : workVal);
         workBox.addEventListener('click', () => editGrade(student.id, GRADE_KEY, workBox));
         tdWork.appendChild(workBox);
         tr.appendChild(tdWork);
 
+        // Комментарий
         const tdComment = document.createElement('td');
         tdComment.className = 'comment-col';
         tdComment.textContent = 'Добавить комментарий';
@@ -845,11 +899,12 @@ function makeGradeBox(val) {
     return box;
 }
 
-function editPresence(studentId, gradeKey, boxEl) {
+/* Редактирование присутствия — пишет в PRES_KEY */
+function editPresence(studentId, presKey, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
 
-    const cur = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
+    const cur = (JOURNAL.grades[studentId] || {})[presKey] || '';
     const input = document.createElement('input');
     input.type = 'text';
     input.value = isPresenceValue(cur) ? cur : '';
@@ -873,9 +928,9 @@ function editPresence(studentId, gradeKey, boxEl) {
         const v = input.value.trim().toUpperCase();
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
         if (v === '') {
-            delete JOURNAL.grades[studentId][gradeKey];
+            delete JOURNAL.grades[studentId][presKey];
         } else if (isPresenceValue(v)) {
-            JOURNAL.grades[studentId][gradeKey] = v;
+            JOURNAL.grades[studentId][presKey] = v;
         } else {
             renderJournal();
             return;
@@ -898,6 +953,7 @@ function editPresence(studentId, gradeKey, boxEl) {
     });
 }
 
+/* Редактирование оценки — пишет в переданный ключ (GRADE_KEY или hw_N) */
 function editGrade(studentId, gradeKey, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
@@ -927,6 +983,7 @@ function editGrade(studentId, gradeKey, boxEl) {
         if (v === '') {
             delete JOURNAL.grades[studentId][gradeKey];
         } else if (isPresenceValue(v)) {
+            // нельзя ввести метку присутствия в колонку оценки — иначе она попадёт в журнал как оценка
             renderJournal();
             return;
         } else {
