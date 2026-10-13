@@ -117,9 +117,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .add-link { color: #2563EB; font-size: 12.5px; cursor: pointer; text-decoration: none; }
 .add-link:hover { text-decoration: underline; }
 
-/* ============================================================
-   Журнал — на всю ширину страницы
-   ============================================================ */
 .journal-full-width { margin-top: 0; }
 
 .journal-wrap { border-radius: 10px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 6px 10px 10px 10px; }
@@ -130,10 +127,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .journal-top input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; }
 
-.journal-scroll-x {
-    overflow-x: auto;
-    overflow-y: visible;
-}
+.journal-scroll-x { overflow-x: auto; overflow-y: visible; }
 
 .journal-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; min-width: 100%; }
 .journal-table thead th {
@@ -204,9 +198,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     text-transform: uppercase;
 }
 
-/* ============================================================
-   Правая колонка
-   ============================================================ */
 .side-block { margin-bottom: 18px; }
 .side-block:last-child { margin-bottom: 0; }
 
@@ -460,9 +451,9 @@ let CLASS_ID = null;
 let SUBJECT_ID = null;
 let DATE_ISO = null;
 let LESSON_NUM = 1;
-let GRADE_KEY = null;      // 2026-10-21_3   — работа на уроке (и колонка даты в журнале)
-let PRES_KEY = null;       // 2026-10-21_3_pres — присутствие
-let HW_KEYS = [];          // [2026-10-21_3_hw_1, 2026-10-21_3_hw_2, ...]
+let GRADE_KEY = null;
+let PRES_KEY = null;
+let HW_KEYS = [];
 
 let CLASS_OBJ = null;
 let SUBJECT_OBJ = null;
@@ -594,7 +585,6 @@ async function init() {
     renderJournal();
 }
 
-/* Собираем массив ключей для ДЗ — по количеству элементов в lessons[GRADE_KEY].h */
 function rebuildHwKeys() {
     const lesson = JOURNAL.lessons[GRADE_KEY] || { t: '', h: [] };
     const hwList = normalizeHwList(lesson.h);
@@ -761,10 +751,6 @@ function renderWorks() {
     tbody.appendChild(tr);
 }
 
-/* ============================================================
-   Шапка таблицы «Журнал». Колонки:
-   № | Список учеников | Присутствие | ДЗ-1 | ДЗ-2 | ... | Работа на уроке | Комментарии к уроку
-   ============================================================ */
 function renderJournalHead() {
     const row = document.getElementById('journalHeadRow');
     row.innerHTML = '';
@@ -784,7 +770,6 @@ function renderJournalHead() {
     thPres.textContent = 'Присутствие';
     row.appendChild(thPres);
 
-    // По одной колонке на каждое ДЗ
     HW_KEYS.forEach((key, i) => {
         const thHw = document.createElement('th');
         thHw.className = 'th-hw-col';
@@ -808,7 +793,7 @@ function renderJournal() {
     const tbody = document.getElementById('journalBody');
     tbody.innerHTML = '';
 
-    const totalCols = 4 + HW_KEYS.length; // № + ФИО + Присутствие + (ДЗ×N) + Работа + Комментарии
+    const totalCols = 4 + HW_KEYS.length;
 
     const classRow = document.createElement('tr');
     classRow.className = 'class-head-row';
@@ -826,19 +811,16 @@ function renderJournal() {
         const tr = document.createElement('tr');
         const sg = JOURNAL.grades[student.id] || {};
 
-        // №
         const tdNum = document.createElement('td');
         tdNum.className = 'num-col';
         tdNum.textContent = idx + 1;
         tr.appendChild(tdNum);
 
-        // ФИО
         const tdName = document.createElement('td');
         tdName.className = 'student-col';
         tdName.textContent = student.full_name || '';
         tr.appendChild(tdName);
 
-        // Присутствие — из PRES_KEY
         const presVal = sg[PRES_KEY] || '';
         const tdPresence = document.createElement('td');
         tdPresence.className = 'presence-col';
@@ -850,7 +832,6 @@ function renderJournal() {
         tdPresence.appendChild(presenceBox);
         tr.appendChild(tdPresence);
 
-        // Одна колонка на каждое ДЗ — из HW_KEYS[i]
         HW_KEYS.forEach(hwKey => {
             const tdHw = document.createElement('td');
             tdHw.className = 'grade-col';
@@ -861,7 +842,6 @@ function renderJournal() {
             tr.appendChild(tdHw);
         });
 
-        // Работа на уроке — из GRADE_KEY
         const workVal = sg[GRADE_KEY] || '';
         const tdWork = document.createElement('td');
         tdWork.className = 'grade-col';
@@ -870,7 +850,6 @@ function renderJournal() {
         tdWork.appendChild(workBox);
         tr.appendChild(tdWork);
 
-        // Комментарий
         const tdComment = document.createElement('td');
         tdComment.className = 'comment-col';
         tdComment.textContent = 'Добавить комментарий';
@@ -899,7 +878,6 @@ function makeGradeBox(val) {
     return box;
 }
 
-/* Редактирование присутствия — пишет в PRES_KEY */
 function editPresence(studentId, presKey, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
@@ -953,7 +931,6 @@ function editPresence(studentId, presKey, boxEl) {
     });
 }
 
-/* Редактирование оценки — пишет в переданный ключ (GRADE_KEY или hw_N) */
 function editGrade(studentId, gradeKey, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
@@ -983,7 +960,6 @@ function editGrade(studentId, gradeKey, boxEl) {
         if (v === '') {
             delete JOURNAL.grades[studentId][gradeKey];
         } else if (isPresenceValue(v)) {
-            // нельзя ввести метку присутствия в колонку оценки — иначе она попадёт в журнал как оценка
             renderJournal();
             return;
         } else {
