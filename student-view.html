@@ -103,9 +103,6 @@
         .grade-tile.g3 .grade-tile-box { background: #FB923C; }
         .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
         .grade-tile.gn .grade-tile-box { background: #94A3B8; }
-        .grade-tile.pres-h .grade-tile-box { background: #F87171; }
-        .grade-tile.pres-blue .grade-tile-box { background: #60A5FA; }
-        .grade-tile.pres-orange .grade-tile-box { background: #FB923C; }
         .grade-tile-subject { font-size: 12px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 76px; text-align: left; }
         .grade-tile-type { font-size: 10.5px; color: #94a3b8; line-height: 1.2; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 76px; text-align: left; }
         .grades-hint { font-size: 12px; color: #b8720a; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
@@ -136,14 +133,12 @@
         .today-lesson-hw { font-size: 12px; color: #1e40af; margin-top: 4px; line-height: 1.4; }
         .today-lesson-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
 
+        .today-lesson-grades { display: flex; gap: 4px; align-items: center; }
         .today-lesson-grade { min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 17px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
         .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
         .today-lesson-grade.g3 { background: #FB923C; }
         .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
         .today-lesson-grade.gn { background: #94A3B8; }
-        .today-lesson-grade.pres-h { background: #F87171; }
-        .today-lesson-grade.pres-blue { background: #60A5FA; }
-        .today-lesson-grade.pres-orange { background: #FB923C; }
         .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; }
 
         .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
@@ -174,7 +169,7 @@
         .lesson-card.empty:hover { background: transparent; }
         .lesson-card.empty .lesson-subject { color: #cbd5e1; font-weight: 400; font-style: italic; font-size: 12px; }
 
-        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 34px; }
+        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 76px; }
         .lesson-num { width: 20px; height: 20px; background: #e3f2fd; color: #1976d2; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; flex-shrink: 0; }
         .lesson-subject { font-size: 13px; font-weight: 700; color: #1a2b4a; line-height: 1.3; }
         .lesson-meta { font-size: 11px; color: #7a8aa3; margin-top: 3px; line-height: 1.4; }
@@ -183,14 +178,12 @@
         .lesson-value { color: #334155; }
         .lesson-value.hw { color: #1e40af; }
 
-        .lesson-grade { position: absolute; top: 8px; right: 8px; min-width: 26px; height: 26px; padding: 0 7px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 14px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); line-height: 1; }
+        .lesson-grades { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
+        .lesson-grade { min-width: 26px; height: 26px; padding: 0 7px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 14px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); line-height: 1; }
         .lesson-grade.g5, .lesson-grade.g4 { background: #65A30D; }
         .lesson-grade.g3 { background: #FB923C; }
         .lesson-grade.g2, .lesson-grade.g1 { background: #DC2626; }
         .lesson-grade.gn { background: #94A3B8; }
-        .lesson-grade.pres-h { background: #F87171; }
-        .lesson-grade.pres-blue { background: #60A5FA; }
-        .lesson-grade.pres-orange { background: #FB923C; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
         .period-tabs-wrapper { margin-bottom: 16px; }
@@ -214,15 +207,12 @@
         .grades-table td.qtr-cell { text-align: center; }
         .no-grades-text { color: #94a3b8; font-style: italic; font-size: 13px; font-weight: 400; }
 
-        .mini-grade { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 5px; font-weight: 500; font-size: 13px; color: #fff; cursor: pointer; transition: transform 0.12s ease; line-height: 1; padding: 0; text-align: center; font-family: inherit; }
+        .mini-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; border-radius: 5px; font-weight: 500; font-size: 13px; color: #fff; cursor: pointer; transition: transform 0.12s ease; line-height: 1; padding: 0 5px; text-align: center; font-family: inherit; }
         .mini-grade:hover { transform: scale(1.12); }
         .mini-grade.g5, .mini-grade.g4 { background: #65A30D; }
         .mini-grade.g3 { background: #FB923C; }
         .mini-grade.g2, .mini-grade.g1 { background: #DC2626; }
         .mini-grade.gn { background: #94A3B8; }
-        .mini-grade.pres-h { background: #F87171; }
-        .mini-grade.pres-blue { background: #60A5FA; }
-        .mini-grade.pres-orange { background: #FB923C; }
         .mini-grade:not([data-subject]) { cursor: default; }
         .mini-grade:not([data-subject]):hover { transform: none; }
 
@@ -247,9 +237,6 @@
         .stat-badge.g5, .stat-badge.g4 { background: #65A30D; }
         .stat-badge.g3 { background: #FB923C; }
         .stat-badge.g2, .stat-badge.g1 { background: #DC2626; }
-        .stat-badge.pres-h { background: #F87171; }
-        .stat-badge.pres-blue { background: #60A5FA; }
-        .stat-badge.pres-orange { background: #FB923C; }
         .stat-bar-wrap { flex: 1; height: 26px; background: #f0f4f9; border-radius: 8px; overflow: hidden; position: relative; }
         .stat-bar { height: 100%; border-radius: 8px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: #fff; min-width: 24px; }
         .stat-count { width: 60px; text-align: right; font-size: 13px; font-weight: 600; color: #2a3a52; flex-shrink: 0; }
@@ -356,7 +343,6 @@
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
     const MONTHS_GEN  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
     const DEFAULT_LESSON_TYPE = 'ОТВ';
-    const PRESENCE_LETTERS = ['Н', 'Б', 'П', 'СП', 'О'];
 
     const PERIOD_LABELS = {
         'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
@@ -407,16 +393,30 @@
         const d = new Date(datePart + 'T00:00:00');
         return { date: isNaN(d.getTime()) ? null : d, dateRu: isNaN(d.getTime()) ? datePart : formatDateRu(d), lesson: lessonPart };
     }
-    function isPresenceLetter(val) {
-        return PRESENCE_LETTERS.includes(String(val || '').trim().toUpperCase());
+
+    /* ============================================================
+       Разбираем значение ячейки из журнала:
+       - "5"       → { grade:'5',   presence:'' }
+       - "5-"      → { grade:'5-',  presence:'' }
+       - "Н"       → { grade:'',    presence:'Н' }
+       - "Н5"      → { grade:'5',   presence:'Н' }
+       - "Н5-"     → { grade:'5-',  presence:'Н' }
+       - "5/4"     → { grade:'5/4', presence:'' }
+       ============================================================ */
+    function parseCellValue(raw) {
+        if (!raw) return { grade: '', presence: '' };
+        const s = String(raw).toUpperCase().trim();
+        const m = s.match(/^(Н|О|Б|СП|П)/);
+        const presence = m ? m[0] : '';
+        const grade = presence ? s.slice(presence.length).trim() : s;
+        return { grade, presence };
     }
-    /* Цвет оценки: 5 и 4 (с минусом/плюсом — тоже) = зелёный; 3 = оранжевый; 2/1 = красный.
-       Буквы присутствия — отдельные цвета. */
+
+    /* Цвет оценки. Если в строке есть цифра 1–5 — по ней, даже если есть +/-.
+       Буквы отсутствия — серый цвет (gn), как было раньше. */
     function gradeClass(grade) {
         const raw = String(grade || '').trim().toUpperCase();
-        if (raw === 'Н') return 'pres-h';
-        if (raw === 'Б' || raw === 'П' || raw === 'СП') return 'pres-blue';
-        if (raw === 'О') return 'pres-orange';
+        if (!raw) return 'gn';
         const m = raw.match(/[1-5]/);
         if (!m) return 'gn';
         const d = parseInt(m[0], 10);
@@ -425,12 +425,13 @@
         if (d === 2 || d === 1) return 'g2';
         return 'gn';
     }
+
+    /* Средний балл — только по цифрам, буквы игнорируем. */
     function calcAverage(gradesMap) {
         let sum = 0, cnt = 0;
         Object.values(gradesMap || {}).forEach(raw => {
             const val = String(raw || '').toUpperCase().trim();
             if (!val) return;
-            if (isPresenceLetter(val)) return;
             const m = val.match(/[1-5]/);
             if (!m) return;
             sum += parseInt(m[0], 10); cnt++;
@@ -456,16 +457,6 @@
     function getStudentIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
         return params.get('id');
-    }
-
-    /* Разбирает значение ячейки на { grade, presence }.
-       Поддерживает "5", "5-", "Н", "5 / Н". */
-    function parseCellValue(raw) {
-        if (!raw) return { grade: '', presence: '' };
-        const parts = String(raw).split('/').map(s => s.trim().toUpperCase()).filter(Boolean);
-        const presence = parts.find(p => PRESENCE_LETTERS.includes(p)) || '';
-        const grade = parts.filter(p => !PRESENCE_LETTERS.includes(p)).join(' / ');
-        return { grade, presence };
     }
 
     function initSubTabs() {
@@ -596,7 +587,11 @@
         });
     }
 
-    /* Собираем все записи ученика, разделяя "5 / Н" на две независимые. */
+    /* ============================================================
+       Собираем оценки и присутствие отдельными записями.
+       Оценка помечается isPresence:false, буква — isPresence:true.
+       Стат. модалка (openStats) фильтрует isPresence и берёт только оценки.
+       ============================================================ */
     function collectAllStudentGrades() {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
@@ -606,7 +601,7 @@
 
             Object.entries(sg).forEach(([key, val]) => {
                 if (val === '' || val === null || val === undefined) return;
-                if (key.endsWith('_pres')) return; // старый формат — игнорируем
+                if (key.endsWith('_pres')) return;
                 const parsed = parseKey(key);
                 const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
                 const cell = parseCellValue(val);
@@ -643,7 +638,7 @@
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
         const all = collectAllStudentGrades();
-        const fails = all.filter(g => !g.isPresence && gradeClass(g.grade) === 'g2').sort((a, b) => (b.date || 0) - (a.date || 0));
+        const fails = all.filter(g => !g.isPresence && /^[12]/.test(g.grade.trim())).sort((a, b) => (b.date || 0) - (a.date || 0));
         const absences = all.filter(g => g.isPresence && g.grade.trim().toUpperCase() === 'Н').sort((a, b) => (b.date || 0) - (a.date || 0));
         if (fails.length > 0) {
             const box = document.createElement('div');
@@ -703,14 +698,10 @@
             lessonsHtml = `<div class="day-empty"><div class="day-empty-emoji">${isWeekend ? '☕' : '📅'}</div><div class="day-empty-title">${isWeekend ? 'Выходной день' : 'Нет занятий'}</div><div class="day-empty-text">${isWeekend ? 'Отдыхай и набирайся сил!' : 'На этот день уроков нет'}</div></div>`;
         } else {
             lessonsHtml = `<div class="today-lessons">${dayLessons.map(l => {
-                let gradeHtml;
-                if (l.grade) {
-                    gradeHtml = `<div class="today-lesson-grade ${gradeClass(l.grade)}">${escapeHtml(l.grade)}</div>`;
-                } else if (l.presence) {
-                    gradeHtml = `<div class="today-lesson-grade ${gradeClass(l.presence)}">${escapeHtml(l.presence)}</div>`;
-                } else {
-                    gradeHtml = `<div class="today-lesson-grade no-grade">—</div>`;
-                }
+                let gradesBox = '';
+                if (l.presence) gradesBox += `<div class="today-lesson-grade ${gradeClass(l.presence)}">${escapeHtml(l.presence)}</div>`;
+                if (l.grade)    gradesBox += `<div class="today-lesson-grade ${gradeClass(l.grade)}">${escapeHtml(l.grade)}</div>`;
+                if (!l.grade && !l.presence) gradesBox = `<div class="today-lesson-grade no-grade">—</div>`;
                 const metaParts = [];
                 if (l.teacherName) metaParts.push(l.teacherName);
                 if (l.roomName) metaParts.push('каб. ' + l.roomName);
@@ -720,7 +711,7 @@
                 return `<div class="today-lesson" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}">
                     <div class="today-lesson-num">${l.num}</div>
                     <div class="today-lesson-info"><div class="today-lesson-subject">${escapeHtml(l.subject)}</div>${metaHtml}${topicHtml}${hwHtml}</div>
-                    ${gradeHtml}
+                    <div class="today-lesson-grades">${gradesBox}</div>
                 </div>`;
             }).join('')}</div>`;
         }
@@ -825,14 +816,10 @@
                 const rec = findLessonRecord(all, lesson.subject, key);
                 const gradeVal = rec.grade;
                 const presVal  = rec.presence;
-                let gradeHtml;
-                if (gradeVal) {
-                    gradeHtml = `<div class="lesson-grade ${gradeClass(gradeVal)}">${escapeHtml(gradeVal)}</div>`;
-                } else if (presVal) {
-                    gradeHtml = `<div class="lesson-grade ${gradeClass(presVal)}">${escapeHtml(presVal)}</div>`;
-                } else {
-                    gradeHtml = `<div class="lesson-grade no-grade">—</div>`;
-                }
+                let gradesBox = '';
+                if (presVal)  gradesBox += `<div class="lesson-grade ${gradeClass(presVal)}">${escapeHtml(presVal)}</div>`;
+                if (gradeVal) gradesBox += `<div class="lesson-grade ${gradeClass(gradeVal)}">${escapeHtml(gradeVal)}</div>`;
+                if (!gradeVal && !presVal) gradesBox = `<div class="lesson-grade no-grade">—</div>`;
                 const metaParts = [];
                 if (teacherName) metaParts.push(teacherName);
                 if (roomName) metaParts.push('каб. ' + roomName);
@@ -840,7 +827,7 @@
                 const topicHtml = topic ? `<div class="lesson-section"><span class="lesson-label">Тема:</span><span class="lesson-value">${escapeHtml(topic)}</span></div>` : '';
                 const hwHtml = homework ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value hw">${escapeHtml(homework)}</span></div>` : '';
                 lessonsHtml += `<div class="lesson-card" data-subject="${escapeHtml(lesson.subject)}" data-date="${isoDate(date)}" data-num="${n}">
-                    ${gradeHtml}
+                    <div class="lesson-grades">${gradesBox}</div>
                     <div class="lesson-row-head"><div class="lesson-num">${n}</div><div class="lesson-subject">${escapeHtml(lesson.subject)}</div></div>
                     ${metaHtml}${topicHtml}${hwHtml}
                 </div>`;
@@ -907,6 +894,7 @@
         });
     }
 
+    /* Статистика — только по оценкам (без букв присутствия). */
     function openStats(subjectName, lessonKey) {
         const journal = ALL_JOURNALS.find(j => {
             const subjObj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
@@ -923,23 +911,17 @@
         if (!journal) { list.innerHTML = '<div class="stats-empty">Статистика недоступна.</div>'; total.textContent = ''; modal.classList.add('show'); return; }
         const gradesAll = journal.grades || {};
         const counters = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
-        const presenceCounters = { 'Н': 0, 'Б': 0, 'П': 0, 'СП': 0, 'О': 0 };
         const validIds = new Set(CLASS_STUDENT_IDS);
         Object.entries(gradesAll).forEach(([studentId, studentGrades]) => {
             if (!validIds.has(studentId)) return;
             const cell = parseCellValue(studentGrades && studentGrades[lessonKey]);
-            if (cell.grade) {
-                const m = cell.grade.match(/[1-5]/);
-                if (m && counters[m[0]] !== undefined) counters[m[0]]++;
-            }
-            if (cell.presence && presenceCounters[cell.presence] !== undefined) {
-                presenceCounters[cell.presence]++;
-            }
+            if (!cell.grade) return;
+            const m = cell.grade.match(/[1-5]/);
+            if (m && counters[m[0]] !== undefined) counters[m[0]]++;
         });
         const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
-        const totalPres = Object.values(presenceCounters).reduce((a, b) => a + b, 0);
-        if (totalCount === 0 && totalPres === 0) {
-            list.innerHTML = '<div class="stats-empty">Пока нет данных за этот урок.</div>';
+        if (totalCount === 0) {
+            list.innerHTML = '<div class="stats-empty">Пока нет оценок за этот урок.</div>';
             total.textContent = '';
             modal.classList.add('show');
             return;
@@ -954,17 +936,8 @@
             const barColor = (cls === 'g5') ? '#65A30D' : (cls === 'g3') ? '#FB923C' : (cls === 'g2') ? '#DC2626' : '#94A3B8';
             html += `<div class="stat-row"><div class="stat-badge ${cls}">${g}</div><div class="stat-bar-wrap"><div class="stat-bar" style="width:${barWidth}%;background:${barColor}">${percent > 15 ? percent + '%' : ''}</div></div><div class="stat-count">${count} <small>${word}</small></div></div>`;
         });
-        Object.entries(presenceCounters).forEach(([letter, count]) => {
-            if (count === 0) return;
-            const percent = totalPres > 0 ? Math.round((count / totalPres) * 100) : 0;
-            const barWidth = percent > 0 ? Math.max(percent, 6) : 0;
-            const cls = gradeClass(letter);
-            const word = plural(count, ['человек', 'человека', 'человек']);
-            const barColor = (cls === 'pres-h') ? '#F87171' : (cls === 'pres-orange') ? '#FB923C' : '#60A5FA';
-            html += `<div class="stat-row"><div class="stat-badge ${cls}">${letter}</div><div class="stat-bar-wrap"><div class="stat-bar" style="width:${barWidth}%;background:${barColor}">${percent > 15 ? percent + '%' : ''}</div></div><div class="stat-count">${count} <small>${word}</small></div></div>`;
-        });
         list.innerHTML = html;
-        total.textContent = `Всего оценок за урок: ${totalCount}. Отметок присутствия: ${totalPres}.`;
+        total.textContent = `Всего оценок за урок: ${totalCount}`;
         modal.classList.add('show');
     }
     function closeStats() { document.getElementById('statsModal').classList.remove('show'); }
