@@ -25,7 +25,6 @@
 
         .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
 
-        /* Шапка */
         .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
         .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
         .logo { font-size: 22px; color: #007baf; }
@@ -40,7 +39,6 @@
         .d-action-link:hover { text-decoration: underline; }
         .d-action-link.logout { color: #d9534f; }
 
-        /* Синяя полоса */
         .d-top-blue-bar { background: #166a94; }
         .d-top-blue-inner { padding: 0; display: flex; }
         .d-nav-item {
@@ -55,7 +53,6 @@
         .d-nav-item:hover { background: rgba(255,255,255,0.12); }
         .d-nav-item.active { background: #0f4f70; border-bottom-color: #ffffff; font: 400 14px/1 inherit; }
 
-        /* Подменю */
         .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
         .d-sub-menu-inner { padding: 0; display: flex; flex-wrap: wrap; }
         .d-sub-item {
@@ -71,19 +68,16 @@
         .d-sub-item:hover { color: #1d82b5; }
         .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
 
-        /* Школа + заголовок */
         .school-bar { padding: 14px 0 0; }
         .school-name { font-size: 13px; color: #7a8aa3; margin-bottom: 2px; }
         .page-title { font-size: 28px; font-weight: 400; color: #1976d2; margin-bottom: 12px; }
 
-        /* Контейнер */
         .container { padding: 0 0 60px; }
 
         .tab-panel { display: none; animation: fadeIn 0.3s ease; }
         .tab-panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ===== ПРЕДУПРЕЖДЕНИЯ ===== */
         .warn-box { border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 14px; align-items: flex-start; }
         .warn-icon { width: 26px; height: 26px; flex-shrink: 0; margin-top: 2px; }
         .warn-body { flex: 1; }
@@ -98,7 +92,6 @@
         .warn-box.absences .warn-icon { fill: #b8720a; }
         .warn-box.absences .warn-title { color: #b8720a; }
 
-        /* ===== КАРТОЧКИ ОЦЕНОК ===== */
         .grades-strip-label { font-size: 12px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
         .grades-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
         .grade-tile { width: 76px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; transition: transform 0.15s ease; }
@@ -106,6 +99,7 @@
         .grade-tile:not([data-subject]) { cursor: default; }
         .grade-tile:not([data-subject]):hover { transform: none; }
         .grade-tile-box { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 400; line-height: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-bottom: 6px; }
+        /* Цвета оценок: 5 и 5- = зелёный; 4 и 4- = зелёный; 3 и 3- = оранжевый; 2/1 и с минусом = красный */
         .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { background: #65A30D; }
         .grade-tile.g3 .grade-tile-box { background: #FB923C; }
         .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
@@ -118,7 +112,6 @@
         .grades-hint { font-size: 12px; color: #b8720a; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
         .grades-hint::before { content: '👉'; }
 
-        /* ===== КАРТОЧКА СЕГОДНЯ ===== */
         .today-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin-bottom: 20px; overflow: hidden; }
         .today-card-inner { padding: 20px 22px; }
         .day-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px; border-top: 1px solid #eef2f8; }
@@ -154,7 +147,6 @@
         .today-lesson-grade.pres-orange { background: #FB923C; }
         .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; }
 
-        /* ===== ДНЕВНИК ===== */
         .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
         .week-title { font-size: 20px; font-weight: 700; color: #1a2b4a; }
         .week-range { font-size: 13px; color: #7a8aa3; margin-top: 2px; }
@@ -202,7 +194,6 @@
         .lesson-grade.pres-orange { background: #FB923C; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
-        /* ===== ОЦЕНКИ — ТАБЛИЦА ===== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 10px; flex-wrap: wrap; }
         .tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
@@ -243,7 +234,6 @@
         .qtr-grade.gn { background: #94A3B8; }
         .qtr-grade.no-grade { background: transparent; color: #94a3b8; font-weight: 400; }
 
-        /* ===== МОДАЛКА СТАТИСТИКИ ===== */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
         .modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 500px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3); max-height: 90vh; overflow-y: auto; }
@@ -422,15 +412,26 @@
     function isPresenceLetter(val) {
         return PRESENCE_LETTERS.includes(String(val || '').trim().toUpperCase());
     }
+    /* Возвращает базовую цифру оценки, игнорируя минус, плюс и буквы присутствия.
+       «5-» → 5, «4+» → 4, «3-» → 3, «Н» → null, «» → null. */
+    function baseGradeDigit(val) {
+        const raw = String(val || '').trim().toUpperCase();
+        if (!raw) return null;
+        if (isPresenceLetter(raw)) return null;
+        const m = raw.match(/[1-5]/);
+        return m ? parseInt(m[0], 10) : null;
+    }
+    /* Цвет для оценки/метки. Оценки с минусом («5-», «4-»...) получают тот же цвет,
+       что и без минуса. */
     function gradeClass(grade) {
-        const g = String(grade).trim().toUpperCase();
-        if (g === 'Н') return 'pres-h';
-        if (g === 'Б' || g === 'П' || g === 'СП') return 'pres-blue';
-        if (g === 'О') return 'pres-orange';
-        const cleaned = g.replace(/[НОБП]|СП/gi, '').trim();
-        if (cleaned === '5' || cleaned === '4') return 'g5';
-        if (cleaned === '3') return 'g3';
-        if (cleaned === '2' || cleaned === '1') return 'g2';
+        const raw = String(grade || '').trim().toUpperCase();
+        if (raw === 'Н') return 'pres-h';
+        if (raw === 'Б' || raw === 'П' || raw === 'СП') return 'pres-blue';
+        if (raw === 'О') return 'pres-orange';
+        const digit = baseGradeDigit(raw);
+        if (digit === 5 || digit === 4) return 'g5';
+        if (digit === 3) return 'g3';
+        if (digit === 2 || digit === 1) return 'g2';
         return 'gn';
     }
     function calcAverage(gradesMap) {
@@ -438,13 +439,13 @@
         Object.values(gradesMap || {}).forEach(raw => {
             const val = String(raw || '').toUpperCase().trim();
             if (!val) return;
-            if (isPresenceLetter(val)) return;        // метки присутствия в средний балл не идут
-            const cleaned = val.replace(/[НОБП]|СП/g, '').trim();
+            if (isPresenceLetter(val)) return;
+            const cleaned = val.replace(/[^0-9./]/g, ''); // оставляем только цифры, точки, слэши
             if (!cleaned) return;
             if (cleaned.includes('/')) {
                 cleaned.split('/').forEach(p => { const n = parseInt(p); if (!isNaN(n)) { sum += n; cnt++; } });
             } else {
-                const n = parseInt(cleaned); if (!isNaN(n)) { sum += n; cnt++; }
+                const n = parseFloat(cleaned); if (!isNaN(n)) { sum += n; cnt++; }
             }
         });
         return cnt === 0 ? null : (sum / cnt).toFixed(2).replace(/\.00$/, '');
@@ -598,11 +599,9 @@
         });
     }
 
-    /* ============================================================
-       Собираем ВСЕ записи ученика: и оценки, и метки присутствия.
-       Для присутствия используется отдельный ключ «..._pres»,
-       который пишет страница урока.
-       ============================================================ */
+    /* Собираем ВСЕ записи ученика: обычные оценки (key = 2026-10-21_3)
+       и метки присутствия (key = 2026-10-21_3_pres → base key 2026-10-21_3).
+       Каждая запись получает флаг isPresence. */
     function collectAllStudentGrades() {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
@@ -610,12 +609,10 @@
             const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
             if (!subjObj) return;
 
-            // 1) Метки присутствия — ключи с суффиксом _pres
             Object.entries(sg).forEach(([key, val]) => {
-                if (!key.endsWith('_pres')) return;
                 if (val === '' || val === null || val === undefined) return;
-                if (!isPresenceLetter(val)) return;
-                const baseKey = key.replace(/_pres$/, '');
+                const isPres = key.endsWith('_pres');
+                const baseKey = isPres ? key.replace(/_pres$/, '') : key;
                 const parsed = parseKey(baseKey);
                 const type = (journal.lesson_types && journal.lesson_types[baseKey]) || DEFAULT_LESSON_TYPE;
                 result.push({
@@ -627,27 +624,7 @@
                     dateRu: parsed.dateRu,
                     lesson: parsed.lesson,
                     type,
-                    isPresence: true,
-                    journalId: journal.id
-                });
-            });
-
-            // 2) Обычные оценки — все остальные ключи
-            Object.entries(sg).forEach(([key, val]) => {
-                if (key.endsWith('_pres')) return;
-                if (val === '' || val === null || val === undefined) return;
-                const parsed = parseKey(key);
-                const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
-                result.push({
-                    subject: subjObj.name,
-                    subjectId: subjObj.id,
-                    grade: String(val),
-                    key,
-                    date: parsed.date,
-                    dateRu: parsed.dateRu,
-                    lesson: parsed.lesson,
-                    type,
-                    isPresence: false,
+                    isPresence: isPres,
                     journalId: journal.id
                 });
             });
@@ -655,11 +632,21 @@
         return result;
     }
 
+    /* Возвращает { grade, presence } для пары (subject, date, lessonNum) */
+    function findLessonRecord(all, subjectName, key) {
+        const gradeRec = all.find(g => g.subject === subjectName && g.key === key && !g.isPresence);
+        const presRec  = all.find(g => g.subject === subjectName && g.key === key &&  g.isPresence);
+        return {
+            grade: gradeRec ? gradeRec.grade : null,
+            presence: presRec ? presRec.grade : null
+        };
+    }
+
     function renderWarnings() {
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
         const all = collectAllStudentGrades();
-        const fails = all.filter(g => !g.isPresence && g.grade.trim().toUpperCase() === '2').sort((a, b) => (b.date || 0) - (a.date || 0));
+        const fails = all.filter(g => !g.isPresence && baseGradeDigit(g.grade) === 2).sort((a, b) => (b.date || 0) - (a.date || 0));
         const absences = all.filter(g => g.isPresence && g.grade.trim().toUpperCase() === 'Н').sort((a, b) => (b.date || 0) - (a.date || 0));
         if (fails.length > 0) {
             const box = document.createElement('div');
@@ -699,7 +686,7 @@
                 <div class="grades-strip">
                     ${grades.map(g => {
                         const cls = gradeClass(g.grade);
-                        const isNumeric = /^[1-5]$/.test(g.grade.trim()) && !g.isPresence;
+                        const isNumeric = !g.isPresence && /[1-5]/.test(g.grade);
                         return `<div class="grade-tile ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
                             <div class="grade-tile-box">${escapeHtml(g.grade)}</div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
@@ -785,8 +772,7 @@
                 const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
                 if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
             }
-            const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && !g.isPresence);
-            const presRec  = all.find(g => g.subject === lesson.subject && g.key === key &&  g.isPresence);
+            const rec = findLessonRecord(all, lesson.subject, key);
             result.push({
                 num: n,
                 subject: lesson.subject,
@@ -794,8 +780,8 @@
                 roomName,
                 topic,
                 homework,
-                grade: gradeRec ? gradeRec.grade : null,
-                presence: presRec ? presRec.grade : null
+                grade: rec.grade,
+                presence: rec.presence
             });
         }
         return result;
@@ -845,10 +831,9 @@
                     const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
                     if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
                 }
-                const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && !g.isPresence);
-                const presRec  = all.find(g => g.subject === lesson.subject && g.key === key &&  g.isPresence);
-                const gradeVal = gradeRec ? gradeRec.grade : null;
-                const presVal  = presRec  ? presRec.grade  : null;
+                const rec = findLessonRecord(all, lesson.subject, key);
+                const gradeVal = rec.grade;
+                const presVal  = rec.presence;
                 let gradeHtml;
                 if (gradeVal) {
                     gradeHtml = `<div class="lesson-grade ${gradeClass(gradeVal)}">${escapeHtml(gradeVal)}</div>`;
@@ -900,7 +885,6 @@
             let gradesArr = all.filter(g => g.subject === subjectName);
             if (range) gradesArr = gradesArr.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
             gradesArr.sort((a, b) => a.key.localeCompare(b.key));
-            // Средний балл считаем только по оценкам, без меток присутствия
             const gradesMap = {};
             gradesArr.forEach(g => { if (!g.isPresence) gradesMap[g.key] = g.grade; });
             const avg = calcAverage(gradesMap);
@@ -915,7 +899,7 @@
                 html += '<td><div class="grades-flex-inner">';
                 gradesArr.forEach(g => {
                     const cls = gradeClass(g.grade);
-                    const isNumeric = /^[1-5]$/.test(g.grade.trim()) && !g.isPresence;
+                    const isNumeric = !g.isPresence && /[1-5]/.test(g.grade);
                     html += `<span class="mini-grade ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>${escapeHtml(g.grade)}</span>`;
                 });
                 html += '</div></td>';
@@ -954,8 +938,8 @@
             if (!validIds.has(studentId)) return;
             const val = studentGrades && studentGrades[lessonKey];
             if (val !== undefined && val !== null) {
-                const clean = String(val).trim().toUpperCase();
-                if (counters[clean] !== undefined) counters[clean]++;
+                const digit = baseGradeDigit(val);
+                if (digit !== null && counters[String(digit)] !== undefined) counters[String(digit)]++;
             }
             const presVal = studentGrades && studentGrades[lessonKey + '_pres'];
             if (presVal !== undefined && presVal !== null) {
@@ -981,7 +965,7 @@
             const barColor = (cls === 'g5') ? '#65A30D' : (cls === 'g3') ? '#FB923C' : (cls === 'g2') ? '#DC2626' : '#94A3B8';
             html += `<div class="stat-row"><div class="stat-badge ${cls}">${g}</div><div class="stat-bar-wrap"><div class="stat-bar" style="width:${barWidth}%;background:${barColor}">${percent > 15 ? percent + '%' : ''}</div></div><div class="stat-count">${count} <small>${word}</small></div></div>`;
         });
-        presenceCounters && Object.entries(presenceCounters).forEach(([letter, count]) => {
+        Object.entries(presenceCounters).forEach(([letter, count]) => {
             if (count === 0) return;
             const percent = totalPres > 0 ? Math.round((count / totalPres) * 100) : 0;
             const barWidth = percent > 0 ? Math.max(percent, 6) : 0;
