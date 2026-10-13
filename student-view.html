@@ -99,7 +99,6 @@
         .grade-tile:not([data-subject]) { cursor: default; }
         .grade-tile:not([data-subject]):hover { transform: none; }
         .grade-tile-box { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 400; line-height: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-bottom: 6px; }
-        /* Цвета оценок: 5 и 5- = зелёный; 4 и 4- = зелёный; 3 и 3- = оранжевый; 2/1 и с минусом = красный */
         .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { background: #65A30D; }
         .grade-tile.g3 .grade-tile-box { background: #FB923C; }
         .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
@@ -357,7 +356,6 @@
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
     const MONTHS_GEN  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
     const DEFAULT_LESSON_TYPE = 'ОТВ';
-
     const PRESENCE_LETTERS = ['Н', 'Б', 'П', 'СП', 'О'];
 
     const PERIOD_LABELS = {
@@ -412,26 +410,19 @@
     function isPresenceLetter(val) {
         return PRESENCE_LETTERS.includes(String(val || '').trim().toUpperCase());
     }
-    /* Возвращает базовую цифру оценки, игнорируя минус, плюс и буквы присутствия.
-       «5-» → 5, «4+» → 4, «3-» → 3, «Н» → null, «» → null. */
-    function baseGradeDigit(val) {
-        const raw = String(val || '').trim().toUpperCase();
-        if (!raw) return null;
-        if (isPresenceLetter(raw)) return null;
-        const m = raw.match(/[1-5]/);
-        return m ? parseInt(m[0], 10) : null;
-    }
-    /* Цвет для оценки/метки. Оценки с минусом («5-», «4-»...) получают тот же цвет,
-       что и без минуса. */
+    /* Цвет оценки: 5 и 4 (с минусом/плюсом — тоже) = зелёный; 3 = оранжевый; 2/1 = красный.
+       Буквы присутствия — отдельные цвета. */
     function gradeClass(grade) {
         const raw = String(grade || '').trim().toUpperCase();
         if (raw === 'Н') return 'pres-h';
         if (raw === 'Б' || raw === 'П' || raw === 'СП') return 'pres-blue';
         if (raw === 'О') return 'pres-orange';
-        const digit = baseGradeDigit(raw);
-        if (digit === 5 || digit === 4) return 'g5';
-        if (digit === 3) return 'g3';
-        if (digit === 2 || digit === 1) return 'g2';
+        const m = raw.match(/[1-5]/);
+        if (!m) return 'gn';
+        const d = parseInt(m[0], 10);
+        if (d === 5 || d === 4) return 'g5';
+        if (d === 3) return 'g3';
+        if (d === 2 || d === 1) return 'g2';
         return 'gn';
     }
     function calcAverage(gradesMap) {
@@ -440,13 +431,9 @@
             const val = String(raw || '').toUpperCase().trim();
             if (!val) return;
             if (isPresenceLetter(val)) return;
-            const cleaned = val.replace(/[^0-9./]/g, ''); // оставляем только цифры, точки, слэши
-            if (!cleaned) return;
-            if (cleaned.includes('/')) {
-                cleaned.split('/').forEach(p => { const n = parseInt(p); if (!isNaN(n)) { sum += n; cnt++; } });
-            } else {
-                const n = parseFloat(cleaned); if (!isNaN(n)) { sum += n; cnt++; }
-            }
+            const m = val.match(/[1-5]/);
+            if (!m) return;
+            sum += parseInt(m[0], 10); cnt++;
         });
         return cnt === 0 ? null : (sum / cnt).toFixed(2).replace(/\.00$/, '');
     }
@@ -469,6 +456,16 @@
     function getStudentIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
         return params.get('id');
+    }
+
+    /* Разбирает значение ячейки на { grade, presence }.
+       Поддерживает "5", "5-", "Н", "5 / Н". */
+    function parseCellValue(raw) {
+        if (!raw) return { grade: '', presence: '' };
+        const parts = String(raw).split('/').map(s => s.trim().toUpperCase()).filter(Boolean);
+        const presence = parts.find(p => PRESENCE_LETTERS.includes(p)) || '';
+        const grade = parts.filter(p => !PRESENCE_LETTERS.includes(p)).join(' / ');
+        return { grade, presence };
     }
 
     function initSubTabs() {
@@ -599,9 +596,7 @@
         });
     }
 
-    /* Собираем ВСЕ записи ученика: обычные оценки (key = 2026-10-21_3)
-       и метки присутствия (key = 2026-10-21_3_pres → base key 2026-10-21_3).
-       Каждая запись получает флаг isPresence. */
+    /* Собираем все записи ученика, разделяя "5 / Н" на две независимые. */
     function collectAllStudentGrades() {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
@@ -611,28 +606,30 @@
 
             Object.entries(sg).forEach(([key, val]) => {
                 if (val === '' || val === null || val === undefined) return;
-                const isPres = key.endsWith('_pres');
-                const baseKey = isPres ? key.replace(/_pres$/, '') : key;
-                const parsed = parseKey(baseKey);
-                const type = (journal.lesson_types && journal.lesson_types[baseKey]) || DEFAULT_LESSON_TYPE;
-                result.push({
-                    subject: subjObj.name,
-                    subjectId: subjObj.id,
-                    grade: String(val),
-                    key: baseKey,
-                    date: parsed.date,
-                    dateRu: parsed.dateRu,
-                    lesson: parsed.lesson,
-                    type,
-                    isPresence: isPres,
-                    journalId: journal.id
-                });
+                if (key.endsWith('_pres')) return; // старый формат — игнорируем
+                const parsed = parseKey(key);
+                const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
+                const cell = parseCellValue(val);
+
+                if (cell.grade) {
+                    result.push({
+                        subject: subjObj.name, subjectId: subjObj.id,
+                        grade: cell.grade, key, date: parsed.date, dateRu: parsed.dateRu,
+                        lesson: parsed.lesson, type, isPresence: false, journalId: journal.id
+                    });
+                }
+                if (cell.presence) {
+                    result.push({
+                        subject: subjObj.name, subjectId: subjObj.id,
+                        grade: cell.presence, key, date: parsed.date, dateRu: parsed.dateRu,
+                        lesson: parsed.lesson, type, isPresence: true, journalId: journal.id
+                    });
+                }
             });
         });
         return result;
     }
 
-    /* Возвращает { grade, presence } для пары (subject, date, lessonNum) */
     function findLessonRecord(all, subjectName, key) {
         const gradeRec = all.find(g => g.subject === subjectName && g.key === key && !g.isPresence);
         const presRec  = all.find(g => g.subject === subjectName && g.key === key &&  g.isPresence);
@@ -646,7 +643,7 @@
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
         const all = collectAllStudentGrades();
-        const fails = all.filter(g => !g.isPresence && baseGradeDigit(g.grade) === 2).sort((a, b) => (b.date || 0) - (a.date || 0));
+        const fails = all.filter(g => !g.isPresence && gradeClass(g.grade) === 'g2').sort((a, b) => (b.date || 0) - (a.date || 0));
         const absences = all.filter(g => g.isPresence && g.grade.trim().toUpperCase() === 'Н').sort((a, b) => (b.date || 0) - (a.date || 0));
         if (fails.length > 0) {
             const box = document.createElement('div');
@@ -774,14 +771,8 @@
             }
             const rec = findLessonRecord(all, lesson.subject, key);
             result.push({
-                num: n,
-                subject: lesson.subject,
-                teacherName,
-                roomName,
-                topic,
-                homework,
-                grade: rec.grade,
-                presence: rec.presence
+                num: n, subject: lesson.subject, teacherName, roomName, topic, homework,
+                grade: rec.grade, presence: rec.presence
             });
         }
         return result;
@@ -936,15 +927,13 @@
         const validIds = new Set(CLASS_STUDENT_IDS);
         Object.entries(gradesAll).forEach(([studentId, studentGrades]) => {
             if (!validIds.has(studentId)) return;
-            const val = studentGrades && studentGrades[lessonKey];
-            if (val !== undefined && val !== null) {
-                const digit = baseGradeDigit(val);
-                if (digit !== null && counters[String(digit)] !== undefined) counters[String(digit)]++;
+            const cell = parseCellValue(studentGrades && studentGrades[lessonKey]);
+            if (cell.grade) {
+                const m = cell.grade.match(/[1-5]/);
+                if (m && counters[m[0]] !== undefined) counters[m[0]]++;
             }
-            const presVal = studentGrades && studentGrades[lessonKey + '_pres'];
-            if (presVal !== undefined && presVal !== null) {
-                const clean = String(presVal).trim().toUpperCase();
-                if (presenceCounters[clean] !== undefined) presenceCounters[clean]++;
+            if (cell.presence && presenceCounters[cell.presence] !== undefined) {
+                presenceCounters[cell.presence]++;
             }
         });
         const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
