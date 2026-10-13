@@ -452,7 +452,6 @@ let SUBJECT_ID = null;
 let DATE_ISO = null;
 let LESSON_NUM = 1;
 let GRADE_KEY = null;
-let PRES_KEY = null;
 let HW_KEYS = [];
 
 let CLASS_OBJ = null;
@@ -509,21 +508,27 @@ function isPresenceValue(val) {
     return PRESENCE_VALUES.includes(String(val).toUpperCase().trim());
 }
 
-/* Разбирает значение ячейки на { grade, presence }.
-   Поддерживает: "5", "5-", "Н", "5 / Н", "5 / Б", "5 / 4 / Н" */
+/* ============================================================
+   Формат хранения в БД (совместим с journal-view.html):
+   - "5"          — только оценка
+   - "Н"          — только присутствие
+   - "Н5"         — присутствие + оценка (буква ПЕРВОЙ, без разделителя)
+   - "5/4"        — двойная оценка
+   - "Н5/4"       — присутствие + двойная оценка
+   journal-view.html парсит букву регуляркой /^(Н|О|Б|П|СП)/ в начале строки.
+   ============================================================ */
 function parseCellValue(raw) {
     if (!raw) return { grade: '', presence: '' };
-    const parts = String(raw).split('/').map(s => s.trim().toUpperCase()).filter(Boolean);
-    const presence = parts.find(p => PRESENCE_VALUES.includes(p)) || '';
-    const grade = parts.filter(p => !PRESENCE_VALUES.includes(p)).join(' / ');
+    const s = String(raw).toUpperCase().trim();
+    const m = s.match(/^(Н|О|Б|СП|П)/);
+    const presence = m ? m[0] : '';
+    const grade = presence ? s.slice(presence.length).trim() : s;
     return { grade, presence };
 }
-/* Собирает значение ячейки обратно из { grade, presence } */
 function buildCellValue(grade, presence) {
-    const parts = [];
-    if (grade) parts.push(grade);
-    if (presence) parts.push(presence);
-    return parts.join(' / ');
+    const g = (grade || '').trim();
+    const p = (presence || '').trim();
+    return p + g;
 }
 
 let toastTimer = null;
@@ -551,7 +556,6 @@ async function init() {
         return;
     }
     GRADE_KEY = DATE_ISO + '_' + LESSON_NUM;
-    PRES_KEY = GRADE_KEY;   // присутствие теперь в том же ключе, что и оценка
 
     const classes = await DB.getAll('classes');
     ALL_CLASSES = classes;
@@ -827,6 +831,7 @@ function renderJournal() {
     STUDENTS.forEach((student, idx) => {
         const tr = document.createElement('tr');
         const sg = JOURNAL.grades[student.id] || {};
+        const parsed = parseCellValue(sg[GRADE_KEY] || '');
 
         const tdNum = document.createElement('td');
         tdNum.className = 'num-col';
@@ -837,9 +842,6 @@ function renderJournal() {
         tdName.className = 'student-col';
         tdName.textContent = student.full_name || '';
         tr.appendChild(tdName);
-
-        // Присутствие и оценка — в одном ключе GRADE_KEY
-        const parsed = parseCellValue(sg[GRADE_KEY] || '');
 
         const tdPresence = document.createElement('td');
         tdPresence.className = 'presence-col';
@@ -886,7 +888,8 @@ function makeGradeBox(val) {
         box.textContent = '';
     } else {
         box.textContent = val;
-        const first = String(val).trim().charAt(0);
+        const m = String(val).match(/[1-5]/);
+        const first = m ? m[0] : '';
         if (first === '5') box.classList.add('g5');
         else if (first === '4') box.classList.add('g4');
         else if (first === '3') box.classList.add('g3');
@@ -896,8 +899,6 @@ function makeGradeBox(val) {
     return box;
 }
 
-/* Редактирование присутствия — пишет в тот же ключ GRADE_KEY, что и оценка.
-   Оценка сохраняется, если была. */
 function editPresence(studentId, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
@@ -953,8 +954,6 @@ function editPresence(studentId, boxEl) {
     });
 }
 
-/* Редактирование оценки — пишет в переданный ключ (GRADE_KEY или hw_N).
-   Если это GRADE_KEY — сохраняет присутствие. */
 function editGrade(studentId, gradeKey, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
