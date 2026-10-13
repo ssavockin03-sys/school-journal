@@ -98,11 +98,7 @@
         .grade-tile:hover { transform: translateY(-2px); }
         .grade-tile:not([data-subject]) { cursor: default; }
         .grade-tile:not([data-subject]):hover { transform: none; }
-        .grade-tile-box { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 400; line-height: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-bottom: 6px; }
-        .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { background: #65A30D; }
-        .grade-tile.g3 .grade-tile-box { background: #FB923C; }
-        .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
-        .grade-tile.gn .grade-tile-box { background: #94A3B8; }
+        .grade-tile-box { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 400; line-height: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-bottom: 6px; background: #94A3B8; }
         .grade-tile-subject { font-size: 12px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 76px; text-align: left; }
         .grade-tile-type { font-size: 10.5px; color: #94a3b8; line-height: 1.2; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 76px; text-align: left; }
         .grades-hint { font-size: 12px; color: #b8720a; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
@@ -134,11 +130,7 @@
         .today-lesson-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
 
         .today-lesson-grades { display: flex; gap: 4px; align-items: center; }
-        .today-lesson-grade { min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 17px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
-        .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
-        .today-lesson-grade.g3 { background: #FB923C; }
-        .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
-        .today-lesson-grade.gn { background: #94A3B8; }
+        .today-lesson-grade { min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 17px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); background: #94A3B8; }
         .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; }
 
         .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
@@ -179,11 +171,7 @@
         .lesson-value.hw { color: #1e40af; }
 
         .lesson-grades { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
-        .lesson-grade { min-width: 26px; height: 26px; padding: 0 7px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 14px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); line-height: 1; }
-        .lesson-grade.g5, .lesson-grade.g4 { background: #65A30D; }
-        .lesson-grade.g3 { background: #FB923C; }
-        .lesson-grade.g2, .lesson-grade.g1 { background: #DC2626; }
-        .lesson-grade.gn { background: #94A3B8; }
+        .lesson-grade { min-width: 26px; height: 26px; padding: 0 7px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 14px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); line-height: 1; background: #94A3B8; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
         .period-tabs-wrapper { margin-bottom: 16px; }
@@ -207,20 +195,12 @@
         .grades-table td.qtr-cell { text-align: center; }
         .no-grades-text { color: #94a3b8; font-style: italic; font-size: 13px; font-weight: 400; }
 
-        .mini-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; border-radius: 5px; font-weight: 500; font-size: 13px; color: #fff; cursor: pointer; transition: transform 0.12s ease; line-height: 1; padding: 0 5px; text-align: center; font-family: inherit; }
+        .mini-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; border-radius: 5px; font-weight: 500; font-size: 13px; color: #fff; cursor: pointer; transition: transform 0.12s ease; line-height: 1; padding: 0 5px; text-align: center; font-family: inherit; background: #94A3B8; }
         .mini-grade:hover { transform: scale(1.12); }
-        .mini-grade.g5, .mini-grade.g4 { background: #65A30D; }
-        .mini-grade.g3 { background: #FB923C; }
-        .mini-grade.g2, .mini-grade.g1 { background: #DC2626; }
-        .mini-grade.gn { background: #94A3B8; }
         .mini-grade:not([data-subject]) { cursor: default; }
         .mini-grade:not([data-subject]):hover { transform: none; }
 
-        .qtr-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 28px; padding: 0 10px; border-radius: 6px; font-weight: 500; font-size: 15px; color: #fff; line-height: 1; }
-        .qtr-grade.g5, .qtr-grade.g4 { background: #65A30D; }
-        .qtr-grade.g3 { background: #FB923C; }
-        .qtr-grade.g2, .qtr-grade.g1 { background: #DC2626; }
-        .qtr-grade.gn { background: #94A3B8; }
+        .qtr-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 28px; padding: 0 10px; border-radius: 6px; font-weight: 500; font-size: 15px; color: #fff; line-height: 1; background: #94A3B8; }
         .qtr-grade.no-grade { background: transparent; color: #94a3b8; font-weight: 400; }
 
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
@@ -233,10 +213,7 @@
         .modal-subtitle { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
         .stats-list { display: flex; flex-direction: column; gap: 10px; }
         .stat-row { display: flex; align-items: center; gap: 12px; }
-        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; color: #fff; flex-shrink: 0; line-height: 1; }
-        .stat-badge.g5, .stat-badge.g4 { background: #65A30D; }
-        .stat-badge.g3 { background: #FB923C; }
-        .stat-badge.g2, .stat-badge.g1 { background: #DC2626; }
+        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; color: #fff; flex-shrink: 0; line-height: 1; background: #94A3B8; }
         .stat-bar-wrap { flex: 1; height: 26px; background: #f0f4f9; border-radius: 8px; overflow: hidden; position: relative; }
         .stat-bar { height: 100%; border-radius: 8px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: #fff; min-width: 24px; }
         .stat-count { width: 60px; text-align: right; font-size: 13px; font-weight: 600; color: #2a3a52; flex-shrink: 0; }
@@ -359,6 +336,12 @@
         ]
     };
 
+    /* Цвета оценок (совпадают с journal-view.html): */
+    const COLOR_G5  = '#65A30D';   // 5, 5-, 5+
+    const COLOR_G3  = '#FB923C';   // 3, 3-, 3+
+    const COLOR_G2  = '#DC2626';   // 2, 2-, 2+, 1
+    const COLOR_GREY = '#94A3B8';  // буквы отсутствия и всё прочее
+
     let CURRENT_STUDENT = null;
     let CURRENT_CLASS = null;
     let ALL_SUBJECTS = [];
@@ -395,27 +378,26 @@
     }
 
     /* ============================================================
-       Разбираем значение ячейки из журнала:
-       - "5"       → { grade:'5',   presence:'' }
-       - "5-"      → { grade:'5-',  presence:'' }
-       - "Н"       → { grade:'',    presence:'Н' }
-       - "Н5"      → { grade:'5',   presence:'Н' }
-       - "Н5-"     → { grade:'5-',  presence:'Н' }
-       - "5/4"     → { grade:'5/4', presence:'' }
+       Возвращает hex-цвет для оценки или буквы присутствия.
+       Для оценок с +/- берём ПЕРВУЮ цифру 1–5 из строки.
+       "5-" → зелёный, "4+" → зелёный, "3-" → оранжевый,
+       "2-" → красный, "Н" → серый.
        ============================================================ */
-    function parseCellValue(raw) {
-        if (!raw) return { grade: '', presence: '' };
-        const s = String(raw).toUpperCase().trim();
-        const m = s.match(/^(Н|О|Б|СП|П)/);
-        const presence = m ? m[0] : '';
-        const grade = presence ? s.slice(presence.length).trim() : s;
-        return { grade, presence };
+    function gradeColor(value) {
+        const raw = String(value || '').trim().toUpperCase();
+        if (!raw) return COLOR_GREY;
+        // Ищем первую цифру 1–5 в любом месте строки
+        const m = raw.match(/[1-5]/);
+        if (!m) return COLOR_GREY;   // буквы Н/Б/П/СП/О и всё прочее — серые
+        const d = parseInt(m[0], 10);
+        if (d === 5 || d === 4) return COLOR_G5;
+        if (d === 3) return COLOR_G3;
+        if (d === 2 || d === 1) return COLOR_G2;
+        return COLOR_GREY;
     }
-
-    /* Цвет оценки. Если в строке есть цифра 1–5 — по ней, даже если есть +/-.
-       Буквы отсутствия — серый цвет (gn), как было раньше. */
-    function gradeClass(grade) {
-        const raw = String(grade || '').trim().toUpperCase();
+    /* Старый API, оставлен для совместимости вызовов — возвращает класс. */
+    function gradeClass(value) {
+        const raw = String(value || '').trim().toUpperCase();
         if (!raw) return 'gn';
         const m = raw.match(/[1-5]/);
         if (!m) return 'gn';
@@ -426,7 +408,17 @@
         return 'gn';
     }
 
-    /* Средний балл — только по цифрам, буквы игнорируем. */
+    /* Разбор значения ячейки. Формат как в journal-view.html:
+       "5", "5-", "Н", "Н5", "Н5-", "5/4", "Н5/4". */
+    function parseCellValue(raw) {
+        if (!raw) return { grade: '', presence: '' };
+        const s = String(raw).toUpperCase().trim();
+        const m = s.match(/^(Н|О|Б|СП|П)/);
+        const presence = m ? m[0] : '';
+        const grade = presence ? s.slice(presence.length).trim() : s;
+        return { grade, presence };
+    }
+
     function calcAverage(gradesMap) {
         let sum = 0, cnt = 0;
         Object.values(gradesMap || {}).forEach(raw => {
@@ -587,11 +579,6 @@
         });
     }
 
-    /* ============================================================
-       Собираем оценки и присутствие отдельными записями.
-       Оценка помечается isPresence:false, буква — isPresence:true.
-       Стат. модалка (openStats) фильтрует isPresence и берёт только оценки.
-       ============================================================ */
     function collectAllStudentGrades() {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
@@ -677,10 +664,10 @@
                 <div class="grades-strip-label">${formatDateHuman(date).toUpperCase()}</div>
                 <div class="grades-strip">
                     ${grades.map(g => {
-                        const cls = gradeClass(g.grade);
+                        const color = gradeColor(g.grade);
                         const isNumeric = !g.isPresence && /[1-5]/.test(g.grade);
-                        return `<div class="grade-tile ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
-                            <div class="grade-tile-box">${escapeHtml(g.grade)}</div>
+                        return `<div class="grade-tile" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
+                            <div class="grade-tile-box" style="background:${color} !important; color:#fff;">${escapeHtml(g.grade)}</div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
                             <div class="grade-tile-type">${g.isPresence ? 'присутствие' : escapeHtml(g.type)}</div>
                         </div>`;
@@ -699,8 +686,8 @@
         } else {
             lessonsHtml = `<div class="today-lessons">${dayLessons.map(l => {
                 let gradesBox = '';
-                if (l.presence) gradesBox += `<div class="today-lesson-grade ${gradeClass(l.presence)}">${escapeHtml(l.presence)}</div>`;
-                if (l.grade)    gradesBox += `<div class="today-lesson-grade ${gradeClass(l.grade)}">${escapeHtml(l.grade)}</div>`;
+                if (l.presence) gradesBox += `<div class="today-lesson-grade" style="background:${gradeColor(l.presence)} !important;">${escapeHtml(l.presence)}</div>`;
+                if (l.grade)    gradesBox += `<div class="today-lesson-grade" style="background:${gradeColor(l.grade)} !important;">${escapeHtml(l.grade)}</div>`;
                 if (!l.grade && !l.presence) gradesBox = `<div class="today-lesson-grade no-grade">—</div>`;
                 const metaParts = [];
                 if (l.teacherName) metaParts.push(l.teacherName);
@@ -817,8 +804,8 @@
                 const gradeVal = rec.grade;
                 const presVal  = rec.presence;
                 let gradesBox = '';
-                if (presVal)  gradesBox += `<div class="lesson-grade ${gradeClass(presVal)}">${escapeHtml(presVal)}</div>`;
-                if (gradeVal) gradesBox += `<div class="lesson-grade ${gradeClass(gradeVal)}">${escapeHtml(gradeVal)}</div>`;
+                if (presVal)  gradesBox += `<div class="lesson-grade" style="background:${gradeColor(presVal)} !important;">${escapeHtml(presVal)}</div>`;
+                if (gradeVal) gradesBox += `<div class="lesson-grade" style="background:${gradeColor(gradeVal)} !important;">${escapeHtml(gradeVal)}</div>`;
                 if (!gradeVal && !presVal) gradesBox = `<div class="lesson-grade no-grade">—</div>`;
                 const metaParts = [];
                 if (teacherName) metaParts.push(teacherName);
@@ -876,14 +863,14 @@
             else {
                 html += '<td><div class="grades-flex-inner">';
                 gradesArr.forEach(g => {
-                    const cls = gradeClass(g.grade);
+                    const color = gradeColor(g.grade);
                     const isNumeric = !g.isPresence && /[1-5]/.test(g.grade);
-                    html += `<span class="mini-grade ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>${escapeHtml(g.grade)}</span>`;
+                    html += `<span class="mini-grade" style="background:${color} !important;" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>${escapeHtml(g.grade)}</span>`;
                 });
                 html += '</div></td>';
             }
             html += avg !== null ? `<td class="avg-cell">${escapeHtml(String(avg))}</td>` : '<td class="avg-cell no-grade">-</td>';
-            if (periodQtr) html += `<td class="qtr-cell"><span class="qtr-grade ${gradeClass(periodQtr)}">${escapeHtml(String(periodQtr))}</span></td>`;
+            if (periodQtr) html += `<td class="qtr-cell"><span class="qtr-grade" style="background:${gradeColor(periodQtr)} !important;">${escapeHtml(String(periodQtr))}</span></td>`;
             else html += '<td class="qtr-cell"><span class="qtr-grade no-grade">-</span></td>';
             html += '</tr>';
         });
@@ -894,7 +881,7 @@
         });
     }
 
-    /* Статистика — только по оценкам (без букв присутствия). */
+    /* Статистика — только оценки (без букв присутствия). */
     function openStats(subjectName, lessonKey) {
         const journal = ALL_JOURNALS.find(j => {
             const subjObj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
@@ -931,10 +918,9 @@
             const count = counters[g];
             const percent = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
             const barWidth = percent > 0 ? Math.max(percent, 6) : 0;
-            const cls = gradeClass(g);
+            const color = gradeColor(g);
             const word = plural(count, ['человек', 'человека', 'человек']);
-            const barColor = (cls === 'g5') ? '#65A30D' : (cls === 'g3') ? '#FB923C' : (cls === 'g2') ? '#DC2626' : '#94A3B8';
-            html += `<div class="stat-row"><div class="stat-badge ${cls}">${g}</div><div class="stat-bar-wrap"><div class="stat-bar" style="width:${barWidth}%;background:${barColor}">${percent > 15 ? percent + '%' : ''}</div></div><div class="stat-count">${count} <small>${word}</small></div></div>`;
+            html += `<div class="stat-row"><div class="stat-badge" style="background:${color} !important;">${g}</div><div class="stat-bar-wrap"><div class="stat-bar" style="width:${barWidth}%;background:${color}">${percent > 15 ? percent + '%' : ''}</div></div><div class="stat-count">${count} <small>${word}</small></div></div>`;
         });
         list.innerHTML = html;
         total.textContent = `Всего оценок за урок: ${totalCount}`;
