@@ -509,6 +509,23 @@ function isPresenceValue(val) {
     return PRESENCE_VALUES.includes(String(val).toUpperCase().trim());
 }
 
+/* Разбирает значение ячейки на { grade, presence }.
+   Поддерживает: "5", "5-", "Н", "5 / Н", "5 / Б", "5 / 4 / Н" */
+function parseCellValue(raw) {
+    if (!raw) return { grade: '', presence: '' };
+    const parts = String(raw).split('/').map(s => s.trim().toUpperCase()).filter(Boolean);
+    const presence = parts.find(p => PRESENCE_VALUES.includes(p)) || '';
+    const grade = parts.filter(p => !PRESENCE_VALUES.includes(p)).join(' / ');
+    return { grade, presence };
+}
+/* Собирает значение ячейки обратно из { grade, presence } */
+function buildCellValue(grade, presence) {
+    const parts = [];
+    if (grade) parts.push(grade);
+    if (presence) parts.push(presence);
+    return parts.join(' / ');
+}
+
 let toastTimer = null;
 function showToast(message) {
     const toast = document.getElementById('toast');
@@ -534,7 +551,7 @@ async function init() {
         return;
     }
     GRADE_KEY = DATE_ISO + '_' + LESSON_NUM;
-    PRES_KEY = GRADE_KEY + '_pres';
+    PRES_KEY = GRADE_KEY;   // присутствие теперь в том же ключе, что и оценка
 
     const classes = await DB.getAll('classes');
     ALL_CLASSES = classes;
@@ -821,14 +838,16 @@ function renderJournal() {
         tdName.textContent = student.full_name || '';
         tr.appendChild(tdName);
 
-        const presVal = sg[PRES_KEY] || '';
+        // Присутствие и оценка — в одном ключе GRADE_KEY
+        const parsed = parseCellValue(sg[GRADE_KEY] || '');
+
         const tdPresence = document.createElement('td');
         tdPresence.className = 'presence-col';
         const presenceBox = document.createElement('span');
-        presenceBox.className = 'presence-box ' + getPresenceCls(presVal);
-        presenceBox.textContent = isPresenceValue(presVal) ? presVal : '';
+        presenceBox.className = 'presence-box ' + getPresenceCls(parsed.presence);
+        presenceBox.textContent = parsed.presence || '';
         presenceBox.style.cursor = 'default';
-        presenceBox.addEventListener('click', () => editPresence(student.id, PRES_KEY, presenceBox));
+        presenceBox.addEventListener('click', () => editPresence(student.id, presenceBox));
         tdPresence.appendChild(presenceBox);
         tr.appendChild(tdPresence);
 
@@ -842,10 +861,9 @@ function renderJournal() {
             tr.appendChild(tdHw);
         });
 
-        const workVal = sg[GRADE_KEY] || '';
         const tdWork = document.createElement('td');
         tdWork.className = 'grade-col';
-        const workBox = makeGradeBox(isPresenceValue(workVal) ? '' : workVal);
+        const workBox = makeGradeBox(parsed.grade);
         workBox.addEventListener('click', () => editGrade(student.id, GRADE_KEY, workBox));
         tdWork.appendChild(workBox);
         tr.appendChild(tdWork);
@@ -878,14 +896,18 @@ function makeGradeBox(val) {
     return box;
 }
 
-function editPresence(studentId, presKey, boxEl) {
+/* Редактирование присутствия — пишет в тот же ключ GRADE_KEY, что и оценка.
+   Оценка сохраняется, если была. */
+function editPresence(studentId, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
 
-    const cur = (JOURNAL.grades[studentId] || {})[presKey] || '';
+    const raw = (JOURNAL.grades[studentId] || {})[GRADE_KEY] || '';
+    const parsed = parseCellValue(raw);
+
     const input = document.createElement('input');
     input.type = 'text';
-    input.value = isPresenceValue(cur) ? cur : '';
+    input.value = parsed.presence || '';
     input.maxLength = 2;
     input.style.textTransform = 'uppercase';
 
@@ -905,14 +927,14 @@ function editPresence(studentId, presKey, boxEl) {
         committed = true;
         const v = input.value.trim().toUpperCase();
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
-        if (v === '') {
-            delete JOURNAL.grades[studentId][presKey];
-        } else if (isPresenceValue(v)) {
-            JOURNAL.grades[studentId][presKey] = v;
-        } else {
-            renderJournal();
-            return;
-        }
+        const cur = parseCellValue(JOURNAL.grades[studentId][GRADE_KEY] || '');
+        let newPres = '';
+        if (v === '') newPres = '';
+        else if (isPresenceValue(v)) newPres = v;
+        else { renderJournal(); return; }
+        const combined = buildCellValue(cur.grade, newPres);
+        if (combined) JOURNAL.grades[studentId][GRADE_KEY] = combined;
+        else delete JOURNAL.grades[studentId][GRADE_KEY];
         saveJournal();
         renderJournal();
     };
@@ -931,14 +953,19 @@ function editPresence(studentId, presKey, boxEl) {
     });
 }
 
+/* Редактирование оценки — пишет в переданный ключ (GRADE_KEY или hw_N).
+   Если это GRADE_KEY — сохраняет присутствие. */
 function editGrade(studentId, gradeKey, boxEl) {
     const td = boxEl.parentNode;
     td.innerHTML = '';
 
-    const cur = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
+    const raw = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
+    const isWork = (gradeKey === GRADE_KEY);
+    const parsed = isWork ? parseCellValue(raw) : { grade: raw, presence: '' };
+
     const input = document.createElement('input');
     input.type = 'text';
-    input.value = isPresenceValue(cur) ? '' : cur;
+    input.value = parsed.grade || '';
     input.maxLength = 4;
 
     const wrap = document.createElement('div');
@@ -957,13 +984,26 @@ function editGrade(studentId, gradeKey, boxEl) {
         committed = true;
         const v = input.value.trim().toUpperCase();
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
+
         if (v === '') {
-            delete JOURNAL.grades[studentId][gradeKey];
+            if (isWork) {
+                const cur = parseCellValue(JOURNAL.grades[studentId][gradeKey] || '');
+                const combined = buildCellValue('', cur.presence);
+                if (combined) JOURNAL.grades[studentId][gradeKey] = combined;
+                else delete JOURNAL.grades[studentId][gradeKey];
+            } else {
+                delete JOURNAL.grades[studentId][gradeKey];
+            }
         } else if (isPresenceValue(v)) {
             renderJournal();
             return;
         } else {
-            JOURNAL.grades[studentId][gradeKey] = v;
+            if (isWork) {
+                const cur = parseCellValue(JOURNAL.grades[studentId][gradeKey] || '');
+                JOURNAL.grades[studentId][gradeKey] = buildCellValue(v, cur.presence);
+            } else {
+                JOURNAL.grades[studentId][gradeKey] = v;
+            }
         }
         saveJournal();
         renderJournal();
