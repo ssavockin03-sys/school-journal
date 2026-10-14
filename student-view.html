@@ -11,23 +11,21 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
 
 .loading-screen { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; }
 .loading-screen.hidden { display: none; }
-.loading-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 420px; width: 100%; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35); text-align: center; }
+.loading-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 420px; width: 100%; text-align: center; }
 .loading-spinner { width: 56px; height: 56px; border: 5px solid rgba(42,82,152,0.15); border-top-color: #2a5298; border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 20px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-text { font-size: 15px; color: #5a6a85; font-weight: 500; }
 
 .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
-
 .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
 .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
 .logo { font-size: 22px; color: #007baf; }
 .logo-bold { font-weight: 700; }
 .logo-sub { color: #777; }
 .d-user-profile-zone { display: flex; align-items: center; gap: 40px; }
-.d-user-info { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+.d-user-info { display: flex; flex-direction: column; line-height: 1.3; }
 .d-user-name { font-size: 14px; font-weight: 700; color: #333; }
 .d-user-role { font-size: 12px; color: #888; }
-.d-user-actions { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
 .d-action-link { font-size: 13px; color: #007baf; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
 .d-action-link:hover { text-decoration: underline; }
 
@@ -38,7 +36,7 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
 
 .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
 .d-sub-menu-inner { display: flex; flex-wrap: wrap; }
-.d-sub-item { padding: 10px 15px; color: #555; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
+.d-sub-item { padding: 10px 15px; color: #555; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border: none; font-family: inherit; }
 .d-sub-item:hover { color: #1d82b5; }
 .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
 
@@ -56,7 +54,6 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
 .warn-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
 .warn-list { margin: 6px 0 10px 20px; font-size: 13.5px; line-height: 1.7; color: #2a3a52; }
 .warn-hint { font-size: 13.5px; color: #2a3a52; line-height: 1.5; }
-.warn-hint b { color: #1a2b4a; }
 .warn-box.fails { background: #fff0f0; border: 1.5px solid #ffd6d6; }
 .warn-box.fails .warn-icon { fill: #d32f2f; }
 .warn-box.fails .warn-title { color: #d32f2f; }
@@ -64,8 +61,7 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
 .warn-box.absences .warn-icon { fill: #b8720a; }
 .warn-box.absences .warn-title { color: #b8720a; }
 
-/* Карточка дня */
-.day-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin-bottom: 20px; overflow: hidden; }
+.day-card { background: #fff; border-radius: 12px; border: 1px solid #eef2f8; margin-bottom: 20px; overflow: hidden; }
 .day-card-inner { padding: 20px 22px; }
 .day-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px; border-top: 1px solid #eef2f8; }
 .day-nav-btn { width: 36px; height: 36px; border-radius: 50%; background: #f0f4f9; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -74,43 +70,38 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
 .day-nav-title { font-size: 15px; font-weight: 700; color: #1a2b4a; text-align: center; flex: 1; }
 .day-section-label { font-size: 12px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
 
-/* Плитки дня */
 .tiles { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
-.tile { width: 76px; display: flex; flex-direction: column; align-items: flex-start; }
+.tile { width: 90px; display: flex; flex-direction: column; align-items: flex-start; }
 .tile.square { cursor: pointer; }
-.tile.square:hover { transform: translateY(-2px); }
 .tile-box {
     width: 42px; height: 42px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     color: #fff; font-size: 24px; font-weight: 500; line-height: 1;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-bottom: 6px;
-    /* фон задаётся inline */
+    margin-bottom: 6px;
+    /* фон ТОЛЬКО инлайн */
 }
-.tile-subject { font-size: 12px; font-weight: 600; color: #1a2b4a; line-height: 1.2; max-width: 76px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tile-type { font-size: 10.5px; color: #94a3b8; line-height: 1.2; margin-top: 2px; max-width: 76px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tile-subject { font-size: 12px; font-weight: 600; color: #1a2b4a; line-height: 1.2; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tile-type { font-size: 10.5px; color: #94a3b8; line-height: 1.2; margin-top: 2px; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tile-raw { font-size: 9px; color: #cbd5e1; margin-top: 2px; font-family: monospace; }
 
-/* Список уроков на день */
-.lesson-row { display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; padding: 12px 14px; background: #f8fafc; border-radius: 10px; border-left: 4px solid #90caf9; cursor: pointer; margin-bottom: 10px; }
-.lesson-row:hover { background: #e3f2fd; }
+.lesson-row { display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; padding: 12px 14px; background: #f8fafc; border-radius: 10px; border-left: 4px solid #90caf9; margin-bottom: 10px; }
 .lesson-row-num { width: 32px; height: 32px; background: #e3f2fd; color: #1976d2; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
 .lesson-row-info { min-width: 0; }
 .lesson-row-subject { font-size: 14px; font-weight: 700; color: #1a2b4a; }
 .lesson-row-meta { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
-.lesson-row-topic { font-size: 12px; color: #334155; margin-top: 4px; line-height: 1.4; }
-.lesson-row-topic b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
-.lesson-row-hw { font-size: 12px; color: #1e40af; margin-top: 4px; line-height: 1.4; }
-.lesson-row-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
+.lesson-row-topic { font-size: 12px; color: #334155; margin-top: 4px; }
+.lesson-row-topic b, .lesson-row-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
+.lesson-row-hw { font-size: 12px; color: #1e40af; margin-top: 4px; }
 .lesson-row-grades { display: flex; gap: 4px; align-items: center; }
-.badge { min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 500; font-size: 17px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
-.badge.empty { background: #e2e8f0; color: #94a3b8; box-shadow: none; }
-.badge.small { min-width: 26px; height: 26px; padding: 0 7px; font-size: 14px; border-radius: 8px; }
+.badge { min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 500; font-size: 17px; color: #fff; }
+.badge.empty { background: #e2e8f0; color: #94a3b8; }
+.badge.small { min-width: 26px; height: 26px; padding: 0 7px; font-size: 14px; }
 
 .day-empty { text-align: center; padding: 40px 20px; color: #94a3b8; }
 .day-empty-emoji { font-size: 40px; margin-bottom: 12px; }
 .day-empty-title { font-size: 15px; font-weight: 700; color: #5a6a85; margin-bottom: 6px; }
-.day-empty-text { font-size: 13px; line-height: 1.5; max-width: 320px; margin: 0 auto; }
+.day-empty-text { font-size: 13px; max-width: 320px; margin: 0 auto; }
 
-/* Дневник */
 .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
 .week-title { font-size: 20px; font-weight: 700; color: #1a2b4a; }
 .week-range { font-size: 13px; color: #7a8aa3; margin-top: 2px; }
@@ -119,8 +110,8 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
 .week-grid::-webkit-scrollbar { height: 10px; }
 .week-grid::-webkit-scrollbar-track { background: #eef2f8; border-radius: 5px; }
 .week-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
-.day-column { flex: 0 0 250px; min-width: 250px; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; overflow: hidden; display: flex; flex-direction: column; }
-.day-column.today { border: 2px solid #1976d2; box-shadow: 0 4px 16px rgba(25,118,210,0.18); }
+.day-column { flex: 0 0 250px; min-width: 250px; background: #fff; border-radius: 12px; border: 1px solid #eef2f8; overflow: hidden; display: flex; flex-direction: column; }
+.day-column.today { border: 2px solid #1976d2; }
 .day-header { background: linear-gradient(135deg, #1976d2, #2196f3); color: #fff; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
 .day-column.today .day-header { background: linear-gradient(135deg, #0d47a1, #1976d2); }
 .day-name { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -128,32 +119,30 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
 .day-today-badge { background: #fff; color: #1976d2; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 800; }
 .day-body { padding: 10px 12px 14px; display: flex; flex-direction: column; gap: 8px; }
 
-.card-lesson { background: #f8fafc; border-radius: 10px; padding: 10px 12px; border-left: 3px solid #90caf9; position: relative; cursor: pointer; }
-.card-lesson:hover { background: #e3f2fd; }
-.card-lesson.empty { background: transparent; border-left: 3px dashed #e2e8f0; padding: 6px 12px; cursor: default; }
+.card-lesson { background: #f8fafc; border-radius: 10px; padding: 10px 12px; border-left: 3px solid #90caf9; position: relative; }
+.card-lesson.empty { background: transparent; border-left: 3px dashed #e2e8f0; padding: 6px 12px; }
 .card-lesson.empty .card-lesson-subject { color: #cbd5e1; font-weight: 400; font-style: italic; font-size: 12px; }
 .card-lesson-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 76px; }
 .card-lesson-num { width: 20px; height: 20px; background: #e3f2fd; color: #1976d2; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; flex-shrink: 0; }
 .card-lesson-subject { font-size: 13px; font-weight: 700; color: #1a2b4a; line-height: 1.3; }
-.card-lesson-meta { font-size: 11px; color: #7a8aa3; margin-top: 3px; line-height: 1.4; }
-.card-lesson-section { margin-top: 6px; font-size: 11.5px; line-height: 1.45; }
-.card-lesson-label { font-weight: 700; color: #7a8aa3; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
+.card-lesson-meta { font-size: 11px; color: #7a8aa3; margin-top: 3px; }
+.card-lesson-section { margin-top: 6px; font-size: 11.5px; }
+.card-lesson-label { font-weight: 700; color: #7a8aa3; text-transform: uppercase; font-size: 10px; margin-right: 4px; }
 .card-lesson-value { color: #334155; }
 .card-lesson-value.hw { color: #1e40af; }
 .card-lesson-grades { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
 
-/* Оценки (таблица) */
 .period-tabs-wrapper { margin-bottom: 16px; }
 .period-tabs-group { display: inline-flex; align-items: center; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 10px; flex-wrap: wrap; }
-.tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; border: 1px solid transparent; font-family: inherit; white-space: nowrap; }
-.tab-pill:hover { background: #F1F5F9; color: #334155; }
+.tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; border: 1px solid transparent; font-family: inherit; }
+.tab-pill:hover { background: #F1F5F9; }
 .tab-pill.active { background: linear-gradient(135deg, #1976d2, #2196f3); color: #fff; }
 
-.grades-table-wrapper { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; overflow: hidden; }
+.grades-table-wrapper { background: #fff; border-radius: 12px; border: 1px solid #eef2f8; overflow: hidden; }
 .grades-table { width: 100%; border-collapse: collapse; font-size: 13.5px; table-layout: fixed; }
-.grades-table th { background: #f8fafc; color: #475569; font-weight: 700; font-size: 11px; padding: 14px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.3px; }
+.grades-table th { background: #f8fafc; color: #475569; font-weight: 700; font-size: 11px; padding: 14px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; }
 .grades-table th.center { text-align: center; }
-.grades-table td { padding: 16px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; font-size: 13.5px; }
+.grades-table td { padding: 16px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
 .grades-table tbody tr:last-child td { border-bottom: none; }
 .grades-table td.subject-cell { font-weight: 700; color: #1e293b; font-size: 14px; }
 .grades-table td.avg-cell { text-align: center; font-weight: 700; color: #65A30D; font-size: 15px; }
@@ -164,28 +153,27 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
 .mini-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; border-radius: 5px; font-weight: 500; font-size: 13px; color: #fff; padding: 0 5px; cursor: pointer; }
 .mini-grade:not([data-subject]) { cursor: default; }
 
-/* Модалка статистики */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
 .modal-overlay.show { display: flex; }
-.modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 500px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3); max-height: 90vh; overflow-y: auto; }
+.modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; }
 .modal-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #eef2f8; }
-.modal-header-icon { width: 42px; height: 42px; border-radius: 12px; background: #e3f2fd; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.modal-header-icon { width: 42px; height: 42px; border-radius: 12px; background: #e3f2fd; display: flex; align-items: center; justify-content: center; }
 .modal-header-icon svg { width: 22px; height: 22px; fill: #1976d2; }
 .modal-title { font-size: 17px; font-weight: 700; color: #1a2b4a; }
 .modal-subtitle { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
 .stats-list { display: flex; flex-direction: column; gap: 10px; }
 .stat-row { display: flex; align-items: center; gap: 12px; }
 .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; color: #fff; flex-shrink: 0; }
-.stat-bar-wrap { flex: 1; height: 26px; background: #f0f4f9; border-radius: 8px; overflow: hidden; position: relative; }
+.stat-bar-wrap { flex: 1; height: 26px; background: #f0f4f9; border-radius: 8px; overflow: hidden; }
 .stat-bar { height: 100%; border-radius: 8px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: #fff; }
-.stat-count { width: 60px; text-align: right; font-size: 13px; font-weight: 600; color: #2a3a52; flex-shrink: 0; }
+.stat-count { width: 60px; text-align: right; font-size: 13px; font-weight: 600; color: #2a3a52; }
 .stat-count small { color: #7a8aa3; font-weight: 500; }
 .stats-total { margin-top: 16px; padding-top: 12px; border-top: 1px solid #eef2f8; font-size: 13px; color: #7a8aa3; text-align: center; }
 .stats-empty { text-align: center; padding: 20px 10px; color: #8a9bb5; font-size: 14px; }
 .modal-close { width: 100%; height: 44px; margin-top: 16px; background: #f0f2f5; color: #4a5a72; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
 .modal-close:hover { background: #e2e8f0; }
 
-.empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; }
+.empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 12px; border: 1px solid #eef2f8; }
 .empty-state h3 { font-size: 18px; font-weight: 700; color: #5a6a85; margin-bottom: 8px; }
 .empty-state p { font-size: 14px; color: #8a9bb5; max-width: 400px; margin: 0 auto; }
 </style>
@@ -209,9 +197,7 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
                         <span class="d-user-name">Федоренко В.И.</span>
                         <span class="d-user-role">Сотрудник</span>
                     </div>
-                    <div class="d-user-actions">
-                        <button class="d-action-link" onclick="history.back()">← Назад в журнал</button>
-                    </div>
+                    <div><button class="d-action-link" onclick="history.back()">← Назад в журнал</button></div>
                 </div>
             </div>
         </header>
@@ -246,7 +232,7 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
 </div>
 
 <div class="modal-overlay" id="statsModal">
-    <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal">
         <div class="modal-header">
             <div class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></svg></div>
             <div>
@@ -262,41 +248,36 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
 
 <script src="supabase-config.js"></script>
 <script>
-const DAYS_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-const DAYS_RU   = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
-const DAYS_FULL = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота', sun: 'Воскресенье' };
-const JS_DAY_MAP = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
+const DAYS_KEYS = ['mon','tue','wed','thu','fri','sat'];
+const DAYS_RU = { mon:'Пн', tue:'Вт', wed:'Ср', thu:'Чт', fri:'Пт', sat:'Сб' };
+const DAYS_FULL = { mon:'Понедельник', tue:'Вторник', wed:'Среда', thu:'Четверг', fri:'Пятница', sat:'Суббота', sun:'Воскресенье' };
+const JS_DAY_MAP = { 1:'mon', 2:'tue', 3:'wed', 4:'thu', 5:'fri', 6:'sat' };
 const MONTHS_GEN = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 const DEFAULT_LESSON_TYPE = 'ОТВ';
-
 const PERIOD_LABELS = {
-    'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
-    'Полугодия': ['I полугодие', 'II полугодие'],
-    'Триместры': ['I триместр', 'II триместр', 'III триместр'],
-    'Семестры':  ['I семестр', 'II семестр']
+    'Четверти':  ['I четверть','II четверть','III четверть','IV четверть'],
+    'Полугодия': ['I полугодие','II полугодие'],
+    'Триместры': ['I триместр','II триместр','III триместр'],
+    'Семестры':  ['I семестр','II семестр']
 };
-
-const SUB_TABS = {
-    education: [
-        { id: 'today',  label: 'Сегодня' },
-        { id: 'diary',  label: 'Дневник' },
-        { id: 'grades', label: 'Оценки' }
-    ]
-};
+const SUB_TABS = { education: [
+    { id:'today',  label:'Сегодня' },
+    { id:'diary',  label:'Дневник' },
+    { id:'grades', label:'Оценки' }
+]};
 
 /* ============================================================
-   ЦВЕТ. Инлайн. Без CSS-классов.
-   5+, 5, 5-  → зелёный  #65A30D
-   4+, 4, 4-  → зелёный  #65A30D
-   3+, 3, 3-  → оранжевый #FB923C
-   2+, 2, 2-  → красный   #DC2626
-   1, 1±       → красный   #DC2626
-   Н/Б/П/СП/О  → серый     #94A3B8
+   ЦВЕТ. Возвращает hex СТРОКОЙ.
+   Логика:
+   - если в строке есть цифра 1–5, берём ПЕРВУЮ из них:
+       5 или 4 → зелёный #65A30D
+       3       → оранжевый #FB923C
+       2 или 1 → красный #DC2626
+   - иначе (буквы Н/Б/П/СП/О, пусто, мусор) → серый #94A3B8
+   Знаки + и - ИГНОРИРУЮТСЯ, важна только цифра.
    ============================================================ */
 function bgColor(value) {
     const raw = String(value == null ? '' : value).trim().toUpperCase();
-    if (!raw) return '#94A3B8';
-    // Ищем первую цифру 1–5 где угодно (после возможных +, -, пробелов)
     const m = raw.match(/[1-5]/);
     if (!m) return '#94A3B8';
     const d = parseInt(m[0], 10);
@@ -305,13 +286,12 @@ function bgColor(value) {
     if (d === 2 || d === 1) return '#DC2626';
     return '#94A3B8';
 }
+/* Класс для мини-плитки — уже не используется, но оставлен для совместимости. */
+function gradeClass(v) { return ''; }
 
-/* ============================================================
-   Разбор значения ячейки журнала.
-   Формат: "5", "5-", "5+", "Н", "Н5", "Н5-", "5/4", "Н5/4".
-   ============================================================ */
+/* Разбор значения ячейки журнала: "5", "5-", "5+", "Н", "Н5", "Н5-", "5/4". */
 function parseCell(raw) {
-    if (!raw) return { grade: '', presence: '' };
+    if (!raw) return { grade:'', presence:'' };
     const s = String(raw).toUpperCase().trim();
     const m = s.match(/^(Н|О|Б|СП|П)/);
     const presence = m ? m[0] : '';
@@ -319,7 +299,6 @@ function parseCell(raw) {
     return { grade, presence };
 }
 
-/* Средний балл — только цифры. */
 function calcAverage(map) {
     let sum = 0, cnt = 0;
     Object.values(map || {}).forEach(v => {
@@ -329,7 +308,6 @@ function calcAverage(map) {
     });
     return cnt === 0 ? null : (sum / cnt).toFixed(2).replace(/\.00$/, '');
 }
-
 function escapeHtml(t) {
     if (t == null) return '';
     const d = document.createElement('div');
@@ -356,8 +334,8 @@ function getMondayOfCurrentWeek() {
     const t = new Date(); t.setHours(0,0,0,0);
     const dow = t.getDay();
     const diff = (dow === 0 ? -6 : 1 - dow);
-    const mon = new Date(t); mon.setDate(t.getDate() + diff);
-    return mon;
+    const m = new Date(t); m.setDate(t.getDate() + diff);
+    return m;
 }
 function getStudentIdFromUrl() {
     const p = new URLSearchParams(window.location.search);
@@ -437,9 +415,9 @@ async function loadAll() {
     const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
     if (withData.length > 0) ALL_JOURNALS = withData;
     CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
-    const classScheds = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
+    const scheds = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
     const merged = {};
-    classScheds.forEach(s => {
+    scheds.forEach(s => {
         if (!s.grid) return;
         Object.entries(s.grid).forEach(([day, lessons]) => {
             if (!merged[day]) merged[day] = {};
@@ -491,7 +469,6 @@ function renderPeriodTabs() {
     });
 }
 
-/* Собираем все записи ученика. Оценка и присутствие — отдельные объекты. */
 function collectAll() {
     const out = [];
     ALL_JOURNALS.forEach(j => {
@@ -501,11 +478,11 @@ function collectAll() {
         Object.entries(sg).forEach(([key, val]) => {
             if (val == null || val === '') return;
             if (key.endsWith('_pres')) return;
-            const parsed = parseKey(key);
+            const p = parseKey(key);
             const type = (j.lesson_types && j.lesson_types[key]) || DEFAULT_LESSON_TYPE;
             const cell = parseCell(val);
-            if (cell.grade) out.push({ subject: subj.name, grade: cell.grade, key, date: parsed.date, lesson: parsed.lesson, type, isPresence: false });
-            if (cell.presence) out.push({ subject: subj.name, grade: cell.presence, key, date: parsed.date, lesson: parsed.lesson, type, isPresence: true });
+            if (cell.grade) out.push({ subject: subj.name, grade: cell.grade, raw: String(val), key, date: p.date, lesson: p.lesson, type, isPresence: false });
+            if (cell.presence) out.push({ subject: subj.name, grade: cell.presence, raw: String(val), key, date: p.date, lesson: p.lesson, type, isPresence: true });
         });
     });
     return out;
@@ -529,7 +506,7 @@ function renderWarnings() {
         const icon = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
         let title, list = '';
         if (fails.length === 1) title = `Тебе поставили <b>2</b> по предмету «${escapeHtml(fails[0].subject)}» (${formatDateRu(fails[0].date)}).`;
-        else { title = `Тебе поставили двойки:`; list = `<ul class="warn-list">${fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${formatDateRu(f.date)}</li>`).join('')}</ul>`; }
+        else { title = 'Тебе поставили двойки:'; list = `<ul class="warn-list">${fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${formatDateRu(f.date)}</li>`).join('')}</ul>`; }
         box.innerHTML = `${icon}<div class="warn-body"><div class="warn-title">${title}</div>${list}<div class="warn-hint">Обычно оценку можно исправить. <b>Спроси учителя, что ты можешь для этого сделать.</b></div></div>`;
         c.appendChild(box);
     }
@@ -539,7 +516,7 @@ function renderWarnings() {
         const icon = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M11 7h2v6h-2zm0 8h2v2h-2zm1-13C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>';
         let title, list = '';
         if (absences.length === 1) title = `Тебя не было на уроке «${escapeHtml(absences[0].subject)}» (${formatDateRu(absences[0].date)}).`;
-        else { title = `Тебя не было на уроках:`; list = `<ul class="warn-list">${absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> — ${formatDateRu(a.date)}</li>`).join('')}</ul>`; }
+        else { title = 'Тебя не было на уроках:'; list = `<ul class="warn-list">${absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> — ${formatDateRu(a.date)}</li>`).join('')}</ul>`; }
         box.innerHTML = `${icon}<div class="warn-body"><div class="warn-title">${title}</div>${list}<div class="warn-hint">Если есть уважительная причина, <b>обсуди её с учителем.</b></div></div>`;
         c.appendChild(box);
     }
@@ -556,29 +533,26 @@ function renderToday() {
 
     let tilesHtml = '';
     if (dayRecs.length > 0) {
-        tilesHtml = `
-            <div class="day-section-label">${formatDateHuman(date).toUpperCase()}</div>
-            <div class="tiles">
-                ${dayRecs.map(x => {
-                    const color = bgColor(x.grade);
-                    const clickable = !x.isPresence && /[1-5]/.test(x.grade);
-                    return `<div class="tile${clickable ? ' square' : ''}" ${clickable ? `data-subject="${escapeHtml(x.subject)}" data-key="${escapeHtml(x.key)}"` : ''}>
-                        <div class="tile-box" style="background:${color};">${escapeHtml(x.grade)}</div>
-                        <div class="tile-subject">${escapeHtml(x.subject)}</div>
-                        <div class="tile-type">${x.isPresence ? 'присутствие' : escapeHtml(x.type)}</div>
-                    </div>`;
-                }).join('')}
-            </div>`;
+        tilesHtml = `<div class="day-section-label">${formatDateHuman(date).toUpperCase()}</div><div class="tiles">` +
+            dayRecs.map(x => {
+                const color = bgColor(x.grade);
+                const clickable = !x.isPresence && /[1-5]/.test(x.grade);
+                return `<div class="tile${clickable ? ' square' : ''}" ${clickable ? `data-subject="${escapeHtml(x.subject)}" data-key="${escapeHtml(x.key)}"` : ''}>
+                    <div class="tile-box" style="background:${color};">${escapeHtml(x.grade)}</div>
+                    <div class="tile-subject">${escapeHtml(x.subject)}</div>
+                    <div class="tile-type">${x.isPresence ? 'присутствие' : escapeHtml(x.type)}</div>
+                    <div class="tile-raw">${escapeHtml(x.grade)}</div>
+                </div>`;
+            }).join('') + '</div>';
     } else {
         tilesHtml = `<div class="day-section-label">${formatDateHuman(date).toUpperCase()}</div><div style="color:#94a3b8;font-size:13px;padding:8px 0 16px;">Оценок за этот день нет</div>`;
     }
 
-    // уроки дня
     const lessons = getLessonsForDate(date);
     let lessonsHtml = '';
     if (lessons.length === 0) {
         const weekend = dow === 0;
-        lessonsHtml = `<div class="day-empty"><div class="day-empty-emoji">${weekend ? '☕' : '📅'}</div><div class="day-empty-title">${weekend ? 'Выходной день' : 'Нет занятий'}</div><div class="day-empty-text">${weekend ? 'Отдыхай и набирайся сил!' : 'На этот день уроков нет'}</div></div>`;
+        lessonsHtml = `<div class="day-empty"><div class="day-empty-emoji">${weekend ? '☕' : '📅'}</div><div class="day-empty-title">${weekend ? 'Выходной день' : 'Нет занятий'}</div><div class="day-empty-text">${weekend ? 'Отдыхай!' : 'На этот день уроков нет'}</div></div>`;
     } else {
         lessonsHtml = lessons.map(l => {
             let badges = '';
@@ -642,7 +616,7 @@ function getLessonsForDate(date) {
             if (j && j.lessons && j.lessons[key]) { topic = j.lessons[key].t || ''; homework = j.lessons[key].h || ''; }
         }
         const rec = findLessonRecords(all, lesson.subject, key);
-        out.push({ num: n, subject: lesson.subject, teacherName: tName, roomName: rName, topic, homework, grade: rec.grade, presence: rec.presence });
+        out.push({ num:n, subject:lesson.subject, teacherName:tName, roomName:rName, topic, homework, grade:rec.grade, presence:rec.presence });
     }
     return out;
 }
@@ -707,10 +681,7 @@ function renderDiary() {
             </div>`;
         }
         html += `<div class="day-column ${isToday ? 'today' : ''}">
-            <div class="day-header">
-                <div><div class="day-name">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div><div class="day-date">${formatDateRu(date)}</div></div>
-                ${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}
-            </div>
+            <div class="day-header"><div><div class="day-name">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div><div class="day-date">${formatDateRu(date)}</div></div>${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}</div>
             <div class="day-body">${lessonsHtml}</div>
         </div>`;
     });
@@ -786,7 +757,7 @@ function openStats(subjectName, lessonKey) {
     title.textContent = subjectName;
     subtitle.textContent = `${p.date ? formatDateRu(p.date) : ''} · ${p.lesson}-й урок`;
     if (!j) { list.innerHTML = '<div class="stats-empty">Статистика недоступна.</div>'; total.textContent = ''; modal.classList.add('show'); return; }
-    const counters = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
+    const counters = { '5':0, '4':0, '3':0, '2':0, '1':0 };
     const valid = new Set(CLASS_STUDENT_IDS);
     Object.entries(j.grades || {}).forEach(([sid, sg]) => {
         if (!valid.has(sid)) return;
@@ -798,7 +769,7 @@ function openStats(subjectName, lessonKey) {
     const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
     if (totalCount === 0) { list.innerHTML = '<div class="stats-empty">Пока нет оценок за этот урок.</div>'; total.textContent = ''; modal.classList.add('show'); return; }
     let html = '';
-    ['5', '4', '3', '2', '1'].forEach(g => {
+    ['5','4','3','2','1'].forEach(g => {
         const cnt = counters[g];
         const pct = Math.round((cnt / totalCount) * 100);
         const color = bgColor(g);
