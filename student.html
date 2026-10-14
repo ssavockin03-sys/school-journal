@@ -106,16 +106,16 @@
         .grades-hint { font-size: 12px; color: #b8720a; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
         .grades-hint::before { content: '👉'; }
 
-        /* Иконка профиля — правый нижний угол.
-           ТОЛЬКО КОНТУР, без заливок. Цвет = currentColor кубика. */
+        /* Иконка профиля — правый нижний угол, тонкий контур.
+           Сдвинута ниже и правее — край аккуратно обрезается кубиком. */
         .grade-tile-icon {
             position: absolute;
-            right: -4px;
-            bottom: -4px;
+            right: -8px;
+            bottom: -8px;
             display: block;
             pointer-events: none;
             color: #fff;
-            opacity: 0.65;
+            opacity: 0.6;
             line-height: 0;
         }
         .grade-tile-icon svg { width: 38px; height: 38px; display: block; }
@@ -166,7 +166,7 @@
         .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
         .today-lesson-grade.gn { background: #94A3B8; }
         .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; }
-        .today-lesson-grade .grade-tile-icon { right: -4px; bottom: -4px; }
+        .today-lesson-grade .grade-tile-icon { right: -7px; bottom: -7px; }
         .today-lesson-grade .grade-tile-icon svg { width: 30px; height: 30px; }
         .today-lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 
@@ -463,19 +463,15 @@
 
     // ============================================================
     // ИКОНКИ ПРОФИЛЕЙ — ТОЛЬКО КОНТУРЫ, БЕЗ ЗАЛИВОК.
-    // Используется stroke="currentColor" fill="none".
+    // Обводка тонкая: stroke-width=1.1.
     // Используются ТОЛЬКО во вкладке «Сегодня».
     // ============================================================
     const PROFILE_ICONS = {
-        // Точные науки — калькулятор (outline):
-        // корпус, экран, сетка кнопок 2×4, знаки + и − в правом столбце
+        // Точные науки — калькулятор (тонкий контур)
         'Точные науки':
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
-                // корпус
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">' +
                 '<rect x="5" y="2" width="14" height="20" rx="1.8"/>' +
-                // экран
                 '<rect x="7" y="4" width="10" height="4.4" rx="0.6"/>' +
-                // 4 ряда по 2 кнопки
                 '<rect x="7"    y="10"   width="4" height="2.6" rx="0.5"/>' +
                 '<rect x="13"   y="10"   width="4" height="2.6" rx="0.5"/>' +
                 '<rect x="7"    y="13.4" width="4" height="2.6" rx="0.5"/>' +
@@ -484,28 +480,21 @@
                 '<rect x="13"   y="16.8" width="4" height="2.6" rx="0.5"/>' +
                 '<rect x="7"    y="20.2" width="4" height="1.4" rx="0.4"/>' +
                 '<rect x="13"   y="20.2" width="4" height="1.4" rx="0.4"/>' +
-                // знак + на верхней правой кнопке
                 '<path d="M14.4 11.3h1.2M15 10.7v1.2"/>' +
-                // знак − на средней правой
                 '<path d="M14.4 14.7h1.2"/>' +
-                // знак × на нижней правой
                 '<path d="M14.4 17.6l1.2 1.2M15.6 17.6l-1.2 1.2"/>' +
             '</svg>',
-        // Гуманитарные науки — книга (outline)
+        // Гуманитарные науки — книга (тонкий контур)
         'Гуманитарные науки':
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
-                // корпус книги
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">' +
                 '<path d="M5 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5z"/>' +
-                // корешок
                 '<path d="M5 3v18"/>' +
-                // закладка
                 '<path d="M9 3v7l2-1.5L13 10V3"/>' +
-                // строки на обложке
                 '<path d="M15 7h2M15 10h2M15 13h2"/>' +
             '</svg>',
-        // Естественные науки — атом (outline)
+        // Естественные науки — атом (тонкий контур)
         'Естественные науки':
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">' +
                 '<ellipse cx="12" cy="12" rx="10" ry="4"/>' +
                 '<ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>' +
                 '<ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>' +
