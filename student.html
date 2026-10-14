@@ -86,7 +86,7 @@
         .grade-tile:hover { transform: translateY(-2px); }
         .grade-tile:not([data-subject]) { cursor: default; }
         .grade-tile:not([data-subject]):hover { transform: none; }
-        .grade-tile-box { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 400; line-height: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-bottom: 6px; }
+        .grade-tile-box { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 400; line-height: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-bottom: 6px; padding: 2px; text-align: center; overflow: hidden; }
         .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { background: #65A30D; }
         .grade-tile.g3 .grade-tile-box { background: #FB923C; }
         .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
@@ -122,7 +122,7 @@
         .today-lesson-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
 
         .today-lesson-grades { display: flex; gap: 4px; align-items: center; }
-        .today-lesson-grade { min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 17px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+        .today-lesson-grade { min-width: 34px; height: 34px; padding: 0 6px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 17px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
         .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
         .today-lesson-grade.g3 { background: #FB923C; }
         .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
@@ -167,7 +167,7 @@
         .lesson-value.hw { color: #1e40af; }
 
         .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; align-items: flex-start; }
-        .lesson-grade { min-width: 26px; height: 26px; padding: 0 7px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 14px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); line-height: 1; }
+        .lesson-grade { min-width: 26px; height: 26px; padding: 0 5px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 14px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); line-height: 1; overflow: hidden; }
         .lesson-grade.g5, .lesson-grade.g4 { background: #65A30D; }
         .lesson-grade.g3 { background: #FB923C; }
         .lesson-grade.g2, .lesson-grade.g1 { background: #DC2626; }
@@ -195,7 +195,7 @@
         .grades-table td.qtr-cell { text-align: center; }
         .no-grades-text { color: #94a3b8; font-style: italic; font-size: 13px; font-weight: 400; }
 
-        .mini-grade { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 5px; font-weight: 500; font-size: 13px; color: #fff; cursor: pointer; transition: transform 0.12s ease; line-height: 1; padding: 0; text-align: center; font-family: inherit; }
+        .mini-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; border-radius: 5px; font-weight: 500; color: #fff; cursor: pointer; transition: transform 0.12s ease; line-height: 1; padding: 0 4px; text-align: center; font-family: inherit; overflow: hidden; }
         .mini-grade:hover { transform: scale(1.12); }
         .mini-grade.g5, .mini-grade.g4 { background: #65A30D; }
         .mini-grade.g3 { background: #FB923C; }
@@ -434,14 +434,10 @@
 
     // ============================================================
     // РАЗБОР ЯЧЕЙКИ.
-    // На вход: "5", "5+", "5-", "Н", "Н5", "О3", "Б4-", "СП5", "5/4" и т.п.
-    // На выход: { grade: "5"|"4"|"3"|"2"|"1"|"", presence: "Н"|"О"|"Б"|"СП"|"П"|"" }
-    // presence отделяется, если он стоит В НАЧАЛЕ.
     // ============================================================
     function parseCell(raw) {
         if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' };
         const s = String(raw).toUpperCase().trim();
-        // Сначала пробуем отделить presence (Н/О/Б/СП/П) в начале строки
         const m = s.match(/^(СП|Н|О|Б|П)/);
         let presence = '';
         let grade = s;
@@ -453,13 +449,13 @@
     }
 
     // ============================================================
-    // ЦВЕТ по первой цифре 1–5 из строки. "+", "-", "/" игнорируются.
+    // ЦВЕТ по первой цифре 1–5 из строки.
     // ============================================================
     function gradeClass(grade) {
         const s = String(grade == null ? '' : grade);
         for (let i = 0; i < s.length; i++) {
             const c = s.charCodeAt(i);
-            if (c >= 49 && c <= 53) { // '1'..'5'
+            if (c >= 49 && c <= 53) {
                 const d = c - 48;
                 if (d === 5 || d === 4) return 'g5';
                 if (d === 3)            return 'g3';
@@ -478,7 +474,19 @@
     }
     function isNumericGrade(v) { return firstDigit(v) !== null; }
 
-    // Средний балл считаем ТОЛЬКО по оценкам, presence игнорируем
+    // ============================================================
+    // АВТО-РАЗМЕР ШРИФТА.
+    // Чем длиннее строка внутри плитки — тем меньше шрифт.
+    // maxSize — базовый размер для одного символа.
+    // ============================================================
+    function gradeFontSize(value, maxSize) {
+        const len = String(value == null ? '' : value).length;
+        if (len <= 1) return maxSize;                     // "5"          → maxSize
+        if (len === 2) return Math.round(maxSize * 0.78); // "5+", "О3"   → 78%
+        if (len === 3) return Math.round(maxSize * 0.58); // "2/3", "Н5-" → 58%
+        return Math.round(maxSize * 0.46);                // "2/3-", "СП5+" → 46%
+    }
+
     function calcAverage(map) {
         let sum = 0, cnt = 0;
         Object.values(map || {}).forEach(raw => {
@@ -677,12 +685,6 @@
         });
     }
 
-    // ============================================================
-    // СБОР ДАННЫХ. На каждую ячейку может быть ДВЕ записи:
-    //   - оценка (kind: 'grade')
-    //   - присутствие (kind: 'presence')
-    // Они рендерятся как ОТДЕЛЬНЫЕ плитки.
-    // ============================================================
     function collectAllStudentGrades() {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
@@ -704,11 +706,9 @@
                     type,
                     journalId: journal.id
                 };
-                // Оценка (если есть цифра)
                 if (cell.grade) {
                     result.push({ ...base, kind: 'grade', value: cell.grade, grade: cell.grade, presence: '' });
                 }
-                // Присутствие (если есть буква)
                 if (cell.presence) {
                     result.push({ ...base, kind: 'presence', value: cell.presence, grade: '', presence: cell.presence });
                 }
@@ -721,11 +721,9 @@
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
         const all = collectAllStudentGrades();
-        // Двойки — только записи kind='grade' с первой цифрой 2
         const fails = all
             .filter(g => g.kind === 'grade' && firstDigit(g.grade) === 2)
             .sort((a, b) => (b.date || 0) - (a.date || 0));
-        // Прогулы — только kind='presence' со значением 'Н'
         const absences = all
             .filter(g => g.kind === 'presence' && String(g.presence).toUpperCase() === 'Н')
             .sort((a, b) => (b.date || 0) - (a.date || 0));
@@ -771,10 +769,10 @@
                         const cls = gradeClass(isGrade ? g.grade : g.presence);
                         const value = isGrade ? g.grade : g.presence;
                         const isNum = isGrade && isNumericGrade(g.grade);
-                        // Подпись типа: для присутствия — "присутствие", для оценки — тип урока
                         const typeLabel = isGrade ? g.type : 'присутствие';
+                        const fs = gradeFontSize(value, 26);
                         return `<div class="grade-tile ${cls}" ${isNum ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
-                            <div class="grade-tile-box">${escapeHtml(value)}</div>
+                            <div class="grade-tile-box" style="font-size:${fs}px;">${escapeHtml(value)}</div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
                             <div class="grade-tile-type">${escapeHtml(typeLabel)}</div>
                         </div>`;
@@ -792,13 +790,12 @@
             lessonsHtml = `<div class="day-empty"><div class="day-empty-emoji">${isWeekend ? '☕' : '📅'}</div><div class="day-empty-title">${isWeekend ? 'Выходной день' : 'Нет занятий'}</div><div class="day-empty-text">${isWeekend ? 'Отдыхай и набирайся сил!' : 'На этот день уроков нет'}</div></div>`;
         } else {
             lessonsHtml = `<div class="today-lessons">${dayLessons.map(l => {
-                // Собираем плашки: сначала присутствие (если есть), потом оценка
                 let badges = '';
                 if (l.presence) {
-                    badges += `<div class="today-lesson-grade ${gradeClass(l.presence)}">${escapeHtml(l.presence)}</div>`;
+                    badges += `<div class="today-lesson-grade ${gradeClass(l.presence)}" style="font-size:${gradeFontSize(l.presence, 17)}px;">${escapeHtml(l.presence)}</div>`;
                 }
                 if (l.grade) {
-                    badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}">${escapeHtml(l.grade)}</div>`;
+                    badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}" style="font-size:${gradeFontSize(l.grade, 17)}px;">${escapeHtml(l.grade)}</div>`;
                 }
                 if (!l.presence && !l.grade) {
                     badges = `<div class="today-lesson-grade no-grade">—</div>`;
@@ -864,7 +861,6 @@
                 const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
                 if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
             }
-            // Ищем ОТДЕЛЬНО оценку и присутствие
             const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
             const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
             result.push({
@@ -930,10 +926,9 @@
                 const gradeVal = gradeRec ? gradeRec.grade : null;
                 const presVal  = presRec ? presRec.presence : null;
 
-                // ДВЕ ОТДЕЛЬНЫЕ плашки: сначала присутствие, потом оценка
                 let gradesWrap = '';
-                if (presVal)  gradesWrap += `<div class="lesson-grade ${gradeClass(presVal)}">${escapeHtml(presVal)}</div>`;
-                if (gradeVal) gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}">${escapeHtml(gradeVal)}</div>`;
+                if (presVal)  gradesWrap += `<div class="lesson-grade ${gradeClass(presVal)}" style="font-size:${gradeFontSize(presVal, 14)}px;">${escapeHtml(presVal)}</div>`;
+                if (gradeVal) gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}" style="font-size:${gradeFontSize(gradeVal, 14)}px;">${escapeHtml(gradeVal)}</div>`;
                 if (!presVal && !gradeVal) gradesWrap = `<div class="lesson-grade no-grade">—</div>`;
 
                 const metaParts = [];
@@ -981,10 +976,8 @@
         subjectsFromSchedule.forEach(subjectName => {
             let records = all.filter(g => g.subject === subjectName);
             if (range) records = records.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
-            // Сортировка: по дате/номеру урока, чтобы оценки и присутствия шли рядом
             records.sort((a, b) => a.key.localeCompare(b.key));
 
-            // Карта для среднего балла — только оценки
             const gradesMap = {};
             records.forEach(r => { if (r.kind === 'grade') gradesMap[r.key] = r.grade; });
             const avg = calcAverage(gradesMap);
@@ -1005,7 +998,8 @@
                     const val = isGrade ? r.grade : r.presence;
                     const cls = gradeClass(val);
                     const isNum = isGrade && isNumericGrade(r.grade);
-                    html += `<span class="mini-grade ${cls}" ${isNum ? `data-subject="${escapeHtml(r.subject)}" data-key="${escapeHtml(r.key)}"` : ''}>${escapeHtml(val)}</span>`;
+                    const fs = gradeFontSize(val, 13);
+                    html += `<span class="mini-grade ${cls}" style="font-size:${fs}px;" ${isNum ? `data-subject="${escapeHtml(r.subject)}" data-key="${escapeHtml(r.key)}"` : ''}>${escapeHtml(val)}</span>`;
                 });
                 html += '</div></td>';
             }
@@ -1117,7 +1111,6 @@
             if (!validIds.has(studentId)) return;
             const val = studentGrades && studentGrades[lessonKey];
             if (val === undefined || val === null) return;
-            // Берём только оценки, presence игнорируем
             const parsedCell = parseCell(val);
             if (!parsedCell.grade) return;
             const d = firstDigit(parsedCell.grade);
