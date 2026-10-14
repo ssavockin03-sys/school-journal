@@ -16,7 +16,6 @@
             padding: 0;
         }
 
-        /* ===== ЭКРАН ЗАГРУЗКИ ===== */
         .loading-screen { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; }
         .loading-screen.hidden { display: none; }
         .loading-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 420px; width: 100%; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35); text-align: center; }
@@ -24,17 +23,8 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { font-size: 15px; color: #5a6a85; font-weight: 500; }
 
-        /* ============================================================
-           ЕДИНАЯ ШИРИНА ВЕЗДЕ: 1400px.
-           Обёртка .app-shell центрирует ВСЁ — и шапку, и контент.
-           ============================================================ */
-        .app-shell {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 32px;
-        }
+        .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
 
-        /* Шапка */
         .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
         .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
         .logo { font-size: 22px; color: #007baf; }
@@ -49,43 +39,22 @@
         .d-action-link:hover { text-decoration: underline; }
         .d-action-link.logout { color: #d9534f; }
 
-        /* Синяя полоса */
         .d-top-blue-bar { background: #166a94; }
         .d-top-blue-inner { padding: 0; display: flex; }
-        .d-nav-item {
-            display: inline-block;
-            padding: 12px 20px;
-            color: #ffffff;
-            text-decoration: none;
-            cursor: pointer;
-            font: 400 14px/1 inherit;
-            border-bottom: 3px solid transparent;
-        }
+        .d-nav-item { display: inline-block; padding: 12px 20px; color: #ffffff; text-decoration: none; cursor: pointer; font: 400 14px/1 inherit; border-bottom: 3px solid transparent; }
         .d-nav-item:hover { background: rgba(255,255,255,0.12); }
-        .d-nav-item.active { background: #0f4f70; border-bottom-color: #ffffff; font: 400 14px/1 inherit; }
+        .d-nav-item.active { background: #0f4f70; border-bottom-color: #ffffff; }
 
-        /* Подменю */
         .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
         .d-sub-menu-inner { padding: 0; display: flex; flex-wrap: wrap; }
-        .d-sub-item {
-            display: inline-block;
-            padding: 10px 15px;
-            color: #555;
-            font: 400 13px/1 inherit;
-            border-bottom: 3px solid transparent;
-            cursor: pointer;
-            background: none; border-top: none; border-left: none; border-right: none;
-            font-family: inherit;
-        }
+        .d-sub-item { display: inline-block; padding: 10px 15px; color: #555; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
         .d-sub-item:hover { color: #1d82b5; }
         .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
 
-        /* Школа + заголовок */
         .school-bar { padding: 14px 0 0; }
         .school-name { font-size: 13px; color: #7a8aa3; margin-bottom: 2px; }
         .page-title { font-size: 28px; font-weight: 400; color: #1976d2; margin-bottom: 12px; }
 
-        /* Контейнер */
         .container { padding: 0 0 60px; }
 
         .info-banner { background: #fff; border-radius: 12px; padding: 14px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin: 16px 0 20px; display: flex; flex-wrap: wrap; gap: 24px; }
@@ -97,7 +66,6 @@
         .tab-panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ===== ПРЕДУПРЕЖДЕНИЯ ===== */
         .warn-box { border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 14px; align-items: flex-start; }
         .warn-icon { width: 26px; height: 26px; flex-shrink: 0; margin-top: 2px; }
         .warn-body { flex: 1; }
@@ -112,7 +80,6 @@
         .warn-box.absences .warn-icon { fill: #b8720a; }
         .warn-box.absences .warn-title { color: #b8720a; }
 
-        /* ===== КАРТОЧКИ ОЦЕНОК ===== */
         .grades-strip-label { font-size: 12px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
         .grades-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
         .grade-tile { width: 76px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; transition: transform 0.15s ease; }
@@ -129,7 +96,6 @@
         .grades-hint { font-size: 12px; color: #b8720a; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
         .grades-hint::before { content: '👉'; }
 
-        /* ===== КАРТОЧКА СЕГОДНЯ ===== */
         .today-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin-bottom: 20px; overflow: hidden; }
         .today-card-inner { padding: 20px 22px; }
         .day-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px; border-top: 1px solid #eef2f8; }
@@ -162,7 +128,6 @@
         .today-lesson-grade.gn { background: #94A3B8; }
         .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; }
 
-        /* ===== ДНЕВНИК ===== */
         .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
         .week-title { font-size: 20px; font-weight: 700; color: #1a2b4a; }
         .week-range { font-size: 13px; color: #7a8aa3; margin-top: 2px; }
@@ -207,7 +172,6 @@
         .lesson-grade.gn { background: #94A3B8; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
 
-        /* ===== ОЦЕНКИ — ТАБЛИЦА ===== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 10px; flex-wrap: wrap; }
         .tab-pill { padding: 8px 16px; background: transparent; color: #64748B; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; user-select: none; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; line-height: 1.2; }
@@ -245,7 +209,6 @@
         .qtr-grade.gn { background: #94A3B8; }
         .qtr-grade.no-grade { background: transparent; color: #94a3b8; font-weight: 400; }
 
-        /* ===== СТРАНИЦА УРОКА ===== */
         .lesson-page { background: #fff; border-radius: 14px; padding: 32px 36px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; max-width: 1100px; margin: 0 auto; }
         .lesson-page-title { font-size: 26px; font-weight: 400; color: #1976d2; margin-bottom: 24px; }
         .lesson-section-title { font-size: 15px; font-weight: 700; color: #475569; margin-top: 24px; margin-bottom: 10px; }
@@ -269,7 +232,6 @@
         .back-link:hover { text-decoration: underline; }
         .back-link svg { width: 14px; height: 14px; fill: currentColor; }
 
-        /* ===== МОДАЛКА СТАТИСТИКИ ===== */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
         .modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 500px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3); max-height: 90vh; overflow-y: auto; }
@@ -379,7 +341,7 @@
             <div id="lessonPage" style="display:none;"><div class="lesson-page" id="lessonPageContent"></div></div>
         </div>
 
-    </div><!-- /.app-shell -->
+    </div>
 
 </div>
 
@@ -467,13 +429,35 @@
         const d = new Date(datePart + 'T00:00:00');
         return { date: isNaN(d.getTime()) ? null : d, dateRu: isNaN(d.getTime()) ? datePart : formatDateRu(d), lesson: lessonPart };
     }
+
+    // ===== ИСПРАВЛЕНО: вытаскиваем первую цифру из любой строки =====
+    // "5", "5+", "5-", "4-", "2/3-", "Н5" → g5/g3/g2
+    // "Н", "Б", "П", пусто → gn (серый)
     function gradeClass(grade) {
-        const g = String(grade).trim().replace(/[НОБП]|СП/gi, '').trim();
-        if (g === '5' || g === '4') return 'g5';
-        if (g === '3') return 'g3';
-        if (g === '2' || g === '1') return 'g2';
+        const s = String(grade == null ? '' : grade);
+        for (let i = 0; i < s.length; i++) {
+            const c = s.charCodeAt(i);
+            if (c >= 49 && c <= 53) { // '1'..'5'
+                const d = c - 48;
+                if (d === 5 || d === 4) return 'g5';
+                if (d === 3)            return 'g3';
+                if (d === 2 || d === 1) return 'g2';
+            }
+        }
         return 'gn';
     }
+
+    // Достаёт первую цифру 1–5 из строки (или null)
+    function firstDigit(v) {
+        const s = String(v == null ? '' : v);
+        for (let i = 0; i < s.length; i++) {
+            const c = s.charCodeAt(i);
+            if (c >= 49 && c <= 53) return c - 48;
+        }
+        return null;
+    }
+    function isNumericGrade(v) { return firstDigit(v) !== null; }
+
     function calcAverage(gradesMap) {
         let sum = 0, cnt = 0;
         Object.values(gradesMap || {}).forEach(raw => {
@@ -482,9 +466,13 @@
             const cleaned = val.replace(/[НОБП]|СП/g, '').trim();
             if (!cleaned) return;
             if (cleaned.includes('/')) {
-                cleaned.split('/').forEach(p => { const n = parseInt(p); if (!isNaN(n)) { sum += n; cnt++; } });
+                cleaned.split('/').forEach(p => {
+                    const d = firstDigit(p);
+                    if (d !== null) { sum += d; cnt++; }
+                });
             } else {
-                const n = parseInt(cleaned); if (!isNaN(n)) { sum += n; cnt++; }
+                const d = firstDigit(cleaned);
+                if (d !== null) { sum += d; cnt++; }
             }
         });
         return cnt === 0 ? null : (sum / cnt).toFixed(2).replace(/\.00$/, '');
@@ -689,7 +677,8 @@
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
         const all = collectAllStudentGrades();
-        const fails = all.filter(g => g.grade.trim().toUpperCase() === '2').sort((a, b) => (b.date || 0) - (a.date || 0));
+        // Берём только те, у которых ПЕРВАЯ цифра = 2
+        const fails = all.filter(g => firstDigit(g.grade) === 2).sort((a, b) => (b.date || 0) - (a.date || 0));
         const absences = all.filter(g => g.grade.trim().toUpperCase() === 'Н').sort((a, b) => (b.date || 0) - (a.date || 0));
         if (fails.length > 0) {
             const box = document.createElement('div');
@@ -729,8 +718,8 @@
                 <div class="grades-strip">
                     ${grades.map(g => {
                         const cls = gradeClass(g.grade);
-                        const isNumeric = /^[1-5]$/.test(g.grade.trim());
-                        return `<div class="grade-tile ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
+                        const isNum = isNumericGrade(g.grade);
+                        return `<div class="grade-tile ${cls}" ${isNum ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
                             <div class="grade-tile-box">${escapeHtml(g.grade)}</div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
                             <div class="grade-tile-type">${escapeHtml(g.type)}</div>
@@ -926,8 +915,8 @@
                 html += '<td><div class="grades-flex-inner">';
                 gradesArr.forEach(g => {
                     const cls = gradeClass(g.grade);
-                    const isNumeric = /^[1-5]$/.test(g.grade.trim());
-                    html += `<span class="mini-grade ${cls}" ${isNumeric ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>${escapeHtml(g.grade)}</span>`;
+                    const isNum = isNumericGrade(g.grade);
+                    html += `<span class="mini-grade ${cls}" ${isNum ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>${escapeHtml(g.grade)}</span>`;
                 });
                 html += '</div></td>';
             }
@@ -1035,8 +1024,10 @@
             if (!validIds.has(studentId)) return;
             const val = studentGrades && studentGrades[lessonKey];
             if (val === undefined || val === null) return;
-            const clean = String(val).trim().toUpperCase();
-            if (counters[clean] !== undefined) counters[clean]++;
+            const d = firstDigit(val);
+            if (d !== null) {
+                counters[String(d)]++;
+            }
         });
         const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
         if (totalCount === 0) { list.innerHTML = '<div class="stats-empty">Пока нет оценок за этот урок.</div>'; total.textContent = ''; modal.classList.add('show'); return; }
