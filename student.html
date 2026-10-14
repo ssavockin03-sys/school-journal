@@ -80,21 +80,47 @@
         .warn-box.absences .warn-icon { fill: #b8720a; }
         .warn-box.absences .warn-title { color: #b8720a; }
 
+        /* ===== ПЛИТКИ ОЦЕНОК В «СЕГОДНЯ» ===== */
         .grades-strip-label { font-size: 12px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
-        .grades-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
-        .grade-tile { width: 76px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; transition: transform 0.15s ease; }
+        .grades-strip { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
+        .grade-tile { width: 96px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; transition: transform 0.15s ease; }
         .grade-tile:hover { transform: translateY(-2px); }
         .grade-tile:not([data-subject]) { cursor: default; }
         .grade-tile:not([data-subject]):hover { transform: none; }
-        .grade-tile-box { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 400; line-height: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-bottom: 6px; padding: 2px; text-align: center; overflow: hidden; }
+        .grade-tile-box {
+            position: relative;
+            width: 84px; height: 84px;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 52px; font-weight: 400; line-height: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
         .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { background: #65A30D; }
         .grade-tile.g3 .grade-tile-box { background: #FB923C; }
         .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
         .grade-tile.gn .grade-tile-box { background: #94A3B8; }
-        .grade-tile-subject { font-size: 12px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 76px; text-align: left; }
-        .grade-tile-type { font-size: 10.5px; color: #94a3b8; line-height: 1.2; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 76px; text-align: left; }
+        .grade-tile-subject { font-size: 12px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 96px; text-align: left; }
+        .grade-tile-type { font-size: 10.5px; color: #94a3b8; line-height: 1.2; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 96px; text-align: left; }
         .grades-hint { font-size: 12px; color: #b8720a; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
         .grades-hint::before { content: '👉'; }
+
+        /* Иконка профиля внутри плитки + цифра поверх */
+        .grade-tile-icon {
+            position: absolute;
+            inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: none;
+            color: #fff;
+            opacity: 0.45;
+        }
+        .grade-tile-icon svg { width: 62px; height: 62px; fill: currentColor; }
+        .grade-tile-value {
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+        }
 
         .today-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin-bottom: 20px; overflow: hidden; }
         .today-card-inner { padding: 20px 22px; }
@@ -121,13 +147,24 @@
         .today-lesson-hw { font-size: 12px; color: #1e40af; margin-top: 4px; line-height: 1.4; }
         .today-lesson-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
 
-        .today-lesson-grades { display: flex; gap: 4px; align-items: center; }
-        .today-lesson-grade { min-width: 34px; height: 34px; padding: 0 6px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 17px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+        .today-lesson-grades { display: flex; gap: 6px; align-items: center; }
+        .today-lesson-grade {
+            position: relative;
+            min-width: 60px; height: 60px;
+            padding: 0 6px;
+            border-radius: 12px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 400; font-size: 30px; color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
         .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
         .today-lesson-grade.g3 { background: #FB923C; }
         .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
         .today-lesson-grade.gn { background: #94A3B8; }
-        .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; }
+        .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 24px; }
+        .today-lesson-grade .grade-tile-icon svg { width: 42px; height: 42px; }
+        .today-lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
 
         .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
         .week-title { font-size: 20px; font-weight: 700; color: #1a2b4a; }
@@ -139,7 +176,7 @@
         .week-grid::-webkit-scrollbar-track { background: #eef2f8; border-radius: 5px; }
         .week-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
 
-        .day-column { flex: 0 0 250px; min-width: 250px; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; overflow: hidden; display: flex; flex-direction: column; scroll-snap-align: start; }
+        .day-column { flex: 0 0 280px; min-width: 280px; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; overflow: hidden; display: flex; flex-direction: column; scroll-snap-align: start; }
         .day-column.today { border: 2px solid #1976d2; box-shadow: 0 4px 16px rgba(25,118,210,0.18); }
 
         .day-header { background: linear-gradient(135deg, #1976d2, #2196f3); color: #fff; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -157,7 +194,7 @@
         .lesson-card.empty:hover { background: transparent; }
         .lesson-card.empty .lesson-subject { color: #cbd5e1; font-weight: 400; font-style: italic; font-size: 12px; }
 
-        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 60px; }
+        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 120px; }
         .lesson-num { width: 20px; height: 20px; background: #e3f2fd; color: #1976d2; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; flex-shrink: 0; }
         .lesson-subject { font-size: 13px; font-weight: 700; color: #1a2b4a; line-height: 1.3; }
         .lesson-meta { font-size: 11px; color: #7a8aa3; margin-top: 3px; line-height: 1.4; }
@@ -166,13 +203,24 @@
         .lesson-value { color: #334155; }
         .lesson-value.hw { color: #1e40af; }
 
-        .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; align-items: flex-start; }
-        .lesson-grade { min-width: 26px; height: 26px; padding: 0 5px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 14px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); line-height: 1; overflow: hidden; }
+        .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; align-items: flex-start; }
+        .lesson-grade {
+            position: relative;
+            min-width: 52px; height: 52px;
+            padding: 0 5px;
+            border-radius: 12px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 400; font-size: 28px; color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
         .lesson-grade.g5, .lesson-grade.g4 { background: #65A30D; }
         .lesson-grade.g3 { background: #FB923C; }
         .lesson-grade.g2, .lesson-grade.g1 { background: #DC2626; }
         .lesson-grade.gn { background: #94A3B8; }
-        .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 12px; box-shadow: none; }
+        .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 24px; box-shadow: none; }
+        .lesson-grade .grade-tile-icon svg { width: 36px; height: 36px; }
+        .lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
 
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 10px; flex-wrap: wrap; }
@@ -189,20 +237,34 @@
         .grades-table tbody tr:last-child td { border-bottom: none; }
         .grades-table tbody tr:hover { background: #fafcff; }
         .grades-table td.subject-cell { font-weight: 700; color: #1e293b; font-size: 14px; }
-        .grades-flex-inner { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; justify-content: flex-start; }
+        .grades-flex-inner { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: flex-start; }
         .grades-table td.avg-cell { text-align: center; font-weight: 700; color: #65A30D; font-size: 15px; }
         .grades-table td.avg-cell.no-grade { color: #94a3b8; font-weight: 400; }
         .grades-table td.qtr-cell { text-align: center; }
         .no-grades-text { color: #94a3b8; font-style: italic; font-size: 13px; font-weight: 400; }
 
-        .mini-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; border-radius: 5px; font-weight: 500; color: #fff; cursor: pointer; transition: transform 0.12s ease; line-height: 1; padding: 0 4px; text-align: center; font-family: inherit; overflow: hidden; }
-        .mini-grade:hover { transform: scale(1.12); }
+        .mini-grade {
+            position: relative;
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 44px; height: 44px;
+            border-radius: 10px;
+            font-weight: 500; font-size: 22px;
+            color: #fff; cursor: pointer;
+            transition: transform 0.12s ease;
+            line-height: 1; padding: 0 6px;
+            text-align: center; font-family: inherit;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+        .mini-grade:hover { transform: scale(1.06); }
         .mini-grade.g5, .mini-grade.g4 { background: #65A30D; }
         .mini-grade.g3 { background: #FB923C; }
         .mini-grade.g2, .mini-grade.g1 { background: #DC2626; }
         .mini-grade.gn { background: #94A3B8; }
         .mini-grade:not([data-subject]) { cursor: default; }
         .mini-grade:not([data-subject]):hover { transform: none; }
+        .mini-grade .grade-tile-icon svg { width: 30px; height: 30px; }
+        .mini-grade .grade-tile-value { position: relative; z-index: 1; }
 
         .qtr-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 28px; padding: 0 10px; border-radius: 6px; font-weight: 500; font-size: 15px; color: #fff; line-height: 1; }
         .qtr-grade.g5, .qtr-grade.g4 { background: #65A30D; }
@@ -269,7 +331,7 @@
             .app-shell { padding: 0 14px; }
             .header-inner { column-gap: 16px; }
             .page-title { font-size: 22px; }
-            .day-column { flex: 0 0 260px; min-width: 260px; }
+            .day-column { flex: 0 0 280px; min-width: 280px; }
             .modal { padding: 22px 20px; }
             .grades-table th, .grades-table td { padding: 12px 10px; font-size: 12px; }
         }
@@ -397,6 +459,55 @@
         ]
     };
 
+    // ============================================================
+    // ИКОНКИ ПРОФИЛЕЙ (SVG). Полупрозрачный белый фон внутри кубика.
+    // ============================================================
+    const PROFILE_ICONS = {
+        // Точные науки — калькулятор
+        'Точные': '<svg viewBox="0 0 24 24"><path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-6 2h2v2h-2V4zm0 4h2v2h-2V8zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2zM9 4h2v2H9V4zm0 4h2v2H9V8zm0 4h2v2H9v-2zm0 4h2v2H9v-2zm6 2h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V8h2v2zm0-4h-2V4h2v2z"/></svg>',
+        // Гуманитарные — книга
+        'Гуманитарные': '<svg viewBox="0 0 24 24"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>',
+        // Наука — молекулы (цепочка кружков)
+        'Наука': '<svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2.5"/><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M6.8 7.6l3.7 3.1-1.3 1.6-3.7-3.1zM15.8 7.6l1.3 1.6-3.7 3.1-1.3-1.6zM6.8 16.4l3.7-3.1-1.3-1.6-3.7 3.1zM15.8 16.4l1.3-1.6-3.7-3.1-1.3 1.6z"/></svg>',
+        // Спорт и искусство — без иконки
+        'Спорт и искусство': ''
+    };
+
+    // Нормализация названия профиля. Возвращает ключ из PROFILE_ICONS или ''.
+    function normalizeProfile(raw) {
+        if (!raw) return '';
+        const s = String(raw).trim();
+        if (PROFILE_ICONS[s] !== undefined) return s;
+        const low = s.toLowerCase();
+        if (low.includes('точн') || low.includes('матем') || low.includes('физмат') || low.includes('информ')) return 'Точные';
+        if (low.includes('гуман') || low.includes('филолог') || low.includes('лингв')) return 'Гуманитарные';
+        if (low.includes('наук') || low.includes('естеств') || low.includes('хим') || low.includes('биол')) return 'Наука';
+        if (low.includes('спорт') || low.includes('искусств') || low.includes('физкульт') || low.includes('творч')) return 'Спорт и искусство';
+        return '';
+    }
+
+    // Ищет профиль в разных возможных полях предмета
+    function getSubjectProfile(subjectObj) {
+        if (!subjectObj) return '';
+        const raw = subjectObj.profile
+                 || subjectObj.profile_name
+                 || subjectObj.profileLabel
+                 || subjectObj.category
+                 || subjectObj.category_name
+                 || subjectObj.profileId
+                 || '';
+        return normalizeProfile(raw);
+    }
+
+    // Возвращает HTML иконки для кубика (или '', если профиль не задан)
+    function profileIconHtml(subjectObj) {
+        const p = getSubjectProfile(subjectObj);
+        if (!p) return '';
+        const svg = PROFILE_ICONS[p] || '';
+        if (!svg) return '';
+        return `<span class="grade-tile-icon">${svg}</span>`;
+    }
+
     let CURRENT_STUDENT = null;
     let CURRENT_CLASS = null;
     let ALL_SUBJECTS = [];
@@ -432,9 +543,6 @@
         return { date: isNaN(d.getTime()) ? null : d, dateRu: isNaN(d.getTime()) ? datePart : formatDateRu(d), lesson: lessonPart };
     }
 
-    // ============================================================
-    // РАЗБОР ЯЧЕЙКИ.
-    // ============================================================
     function parseCell(raw) {
         if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' };
         const s = String(raw).toUpperCase().trim();
@@ -448,9 +556,6 @@
         return { grade, presence };
     }
 
-    // ============================================================
-    // ЦВЕТ по первой цифре 1–5 из строки.
-    // ============================================================
     function gradeClass(grade) {
         const s = String(grade == null ? '' : grade);
         for (let i = 0; i < s.length; i++) {
@@ -473,19 +578,6 @@
         return null;
     }
     function isNumericGrade(v) { return firstDigit(v) !== null; }
-
-    // ============================================================
-    // АВТО-РАЗМЕР ШРИФТА.
-    // Чем длиннее строка внутри плитки — тем меньше шрифт.
-    // maxSize — базовый размер для одного символа.
-    // ============================================================
-    function gradeFontSize(value, maxSize) {
-        const len = String(value == null ? '' : value).length;
-        if (len <= 1) return maxSize;                     // "5"          → maxSize
-        if (len === 2) return Math.round(maxSize * 0.78); // "5+", "О3"   → 78%
-        if (len === 3) return Math.round(maxSize * 0.58); // "2/3", "Н5-" → 58%
-        return Math.round(maxSize * 0.46);                // "2/3-", "СП5+" → 46%
-    }
 
     function calcAverage(map) {
         let sum = 0, cnt = 0;
@@ -699,6 +791,7 @@
                 const base = {
                     subject: subjObj.name,
                     subjectId: subjObj.id,
+                    subjectObj: subjObj,
                     key,
                     date: parsed.date,
                     dateRu: parsed.dateRu,
@@ -770,9 +863,9 @@
                         const value = isGrade ? g.grade : g.presence;
                         const isNum = isGrade && isNumericGrade(g.grade);
                         const typeLabel = isGrade ? g.type : 'присутствие';
-                        const fs = gradeFontSize(value, 26);
+                        const icon = isGrade ? profileIconHtml(g.subjectObj) : '';
                         return `<div class="grade-tile ${cls}" ${isNum ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
-                            <div class="grade-tile-box" style="font-size:${fs}px;">${escapeHtml(value)}</div>
+                            <div class="grade-tile-box">${icon}<span class="grade-tile-value">${escapeHtml(value)}</span></div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
                             <div class="grade-tile-type">${escapeHtml(typeLabel)}</div>
                         </div>`;
@@ -792,10 +885,11 @@
             lessonsHtml = `<div class="today-lessons">${dayLessons.map(l => {
                 let badges = '';
                 if (l.presence) {
-                    badges += `<div class="today-lesson-grade ${gradeClass(l.presence)}" style="font-size:${gradeFontSize(l.presence, 17)}px;">${escapeHtml(l.presence)}</div>`;
+                    badges += `<div class="today-lesson-grade ${gradeClass(l.presence)}"><span class="grade-tile-value">${escapeHtml(l.presence)}</span></div>`;
                 }
                 if (l.grade) {
-                    badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}" style="font-size:${gradeFontSize(l.grade, 17)}px;">${escapeHtml(l.grade)}</div>`;
+                    const icon = profileIconHtml(l.subjectObj);
+                    badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}">${icon}<span class="grade-tile-value">${escapeHtml(l.grade)}</span></div>`;
                 }
                 if (!l.presence && !l.grade) {
                     badges = `<div class="today-lesson-grade no-grade">—</div>`;
@@ -866,6 +960,7 @@
             result.push({
                 num: n,
                 subject: lesson.subject,
+                subjectObj: subjObj || null,
                 teacherName,
                 roomName,
                 topic,
@@ -927,8 +1022,11 @@
                 const presVal  = presRec ? presRec.presence : null;
 
                 let gradesWrap = '';
-                if (presVal)  gradesWrap += `<div class="lesson-grade ${gradeClass(presVal)}" style="font-size:${gradeFontSize(presVal, 14)}px;">${escapeHtml(presVal)}</div>`;
-                if (gradeVal) gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}" style="font-size:${gradeFontSize(gradeVal, 14)}px;">${escapeHtml(gradeVal)}</div>`;
+                if (presVal)  gradesWrap += `<div class="lesson-grade ${gradeClass(presVal)}"><span class="grade-tile-value">${escapeHtml(presVal)}</span></div>`;
+                if (gradeVal) {
+                    const icon = profileIconHtml(subjObj);
+                    gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}">${icon}<span class="grade-tile-value">${escapeHtml(gradeVal)}</span></div>`;
+                }
                 if (!presVal && !gradeVal) gradesWrap = `<div class="lesson-grade no-grade">—</div>`;
 
                 const metaParts = [];
@@ -998,8 +1096,8 @@
                     const val = isGrade ? r.grade : r.presence;
                     const cls = gradeClass(val);
                     const isNum = isGrade && isNumericGrade(r.grade);
-                    const fs = gradeFontSize(val, 13);
-                    html += `<span class="mini-grade ${cls}" style="font-size:${fs}px;" ${isNum ? `data-subject="${escapeHtml(r.subject)}" data-key="${escapeHtml(r.key)}"` : ''}>${escapeHtml(val)}</span>`;
+                    const icon = isGrade ? profileIconHtml(r.subjectObj) : '';
+                    html += `<span class="mini-grade ${cls}" ${isNum ? `data-subject="${escapeHtml(r.subject)}" data-key="${escapeHtml(r.key)}"` : ''}>${icon}<span class="grade-tile-value">${escapeHtml(val)}</span></span>`;
                 });
                 html += '</div></td>';
             }
