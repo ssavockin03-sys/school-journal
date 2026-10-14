@@ -82,44 +82,46 @@
 
         /* ===== ПЛИТКИ ОЦЕНОК В «СЕГОДНЯ» ===== */
         .grades-strip-label { font-size: 12px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
-        .grades-strip { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
-        .grade-tile { width: 96px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; transition: transform 0.15s ease; }
+        .grades-strip { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+        .grade-tile { width: 68px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; transition: transform 0.15s ease; }
         .grade-tile:hover { transform: translateY(-2px); }
         .grade-tile:not([data-subject]) { cursor: default; }
         .grade-tile:not([data-subject]):hover { transform: none; }
         .grade-tile-box {
             position: relative;
-            width: 84px; height: 84px;
-            border-radius: 16px;
+            width: 56px; height: 56px;
+            border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 52px; font-weight: 400; line-height: 1;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            margin-bottom: 8px;
+            color: #fff; font-size: 34px; font-weight: 400; line-height: 1;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            margin-bottom: 6px;
             overflow: hidden;
         }
         .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { background: #65A30D; }
         .grade-tile.g3 .grade-tile-box { background: #FB923C; }
         .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
         .grade-tile.gn .grade-tile-box { background: #94A3B8; }
-        .grade-tile-subject { font-size: 12px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 96px; text-align: left; }
-        .grade-tile-type { font-size: 10.5px; color: #94a3b8; line-height: 1.2; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 96px; text-align: left; }
+        .grade-tile-subject { font-size: 12px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 68px; text-align: left; }
+        .grade-tile-type { font-size: 10.5px; color: #94a3b8; line-height: 1.2; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 68px; text-align: left; }
         .grades-hint { font-size: 12px; color: #b8720a; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
         .grades-hint::before { content: '👉'; }
 
-        /* Иконка профиля внутри плитки */
+        /* Иконка профиля — в правом нижнем углу, полупрозрачная */
         .grade-tile-icon {
             position: absolute;
-            inset: 0;
-            display: flex; align-items: center; justify-content: center;
+            right: -6px;
+            bottom: -6px;
+            display: flex; align-items: flex-end; justify-content: flex-end;
             pointer-events: none;
             color: #fff;
-            opacity: 0.45;
+            opacity: 0.35;
+            line-height: 0;
         }
-        .grade-tile-icon svg { width: 62px; height: 62px; fill: currentColor; }
+        .grade-tile-icon svg { width: 36px; height: 36px; fill: currentColor; display: block; }
         .grade-tile-value {
             position: relative;
             z-index: 1;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .today-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin-bottom: 20px; overflow: hidden; }
@@ -147,24 +149,25 @@
         .today-lesson-hw { font-size: 12px; color: #1e40af; margin-top: 4px; line-height: 1.4; }
         .today-lesson-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
 
-        .today-lesson-grades { display: flex; gap: 6px; align-items: center; }
+        .today-lesson-grades { display: flex; gap: 5px; align-items: center; }
         .today-lesson-grade {
             position: relative;
-            min-width: 60px; height: 60px;
-            padding: 0 6px;
-            border-radius: 12px;
+            min-width: 44px; height: 44px;
+            padding: 0 5px;
+            border-radius: 10px;
             display: inline-flex; align-items: center; justify-content: center;
-            font-weight: 400; font-size: 30px; color: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            font-weight: 400; font-size: 26px; color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             overflow: hidden;
         }
         .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
         .today-lesson-grade.g3 { background: #FB923C; }
         .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
         .today-lesson-grade.gn { background: #94A3B8; }
-        .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 24px; }
-        .today-lesson-grade .grade-tile-icon svg { width: 42px; height: 42px; }
-        .today-lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+        .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 20px; }
+        .today-lesson-grade .grade-tile-icon { right: -5px; bottom: -5px; }
+        .today-lesson-grade .grade-tile-icon svg { width: 28px; height: 28px; }
+        .today-lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
         .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
         .week-title { font-size: 20px; font-weight: 700; color: #1a2b4a; }
@@ -194,7 +197,7 @@
         .lesson-card.empty:hover { background: transparent; }
         .lesson-card.empty .lesson-subject { color: #cbd5e1; font-weight: 400; font-style: italic; font-size: 12px; }
 
-        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 120px; }
+        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 100px; }
         .lesson-num { width: 20px; height: 20px; background: #e3f2fd; color: #1976d2; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; flex-shrink: 0; }
         .lesson-subject { font-size: 13px; font-weight: 700; color: #1a2b4a; line-height: 1.3; }
         .lesson-meta { font-size: 11px; color: #7a8aa3; margin-top: 3px; line-height: 1.4; }
@@ -203,24 +206,25 @@
         .lesson-value { color: #334155; }
         .lesson-value.hw { color: #1e40af; }
 
-        .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; align-items: flex-start; }
+        .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 5px; align-items: flex-start; }
         .lesson-grade {
             position: relative;
-            min-width: 52px; height: 52px;
-            padding: 0 5px;
-            border-radius: 12px;
+            min-width: 38px; height: 38px;
+            padding: 0 4px;
+            border-radius: 9px;
             display: inline-flex; align-items: center; justify-content: center;
-            font-weight: 400; font-size: 28px; color: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            font-weight: 400; font-size: 22px; color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             overflow: hidden;
         }
         .lesson-grade.g5, .lesson-grade.g4 { background: #65A30D; }
         .lesson-grade.g3 { background: #FB923C; }
         .lesson-grade.g2, .lesson-grade.g1 { background: #DC2626; }
         .lesson-grade.gn { background: #94A3B8; }
-        .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 24px; box-shadow: none; }
-        .lesson-grade .grade-tile-icon svg { width: 36px; height: 36px; }
-        .lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+        .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 18px; box-shadow: none; }
+        .lesson-grade .grade-tile-icon { right: -5px; bottom: -5px; }
+        .lesson-grade .grade-tile-icon svg { width: 24px; height: 24px; }
+        .lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; gap: 0; padding: 4px; background: #fff; border: 1px solid #CBD5E1; border-radius: 10px; flex-wrap: wrap; }
@@ -237,7 +241,7 @@
         .grades-table tbody tr:last-child td { border-bottom: none; }
         .grades-table tbody tr:hover { background: #fafcff; }
         .grades-table td.subject-cell { font-weight: 700; color: #1e293b; font-size: 14px; }
-        .grades-flex-inner { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: flex-start; }
+        .grades-flex-inner { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; justify-content: flex-start; }
         .grades-table td.avg-cell { text-align: center; font-weight: 700; color: #65A30D; font-size: 15px; }
         .grades-table td.avg-cell.no-grade { color: #94a3b8; font-weight: 400; }
         .grades-table td.qtr-cell { text-align: center; }
@@ -246,24 +250,25 @@
         .mini-grade {
             position: relative;
             display: inline-flex; align-items: center; justify-content: center;
-            min-width: 44px; height: 44px;
-            border-radius: 10px;
-            font-weight: 500; font-size: 22px;
+            min-width: 34px; height: 34px;
+            border-radius: 8px;
+            font-weight: 500; font-size: 18px;
             color: #fff; cursor: pointer;
             transition: transform 0.12s ease;
-            line-height: 1; padding: 0 6px;
+            line-height: 1; padding: 0 5px;
             text-align: center; font-family: inherit;
             overflow: hidden;
             box-shadow: 0 1px 3px rgba(0,0,0,0.12);
         }
-        .mini-grade:hover { transform: scale(1.06); }
+        .mini-grade:hover { transform: scale(1.08); }
         .mini-grade.g5, .mini-grade.g4 { background: #65A30D; }
         .mini-grade.g3 { background: #FB923C; }
         .mini-grade.g2, .mini-grade.g1 { background: #DC2626; }
         .mini-grade.gn { background: #94A3B8; }
         .mini-grade:not([data-subject]) { cursor: default; }
         .mini-grade:not([data-subject]):hover { transform: none; }
-        .mini-grade .grade-tile-icon svg { width: 30px; height: 30px; }
+        .mini-grade .grade-tile-icon { right: -4px; bottom: -4px; }
+        .mini-grade .grade-tile-icon svg { width: 22px; height: 22px; }
         .mini-grade .grade-tile-value { position: relative; z-index: 1; }
 
         .qtr-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 28px; padding: 0 10px; border-radius: 6px; font-weight: 500; font-size: 15px; color: #fff; line-height: 1; }
@@ -460,15 +465,22 @@
     };
 
     // ============================================================
-    // ИКОНКИ ПРОФИЛЕЙ. Ключи совпадают со значениями поля direction
-    // из админки: "Точные науки", "Гуманитарные науки",
-    // "Естественные науки", "Спорт и искусство".
+    // ИКОНКИ ПРОФИЛЕЙ.
+    // Ключи совпадают со значениями поля direction из админки.
     // ============================================================
     const PROFILE_ICONS = {
-        'Точные науки': '<svg viewBox="0 0 24 24"><path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-6 2h2v2h-2V4zm0 4h2v2h-2V8zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2zM9 4h2v2H9V4zm0 4h2v2H9V8zm0 4h2v2H9v-2zm0 4h2v2H9v-2zm6 2h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V8h2v2zm0-4h-2V4h2v2z"/></svg>',
+        // Точные науки — реалистичный калькулятор (корпус, экран, 12 кнопок)
+        'Точные науки':
+            '<svg viewBox="0 0 24 24">' +
+                '<path d="M17 2H7c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1.2 1.8v3.4H8.2V3.8h7.6zM8.2 8.4h7.6v1.2H8.2V8.4zm0 2.4h7.6v1.2H8.2v-1.2zm0 2.4h7.6v1.2H8.2v-1.2zm0 2.4h7.6v2.6H8.2v-2.6z" opacity=".15"/>' +
+                '<path d="M7 3h10a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm.6 1.2v3.6h8.8V4.2H7.6zm1 1h1.8v1.6H8.6V5.2zm2.4 0h1.8v1.6H11V5.2zm2.4 0h1.8v1.6h-1.8V5.2zm-4.8 4.4h8.8v1H8.6v-1zm0 2.4h1.8v1H8.6v-1zm2.4 0h1.8v1H11v-1zm2.4 0h1.8v1h-1.8v-1zm2.4 0h1.6v1h-1.6v-1zm-7.2 2.4h1.8v1H8.6v-1zm2.4 0h1.8v1H11v-1zm2.4 0h1.8v1h-1.8v-1zm2.4 0h1.6v1h-1.6v-1zm-7.2 2.4h1.8v1H8.6v-1zm2.4 0h1.8v1H11v-1zm2.4 0h1.8v1h-1.8v-1zm2.4 0h1.6v1h-1.6v-1z"/>' +
+            '</svg>',
+        // Гуманитарные науки — книга
         'Гуманитарные науки': '<svg viewBox="0 0 24 24"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>',
+        // Естественные науки — молекулы (цепочка кружков)
         'Естественные науки': '<svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2.5"/><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M6.8 7.6l3.7 3.1-1.3 1.6-3.7-3.1zM15.8 7.6l1.3 1.6-3.7 3.1-1.3-1.6zM6.8 16.4l3.7-3.1-1.3-1.6-3.7 3.1zM15.8 16.4l1.3-1.6-3.7-3.1-1.3 1.6z"/></svg>',
-        'Спорт и искусство': '' // пусто — по просьбе
+        // Спорт и искусство — без иконки
+        'Спорт и искусство': ''
     };
 
     // Возвращает иконку-разметку для кубика, если у предмета есть direction
