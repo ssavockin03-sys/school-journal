@@ -121,6 +121,7 @@
         .today-lesson-hw { font-size: 12px; color: #1e40af; margin-top: 4px; line-height: 1.4; }
         .today-lesson-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
 
+        .today-lesson-grades { display: flex; gap: 4px; align-items: center; }
         .today-lesson-grade { min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 17px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
         .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
         .today-lesson-grade.g3 { background: #FB923C; }
@@ -156,7 +157,7 @@
         .lesson-card.empty:hover { background: transparent; }
         .lesson-card.empty .lesson-subject { color: #cbd5e1; font-weight: 400; font-style: italic; font-size: 12px; }
 
-        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 34px; }
+        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 60px; }
         .lesson-num { width: 20px; height: 20px; background: #e3f2fd; color: #1976d2; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; flex-shrink: 0; }
         .lesson-subject { font-size: 13px; font-weight: 700; color: #1a2b4a; line-height: 1.3; }
         .lesson-meta { font-size: 11px; color: #7a8aa3; margin-top: 3px; line-height: 1.4; }
@@ -165,7 +166,8 @@
         .lesson-value { color: #334155; }
         .lesson-value.hw { color: #1e40af; }
 
-        .lesson-grade { position: absolute; top: 8px; right: 8px; min-width: 26px; height: 26px; padding: 0 7px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 14px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); line-height: 1; }
+        .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; align-items: flex-start; }
+        .lesson-grade { min-width: 26px; height: 26px; padding: 0 7px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; font-size: 14px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); line-height: 1; }
         .lesson-grade.g5, .lesson-grade.g4 { background: #65A30D; }
         .lesson-grade.g3 { background: #FB923C; }
         .lesson-grade.g2, .lesson-grade.g1 { background: #DC2626; }
@@ -430,9 +432,29 @@
         return { date: isNaN(d.getTime()) ? null : d, dateRu: isNaN(d.getTime()) ? datePart : formatDateRu(d), lesson: lessonPart };
     }
 
-    // ===== ИСПРАВЛЕНО: вытаскиваем первую цифру из любой строки =====
-    // "5", "5+", "5-", "4-", "2/3-", "Н5" → g5/g3/g2
-    // "Н", "Б", "П", пусто → gn (серый)
+    // ============================================================
+    // РАЗБОР ЯЧЕЙКИ.
+    // На вход: "5", "5+", "5-", "Н", "Н5", "О3", "Б4-", "СП5", "5/4" и т.п.
+    // На выход: { grade: "5"|"4"|"3"|"2"|"1"|"", presence: "Н"|"О"|"Б"|"СП"|"П"|"" }
+    // presence отделяется, если он стоит В НАЧАЛЕ.
+    // ============================================================
+    function parseCell(raw) {
+        if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' };
+        const s = String(raw).toUpperCase().trim();
+        // Сначала пробуем отделить presence (Н/О/Б/СП/П) в начале строки
+        const m = s.match(/^(СП|Н|О|Б|П)/);
+        let presence = '';
+        let grade = s;
+        if (m) {
+            presence = m[0];
+            grade = s.slice(presence.length).trim();
+        }
+        return { grade, presence };
+    }
+
+    // ============================================================
+    // ЦВЕТ по первой цифре 1–5 из строки. "+", "-", "/" игнорируются.
+    // ============================================================
     function gradeClass(grade) {
         const s = String(grade == null ? '' : grade);
         for (let i = 0; i < s.length; i++) {
@@ -446,8 +468,6 @@
         }
         return 'gn';
     }
-
-    // Достаёт первую цифру 1–5 из строки (или null)
     function firstDigit(v) {
         const s = String(v == null ? '' : v);
         for (let i = 0; i < s.length; i++) {
@@ -458,12 +478,13 @@
     }
     function isNumericGrade(v) { return firstDigit(v) !== null; }
 
-    function calcAverage(gradesMap) {
+    // Средний балл считаем ТОЛЬКО по оценкам, presence игнорируем
+    function calcAverage(map) {
         let sum = 0, cnt = 0;
-        Object.values(gradesMap || {}).forEach(raw => {
-            const val = String(raw || '').toUpperCase().trim();
-            if (!val) return;
-            const cleaned = val.replace(/[НОБП]|СП/g, '').trim();
+        Object.values(map || {}).forEach(raw => {
+            if (raw === null || raw === undefined) return;
+            const parsed = parseCell(raw);
+            const cleaned = String(parsed.grade || '').replace(/[НОБП]|СП/g, '').trim();
             if (!cleaned) return;
             if (cleaned.includes('/')) {
                 cleaned.split('/').forEach(p => {
@@ -493,7 +514,6 @@
         monday.setDate(today.getDate() + diff);
         return monday;
     }
-    function showToast(message) { console.log('[toast]', message); }
 
     function initTopTabs() {
         document.querySelectorAll('.d-nav-item').forEach(btn => {
@@ -657,6 +677,12 @@
         });
     }
 
+    // ============================================================
+    // СБОР ДАННЫХ. На каждую ячейку может быть ДВЕ записи:
+    //   - оценка (kind: 'grade')
+    //   - присутствие (kind: 'presence')
+    // Они рендерятся как ОТДЕЛЬНЫЕ плитки.
+    // ============================================================
     function collectAllStudentGrades() {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
@@ -667,7 +693,25 @@
                 if (val === '' || val === null || val === undefined) return;
                 const parsed = parseKey(key);
                 const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
-                result.push({ subject: subjObj.name, subjectId: subjObj.id, grade: String(val), key, date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson, type, journalId: journal.id });
+                const cell = parseCell(val);
+                const base = {
+                    subject: subjObj.name,
+                    subjectId: subjObj.id,
+                    key,
+                    date: parsed.date,
+                    dateRu: parsed.dateRu,
+                    lesson: parsed.lesson,
+                    type,
+                    journalId: journal.id
+                };
+                // Оценка (если есть цифра)
+                if (cell.grade) {
+                    result.push({ ...base, kind: 'grade', value: cell.grade, grade: cell.grade, presence: '' });
+                }
+                // Присутствие (если есть буква)
+                if (cell.presence) {
+                    result.push({ ...base, kind: 'presence', value: cell.presence, grade: '', presence: cell.presence });
+                }
             });
         });
         return result;
@@ -677,9 +721,15 @@
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
         const all = collectAllStudentGrades();
-        // Берём только те, у которых ПЕРВАЯ цифра = 2
-        const fails = all.filter(g => firstDigit(g.grade) === 2).sort((a, b) => (b.date || 0) - (a.date || 0));
-        const absences = all.filter(g => g.grade.trim().toUpperCase() === 'Н').sort((a, b) => (b.date || 0) - (a.date || 0));
+        // Двойки — только записи kind='grade' с первой цифрой 2
+        const fails = all
+            .filter(g => g.kind === 'grade' && firstDigit(g.grade) === 2)
+            .sort((a, b) => (b.date || 0) - (a.date || 0));
+        // Прогулы — только kind='presence' со значением 'Н'
+        const absences = all
+            .filter(g => g.kind === 'presence' && String(g.presence).toUpperCase() === 'Н')
+            .sort((a, b) => (b.date || 0) - (a.date || 0));
+
         if (fails.length > 0) {
             const box = document.createElement('div');
             box.className = 'warn-box fails';
@@ -709,20 +759,24 @@
         const dowKey = JS_DAY_MAP[dow] || 'sun';
         const dayName = DAYS_FULL[dowKey] || 'Воскресенье';
         const all = collectAllStudentGrades();
-        const grades = all.filter(g => g.date && isoDate(g.date) === isoDate(date));
+        const dayRecords = all.filter(g => g.date && isoDate(g.date) === isoDate(date));
 
         let gradesHtml = '';
-        if (grades.length > 0) {
+        if (dayRecords.length > 0) {
             gradesHtml = `
                 <div class="grades-strip-label">${formatDateHuman(date).toUpperCase()}</div>
                 <div class="grades-strip">
-                    ${grades.map(g => {
-                        const cls = gradeClass(g.grade);
-                        const isNum = isNumericGrade(g.grade);
+                    ${dayRecords.map(g => {
+                        const isGrade = g.kind === 'grade';
+                        const cls = gradeClass(isGrade ? g.grade : g.presence);
+                        const value = isGrade ? g.grade : g.presence;
+                        const isNum = isGrade && isNumericGrade(g.grade);
+                        // Подпись типа: для присутствия — "присутствие", для оценки — тип урока
+                        const typeLabel = isGrade ? g.type : 'присутствие';
                         return `<div class="grade-tile ${cls}" ${isNum ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
-                            <div class="grade-tile-box">${escapeHtml(g.grade)}</div>
+                            <div class="grade-tile-box">${escapeHtml(value)}</div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
-                            <div class="grade-tile-type">${escapeHtml(g.type)}</div>
+                            <div class="grade-tile-type">${escapeHtml(typeLabel)}</div>
                         </div>`;
                     }).join('')}
                 </div>
@@ -738,9 +792,17 @@
             lessonsHtml = `<div class="day-empty"><div class="day-empty-emoji">${isWeekend ? '☕' : '📅'}</div><div class="day-empty-title">${isWeekend ? 'Выходной день' : 'Нет занятий'}</div><div class="day-empty-text">${isWeekend ? 'Отдыхай и набирайся сил!' : 'На этот день уроков нет'}</div></div>`;
         } else {
             lessonsHtml = `<div class="today-lessons">${dayLessons.map(l => {
-                let gradeHtml = l.grade
-                    ? `<div class="today-lesson-grade ${gradeClass(l.grade)}">${escapeHtml(l.grade)}</div>`
-                    : `<div class="today-lesson-grade no-grade">—</div>`;
+                // Собираем плашки: сначала присутствие (если есть), потом оценка
+                let badges = '';
+                if (l.presence) {
+                    badges += `<div class="today-lesson-grade ${gradeClass(l.presence)}">${escapeHtml(l.presence)}</div>`;
+                }
+                if (l.grade) {
+                    badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}">${escapeHtml(l.grade)}</div>`;
+                }
+                if (!l.presence && !l.grade) {
+                    badges = `<div class="today-lesson-grade no-grade">—</div>`;
+                }
                 const metaParts = [];
                 if (l.teacherName) metaParts.push(l.teacherName);
                 if (l.roomName) metaParts.push('каб. ' + l.roomName);
@@ -750,7 +812,7 @@
                 return `<div class="today-lesson" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}">
                     <div class="today-lesson-num">${l.num}</div>
                     <div class="today-lesson-info"><div class="today-lesson-subject">${escapeHtml(l.subject)}</div>${metaHtml}${topicHtml}${hwHtml}</div>
-                    ${gradeHtml}
+                    <div class="today-lesson-grades">${badges}</div>
                 </div>`;
             }).join('')}</div>`;
         }
@@ -802,8 +864,19 @@
                 const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
                 if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
             }
-            const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key);
-            result.push({ num: n, subject: lesson.subject, teacherName, roomName, topic, homework, grade: gradeRec ? gradeRec.grade : null });
+            // Ищем ОТДЕЛЬНО оценку и присутствие
+            const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
+            const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
+            result.push({
+                num: n,
+                subject: lesson.subject,
+                teacherName,
+                roomName,
+                topic,
+                homework,
+                grade: gradeRec ? gradeRec.grade : null,
+                presence: presRec ? presRec.presence : null
+            });
         }
         return result;
     }
@@ -852,9 +925,17 @@
                     const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
                     if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
                 }
-                const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key);
+                const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
+                const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
                 const gradeVal = gradeRec ? gradeRec.grade : null;
-                let gradeHtml = gradeVal ? `<div class="lesson-grade ${gradeClass(gradeVal)}">${escapeHtml(gradeVal)}</div>` : `<div class="lesson-grade no-grade">—</div>`;
+                const presVal  = presRec ? presRec.presence : null;
+
+                // ДВЕ ОТДЕЛЬНЫЕ плашки: сначала присутствие, потом оценка
+                let gradesWrap = '';
+                if (presVal)  gradesWrap += `<div class="lesson-grade ${gradeClass(presVal)}">${escapeHtml(presVal)}</div>`;
+                if (gradeVal) gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}">${escapeHtml(gradeVal)}</div>`;
+                if (!presVal && !gradeVal) gradesWrap = `<div class="lesson-grade no-grade">—</div>`;
+
                 const metaParts = [];
                 if (teacherName) metaParts.push(teacherName);
                 if (roomName) metaParts.push('каб. ' + roomName);
@@ -862,7 +943,7 @@
                 const topicHtml = topic ? `<div class="lesson-section"><span class="lesson-label">Тема:</span><span class="lesson-value">${escapeHtml(topic)}</span></div>` : '';
                 const hwHtml = homework ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value hw">${escapeHtml(homework)}</span></div>` : '';
                 lessonsHtml += `<div class="lesson-card" data-subject="${escapeHtml(lesson.subject)}" data-date="${isoDate(date)}" data-num="${n}">
-                    ${gradeHtml}
+                    <div class="lesson-grades-wrap">${gradesWrap}</div>
                     <div class="lesson-row-head"><div class="lesson-num">${n}</div><div class="lesson-subject">${escapeHtml(lesson.subject)}</div></div>
                     ${metaHtml}${topicHtml}${hwHtml}
                 </div>`;
@@ -898,25 +979,33 @@
         html += '<colgroup><col style="width:34%"><col style="width:46%"><col style="width:10%"><col style="width:10%"></colgroup>';
         html += '<thead><tr><th>Предмет</th><th>Оценки</th><th class="center">Ср. балл</th><th class="center">' + escapeHtml(periodLabel) + '</th></tr></thead><tbody>';
         subjectsFromSchedule.forEach(subjectName => {
-            let gradesArr = all.filter(g => g.subject === subjectName);
-            if (range) gradesArr = gradesArr.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
-            gradesArr.sort((a, b) => a.key.localeCompare(b.key));
+            let records = all.filter(g => g.subject === subjectName);
+            if (range) records = records.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
+            // Сортировка: по дате/номеру урока, чтобы оценки и присутствия шли рядом
+            records.sort((a, b) => a.key.localeCompare(b.key));
+
+            // Карта для среднего балла — только оценки
             const gradesMap = {};
-            gradesArr.forEach(g => { gradesMap[g.key] = g.grade; });
+            records.forEach(r => { if (r.kind === 'grade') gradesMap[r.key] = r.grade; });
             const avg = calcAverage(gradesMap);
+
             const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
             const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
             const qtrGrades = journal && journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
             const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
+
             html += '<tr>';
             html += `<td class="subject-cell">${escapeHtml(subjectName)}</td>`;
-            if (gradesArr.length === 0) html += '<td><span class="no-grades-text">Нет выставленных оценок</span></td>';
-            else {
+            if (records.length === 0) {
+                html += '<td><span class="no-grades-text">Нет выставленных оценок</span></td>';
+            } else {
                 html += '<td><div class="grades-flex-inner">';
-                gradesArr.forEach(g => {
-                    const cls = gradeClass(g.grade);
-                    const isNum = isNumericGrade(g.grade);
-                    html += `<span class="mini-grade ${cls}" ${isNum ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>${escapeHtml(g.grade)}</span>`;
+                records.forEach(r => {
+                    const isGrade = r.kind === 'grade';
+                    const val = isGrade ? r.grade : r.presence;
+                    const cls = gradeClass(val);
+                    const isNum = isGrade && isNumericGrade(r.grade);
+                    html += `<span class="mini-grade ${cls}" ${isNum ? `data-subject="${escapeHtml(r.subject)}" data-key="${escapeHtml(r.key)}"` : ''}>${escapeHtml(val)}</span>`;
                 });
                 html += '</div></td>';
             }
@@ -943,7 +1032,10 @@
         const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
         const parsed = parseKey(lessonKey);
         const lessonData = (journal && journal.lessons && journal.lessons[lessonKey]) || null;
-        const gradeVal = (journal && journal.grades && journal.grades[CURRENT_STUDENT.id] && journal.grades[CURRENT_STUDENT.id][lessonKey]) || null;
+        const rawCell = (journal && journal.grades && journal.grades[CURRENT_STUDENT.id] && journal.grades[CURRENT_STUDENT.id][lessonKey]) || null;
+        const parsedCell = parseCell(rawCell);
+        const gradeVal = parsedCell.grade;
+        const presVal = parsedCell.presence;
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
 
         let teacherName = '—';
@@ -972,6 +1064,7 @@
         detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Аудитория:</div><div class="lesson-detail-value">${escapeHtml(roomName || '—')}</div></div>`;
         detailRows += `<div class="lesson-detail-row"><div class="lesson-detail-label">Тема занятия:</div><div class="lesson-detail-value">${topic ? escapeHtml(topic) : '-'}</div></div>`;
         const gradeDisplay = gradeVal ? escapeHtml(String(gradeVal)) : 'нет';
+        const presDisplay = presVal ? escapeHtml(String(presVal)) : '—';
         const gradeTypeFull = getLessonTypeFullName(lessonType);
         lessonContent.innerHTML = `
             <button class="back-link" onclick="closeLessonPage()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>Назад</button>
@@ -981,7 +1074,7 @@
                     <div class="lesson-section-title" style="margin-top:0;">Детали занятия</div>
                     <div class="lesson-details-block">${detailRows}</div>
                     <div class="lesson-section-title">Присутствие на уроке и комментарий преподавателя</div>
-                    <div class="lesson-empty-block">Данные не введены преподавателем.</div>
+                    <div class="lesson-details-block"><div class="lesson-detail-row"><div class="lesson-detail-label">Отметка:</div><div class="lesson-detail-value">${presDisplay}</div></div></div>
                     <div class="lesson-section-title">Домашние задания</div>
                     <div class="lesson-empty-block">${homework ? escapeHtml(homework) : 'На это занятие не задано ни одного домашнего задания.'}</div>
                     <div class="lesson-section-title">Оценки за работу на занятии</div>
@@ -1024,10 +1117,11 @@
             if (!validIds.has(studentId)) return;
             const val = studentGrades && studentGrades[lessonKey];
             if (val === undefined || val === null) return;
-            const d = firstDigit(val);
-            if (d !== null) {
-                counters[String(d)]++;
-            }
+            // Берём только оценки, presence игнорируем
+            const parsedCell = parseCell(val);
+            if (!parsedCell.grade) return;
+            const d = firstDigit(parsedCell.grade);
+            if (d !== null) counters[String(d)]++;
         });
         const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
         if (totalCount === 0) { list.innerHTML = '<div class="stats-empty">Пока нет оценок за этот урок.</div>'; total.textContent = ''; modal.classList.add('show'); return; }
