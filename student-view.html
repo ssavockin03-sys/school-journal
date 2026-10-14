@@ -78,7 +78,6 @@ body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSy
     display: flex; align-items: center; justify-content: center;
     color: #fff; font-size: 24px; font-weight: 500; line-height: 1;
     margin-bottom: 6px;
-    /* фон ТОЛЬКО инлайн */
 }
 .tile-subject { font-size: 12px; font-weight: 600; color: #1a2b4a; line-height: 1.2; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tile-type { font-size: 10.5px; color: #94a3b8; line-height: 1.2; margin-top: 2px; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -267,41 +266,24 @@ const SUB_TABS = { education: [
 ]};
 
 /* ============================================================
-   ЦВЕТ. Возвращает hex СТРОКОЙ.
-   Логика:
-   - если в строке есть цифра 1–5, берём ПЕРВУЮ из них:
-       5 или 4 → зелёный #65A30D
-       3       → оранжевый #FB923C
-       2 или 1 → красный #DC2626
-   - иначе (буквы Н/Б/П/СП/О, пусто, мусор) → серый #94A3B8
-   Знаки + и - ИГНОРИРУЮТСЯ, важна только цифра.
+   ЦВЕТ. Берём ПЕРВУЮ цифру 1–5 из строки, игнорируя +, -, /,
+   пробелы и любые другие символы. "5+", "4-", "5/4", "Н5" → как 5.
    ============================================================ */
 function bgColor(value) {
-    // Приводим к строке и убираем всё, что может мешать
-    var raw = String(value == null ? '' : value).trim().toUpperCase();
-    
-    // Ищем первую цифру 1-5 в строке (игнорируем +, -, пробелы)
+    var raw = String(value == null ? '' : value).toUpperCase();
     var m = raw.match(/[1-5]/);
-    
-    // Если цифра не найдена — это буква (Н/Б/П/СП/О) или пусто → серый
     if (!m) return '#94A3B8';
-    
     var d = parseInt(m[0], 10);
-    
-    // 5 или 4 → зелёный
     if (d === 5 || d === 4) return '#65A30D';
-    
-    // 3 → оранжевый
-    if (d === 3) return '#FB923C';
-    
-    // 2 или 1 → красный
+    if (d === 3)            return '#FB923C';
     if (d === 2 || d === 1) return '#DC2626';
-    
-    // На всякий случай
     return '#94A3B8';
 }
-/* Класс для мини-плитки — уже не используется, но оставлен для совместимости. */
-function gradeClass(v) { return ''; }
+
+/* Проверка: есть ли в значении цифра 1–5 (для кликабельности). */
+function isNumericGrade(v) {
+    return /[1-5]/.test(String(v == null ? '' : v));
+}
 
 /* Разбор значения ячейки журнала: "5", "5-", "5+", "Н", "Н5", "Н5-", "5/4". */
 function parseCell(raw) {
@@ -550,7 +532,7 @@ function renderToday() {
         tilesHtml = `<div class="day-section-label">${formatDateHuman(date).toUpperCase()}</div><div class="tiles">` +
             dayRecs.map(x => {
                 const color = bgColor(x.grade);
-                const clickable = !x.isPresence && /[1-5]/.test(x.grade);
+                const clickable = !x.isPresence && isNumericGrade(x.grade);
                 return `<div class="tile${clickable ? ' square' : ''}" ${clickable ? `data-subject="${escapeHtml(x.subject)}" data-key="${escapeHtml(x.key)}"` : ''}>
                     <div class="tile-box" style="background:${color};">${escapeHtml(x.grade)}</div>
                     <div class="tile-subject">${escapeHtml(x.subject)}</div>
@@ -742,7 +724,7 @@ function renderGradesTable() {
             html += '<td><div class="grades-flex-inner">';
             arr.forEach(x => {
                 const color = bgColor(x.grade);
-                const isNum = !x.isPresence && /[1-5]/.test(x.grade);
+                const isNum = !x.isPresence && isNumericGrade(x.grade);
                 html += `<span class="mini-grade" style="background:${color};" ${isNum ? `data-subject="${escapeHtml(x.subject)}" data-key="${escapeHtml(x.key)}"` : ''}>${escapeHtml(x.grade)}</span>`;
             });
             html += '</div></td>';
