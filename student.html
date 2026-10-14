@@ -106,7 +106,7 @@
         .grades-hint { font-size: 12px; color: #b8720a; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
         .grades-hint::before { content: '👉'; }
 
-        /* Иконка профиля внутри плитки + цифра поверх */
+        /* Иконка профиля внутри плитки */
         .grade-tile-icon {
             position: absolute;
             inset: 0;
@@ -460,50 +460,22 @@
     };
 
     // ============================================================
-    // ИКОНКИ ПРОФИЛЕЙ (SVG). Полупрозрачный белый фон внутри кубика.
+    // ИКОНКИ ПРОФИЛЕЙ. Ключи совпадают со значениями поля direction
+    // из админки: "Точные науки", "Гуманитарные науки",
+    // "Естественные науки", "Спорт и искусство".
     // ============================================================
     const PROFILE_ICONS = {
-        // Точные науки — калькулятор
-        'Точные': '<svg viewBox="0 0 24 24"><path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-6 2h2v2h-2V4zm0 4h2v2h-2V8zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2zM9 4h2v2H9V4zm0 4h2v2H9V8zm0 4h2v2H9v-2zm0 4h2v2H9v-2zm6 2h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V8h2v2zm0-4h-2V4h2v2z"/></svg>',
-        // Гуманитарные — книга
-        'Гуманитарные': '<svg viewBox="0 0 24 24"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>',
-        // Наука — молекулы (цепочка кружков)
-        'Наука': '<svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2.5"/><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M6.8 7.6l3.7 3.1-1.3 1.6-3.7-3.1zM15.8 7.6l1.3 1.6-3.7 3.1-1.3-1.6zM6.8 16.4l3.7-3.1-1.3-1.6-3.7 3.1zM15.8 16.4l1.3-1.6-3.7-3.1-1.3 1.6z"/></svg>',
-        // Спорт и искусство — без иконки
-        'Спорт и искусство': ''
+        'Точные науки': '<svg viewBox="0 0 24 24"><path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-6 2h2v2h-2V4zm0 4h2v2h-2V8zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2zM9 4h2v2H9V4zm0 4h2v2H9V8zm0 4h2v2H9v-2zm0 4h2v2H9v-2zm6 2h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V8h2v2zm0-4h-2V4h2v2z"/></svg>',
+        'Гуманитарные науки': '<svg viewBox="0 0 24 24"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>',
+        'Естественные науки': '<svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2.5"/><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M6.8 7.6l3.7 3.1-1.3 1.6-3.7-3.1zM15.8 7.6l1.3 1.6-3.7 3.1-1.3-1.6zM6.8 16.4l3.7-3.1-1.3-1.6-3.7 3.1zM15.8 16.4l1.3-1.6-3.7-3.1-1.3 1.6z"/></svg>',
+        'Спорт и искусство': '' // пусто — по просьбе
     };
 
-    // Нормализация названия профиля. Возвращает ключ из PROFILE_ICONS или ''.
-    function normalizeProfile(raw) {
-        if (!raw) return '';
-        const s = String(raw).trim();
-        if (PROFILE_ICONS[s] !== undefined) return s;
-        const low = s.toLowerCase();
-        if (low.includes('точн') || low.includes('матем') || low.includes('физмат') || low.includes('информ')) return 'Точные';
-        if (low.includes('гуман') || low.includes('филолог') || low.includes('лингв')) return 'Гуманитарные';
-        if (low.includes('наук') || low.includes('естеств') || low.includes('хим') || low.includes('биол')) return 'Наука';
-        if (low.includes('спорт') || low.includes('искусств') || low.includes('физкульт') || low.includes('творч')) return 'Спорт и искусство';
-        return '';
-    }
-
-    // Ищет профиль в разных возможных полях предмета
-    function getSubjectProfile(subjectObj) {
-        if (!subjectObj) return '';
-        const raw = subjectObj.profile
-                 || subjectObj.profile_name
-                 || subjectObj.profileLabel
-                 || subjectObj.category
-                 || subjectObj.category_name
-                 || subjectObj.profileId
-                 || '';
-        return normalizeProfile(raw);
-    }
-
-    // Возвращает HTML иконки для кубика (или '', если профиль не задан)
+    // Возвращает иконку-разметку для кубика, если у предмета есть direction
     function profileIconHtml(subjectObj) {
-        const p = getSubjectProfile(subjectObj);
-        if (!p) return '';
-        const svg = PROFILE_ICONS[p] || '';
+        if (!subjectObj) return '';
+        const dir = subjectObj.direction || subjectObj.profile || subjectObj.category || '';
+        const svg = PROFILE_ICONS[dir];
         if (!svg) return '';
         return `<span class="grade-tile-icon">${svg}</span>`;
     }
