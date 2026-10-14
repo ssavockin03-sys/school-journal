@@ -83,13 +83,14 @@
         /* ===== ПЛИТКИ ОЦЕНОК В «СЕГОДНЯ» ===== */
         .grades-strip-label { font-size: 12px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
         .grades-strip { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
-        .grade-tile { width: 60px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; transition: transform 0.15s ease; }
+        .grade-tile { width: 78px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; transition: transform 0.15s ease; }
         .grade-tile:hover { transform: translateY(-2px); }
         .grade-tile:not([data-subject]) { cursor: default; }
         .grade-tile:not([data-subject]):hover { transform: none; }
+        /* Кубик в «Сегодня» растянут по ширине ~+20% (прямоугольник) */
         .grade-tile-box {
             position: relative;
-            width: 48px; height: 48px;
+            width: 58px; height: 48px;
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             color: #fff; font-size: 28px; font-weight: 400; line-height: 1;
@@ -101,12 +102,13 @@
         .grade-tile.g3 .grade-tile-box { background: #FB923C; }
         .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
         .grade-tile.gn .grade-tile-box { background: #94A3B8; }
-        .grade-tile-subject { font-size: 11.5px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60px; text-align: left; }
-        .grade-tile-type { font-size: 10px; color: #94a3b8; line-height: 1.2; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60px; text-align: left; }
+        .grade-tile-subject { font-size: 11.5px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
+        .grade-tile-type { font-size: 10px; color: #94a3b8; line-height: 1.2; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
         .grades-hint { font-size: 12px; color: #b8720a; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
         .grades-hint::before { content: '👉'; }
 
-        /* Иконка профиля — правый нижний угол, обрезается краем */
+        /* Иконка профиля — правый нижний угол, обрезается краем.
+           Используется ТОЛЬКО в плитках «Сегодня». */
         .grade-tile-icon {
             position: absolute;
             right: -4px;
@@ -114,10 +116,10 @@
             display: block;
             pointer-events: none;
             color: #fff;
-            opacity: 0.5;
+            opacity: 0.55;
             line-height: 0;
         }
-        .grade-tile-icon svg { width: 36px; height: 36px; fill: currentColor; display: block; }
+        .grade-tile-icon svg { width: 38px; height: 38px; fill: currentColor; display: block; }
         .grade-tile-value {
             position: relative;
             z-index: 1;
@@ -150,10 +152,11 @@
         .today-lesson-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
 
         .today-lesson-grades { display: flex; gap: 5px; align-items: center; }
+        /* Плашка в списке уроков «Сегодня» тоже растянута по ширине */
         .today-lesson-grade {
             position: relative;
-            min-width: 40px; height: 40px;
-            padding: 0 5px;
+            min-width: 50px; height: 40px;
+            padding: 0 6px;
             border-radius: 9px;
             display: inline-flex; align-items: center; justify-content: center;
             font-weight: 400; font-size: 22px; color: #fff;
@@ -166,7 +169,7 @@
         .today-lesson-grade.gn { background: #94A3B8; }
         .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; }
         .today-lesson-grade .grade-tile-icon { right: -4px; bottom: -4px; }
-        .today-lesson-grade .grade-tile-icon svg { width: 28px; height: 28px; }
+        .today-lesson-grade .grade-tile-icon svg { width: 30px; height: 30px; }
         .today-lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 
         .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
@@ -222,8 +225,6 @@
         .lesson-grade.g2, .lesson-grade.g1 { background: #DC2626; }
         .lesson-grade.gn { background: #94A3B8; }
         .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-weight: 400; font-size: 16px; box-shadow: none; }
-        .lesson-grade .grade-tile-icon { right: -4px; bottom: -4px; }
-        .lesson-grade .grade-tile-icon svg { width: 26px; height: 26px; }
         .lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 
         .period-tabs-wrapper { margin-bottom: 16px; }
@@ -247,6 +248,7 @@
         .grades-table td.qtr-cell { text-align: center; }
         .no-grades-text { color: #94a3b8; font-style: italic; font-size: 13px; font-weight: 400; }
 
+        /* Мини-плашки в таблице оценок — БЕЗ фоновых иконок */
         .mini-grade {
             position: relative;
             display: inline-flex; align-items: center; justify-content: center;
@@ -267,8 +269,6 @@
         .mini-grade.gn { background: #94A3B8; }
         .mini-grade:not([data-subject]) { cursor: default; }
         .mini-grade:not([data-subject]):hover { transform: none; }
-        .mini-grade .grade-tile-icon { right: -4px; bottom: -4px; }
-        .mini-grade .grade-tile-icon svg { width: 24px; height: 24px; }
         .mini-grade .grade-tile-value { position: relative; z-index: 1; }
 
         .qtr-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 28px; padding: 0 10px; border-radius: 6px; font-weight: 500; font-size: 15px; color: #fff; line-height: 1; }
@@ -465,56 +465,45 @@
     };
 
     // ============================================================
-    // ИКОНКИ ПРОФИЛЕЙ. Ключи = значения поля direction из админки.
+    // ИКОНКИ ПРОФИЛЕЙ.
+    // Используются ТОЛЬКО во вкладке «Сегодня».
+    // Цвет — currentColor (наследуется от цвета кубика),
+    // внутренние светлые элементы — белые с прозрачностью.
     // ============================================================
     const PROFILE_ICONS = {
-        // Точные науки — детализированный калькулятор:
-        // корпус, светлый экран с двумя строками, сетка кнопок с акцентами
+        // Точные науки — калькулятор как на фото:
+        // корпус-обводка, светлый экран, сетка кнопок с + и −
         'Точные науки':
-            '<svg viewBox="0 0 24 24">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">' +
                 // корпус
-                '<rect x="4.5" y="1.5" width="15" height="21" rx="2.2" ry="2.2" fill="currentColor"/>' +
-                // экран (светлый)
-                '<rect x="6.3" y="3.3" width="11.4" height="5" rx="0.7" fill="#fff" fill-opacity="0.85"/>' +
-                // маленькая строка в экране
-                '<rect x="7" y="4" width="4" height="0.9" rx="0.3" fill="#1a2b4a" fill-opacity="0.55"/>' +
-                // большая цифра/строка в экране
-                '<rect x="7" y="5.6" width="6.5" height="1.7" rx="0.3" fill="#1a2b4a" fill-opacity="0.75"/>' +
-                // верхний ряд кнопок (3 шт.)
-                '<rect x="6.3" y="9.6" width="2.6" height="2.6" rx="0.55" fill="#fff" fill-opacity="0.55"/>' +
-                '<rect x="10.1" y="9.6" width="2.6" height="2.6" rx="0.55" fill="#fff" fill-opacity="0.55"/>' +
-                '<rect x="13.9" y="9.6" width="3.8" height="2.6" rx="0.55" fill="#ff8a3d"/>' +
-                // второй ряд
-                '<rect x="6.3" y="13" width="2.6" height="2.6" rx="0.55" fill="#fff" fill-opacity="0.55"/>' +
-                '<rect x="10.1" y="13" width="2.6" height="2.6" rx="0.55" fill="#fff" fill-opacity="0.55"/>' +
-                '<rect x="13.9" y="13" width="3.8" height="2.6" rx="0.55" fill="#ff8a3d"/>' +
-                // третий ряд
-                '<rect x="6.3" y="16.4" width="2.6" height="2.6" rx="0.55" fill="#fff" fill-opacity="0.55"/>' +
-                '<rect x="10.1" y="16.4" width="2.6" height="2.6" rx="0.55" fill="#fff" fill-opacity="0.55"/>' +
-                '<rect x="13.9" y="16.4" width="3.8" height="2.6" rx="0.55" fill="#ff8a3d"/>' +
-                // четвёртый ряд: широкая кнопка 0 и «=»
-                '<rect x="6.3" y="19.8" width="5.6" height="2.6" rx="0.55" fill="#fff" fill-opacity="0.55"/>' +
-                '<rect x="13.9" y="19.8" width="3.8" height="2.6" rx="0.55" fill="#4ea1ff"/>' +
+                '<rect x="5" y="2" width="14" height="20" rx="1.6"/>' +
+                // экран
+                '<rect x="7" y="4" width="10" height="4.4" rx="0.6" fill="#fff" fill-opacity="0.85" stroke="none"/>' +
+                // кнопки: 4 ряда по 2 (левая колонка — цифры, правая — знаки)
+                // ряд 1
+                '<rect x="7"    y="10"   width="4" height="2.6" rx="0.5" fill="currentColor" fill-opacity="0.55" stroke="none"/>' +
+                '<rect x="13"   y="10"   width="4" height="2.6" rx="0.5" fill="currentColor" fill-opacity="0.55" stroke="none"/>' +
+                // ряд 2
+                '<rect x="7"    y="13.4" width="4" height="2.6" rx="0.5" fill="currentColor" fill-opacity="0.55" stroke="none"/>' +
+                '<rect x="13"   y="13.4" width="4" height="2.6" rx="0.5" fill="currentColor" fill-opacity="0.55" stroke="none"/>' +
+                // ряд 3
+                '<rect x="7"    y="16.8" width="4" height="2.6" rx="0.5" fill="currentColor" fill-opacity="0.55" stroke="none"/>' +
+                '<rect x="13"   y="16.8" width="4" height="2.6" rx="0.5" fill="currentColor" fill-opacity="0.55" stroke="none"/>' +
+                // ряд 4 (нижний)
+                '<rect x="7"    y="20.2" width="4" height="1.4" rx="0.4" fill="currentColor" fill-opacity="0.55" stroke="none"/>' +
+                '<rect x="13"   y="20.2" width="4" height="1.4" rx="0.4" fill="currentColor" fill-opacity="0.55" stroke="none"/>' +
+                // знаки + и − на кнопках правого столбца
+                '<path d="M14.5 11.3h1M15 10.8v1" stroke="#fff" stroke-width="0.7" stroke-opacity="0.9"/>' +
+                '<path d="M17.5 11.3h1" stroke="#fff" stroke-width="0.7" stroke-opacity="0.9"/>' +
+                '<path d="M14.5 14.7h1M15 14.2v1" stroke="#fff" stroke-width="0.7" stroke-opacity="0.9"/>' +
+                '<path d="M17.5 14.7h1" stroke="#fff" stroke-width="0.7" stroke-opacity="0.9"/>' +
+                '<path d="M14.5 18.1h1M15 17.6v1" stroke="#fff" stroke-width="0.7" stroke-opacity="0.9"/>' +
+                '<path d="M17.5 18.1h1" stroke="#fff" stroke-width="0.7" stroke-opacity="0.9"/>' +
             '</svg>',
-        // Гуманитарные науки — книга с корешком и закладкой
-        'Гуманитарные науки':
-            '<svg viewBox="0 0 24 24">' +
-                '<path d="M18.5 2H6a2.5 2.5 0 0 0-2.5 2.5v15A2.5 2.5 0 0 0 6 22h12.5a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zM6 4h2v16H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm4 0h4v9l-2-1.4L10 13V4z"/>' +
-                '<rect x="15.5" y="4" width="3" height="1.2" rx="0.3" fill="#fff" fill-opacity="0.7"/>' +
-                '<rect x="15.5" y="6.4" width="3" height="1.2" rx="0.3" fill="#fff" fill-opacity="0.7"/>' +
-                '<rect x="15.5" y="8.8" width="3" height="1.2" rx="0.3" fill="#fff" fill-opacity="0.7"/>' +
-            '</svg>',
-        // Естественные науки — атом: ядро + 2 орбиты
-        'Естественные науки':
-            '<svg viewBox="0 0 24 24">' +
-                '<ellipse cx="12" cy="12" rx="9.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
-                '<ellipse cx="12" cy="12" rx="9.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(60 12 12)"/>' +
-                '<ellipse cx="12" cy="12" rx="9.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(120 12 12)"/>' +
-                '<circle cx="12" cy="12" r="2.4" fill="currentColor"/>' +
-                '<circle cx="21.2" cy="12" r="1.3" fill="currentColor"/>' +
-                '<circle cx="7.5" cy="18.5" r="1.3" fill="currentColor"/>' +
-                '<circle cx="7.5" cy="5.5" r="1.3" fill="currentColor"/>' +
-            '</svg>',
+        // Гуманитарные науки — книга
+        'Гуманитарные науки': '<svg viewBox="0 0 24 24"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>',
+        // Естественные науки — атом
+        'Естественные науки': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="12" rx="9.5" ry="4"/><ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg>',
         'Спорт и искусство': ''
     };
 
@@ -1039,11 +1028,11 @@
                 const gradeVal = gradeRec ? gradeRec.grade : null;
                 const presVal  = presRec ? presRec.presence : null;
 
+                // В дневнике БЕЗ фоновых иконок
                 let gradesWrap = '';
                 if (presVal)  gradesWrap += `<div class="lesson-grade ${gradeClass(presVal)}"><span class="grade-tile-value">${escapeHtml(presVal)}</span></div>`;
                 if (gradeVal) {
-                    const icon = profileIconHtml(subjObj);
-                    gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}">${icon}<span class="grade-tile-value">${escapeHtml(gradeVal)}</span></div>`;
+                    gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}"><span class="grade-tile-value">${escapeHtml(gradeVal)}</span></div>`;
                 }
                 if (!presVal && !gradeVal) gradesWrap = `<div class="lesson-grade no-grade">—</div>`;
 
@@ -1114,8 +1103,8 @@
                     const val = isGrade ? r.grade : r.presence;
                     const cls = gradeClass(val);
                     const isNum = isGrade && isNumericGrade(r.grade);
-                    const icon = isGrade ? profileIconHtml(r.subjectObj) : '';
-                    html += `<span class="mini-grade ${cls}" ${isNum ? `data-subject="${escapeHtml(r.subject)}" data-key="${escapeHtml(r.key)}"` : ''}>${icon}<span class="grade-tile-value">${escapeHtml(val)}</span></span>`;
+                    // В таблице оценок БЕЗ фоновых иконок
+                    html += `<span class="mini-grade ${cls}" ${isNum ? `data-subject="${escapeHtml(r.subject)}" data-key="${escapeHtml(r.key)}"` : ''}><span class="grade-tile-value">${escapeHtml(val)}</span></span>`;
                 });
                 html += '</div></td>';
             }
