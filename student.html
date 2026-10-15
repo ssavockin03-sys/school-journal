@@ -118,7 +118,7 @@
             opacity: 0.6;
             line-height: 0;
         }
-        .grade-tile-icon svg { width: 38px; height: 38px; display: block; }
+        .grade-tile-icon svg { width: 44px; height: 44px; display: block; }
         .grade-tile-value {
             position: relative;
             z-index: 1;
@@ -167,7 +167,7 @@
         .today-lesson-grade.gn { background: #94A3B8; }
         .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; }
         .today-lesson-grade .grade-tile-icon { right: -7px; bottom: -7px; }
-        .today-lesson-grade .grade-tile-icon svg { width: 30px; height: 30px; }
+        .today-lesson-grade .grade-tile-icon svg { width: 34px; height: 34px; }
         .today-lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 
         .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
@@ -462,14 +462,14 @@
     };
 
     // ============================================================
-    // ИКОНКИ ПРОФИЛЕЙ — ТОЛЬКО КОНТУРЫ, БЕЗ ЗАЛИВОК.
-    // Обводка тонкая: stroke-width=1.1.
+    // ИКОНКИ ПРОФИЛЕЙ — ТОЛЬКО ТОНКИЕ КОНТУРЫ, БЕЗ ЗАЛИВОК.
+    // stroke-width = 0.85 (очень тонкие линии).
     // Используются ТОЛЬКО во вкладке «Сегодня».
     // ============================================================
     const PROFILE_ICONS = {
         // Точные науки — калькулятор (тонкий контур)
         'Точные науки':
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round">' +
                 '<rect x="5" y="2" width="14" height="20" rx="1.8"/>' +
                 '<rect x="7" y="4" width="10" height="4.4" rx="0.6"/>' +
                 '<rect x="7"    y="10"   width="4" height="2.6" rx="0.5"/>' +
@@ -486,7 +486,7 @@
             '</svg>',
         // Гуманитарные науки — книга (тонкий контур)
         'Гуманитарные науки':
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round">' +
                 '<path d="M5 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5z"/>' +
                 '<path d="M5 3v18"/>' +
                 '<path d="M9 3v7l2-1.5L13 10V3"/>' +
@@ -494,7 +494,7 @@
             '</svg>',
         // Естественные науки — атом (тонкий контур)
         'Естественные науки':
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round">' +
                 '<ellipse cx="12" cy="12" rx="10" ry="4"/>' +
                 '<ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>' +
                 '<ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>' +
