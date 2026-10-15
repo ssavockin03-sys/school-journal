@@ -44,7 +44,7 @@ body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298);
 const AUTH_EMAIL_DOMAIN = '@school-journal-8f39a.firebaseapp.com';
 const SESSION_KEY = 'sj_session';
 const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
-const ROUTES = { admin: 'admin.html', teacher: 'teacher.html', student: 'student.html' };
+const ROUTES = { admin: 'admin.html', teacher: 'teacher.html', student: 'student.html', parent: 'parent.html' };
 
 const form = document.getElementById('loginForm');
 const loginInput = document.getElementById('loginInput');
@@ -63,6 +63,7 @@ function clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch(e)
 async function determineRole(fb, user) {
     if (!user || !user.email) return null;
     const login = user.email.split('@')[0];
+    // 1. Админ
     try {
         const adminDoc = await fb.getDocs(fb.query(fb.collection(fb.db, 'admins'), fb.where('__name__', '==', user.uid)));
         if (!adminDoc.empty) return 'admin';
@@ -71,13 +72,23 @@ async function determineRole(fb, user) {
         const docRef = await fb.getDocs(fb.query(fb.collection(fb.db, 'admins')));
         if (docRef.docs.some(d => d.id === user.uid)) return 'admin';
     } catch (e) {}
+    // 2. Учитель
     try {
         const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'teachers'), fb.where('login', '==', login)));
         if (!snap.empty) return 'teacher';
     } catch (e) {}
+    // 3. Ученик
     try {
         const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'students'), fb.where('login', '==', login)));
         if (!snap.empty) return 'student';
+    } catch (e) {}
+    // 4. Родитель (people с ролью parent)
+    try {
+        const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'people'), fb.where('login', '==', login)));
+        if (!snap.empty) {
+            const doc = snap.docs[0].data();
+            if (doc.role === 'parent') return 'parent';
+        }
     } catch (e) {}
     return null;
 }
