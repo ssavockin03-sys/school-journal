@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кабинет родителя — Дневник.ру</title>
+    <title>Сегодня — Дневник.ру</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { background: #fff; }
@@ -58,19 +58,28 @@
             color: #fff; font-size: 28px; font-weight: 400; line-height: 1;
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             margin-bottom: 5px;
+            overflow: hidden;
         }
         .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { background: #65A30D; }
         .grade-tile.g3 .grade-tile-box { background: #FB923C; }
         .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
         .grade-tile.gn .grade-tile-box { background: #94A3B8; }
         .grade-tile-subject { font-size: 11.5px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
-        .grade-tile-type { font-size: 10px; color: #94a3b8; line-height: 1.2; margin-top: 1px; }
+        .grade-tile-type { font-size: 10px; color: #94a3b8; line-height: 1.2; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
+
+        .grade-tile-icon {
+            position: absolute;
+            right: -8px; bottom: -8px;
+            display: block; pointer-events: none;
+            color: #fff; opacity: 0.6; line-height: 0;
+        }
+        .grade-tile-icon svg { width: 44px; height: 44px; display: block; }
         .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 
         .today-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin-bottom: 20px; overflow: hidden; }
         .today-card-inner { padding: 20px 22px; }
         .day-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px; border-top: 1px solid #eef2f8; }
-        .day-nav-btn { width: 36px; height: 36px; border-radius: 50%; background: #f0f4f9; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; }
+        .day-nav-btn { width: 36px; height: 36px; border-radius: 50%; background: #f0f4f9; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; flex-shrink: 0; }
         .day-nav-btn:hover { background: #e3f2fd; }
         .day-nav-btn svg { width: 18px; height: 18px; fill: #1976d2; }
         .day-nav-title { font-size: 15px; font-weight: 700; color: #1a2b4a; text-align: center; flex: 1; }
@@ -87,133 +96,31 @@
         .today-lesson-subject { font-size: 14px; font-weight: 700; color: #1a2b4a; }
         .today-lesson-meta { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
         .today-lesson-topic { font-size: 12px; color: #334155; margin-top: 4px; line-height: 1.4; }
-        .today-lesson-topic b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; margin-right: 4px; }
+        .today-lesson-topic b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
         .today-lesson-hw { font-size: 12px; color: #1e40af; margin-top: 4px; line-height: 1.4; }
-        .today-lesson-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; margin-right: 4px; }
-        .today-lesson-grades { display: flex; gap: 5px; }
+        .today-lesson-hw b { color: #7a8aa3; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; margin-right: 4px; }
+
+        .today-lesson-grades { display: flex; gap: 5px; align-items: center; }
         .today-lesson-grade {
-            min-width: 50px; height: 40px; padding: 0 6px;
+            position: relative;
+            min-width: 50px; height: 40px;
+            padding: 0 6px;
             border-radius: 9px;
             display: inline-flex; align-items: center; justify-content: center;
             font-weight: 400; font-size: 22px; color: #fff;
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            overflow: hidden;
         }
         .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
         .today-lesson-grade.g3 { background: #FB923C; }
         .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
         .today-lesson-grade.gn { background: #94A3B8; }
         .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; }
-        .today-lesson-grade .grade-tile-value { position: relative; z-index: 1; }
+        .today-lesson-grade .grade-tile-icon { right: -7px; bottom: -7px; }
+        .today-lesson-grade .grade-tile-icon svg { width: 34px; height: 34px; }
+        .today-lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 
-        .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
-        .week-title { font-size: 20px; font-weight: 700; color: #1a2b4a; }
-        .week-range { font-size: 13px; color: #7a8aa3; margin-top: 2px; }
-        .week-badge { background: #e3f2fd; color: #1976d2; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
-
-        .week-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; }
-        .day-column { flex: 0 0 280px; min-width: 280px; background: #fff; border-radius: 12px; border: 1px solid #eef2f8; overflow: hidden; display: flex; flex-direction: column; }
-        .day-column.today { border: 2px solid #1976d2; }
-        .day-header { background: linear-gradient(135deg, #1976d2, #2196f3); color: #fff; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
-        .day-column.today .day-header { background: linear-gradient(135deg, #0d47a1, #1976d2); }
-        .day-header-left { display: flex; flex-direction: column; gap: 2px; }
-        .day-name { font-size: 14px; font-weight: 700; text-transform: uppercase; }
-        .day-date { font-size: 11px; color: rgba(255,255,255,0.85); }
-        .day-today-badge { background: #fff; color: #1976d2; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 800; }
-        .day-body { padding: 10px 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-
-        .lesson-card { background: #f8fafc; border-radius: 10px; padding: 10px 12px; border-left: 3px solid #90caf9; position: relative; }
-        .lesson-card.empty { background: transparent; border-left: 3px dashed #e2e8f0; padding: 6px 12px; }
-        .lesson-card.empty .lesson-subject { color: #cbd5e1; font-style: italic; font-size: 12px; }
-        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 60px; }
-        .lesson-num { width: 20px; height: 20px; background: #e3f2fd; color: #1976d2; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; }
-        .lesson-subject { font-size: 13px; font-weight: 700; color: #1a2b4a; line-height: 1.3; }
-        .lesson-meta { font-size: 11px; color: #7a8aa3; margin-top: 3px; }
-        .lesson-section { margin-top: 6px; font-size: 11.5px; line-height: 1.45; }
-        .lesson-label { font-weight: 700; color: #7a8aa3; text-transform: uppercase; font-size: 10px; margin-right: 4px; }
-        .lesson-value { color: #334155; }
-        .lesson-value.hw { color: #1e40af; }
-
-        .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 3px; }
-        .lesson-grade {
-            min-width: 24px; height: 24px; padding: 0 4px;
-            border-radius: 6px;
-            display: inline-flex; align-items: center; justify-content: center;
-            font-weight: 500; font-size: 13px; color: #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-        }
-        .lesson-grade.g5, .lesson-grade.g4 { background: #65A30D; }
-        .lesson-grade.g3 { background: #FB923C; }
-        .lesson-grade.g2, .lesson-grade.g1 { background: #DC2626; }
-        .lesson-grade.gn { background: #94A3B8; }
-        .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-size: 11px; box-shadow: none; }
-
-        .empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 12px; border: 1px solid #eef2f8; }
-        .empty-state h3 { font-size: 18px; font-weight: 700; color: #5a6a85; margin-bottom: 8px; }
-        .empty-state p { font-size: 14px; color: #8a9bb5; max-width: 400px; margin: 0 auto; line-height: 1.5; }
-
-        /* ЧАТ */
-        #chatFab {
-            position: fixed;
-            right: 20px; bottom: 20px;
-            z-index: 9998;
-            height: 48px; padding: 0 20px;
-            background: linear-gradient(135deg, #166a94, #1d82b5);
-            color: #fff; border: none; border-radius: 24px;
-            font-size: 15px; font-weight: 600; font-family: inherit;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(22,106,148,0.4);
-            display: inline-flex; align-items: center; gap: 8px;
-        }
-        #chatFab svg { width: 20px; height: 20px; fill: currentColor; }
-        #chatFabBadge {
-            position: absolute; top: -6px; right: -6px;
-            min-width: 22px; height: 22px; padding: 0 6px;
-            background: #dc2626; color: #fff; border-radius: 11px;
-            font-size: 12px; font-weight: 700;
-            display: none; align-items: center; justify-content: center;
-        }
-        #chatFabBadge.show { display: inline-flex; }
-
-        #chatPanel {
-            position: fixed;
-            right: 20px; bottom: 84px;
-            z-index: 9999;
-            width: 340px; height: 520px;
-            background: #fff; border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(26,43,74,0.35);
-            display: none; flex-direction: column; overflow: hidden;
-        }
-        #chatPanel.show { display: flex; }
-        .chat-header { padding: 14px 18px; background: linear-gradient(135deg, #166a94, #1d82b5); color: #fff; display: flex; align-items: center; justify-content: space-between; }
-        .chat-header-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .chat-header-title svg { width: 18px; height: 18px; fill: currentColor; }
-        .chat-header-close { background: rgba(255,255,255,0.15); border: none; width: 30px; height: 30px; border-radius: 8px; color: #fff; cursor: pointer; font-size: 18px; font-family: inherit; }
-        .chat-back-btn { background: rgba(255,255,255,0.15); border: none; width: 30px; height: 30px; border-radius: 8px; color: #fff; cursor: pointer; }
-        .chat-back-btn svg { width: 16px; height: 16px; fill: currentColor; }
-        .chat-contacts { flex: 1; overflow-y: auto; }
-        .chat-contacts-section { padding: 10px 18px 4px; font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; }
-        .chat-contact { display: flex; align-items: center; gap: 12px; padding: 10px 18px; cursor: pointer; }
-        .chat-contact:hover { background: #f0f4f9; }
-        .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e3f2fd; color: #166a94; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
-        .chat-avatar.admin { background: #fce4ec; color: #c2185b; }
-        .chat-avatar.teacher { background: #e8f5e9; color: #22874a; }
-        .chat-avatar.parent { background: #fff4e0; color: #b8720a; }
-        .chat-contact-info { flex: 1; min-width: 0; }
-        .chat-contact-name { font-size: 14px; font-weight: 600; color: #1a2b4a; }
-        .chat-contact-role { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
-        .chat-contact-badge { min-width: 22px; height: 22px; padding: 0 7px; background: #dc2626; color: #fff; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
-        .chat-messages { flex: 1; overflow-y: auto; padding: 16px 14px 8px; background: #f8fafc; display: flex; flex-direction: column; gap: 8px; }
-        .chat-msg { max-width: 78%; padding: 8px 12px; border-radius: 14px; font-size: 14px; line-height: 1.4; word-wrap: break-word; white-space: pre-wrap; }
-        .chat-msg.mine { align-self: flex-end; background: linear-gradient(135deg, #166a94, #1d82b5); color: #fff; border-bottom-right-radius: 4px; }
-        .chat-msg.theirs { align-self: flex-start; background: #fff; color: #1a2b4a; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-        .chat-msg-time { font-size: 10px; opacity: 0.7; margin-top: 4px; display: block; }
-        .chat-empty-msg { text-align: center; color: #94a3b8; font-size: 13px; padding: 30px 20px; }
-        .chat-input-bar { display: flex; gap: 8px; padding: 12px 14px; background: #fff; border-top: 1px solid #eef2f8; }
-        .chat-input-bar input { flex: 1; height: 40px; padding: 0 14px; border: 1.5px solid #e2e8f0; border-radius: 20px; background: #f8fafc; font-size: 14px; font-family: inherit; outline: none; }
-        .chat-send-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #166a94, #1d82b5); border: none; cursor: pointer; color: #fff; }
-        .chat-send-btn svg { width: 18px; height: 18px; fill: currentColor; }
-
-        @media (max-width: 700px) { .app-shell { padding: 0 14px; } .page-title { font-size: 22px; } }
+        @media (max-width: 700px) { .app-shell { padding: 0 14px; } .header-inner { column-gap: 16px; } .page-title { font-size: 22px; } }
     </style>
 </head>
 <body>
@@ -245,7 +152,9 @@
 
     <div class="d-sub-menu-bar">
         <div class="d-sub-menu-inner">
-            <a href="parent.html" class="d-sub-item active">Сегодня</a>
+            <a href="parent.html"        class="d-sub-item active">Сегодня</a>
+            <a href="parent-diary.html"  class="d-sub-item">Дневник</a>
+            <a href="parent-grades.html" class="d-sub-item">Оценки</a>
         </div>
     </div>
 
@@ -260,19 +169,26 @@
     </div>
 </div>
 
-<button id="chatFab" type="button" title="Чаты">
-    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-    Чаты
-    <span id="chatFabBadge"></span>
-</button>
-<div id="chatPanel"></div>
-
 <script src="supabase-config.js"></script>
 <script>
     const DAYS_FULL = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота', sun: 'Воскресенье' };
     const JS_DAY_MAP = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
     const MONTHS_GEN = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
     const DEFAULT_LESSON_TYPE = 'ОТВ';
+
+    const PROFILE_ICONS = {
+        'Точные науки': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="1.8"/><rect x="7" y="4" width="10" height="4.4" rx="0.6"/><rect x="7" y="10" width="4" height="2.6" rx="0.5"/><rect x="13" y="10" width="4" height="2.6" rx="0.5"/><rect x="7" y="13.4" width="4" height="2.6" rx="0.5"/><rect x="13" y="13.4" width="4" height="2.6" rx="0.5"/><rect x="7" y="16.8" width="4" height="2.6" rx="0.5"/><rect x="13" y="16.8" width="4" height="2.6" rx="0.5"/><rect x="7" y="20.2" width="4" height="1.4" rx="0.4"/><rect x="13" y="20.2" width="4" height="1.4" rx="0.4"/><path d="M14.4 11.3h1.2M15 10.7v1.2"/><path d="M14.4 14.7h1.2"/><path d="M14.4 17.6l1.2 1.2M15.6 17.6l-1.2 1.2"/></svg>',
+        'Гуманитарные науки': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5z"/><path d="M5 3v18"/><path d="M9 3v7l2-1.5L13 10V3"/><path d="M15 7h2M15 10h2M15 13h2"/></svg>',
+        'Естественные науки': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="1.4"/></svg>',
+        'Спорт и искусство': ''
+    };
+    function profileIconHtml(subjectObj) {
+        if (!subjectObj) return '';
+        const dir = String(subjectObj.direction || subjectObj.profile || subjectObj.category || '').trim();
+        const svg = PROFILE_ICONS[dir];
+        if (!svg) return '';
+        return '<span class="grade-tile-icon">' + svg + '</span>';
+    }
 
     let CURRENT_PARENT = null;
     let CURRENT_CHILD = null;
@@ -317,7 +233,7 @@
             const parent = people.find(p => p.login === login && p.role === 'parent');
             if (!parent) { window.location.replace('index.html'); return; }
             CURRENT_PARENT = parent;
-            window.CURRENT_STUDENT = parent; // для чата
+            window.CURRENT_STUDENT = parent;
 
             const child = students.find(s => s.full_name === parent.child_name);
             if (!child) {
@@ -338,7 +254,6 @@
                 <div class="info-banner-item"><div class="info-banner-label">Класс</div><div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>`;
 
             renderToday();
-            initChat();
         } catch (err) { console.error(err); }
     })();
 
@@ -405,8 +320,9 @@
                         const cls = gradeClass(isGrade ? g.grade : g.presence);
                         const value = isGrade ? g.grade : g.presence;
                         const typeLabel = isGrade ? g.type : 'присутствие';
+                        const icon = isGrade ? profileIconHtml(g.subjectObj) : '';
                         return `<div class="grade-tile ${cls}">
-                            <div class="grade-tile-box"><span class="grade-tile-value">${escapeHtml(value)}</span></div>
+                            <div class="grade-tile-box">${icon}<span class="grade-tile-value">${escapeHtml(value)}</span></div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
                             <div class="grade-tile-type">${escapeHtml(typeLabel)}</div>
                         </div>`;
@@ -425,7 +341,7 @@
             lessonsHtml = `<div class="today-lessons">${dayLessons.map(l => {
                 let badges = '';
                 if (l.presence) badges += `<div class="today-lesson-grade ${gradeClass(l.presence)}"><span class="grade-tile-value">${escapeHtml(l.presence)}</span></div>`;
-                if (l.grade) badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}"><span class="grade-tile-value">${escapeHtml(l.grade)}</span></div>`;
+                if (l.grade) { const icon = profileIconHtml(l.subjectObj); badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}">${icon}<span class="grade-tile-value">${escapeHtml(l.grade)}</span></div>`; }
                 if (!l.presence && !l.grade) badges = `<div class="today-lesson-grade no-grade">—</div>`;
                 const metaParts = [];
                 if (l.teacherName) metaParts.push(l.teacherName);
@@ -481,7 +397,7 @@
             }
             const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
             const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
-            result.push({ num: n, subject: lesson.subject, teacherName, roomName, topic, homework, grade: gradeRec ? gradeRec.grade : null, presence: presRec ? presRec.presence : null });
+            result.push({ num: n, subject: lesson.subject, subjectObj: subjObj || null, teacherName, roomName, topic, homework, grade: gradeRec ? gradeRec.grade : null, presence: presRec ? presRec.presence : null });
         }
         return result;
     }
@@ -491,235 +407,6 @@
         next.setDate(next.getDate() + delta);
         TODAY_DATE = next;
         renderToday();
-    }
-
-    /* ============================================================
-       ЧАТ (тот же, что у ученика, но getMyId = id родителя)
-       ============================================================ */
-    function initChat() {
-        const contacts = [];
-        let activeContact = null;
-        let lastSeenTs = null;
-        let unreadByContact = {};
-        let panelOpen = false;
-
-        function getMyId() { return CURRENT_PARENT.id; }
-        function getMyName() { return CURRENT_PARENT.full_name; }
-        function chatIdFor(a, b) { return [a, b].sort().join('__'); }
-        function initials(name) { return (name || '').split(' ').map(w => w[0] || '').slice(0, 2).join('').toUpperCase(); }
-        function formatTime(iso) { try { const d = new Date(iso); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); } catch (e) { return ''; } }
-
-        async function loadContacts() {
-            const [students, teachers, workloads, people] = await Promise.all([
-                DB.getAll('students'), DB.getAll('teachers'),
-                DB.getAll('workloads'), DB.getAll('people')
-            ]);
-            const list = [];
-            const seen = new Set();
-            // Учителя класса ребёнка
-            const teacherIds = new Set();
-            workloads.filter(w => w.class_id === CURRENT_CHILD.class_id && w.teacher_id).forEach(w => teacherIds.add(w.teacher_id));
-            teacherIds.forEach(tid => {
-                const t = teachers.find(x => x.id === tid);
-                if (!t || seen.has(t.id)) return;
-                seen.add(t.id);
-                list.push({ id: t.id, full_name: t.full_name, role: 'teacher', roleLabel: 'Учитель' + (t.subject ? ' · ' + t.subject : '') });
-            });
-            // Родители того же класса
-            const classStudentNames = new Set(students.filter(s => s.class_id === CURRENT_CHILD.class_id).map(s => s.full_name));
-            people.filter(p => p.role === 'parent' && p.child_name && classStudentNames.has(p.child_name) && p.id !== CURRENT_PARENT.id).forEach(p => {
-                if (seen.has(p.id)) return;
-                seen.add(p.id);
-                const childShort = (p.child_name || '').split(' ').slice(0, 2).join(' ');
-                list.push({ id: p.id, full_name: p.full_name, role: 'parent', roleLabel: 'Родитель · ' + childShort });
-            });
-            // Админ
-            list.push({ id: '__admin__', full_name: 'Администратор', role: 'admin', roleLabel: 'Администрация' });
-
-            const order = { teacher: 0, student: 1, parent: 2, admin: 3 };
-            list.sort((a, b) => (order[a.role] - order[b.role]) || a.full_name.localeCompare(b.full_name, 'ru'));
-            contacts.length = 0;
-            contacts.push(...list);
-            return contacts;
-        }
-
-        async function refreshUnread() {
-            const myId = getMyId();
-            const all = await DB.getAll('chat_messages');
-            const counts = {};
-            all.forEach(m => {
-                if (!m.chat_id || !m.from_id) return;
-                if (m.from_id === myId) return;
-                const isMine = m.to_id === myId || (m.chat_id && m.chat_id.indexOf(myId) !== -1);
-                if (!isMine) return;
-                const readBy = Array.isArray(m.read_by) ? m.read_by : [];
-                if (readBy.indexOf(myId) !== -1) return;
-                counts[m.from_id] = (counts[m.from_id] || 0) + 1;
-            });
-            unreadByContact = counts;
-            const total = Object.values(counts).reduce((a, b) => a + b, 0);
-            const badge = document.getElementById('chatFabBadge');
-            if (total > 0) { badge.textContent = total > 99 ? '99+' : String(total); badge.classList.add('show'); }
-            else badge.classList.remove('show');
-            if (panelOpen && !activeContact) renderContactsList();
-        }
-
-        async function markRead(contactId) {
-            const myId = getMyId();
-            const cid = chatIdFor(myId, contactId);
-            const all = await DB.getAll('chat_messages');
-            for (const m of all) {
-                if (m.chat_id !== cid) continue;
-                if (m.from_id === myId) continue;
-                const readBy = Array.isArray(m.read_by) ? m.read_by : [];
-                if (readBy.indexOf(myId) !== -1) continue;
-                readBy.push(myId);
-                await DB.update('chat_messages', m.id, { read_by: readBy });
-            }
-        }
-
-        function renderContactsList() {
-            const panel = document.getElementById('chatPanel');
-            panel.innerHTML = `
-                <div class="chat-header">
-                    <div class="chat-header-title"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Чаты</div>
-                    <button class="chat-header-close" type="button" id="chatCloseBtn">×</button>
-                </div>
-                <div class="chat-contacts" id="chatContactsBody"></div>
-            `;
-            document.getElementById('chatCloseBtn').addEventListener('click', closePanel);
-            const body = document.getElementById('chatContactsBody');
-            const groups = { teacher: [], student: [], parent: [], admin: [] };
-            contacts.forEach(c => groups[c.role].push(c));
-            const titles = { teacher: 'Учителя', student: 'Ученики', parent: 'Родители', admin: 'Администрация' };
-            let html = '';
-            ['teacher', 'student', 'parent', 'admin'].forEach(role => {
-                if (!groups[role].length) return;
-                html += `<div class="chat-contacts-section">${titles[role]}</div>`;
-                groups[role].forEach(c => {
-                    const unread = unreadByContact[c.id] || 0;
-                    html += `<div class="chat-contact" data-id="${escapeHtml(c.id)}">
-                        <div class="chat-avatar ${c.role}">${escapeHtml(initials(c.full_name))}</div>
-                        <div class="chat-contact-info">
-                            <div class="chat-contact-name">${escapeHtml(c.full_name)}</div>
-                            <div class="chat-contact-role">${escapeHtml(c.roleLabel)}</div>
-                        </div>
-                        ${unread > 0 ? `<div class="chat-contact-badge">${unread}</div>` : ''}
-                    </div>`;
-                });
-            });
-            body.innerHTML = html;
-            body.querySelectorAll('.chat-contact').forEach(el => {
-                el.addEventListener('click', () => openChat(el.dataset.id));
-            });
-        }
-
-        async function openChat(contactId) {
-            const contact = contacts.find(c => c.id === contactId);
-            if (!contact) return;
-            activeContact = contact;
-            await markRead(contactId);
-            await renderMessages();
-            await refreshUnread();
-        }
-
-        async function renderMessages() {
-            const panel = document.getElementById('chatPanel');
-            const myId = getMyId();
-            const cid = chatIdFor(myId, activeContact.id);
-            panel.innerHTML = `
-                <div class="chat-header">
-                    <button class="chat-back-btn" type="button" id="chatBackBtn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-                    <div class="chat-header-title" style="flex:1;">${escapeHtml(activeContact.full_name)}</div>
-                    <button class="chat-header-close" type="button" id="chatCloseBtn2">×</button>
-                </div>
-                <div class="chat-messages" id="chatMessages"></div>
-                <div class="chat-input-bar">
-                    <input type="text" id="chatInput" placeholder="Написать сообщение..." maxlength="1000">
-                    <button class="chat-send-btn" type="button" id="chatSendBtn"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
-                </div>
-            `;
-            document.getElementById('chatBackBtn').addEventListener('click', closeChat);
-            document.getElementById('chatCloseBtn2').addEventListener('click', closePanel);
-            const input = document.getElementById('chatInput');
-            const sendBtn = document.getElementById('chatSendBtn');
-            input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
-            sendBtn.addEventListener('click', sendMessage);
-            const all = await DB.getAll('chat_messages');
-            const msgs = all.filter(m => m.chat_id === cid).sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
-            const box = document.getElementById('chatMessages');
-            if (msgs.length === 0) { box.innerHTML = '<div class="chat-empty-msg">Нет сообщений.</div>'; return; }
-            box.innerHTML = msgs.map(m => {
-                const mine = m.from_id === myId;
-                return `<div class="chat-msg ${mine ? 'mine' : 'theirs'}">${escapeHtml(m.text)}<span class="chat-msg-time">${escapeHtml(formatTime(m.created_at))}</span></div>`;
-            }).join('');
-            box.scrollTop = box.scrollHeight;
-            lastSeenTs = msgs.length ? msgs[msgs.length - 1].created_at : null;
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if (!text) return;
-            const myId = getMyId();
-            const cid = chatIdFor(myId, activeContact.id);
-            input.value = '';
-            const msg = {
-                id: 'msg_' + Date.now() + '_' + Math.floor(Math.random() * 100000),
-                chat_id: cid,
-                from_id: myId,
-                from_name: getMyName(),
-                from_role: 'parent',
-                to_id: activeContact.id,
-                text: text,
-                created_at: new Date().toISOString(),
-                read_by: [myId]
-            };
-            await DB.insert('chat_messages', msg);
-            await renderMessages();
-        }
-
-        function openPanel() {
-            panelOpen = true;
-            activeContact = null;
-            document.getElementById('chatPanel').classList.add('show');
-            renderContactsList();
-            refreshUnread();
-        }
-        function closePanel() {
-            panelOpen = false;
-            activeContact = null;
-            document.getElementById('chatPanel').classList.remove('show');
-        }
-        function closeChat() {
-            activeContact = null;
-            renderContactsList();
-            refreshUnread();
-        }
-
-        async function run() {
-            await loadContacts();
-            await refreshUnread();
-            document.getElementById('chatFab').addEventListener('click', () => {
-                if (panelOpen) closePanel(); else openPanel();
-            });
-            setInterval(async () => {
-                await refreshUnread();
-                if (panelOpen && activeContact) {
-                    const myId = getMyId();
-                    const cid = chatIdFor(myId, activeContact.id);
-                    const all = await DB.getAll('chat_messages');
-                    const msgs = all.filter(m => m.chat_id === cid).sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
-                    const lastTs = msgs.length ? msgs[msgs.length - 1].created_at : null;
-                    if (lastTs && lastTs !== lastSeenTs) {
-                        await markRead(activeContact.id);
-                        await renderMessages();
-                    }
-                }
-            }, 5000);
-        }
-
-        run();
     }
 </script>
 </body>
