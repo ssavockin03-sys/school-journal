@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дневник — Дневник.ру</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { background: #fff; }
+        body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 14px; font-weight: 400; padding: 0; }
+
+        .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
+        .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
+        .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+        .logo { font-size: 22px; color: #007baf; }
+        .logo-bold { font-weight: 700; }
+        .logo-sub { color: #777; font-weight: 400; }
+        .d-user-profile-zone { display: flex; align-items: center; gap: 40px; }
+        .d-user-info { display: flex; flex-direction: column; align-items: flex-start; text-align: left; line-height: 1.3; }
+        .d-user-name { font-size: 14px; font-weight: 700; color: #333; }
+        .d-user-role { font-size: 12px; font-weight: 400; color: #888; }
+        .d-user-actions { display: flex; flex-direction: column; align-items: flex-start; text-align: left; line-height: 1.3; }
+        .d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; font-weight: 400; background: none; border: none; font-family: inherit; padding: 0; }
+        .d-action-link:hover { text-decoration: underline; }
+        .d-action-link.logout { color: #d9534f; }
+
+        .d-top-blue-bar { background: #166a94; }
+        .d-top-blue-inner { padding: 0; display: flex; }
+        .d-nav-item { display: inline-block; padding: 12px 20px; color: #ffffff; text-decoration: none; cursor: pointer; font: 400 14px/1 inherit; border-bottom: 3px solid transparent; }
+        .d-nav-item:hover { background: rgba(255,255,255,0.12); }
+        .d-nav-item.active { background: #0f4f70; border-bottom-color: #ffffff; }
+
+        .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
+        .d-sub-menu-inner { padding: 0; display: flex; flex-wrap: wrap; }
+        .d-sub-item { display: inline-block; padding: 10px 15px; color: #555; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; text-decoration: none; }
+        .d-sub-item:hover { color: #1d82b5; }
+        .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
+
+        .school-bar { padding: 14px 0 0; }
+        .school-name { font-size: 13px; color: #7a8aa3; margin-bottom: 2px; }
+        .page-title { font-size: 28px; font-weight: 400; color: #1976d2; margin-bottom: 12px; }
+
+        .container { padding: 0 0 60px; }
+
+        .info-banner { background: #fff; border-radius: 12px; padding: 14px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin: 16px 0 20px; display: flex; flex-wrap: wrap; gap: 24px; min-height: 46px; }
+        .info-banner-item { display: flex; flex-direction: column; gap: 3px; }
+        .info-banner-label { font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; }
+        .info-banner-value { font-size: 14px; font-weight: 600; color: #1a2b4a; }
+
+        .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .week-title { font-size: 20px; font-weight: 700; color: #1a2b4a; }
+        .week-range { font-size: 13px; color: #7a8aa3; margin-top: 2px; }
+        .week-badge { background: #e3f2fd; color: #1976d2; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
+
+        .week-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; }
+        .day-column { flex: 0 0 280px; min-width: 280px; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; overflow: hidden; display: flex; flex-direction: column; }
+        .day-column.today { border: 2px solid #1976d2; }
+        .day-header { background: linear-gradient(135deg, #1976d2, #2196f3); color: #fff; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+        .day-column.today .day-header { background: linear-gradient(135deg, #0d47a1, #1976d2); }
+        .day-header-left { display: flex; flex-direction: column; gap: 2px; }
+        .day-name { font-size: 14px; font-weight: 700; text-transform: uppercase; }
+        .day-date { font-size: 11px; color: rgba(255,255,255,0.85); }
+        .day-today-badge { background: #fff; color: #1976d2; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 800; }
+        .day-body { padding: 10px 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+        .lesson-card { background: #f8fafc; border-radius: 10px; padding: 10px 12px; border-left: 3px solid #90caf9; position: relative; }
+        .lesson-card.empty { background: transparent; border-left: 3px dashed #e2e8f0; padding: 6px 12px; }
+        .lesson-card.empty .lesson-subject { color: #cbd5e1; font-style: italic; font-size: 12px; }
+        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 60px; }
+        .lesson-num { width: 20px; height: 20px; background: #e3f2fd; color: #1976d2; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; }
+        .lesson-subject { font-size: 13px; font-weight: 700; color: #1a2b4a; line-height: 1.3; }
+        .lesson-meta { font-size: 11px; color: #7a8aa3; margin-top: 3px; }
+        .lesson-section { margin-top: 6px; font-size: 11.5px; line-height: 1.45; }
+        .lesson-label { font-weight: 700; color: #7a8aa3; text-transform: uppercase; font-size: 10px; margin-right: 4px; }
+        .lesson-value { color: #334155; }
+        .lesson-value.hw { color: #1e40af; }
+
+        .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 3px; }
+        .lesson-grade {
+            min-width: 24px; height: 24px; padding: 0 4px;
+            border-radius: 6px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 500; font-size: 13px; color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .lesson-grade.g5, .lesson-grade.g4 { background: #65A30D; }
+        .lesson-grade.g3 { background: #FB923C; }
+        .lesson-grade.g2, .lesson-grade.g1 { background: #DC2626; }
+        .lesson-grade.gn { background: #94A3B8; }
+        .lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; font-size: 11px; box-shadow: none; }
+
+        .empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 12px; border: 1px solid #eef2f8; }
+        .empty-state h3 { font-size: 18px; font-weight: 700; color: #5a6a85; margin-bottom: 8px; }
+        .empty-state p { font-size: 14px; color: #8a9bb5; max-width: 400px; margin: 0 auto; line-height: 1.5; }
+
+        @media (max-width: 700px) { .app-shell { padding: 0 14px; } .header-inner { column-gap: 16px; } .page-title { font-size: 22px; } }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
+            <div class="d-user-profile-zone">
+                <div class="d-user-info">
+                    <span class="d-user-name" id="userName">&nbsp;</span>
+                    <span class="d-user-role">Родитель</span>
+                </div>
+                <div class="d-user-actions">
+                    <button class="d-action-link" onclick="return false">Помощь</button>
+                    <button class="d-action-link logout" onclick="logout()">Выход</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="d-top-blue-bar">
+        <div class="d-top-blue-inner">
+            <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ОБЩЕНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ПРИЛОЖЕНИЯ</a>
+        </div>
+    </div>
+
+    <div class="d-sub-menu-bar">
+        <div class="d-sub-menu-inner">
+            <a href="parent.html"        class="d-sub-item">Сегодня</a>
+            <a href="parent-diary.html"  class="d-sub-item active">Дневник</a>
+            <a href="parent-grades.html" class="d-sub-item">Оценки</a>
+        </div>
+    </div>
+
+    <div class="school-bar">
+        <div class="school-name">ГОУ ЛНР «АСШ № 6»</div>
+        <h1 class="page-title">Дневник</h1>
+    </div>
+
+    <div class="container">
+        <div class="info-banner" id="infoBanner"></div>
+        <div id="diaryContent"></div>
+    </div>
+</div>
+
+<script src="supabase-config.js"></script>
+<script>
+    const DAYS_KEYS   = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const DAYS_RU     = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
+    const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
+    const DEFAULT_LESSON_TYPE = 'ОТВ';
+
+    let CURRENT_PARENT = null;
+    let CURRENT_CHILD = null;
+    let CURRENT_CLASS = null;
+    let ALL_SUBJECTS = [];
+    let ALL_TEACHERS = [];
+    let ALL_JOURNALS = [];
+    let ALL_ROOMS = [];
+    let CURRENT_SCHEDULE = null;
+
+    function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
+    function formatDateRu(d) { return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`; }
+    function formatDateShort(d) { return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`; }
+    function isoDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+    function parseKey(key) { const p = String(key).split('_'); const d = new Date(p[0] + 'T00:00:00'); return { date: isNaN(d.getTime()) ? null : d, lesson: p[1] || '' }; }
+    function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
+    function gradeClass(grade) { const s = String(grade == null ? '' : grade); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) { const d = c - 48; if (d === 5 || d === 4) return 'g5'; if (d === 3) return 'g3'; if (d === 2 || d === 1) return 'g2'; } } return 'gn'; }
+    function getMondayOfCurrentWeek() { const t = new Date(); t.setHours(0,0,0,0); const dow = t.getDay(); const diff = (dow === 0 ? -6 : 1 - dow); const m = new Date(t); m.setDate(t.getDate() + diff); return m; }
+
+    async function logout() {
+        if (!confirm('Выйти из кабинета?')) return;
+        try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
+        try { localStorage.removeItem('sj_session'); } catch (e) {}
+        window.location.replace('index.html');
+    }
+
+    (async function init() {
+        try {
+            const fb = await window._fbReady;
+            const user = await new Promise((resolve) => {
+                const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
+            });
+            if (!user) { window.location.replace('index.html'); return; }
+            const login = user.email.split('@')[0];
+
+            const [people, students, classes] = await Promise.all([
+                DB.getAll('people'),
+                DB.getAll('students'),
+                DB.getAll('classes')
+            ]);
+            const parent = people.find(p => p.login === login && p.role === 'parent');
+            if (!parent) { window.location.replace('index.html'); return; }
+            CURRENT_PARENT = parent;
+
+            const child = students.find(s => s.full_name === parent.child_name);
+            if (!child) { window.location.replace('parent.html'); return; }
+            CURRENT_CHILD = child;
+            CURRENT_CLASS = classes.find(c => c.id === child.class_id) || null;
+
+            document.getElementById('userName').textContent = parent.full_name.split(' ').slice(0,2).join(' ');
+            await loadAll();
+
+            document.getElementById('infoBanner').innerHTML = `
+                <div class="info-banner-item"><div class="info-banner-label">Ребёнок</div><div class="info-banner-value">${escapeHtml(child.full_name)}</div></div>
+                <div class="info-banner-item"><div class="info-banner-label">Класс</div><div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>`;
+
+            renderDiary();
+        } catch (err) { console.error(err); }
+    })();
+
+    async function loadAll() {
+        const [subjects, teachers, journals, schedules, rooms] = await Promise.all([
+            DB.getAll('subjects'), DB.getAll('teachers'),
+            DB.getAll('journals'), DB.getAll('class_schedules'), DB.getAll('rooms')
+        ]);
+        ALL_SUBJECTS = subjects;
+        ALL_TEACHERS = teachers;
+        ALL_ROOMS = rooms;
+        ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_CHILD.class_id);
+        const withData = journals.filter(j => j.grades && j.grades[CURRENT_CHILD.id] && Object.keys(j.grades[CURRENT_CHILD.id]).length > 0);
+        if (withData.length > 0) ALL_JOURNALS = withData;
+        const classSchedules = schedules.filter(s => s.class_id === CURRENT_CHILD.class_id);
+        const mergedGrid = {};
+        classSchedules.forEach(s => {
+            if (!s.grid) return;
+            Object.entries(s.grid).forEach(([day, lessons]) => {
+                if (!mergedGrid[day]) mergedGrid[day] = {};
+                Object.entries(lessons || {}).forEach(([num, lesson]) => {
+                    if (lesson && lesson.subject && !mergedGrid[day][num]) mergedGrid[day][num] = lesson;
+                });
+            });
+        });
+        CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
+    }
+
+    function collectAllChildGrades() {
+        const result = [];
+        ALL_JOURNALS.forEach(journal => {
+            const sg = (journal.grades && journal.grades[CURRENT_CHILD.id]) || {};
+            const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
+            if (!subjObj) return;
+            Object.entries(sg).forEach(([key, val]) => {
+                if (val === '' || val === null || val === undefined) return;
+                const parsed = parseKey(key);
+                const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
+                const cell = parseCell(val);
+                const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, lesson: parsed.lesson, type };
+                if (cell.grade) result.push({ ...base, kind: 'grade', grade: cell.grade, presence: '' });
+                if (cell.presence) result.push({ ...base, kind: 'presence', grade: '', presence: cell.presence });
+            });
+        });
+        return result;
+    }
+
+    function renderDiary() {
+        const container = document.getElementById('diaryContent');
+        const monday = getMondayOfCurrentWeek();
+        const saturday = new Date(monday); saturday.setDate(monday.getDate() + 5);
+        const rangeText = `${formatDateShort(monday)} – ${formatDateRu(saturday)}`;
+        if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
+            container.innerHTML = `<div class="empty-state"><h3>Расписание ещё не составлено</h3><p>Обратитесь к администратору школы.</p></div>`;
+            return;
+        }
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        let html = `<div class="week-title-bar"><div><div class="week-title">Текущая неделя</div><div class="week-range">${rangeText}</div></div><div class="week-badge">Расписание</div></div><div class="week-grid">`;
+        const grid = CURRENT_SCHEDULE.grid;
+        let maxLesson = 7;
+        DAYS_KEYS.forEach(day => {
+            const dayGrid = grid[day] || {};
+            Object.keys(dayGrid).forEach(num => { const n = parseInt(num, 10); if (!isNaN(n) && n > maxLesson) maxLesson = n; });
+        });
+        const all = collectAllChildGrades();
+        DAYS_KEYS.forEach((dayKey, idx) => {
+            const date = new Date(monday); date.setDate(monday.getDate() + idx);
+            const isToday = date.getTime() === today.getTime();
+            const dayGrid = grid[dayKey] || {};
+            let lessonsHtml = '';
+            for (let n = 1; n <= maxLesson; n++) {
+                const lesson = dayGrid[n] || dayGrid[String(n)];
+                if (!lesson || !lesson.subject) { lessonsHtml += `<div class="lesson-card empty"><div class="lesson-subject">Урок ${n} —</div></div>`; continue; }
+                let teacherName = lesson.teacherName || '';
+                if (!teacherName && lesson.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId); if (t) teacherName = t.full_name; }
+                let roomName = lesson.roomName || '';
+                if (!roomName && lesson.roomId) { const r = ALL_ROOMS.find(x => x.id === lesson.roomId); if (r) roomName = r.number; }
+                const key = isoDate(date) + '_' + n;
+                let topic = '', homework = '';
+                const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
+                if (subjObj) {
+                    const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
+                    if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
+                }
+                const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
+                const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
+                const gradeVal = gradeRec ? gradeRec.grade : null;
+                const presVal  = presRec ? presRec.presence : null;
+
+                let gradesWrap = '';
+                if (presVal)  gradesWrap += `<div class="lesson-grade ${gradeClass(presVal)}"><span class="grade-tile-value">${escapeHtml(presVal)}</span></div>`;
+                if (gradeVal) gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}"><span class="grade-tile-value">${escapeHtml(gradeVal)}</span></div>`;
+                if (!presVal && !gradeVal) gradesWrap = `<div class="lesson-grade no-grade">—</div>`;
+
+                const metaParts = [];
+                if (teacherName) metaParts.push(teacherName);
+                if (roomName) metaParts.push('каб. ' + roomName);
+                const metaHtml = metaParts.length ? `<div class="lesson-meta">${escapeHtml(metaParts.join(' · '))}</div>` : '';
+                const topicHtml = topic ? `<div class="lesson-section"><span class="lesson-label">Тема:</span><span class="lesson-value">${escapeHtml(topic)}</span></div>` : '';
+                const hwHtml = homework ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value hw">${escapeHtml(homework)}</span></div>` : '';
+                lessonsHtml += `<div class="lesson-card" data-subject="${escapeHtml(lesson.subject)}" data-date="${isoDate(date)}" data-num="${n}">
+                    <div class="lesson-grades-wrap">${gradesWrap}</div>
+                    <div class="lesson-row-head"><div class="lesson-num">${n}</div><div class="lesson-subject">${escapeHtml(lesson.subject)}</div></div>
+                    ${metaHtml}${topicHtml}${hwHtml}
+                </div>`;
+            }
+            html += `<div class="day-column ${isToday ? 'today' : ''}">
+                <div class="day-header"><div class="day-header-left"><div class="day-name">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div><div class="day-date">${formatDateRu(date)}</div></div>${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}</div>
+                <div class="day-body">${lessonsHtml}</div>
+            </div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+</script>
+</body>
+</html>
