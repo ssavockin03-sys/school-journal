@@ -80,15 +80,7 @@
         .grades-table td.qtr-cell { text-align: center; }
         .no-grades-text { color: #94a3b8; font-style: italic; font-size: 13px; }
 
-        .mini-grade {
-            display: inline-flex; align-items: center; justify-content: center;
-            min-width: 30px; height: 30px;
-            border-radius: 7px;
-            font-weight: 500; font-size: 16px;
-            color: #fff;
-            padding: 0 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-        }
+        .mini-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; border-radius: 7px; font-weight: 500; font-size: 16px; color: #fff; padding: 0 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
         .mini-grade.g5, .mini-grade.g4 { background: #65A30D; }
         .mini-grade.g3 { background: #FB923C; }
         .mini-grade.g2, .mini-grade.g1 { background: #DC2626; }
@@ -105,7 +97,45 @@
         .empty-state h3 { font-size: 18px; font-weight: 700; color: #5a6a85; margin-bottom: 8px; }
         .empty-state p { font-size: 14px; color: #8a9bb5; max-width: 400px; margin: 0 auto; }
 
+        /* ЧАТ */
+        #chatFab { position: fixed; right: 20px; bottom: 20px; z-index: 9998; height: 48px; padding: 0 20px; background: linear-gradient(135deg, #166a94, #1d82b5); color: #fff; border: none; border-radius: 24px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; box-shadow: 0 6px 20px rgba(22,106,148,0.4); display: inline-flex; align-items: center; gap: 8px; }
+        #chatFab svg { width: 20px; height: 20px; fill: currentColor; }
+        #chatFabBadge { position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; padding: 0 6px; background: #dc2626; color: #fff; border-radius: 11px; font-size: 12px; font-weight: 700; display: none; align-items: center; justify-content: center; }
+        #chatFabBadge.show { display: inline-flex; }
+        #chatPanel { position: fixed; right: 20px; bottom: 84px; z-index: 9999; width: 340px; height: 520px; background: #fff; border-radius: 16px; box-shadow: 0 20px 60px rgba(26,43,74,0.35); display: none; flex-direction: column; overflow: hidden; }
+        #chatPanel.show { display: flex; }
+        .chat-header { padding: 14px 18px; background: linear-gradient(135deg, #166a94, #1d82b5); color: #fff; display: flex; align-items: center; justify-content: space-between; }
+        .chat-header-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .chat-header-title svg { width: 18px; height: 18px; fill: currentColor; }
+        .chat-header-close { background: rgba(255,255,255,0.15); border: none; width: 30px; height: 30px; border-radius: 8px; color: #fff; cursor: pointer; font-size: 18px; font-family: inherit; }
+        .chat-back-btn { background: rgba(255,255,255,0.15); border: none; width: 30px; height: 30px; border-radius: 8px; color: #fff; cursor: pointer; }
+        .chat-back-btn svg { width: 16px; height: 16px; fill: currentColor; }
+        .chat-contacts { flex: 1; overflow-y: auto; }
+        .chat-contacts-section { padding: 10px 18px 4px; font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; }
+        .chat-contact { display: flex; align-items: center; gap: 12px; padding: 10px 18px; cursor: pointer; }
+        .chat-contact:hover { background: #f0f4f9; }
+        .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e3f2fd; color: #166a94; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+        .chat-avatar.admin { background: #fce4ec; color: #c2185b; }
+        .chat-avatar.teacher { background: #e8f5e9; color: #22874a; }
+        .chat-avatar.parent { background: #fff4e0; color: #b8720a; }
+        .chat-avatar.student { background: #e3f2fd; color: #166a94; }
+        .chat-contact-info { flex: 1; min-width: 0; }
+        .chat-contact-name { font-size: 14px; font-weight: 600; color: #1a2b4a; }
+        .chat-contact-role { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
+        .chat-contact-badge { min-width: 22px; height: 22px; padding: 0 7px; background: #dc2626; color: #fff; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 16px 14px 8px; background: #f8fafc; display: flex; flex-direction: column; gap: 8px; }
+        .chat-msg { max-width: 78%; padding: 8px 12px; border-radius: 14px; font-size: 14px; line-height: 1.4; word-wrap: break-word; white-space: pre-wrap; }
+        .chat-msg.mine { align-self: flex-end; background: linear-gradient(135deg, #166a94, #1d82b5); color: #fff; border-bottom-right-radius: 4px; }
+        .chat-msg.theirs { align-self: flex-start; background: #fff; color: #1a2b4a; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+        .chat-msg-time { font-size: 10px; opacity: 0.7; margin-top: 4px; display: block; }
+        .chat-empty-msg { text-align: center; color: #94a3b8; font-size: 13px; padding: 30px 20px; }
+        .chat-input-bar { display: flex; gap: 8px; padding: 12px 14px; background: #fff; border-top: 1px solid #eef2f8; }
+        .chat-input-bar input { flex: 1; height: 40px; padding: 0 14px; border: 1.5px solid #e2e8f0; border-radius: 20px; background: #f8fafc; font-size: 14px; font-family: inherit; outline: none; }
+        .chat-send-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #166a94, #1d82b5); border: none; cursor: pointer; color: #fff; }
+        .chat-send-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
         @media (max-width: 700px) { .app-shell { padding: 0 14px; } .header-inner { column-gap: 16px; } .page-title { font-size: 22px; } }
+        @media (max-width: 480px) { #chatPanel { right: 10px; left: 10px; width: auto; bottom: 78px; height: calc(100vh - 100px); } }
     </style>
 </head>
 <body>
@@ -156,6 +186,13 @@
     </div>
 </div>
 
+<button id="chatFab" type="button" title="Чаты">
+    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    Чаты
+    <span id="chatFabBadge"></span>
+</button>
+<div id="chatPanel"></div>
+
 <script src="supabase-config.js"></script>
 <script>
     const PERIOD_LABELS = { 'Четверти': ['I четверть','II четверть','III четверть','IV четверть'], 'Полугодия': ['I полугодие','II полугодие'], 'Триместры': ['I триместр','II триместр','III триместр'], 'Семестры': ['I семестр','II семестр'] };
@@ -199,17 +236,15 @@
         return cnt === 0 ? null : (sum / cnt).toFixed(2).replace(/\.00$/, '');
     }
 
-    // Определяем "пол" ребёнка: 'м' или 'ж'. Берём из gender, а если нет — угадываем по отчеству.
     function childGender() {
         if (!CURRENT_CHILD) return '';
         const g = String(CURRENT_CHILD.gender || '').toLowerCase();
         if (g.startsWith('м') || g === 'male' || g === 'm') return 'м';
         if (g.startsWith('ж') || g === 'female' || g === 'f') return 'ж';
-        // Фолбэк: по отчеству
         const parts = String(CURRENT_CHILD.full_name || '').split(' ');
-        const patronymic = (parts[2] || '').toLowerCase();
-        if (patronymic.endsWith('овна') || patronymic.endsWith('евна') || patronymic.endsWith('ична')) return 'ж';
-        if (patronymic.endsWith('ович') || patronymic.endsWith('евич') || patronymic.endsWith('ич')) return 'м';
+        const p = (parts[2] || '').toLowerCase();
+        if (p.endsWith('овна') || p.endsWith('евна') || p.endsWith('ична')) return 'ж';
+        if (p.endsWith('ович') || p.endsWith('евич') || p.endsWith('ич')) return 'м';
         return '';
     }
     function childShortName() {
@@ -217,11 +252,7 @@
         const parts = String(CURRENT_CHILD.full_name || '').split(' ').filter(Boolean);
         return parts.slice(0, 2).join(' ');
     }
-    function verbForGender(formM, formF) {
-        const g = childGender();
-        if (g === 'ж') return formF;
-        return formM; // по умолчанию — мужской
-    }
+    function verbForGender(formM, formF) { return childGender() === 'ж' ? formF : formM; }
 
     async function logout() {
         if (!confirm('Выйти из кабинета?')) return;
@@ -247,6 +278,7 @@
             const parent = people.find(p => p.login === login && p.role === 'parent');
             if (!parent) { window.location.replace('index.html'); return; }
             CURRENT_PARENT = parent;
+            window.CURRENT_STUDENT = parent;
 
             const child = students.find(s => s.full_name === parent.child_name);
             if (!child) { window.location.replace('parent.html'); return; }
@@ -263,6 +295,7 @@
             renderWarnings();
             renderPeriodTabs();
             renderGradesTable();
+            initChat();
         } catch (err) { console.error(err); }
     })();
 
@@ -365,7 +398,7 @@
             const box = document.createElement('div');
             box.className = 'warn-box fails';
             const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
-            const titleHtml = `<b>${name}</b> ${gotVerb}(а) <b>2</b> по предметам:`;
+            const titleHtml = `<b>${name}</b> ${gotVerb} <b>2</b> по предметам:`;
             const listHtml = `<ul class="warn-list">${fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> (${f.dateRu})</li>`).join('')}</ul>`;
             box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Обычно оценку можно исправить. <b>Обсудите с ребёнком и учителем.</b></div></div>`;
             container.appendChild(box);
@@ -374,7 +407,7 @@
             const box = document.createElement('div');
             box.className = 'warn-box absences';
             const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M11 7h2v6h-2zm0 8h2v2h-2zm1-13C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>';
-            const titleHtml = `<b>${name}</b> ${wasVerb}(а) на уроках:`;
+            const titleHtml = `<b>${name}</b> ${wasVerb} на уроках:`;
             const listHtml = `<ul class="warn-list">${absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> (${a.dateRu})</li>`).join('')}</ul>`;
             box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Если есть уважительная причина, обсудите с учителем.</div></div>`;
             container.appendChild(box);
@@ -432,6 +465,233 @@
         });
         html += '</tbody></table></div>';
         container.innerHTML = html;
+    }
+
+    /* ===== ЧАТ ДЛЯ РОДИТЕЛЯ ===== */
+    function initChat() {
+        const contacts = [];
+        let activeContact = null;
+        let lastSeenTs = null;
+        let unreadByContact = {};
+        let panelOpen = false;
+
+        function getMyId() { return CURRENT_PARENT.id; }
+        function getMyName() { return CURRENT_PARENT.full_name; }
+        function chatIdFor(a, b) { return [a, b].sort().join('__'); }
+        function initials(name) { return (name || '').split(' ').map(w => w[0] || '').slice(0, 2).join('').toUpperCase(); }
+        function fmtTime(iso) { try { const d = new Date(iso); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); } catch (e) { return ''; } }
+        function esc(t) { if (t == null) return ''; const d = document.createElement('div'); d.textContent = String(t); return d.innerHTML; }
+
+        async function loadContacts() {
+            const [students, teachers, workloads, people] = await Promise.all([
+                DB.getAll('students'), DB.getAll('teachers'),
+                DB.getAll('workloads'), DB.getAll('people')
+            ]);
+            const list = [];
+            const seen = new Set();
+            const teacherIds = new Set();
+            workloads.filter(w => w.class_id === CURRENT_CHILD.class_id && w.teacher_id).forEach(w => teacherIds.add(w.teacher_id));
+            teacherIds.forEach(tid => {
+                const t = teachers.find(x => x.id === tid);
+                if (!t || seen.has(t.id)) return;
+                seen.add(t.id);
+                list.push({ id: t.id, full_name: t.full_name, role: 'teacher', roleLabel: 'Учитель' + (t.subject ? ' · ' + t.subject : '') });
+            });
+            list.push({ id: CURRENT_CHILD.id, full_name: CURRENT_CHILD.full_name, role: 'student', roleLabel: 'Мой ребёнок' });
+            seen.add(CURRENT_CHILD.id);
+            const classStudentNames = new Set(students.filter(s => s.class_id === CURRENT_CHILD.class_id).map(s => s.full_name));
+            people.filter(p => p.role === 'parent' && p.child_name && classStudentNames.has(p.child_name) && p.id !== CURRENT_PARENT.id).forEach(p => {
+                if (seen.has(p.id)) return;
+                seen.add(p.id);
+                const childShort = (p.child_name || '').split(' ').slice(0, 2).join(' ');
+                list.push({ id: p.id, full_name: p.full_name, role: 'parent', roleLabel: 'Родитель · ' + childShort });
+            });
+            list.push({ id: '__admin__', full_name: 'Администратор', role: 'admin', roleLabel: 'Администрация' });
+            const order = { teacher: 0, student: 1, parent: 2, admin: 3 };
+            list.sort((a, b) => (order[a.role] - order[b.role]) || a.full_name.localeCompare(b.full_name, 'ru'));
+            contacts.length = 0;
+            contacts.push(...list);
+        }
+
+        async function refreshUnread() {
+            const myId = getMyId();
+            const all = await DB.getAll('chat_messages');
+            const counts = {};
+            all.forEach(m => {
+                if (!m.chat_id || !m.from_id) return;
+                if (m.from_id === myId) return;
+                const isMine = m.to_id === myId || (m.chat_id && m.chat_id.indexOf(myId) !== -1);
+                if (!isMine) return;
+                const readBy = Array.isArray(m.read_by) ? m.read_by : [];
+                if (readBy.indexOf(myId) !== -1) return;
+                counts[m.from_id] = (counts[m.from_id] || 0) + 1;
+            });
+            unreadByContact = counts;
+            const total = Object.values(counts).reduce((a, b) => a + b, 0);
+            const badge = document.getElementById('chatFabBadge');
+            if (badge) {
+                if (total > 0) { badge.textContent = total > 99 ? '99+' : String(total); badge.classList.add('show'); }
+                else badge.classList.remove('show');
+            }
+            if (panelOpen && !activeContact) renderContactsList();
+        }
+
+        async function markRead(contactId) {
+            const myId = getMyId();
+            const cid = chatIdFor(myId, contactId);
+            const all = await DB.getAll('chat_messages');
+            for (const m of all) {
+                if (m.chat_id !== cid) continue;
+                if (m.from_id === myId) continue;
+                const readBy = Array.isArray(m.read_by) ? m.read_by : [];
+                if (readBy.indexOf(myId) !== -1) continue;
+                readBy.push(myId);
+                await DB.update('chat_messages', m.id, { read_by: readBy });
+            }
+        }
+
+        function renderContactsList() {
+            const panel = document.getElementById('chatPanel');
+            panel.innerHTML = `
+                <div class="chat-header">
+                    <div class="chat-header-title"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Чаты</div>
+                    <button class="chat-header-close" type="button" id="chatCloseBtn">×</button>
+                </div>
+                <div class="chat-contacts" id="chatContactsBody"></div>
+            `;
+            document.getElementById('chatCloseBtn').addEventListener('click', closePanel);
+            const body = document.getElementById('chatContactsBody');
+            if (contacts.length === 0) { body.innerHTML = '<div class="chat-empty-msg">Контакты не найдены</div>'; return; }
+            const groups = { teacher: [], student: [], parent: [], admin: [] };
+            contacts.forEach(c => groups[c.role].push(c));
+            const titles = { teacher: 'Учителя класса', student: 'Мой ребёнок', parent: 'Родители класса', admin: 'Администрация' };
+            let html = '';
+            ['teacher', 'student', 'parent', 'admin'].forEach(role => {
+                if (!groups[role].length) return;
+                html += `<div class="chat-contacts-section">${titles[role]}</div>`;
+                groups[role].forEach(c => {
+                    const unread = unreadByContact[c.id] || 0;
+                    html += `<div class="chat-contact" data-id="${esc(c.id)}">
+                        <div class="chat-avatar ${c.role}">${esc(initials(c.full_name))}</div>
+                        <div class="chat-contact-info">
+                            <div class="chat-contact-name">${esc(c.full_name)}</div>
+                            <div class="chat-contact-role">${esc(c.roleLabel)}</div>
+                        </div>
+                        ${unread > 0 ? `<div class="chat-contact-badge">${unread}</div>` : ''}
+                    </div>`;
+                });
+            });
+            body.innerHTML = html;
+            body.querySelectorAll('.chat-contact').forEach(el => {
+                el.addEventListener('click', () => openChat(el.dataset.id));
+            });
+        }
+
+        async function openChat(contactId) {
+            const contact = contacts.find(c => c.id === contactId);
+            if (!contact) return;
+            activeContact = contact;
+            await markRead(contactId);
+            await renderMessages();
+            await refreshUnread();
+        }
+
+        async function renderMessages() {
+            const panel = document.getElementById('chatPanel');
+            const myId = getMyId();
+            const cid = chatIdFor(myId, activeContact.id);
+            panel.innerHTML = `
+                <div class="chat-header">
+                    <button class="chat-back-btn" type="button" id="chatBackBtn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+                    <div class="chat-header-title" style="flex:1;">${esc(activeContact.full_name)}</div>
+                    <button class="chat-header-close" type="button" id="chatCloseBtn2">×</button>
+                </div>
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-bar">
+                    <input type="text" id="chatInput" placeholder="Написать сообщение..." maxlength="1000">
+                    <button class="chat-send-btn" type="button" id="chatSendBtn"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+                </div>
+            `;
+            document.getElementById('chatBackBtn').addEventListener('click', closeChat);
+            document.getElementById('chatCloseBtn2').addEventListener('click', closePanel);
+            const input = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('chatSendBtn');
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+            sendBtn.addEventListener('click', sendMessage);
+            const all = await DB.getAll('chat_messages');
+            const msgs = all.filter(m => m.chat_id === cid).sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
+            const box = document.getElementById('chatMessages');
+            if (msgs.length === 0) { box.innerHTML = '<div class="chat-empty-msg">Нет сообщений.</div>'; return; }
+            box.innerHTML = msgs.map(m => {
+                const mine = m.from_id === myId;
+                return `<div class="chat-msg ${mine ? 'mine' : 'theirs'}">${esc(m.text)}<span class="chat-msg-time">${esc(fmtTime(m.created_at))}</span></div>`;
+            }).join('');
+            box.scrollTop = box.scrollHeight;
+            lastSeenTs = msgs.length ? msgs[msgs.length - 1].created_at : null;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+            const myId = getMyId();
+            const cid = chatIdFor(myId, activeContact.id);
+            input.value = '';
+            const msg = {
+                id: 'msg_' + Date.now() + '_' + Math.floor(Math.random() * 100000),
+                chat_id: cid,
+                from_id: myId,
+                from_name: getMyName(),
+                from_role: 'parent',
+                to_id: activeContact.id,
+                text: text,
+                created_at: new Date().toISOString(),
+                read_by: [myId]
+            };
+            await DB.insert('chat_messages', msg);
+            await renderMessages();
+        }
+
+        function openPanel() {
+            panelOpen = true;
+            activeContact = null;
+            document.getElementById('chatPanel').classList.add('show');
+            renderContactsList();
+            refreshUnread();
+        }
+        function closePanel() {
+            panelOpen = false;
+            activeContact = null;
+            document.getElementById('chatPanel').classList.remove('show');
+        }
+        function closeChat() {
+            activeContact = null;
+            renderContactsList();
+            refreshUnread();
+        }
+
+        async function run() {
+            await loadContacts();
+            await refreshUnread();
+            document.getElementById('chatFab').addEventListener('click', () => {
+                if (panelOpen) closePanel(); else openPanel();
+            });
+            setInterval(async () => {
+                await refreshUnread();
+                if (panelOpen && activeContact) {
+                    const myId = getMyId();
+                    const cid = chatIdFor(myId, activeContact.id);
+                    const all = await DB.getAll('chat_messages');
+                    const msgs = all.filter(m => m.chat_id === cid).sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
+                    const lastTs = msgs.length ? msgs[msgs.length - 1].created_at : null;
+                    if (lastTs && lastTs !== lastSeenTs) {
+                        await markRead(activeContact.id);
+                        await renderMessages();
+                    }
+                }
+            }, 5000);
+        }
+        run();
     }
 </script>
 </body>
