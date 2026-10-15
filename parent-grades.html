@@ -81,30 +81,18 @@
         .no-grades-text { color: #94a3b8; font-style: italic; font-size: 13px; }
 
         .mini-grade {
-            position: relative;
             display: inline-flex; align-items: center; justify-content: center;
             min-width: 30px; height: 30px;
             border-radius: 7px;
             font-weight: 500; font-size: 16px;
-            color: #fff; cursor: pointer;
+            color: #fff;
             padding: 0 4px;
-            overflow: hidden;
             box-shadow: 0 1px 3px rgba(0,0,0,0.12);
         }
         .mini-grade.g5, .mini-grade.g4 { background: #65A30D; }
         .mini-grade.g3 { background: #FB923C; }
         .mini-grade.g2, .mini-grade.g1 { background: #DC2626; }
         .mini-grade.gn { background: #94A3B8; }
-        .mini-grade:not([data-subject]) { cursor: default; }
-        .mini-grade .grade-tile-value { position: relative; z-index: 1; }
-
-        .grade-tile-icon {
-            position: absolute;
-            right: -4px; bottom: -4px;
-            display: block; pointer-events: none;
-            color: #fff; opacity: 0.55; line-height: 0;
-        }
-        .grade-tile-icon svg { width: 22px; height: 22px; display: block; }
 
         .qtr-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 28px; padding: 0 10px; border-radius: 6px; font-weight: 500; font-size: 15px; color: #fff; }
         .qtr-grade.g5, .qtr-grade.g4 { background: #65A30D; }
@@ -112,28 +100,6 @@
         .qtr-grade.g2, .qtr-grade.g1 { background: #DC2626; }
         .qtr-grade.gn { background: #94A3B8; }
         .qtr-grade.no-grade { background: transparent; color: #94a3b8; }
-
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26, 43, 74, 0.5); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
-        .modal-overlay.show { display: flex; }
-        .modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 500px; width: 100%; }
-        .modal-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #eef2f8; }
-        .modal-header-icon { width: 42px; height: 42px; border-radius: 12px; background: #e3f2fd; display: flex; align-items: center; justify-content: center; }
-        .modal-header-icon svg { width: 22px; height: 22px; fill: #1976d2; }
-        .modal-title { font-size: 17px; font-weight: 700; color: #1a2b4a; }
-        .modal-subtitle { font-size: 12px; color: #7a8aa3; margin-top: 2px; }
-        .stats-list { display: flex; flex-direction: column; gap: 10px; }
-        .stat-row { display: flex; align-items: center; gap: 12px; }
-        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; color: #fff; flex-shrink: 0; }
-        .stat-badge.g5, .stat-badge.g4 { background: #65A30D; }
-        .stat-badge.g3 { background: #FB923C; }
-        .stat-badge.g2, .stat-badge.g1 { background: #DC2626; }
-        .stat-bar-wrap { flex: 1; height: 26px; background: #f0f4f9; border-radius: 8px; overflow: hidden; }
-        .stat-bar { height: 100%; border-radius: 8px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: #fff; }
-        .stat-count { width: 60px; text-align: right; font-size: 13px; font-weight: 600; }
-        .stat-count small { color: #7a8aa3; font-weight: 500; }
-        .stats-total { margin-top: 16px; padding-top: 12px; border-top: 1px solid #eef2f8; font-size: 13px; color: #7a8aa3; text-align: center; }
-        .stats-empty { text-align: center; padding: 20px 10px; color: #8a9bb5; }
-        .modal-close { width: 100%; height: 44px; margin-top: 16px; background: #f0f2f5; color: #4a5a72; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
 
         .empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 12px; border: 1px solid #eef2f8; }
         .empty-state h3 { font-size: 18px; font-weight: 700; color: #5a6a85; margin-bottom: 8px; }
@@ -190,39 +156,10 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="statsModal">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-header-icon"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></svg></div>
-            <div>
-                <div class="modal-title" id="statsTitle">Статистика</div>
-                <div class="modal-subtitle" id="statsSubtitle"></div>
-            </div>
-        </div>
-        <div class="stats-list" id="statsList"></div>
-        <div class="stats-total" id="statsTotal"></div>
-        <button class="modal-close" onclick="closeStats()">Закрыть</button>
-    </div>
-</div>
-
 <script src="supabase-config.js"></script>
 <script>
     const PERIOD_LABELS = { 'Четверти': ['I четверть','II четверть','III четверть','IV четверть'], 'Полугодия': ['I полугодие','II полугодие'], 'Триместры': ['I триместр','II триместр','III триместр'], 'Семестры': ['I семестр','II семестр'] };
     const DEFAULT_LESSON_TYPE = 'ОТВ';
-
-    const PROFILE_ICONS = {
-        'Точные науки': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="1.8"/><rect x="7" y="4" width="10" height="4.4" rx="0.6"/><rect x="7" y="10" width="4" height="2.6" rx="0.5"/><rect x="13" y="10" width="4" height="2.6" rx="0.5"/><rect x="7" y="13.4" width="4" height="2.6" rx="0.5"/><rect x="13" y="13.4" width="4" height="2.6" rx="0.5"/><rect x="7" y="16.8" width="4" height="2.6" rx="0.5"/><rect x="13" y="16.8" width="4" height="2.6" rx="0.5"/><rect x="7" y="20.2" width="4" height="1.4" rx="0.4"/><rect x="13" y="20.2" width="4" height="1.4" rx="0.4"/><path d="M14.4 11.3h1.2M15 10.7v1.2"/><path d="M14.4 14.7h1.2"/><path d="M14.4 17.6l1.2 1.2M15.6 17.6l-1.2 1.2"/></svg>',
-        'Гуманитарные науки': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5z"/><path d="M5 3v18"/><path d="M9 3v7l2-1.5L13 10V3"/><path d="M15 7h2M15 10h2M15 13h2"/></svg>',
-        'Естественные науки': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="1.4"/></svg>',
-        'Спорт и искусство': ''
-    };
-    function profileIconHtml(subjectObj) {
-        if (!subjectObj) return '';
-        const dir = String(subjectObj.direction || subjectObj.profile || subjectObj.category || '').trim();
-        const svg = PROFILE_ICONS[dir];
-        if (!svg) return '';
-        return '<span class="grade-tile-icon">' + svg + '</span>';
-    }
 
     let CURRENT_PARENT = null;
     let CURRENT_CHILD = null;
@@ -244,7 +181,6 @@
     function gradeClass(grade) { const s = String(grade == null ? '' : grade); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) { const d = c - 48; if (d === 5 || d === 4) return 'g5'; if (d === 3) return 'g3'; if (d === 2 || d === 1) return 'g2'; } } return 'gn'; }
     function firstDigit(v) { const s = String(v == null ? '' : v); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) return c - 48; } return null; }
     function isNumericGrade(v) { return firstDigit(v) !== null; }
-    function plural(n, forms) { const a = Math.abs(n) % 100; const b = a % 10; if (a > 10 && a < 20) return forms[2]; if (b > 1 && b < 5) return forms[1]; if (b === 1) return forms[0]; return forms[2]; }
 
     function calcAverage(map) {
         let sum = 0, cnt = 0;
@@ -261,6 +197,30 @@
             }
         });
         return cnt === 0 ? null : (sum / cnt).toFixed(2).replace(/\.00$/, '');
+    }
+
+    // Определяем "пол" ребёнка: 'м' или 'ж'. Берём из gender, а если нет — угадываем по отчеству.
+    function childGender() {
+        if (!CURRENT_CHILD) return '';
+        const g = String(CURRENT_CHILD.gender || '').toLowerCase();
+        if (g.startsWith('м') || g === 'male' || g === 'm') return 'м';
+        if (g.startsWith('ж') || g === 'female' || g === 'f') return 'ж';
+        // Фолбэк: по отчеству
+        const parts = String(CURRENT_CHILD.full_name || '').split(' ');
+        const patronymic = (parts[2] || '').toLowerCase();
+        if (patronymic.endsWith('овна') || patronymic.endsWith('евна') || patronymic.endsWith('ична')) return 'ж';
+        if (patronymic.endsWith('ович') || patronymic.endsWith('евич') || patronymic.endsWith('ич')) return 'м';
+        return '';
+    }
+    function childShortName() {
+        if (!CURRENT_CHILD) return '';
+        const parts = String(CURRENT_CHILD.full_name || '').split(' ').filter(Boolean);
+        return parts.slice(0, 2).join(' ');
+    }
+    function verbForGender(formM, formF) {
+        const g = childGender();
+        if (g === 'ж') return formF;
+        return formM; // по умолчанию — мужской
     }
 
     async function logout() {
@@ -397,23 +357,25 @@
         const fails = all.filter(g => g.kind === 'grade' && firstDigit(g.grade) === 2).sort((a, b) => (b.date || 0) - (a.date || 0));
         const absences = all.filter(g => g.kind === 'presence' && String(g.presence).toUpperCase() === 'Н').sort((a, b) => (b.date || 0) - (a.date || 0));
 
+        const name = escapeHtml(childShortName());
+        const gotVerb = verbForGender('получил', 'получила');
+        const wasVerb = verbForGender('не был', 'не была');
+
         if (fails.length > 0) {
             const box = document.createElement('div');
             box.className = 'warn-box fails';
             const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
-            let titleHtml, listHtml = '';
-            if (fails.length === 1) titleHtml = `У вашего ребёнка <b>2</b> по предмету «${escapeHtml(fails[0].subject)}» (${fails[0].dateRu}).`;
-            else { titleHtml = `У вашего ребёнка двойки:`; listHtml = `<ul class="warn-list">${fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${f.dateRu}</li>`).join('')}</ul>`; }
-            box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Обсудите с ребёнком и учителем.</div></div>`;
+            const titleHtml = `<b>${name}</b> ${gotVerb}(а) <b>2</b> по предметам:`;
+            const listHtml = `<ul class="warn-list">${fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> (${f.dateRu})</li>`).join('')}</ul>`;
+            box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Обычно оценку можно исправить. <b>Обсудите с ребёнком и учителем.</b></div></div>`;
             container.appendChild(box);
         }
         if (absences.length > 0) {
             const box = document.createElement('div');
             box.className = 'warn-box absences';
             const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M11 7h2v6h-2zm0 8h2v2h-2zm1-13C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>';
-            let titleHtml, listHtml = '';
-            if (absences.length === 1) titleHtml = `Ребёнка не было на уроке «${escapeHtml(absences[0].subject)}» (${absences[0].dateRu}).`;
-            else { titleHtml = `Ребёнка не было на уроках:`; listHtml = `<ul class="warn-list">${absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> — ${a.dateRu}</li>`).join('')}</ul>`; }
+            const titleHtml = `<b>${name}</b> ${wasVerb}(а) на уроках:`;
+            const listHtml = `<ul class="warn-list">${absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> (${a.dateRu})</li>`).join('')}</ul>`;
             box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Если есть уважительная причина, обсудите с учителем.</div></div>`;
             container.appendChild(box);
         }
@@ -459,9 +421,7 @@
                     const isGrade = r.kind === 'grade';
                     const val = isGrade ? r.grade : r.presence;
                     const cls = gradeClass(val);
-                    const isNum = isGrade && isNumericGrade(r.grade);
-                    const icon = isGrade ? profileIconHtml(r.subjectObj) : '';
-                    html += `<span class="mini-grade ${cls}" ${isNum ? `data-subject="${escapeHtml(r.subject)}" data-key="${escapeHtml(r.key)}"` : ''}>${icon}<span class="grade-tile-value">${escapeHtml(val)}</span></span>`;
+                    html += `<span class="mini-grade ${cls}">${escapeHtml(val)}</span>`;
                 });
                 html += '</div></td>';
             }
@@ -473,10 +433,6 @@
         html += '</tbody></table></div>';
         container.innerHTML = html;
     }
-
-    function closeStats() { document.getElementById('statsModal').classList.remove('show'); }
-    document.getElementById('statsModal').addEventListener('click', (e) => { if (e.target.id === 'statsModal') closeStats(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStats(); });
 </script>
 </body>
 </html>
