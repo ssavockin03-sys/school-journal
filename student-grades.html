@@ -206,302 +206,350 @@
 
 <script src="supabase-config.js"></script>
 <script>
-    const PERIOD_LABELS = {
-        'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
-        'Полугодия': ['I полугодие', 'II полугодие'],
-        'Триместры': ['I триместр', 'II триместр', 'III триместр'],
-        'Семестры':  ['I семестр', 'II семестр']
-    };
-    const DEFAULT_LESSON_TYPE = 'ОТВ';
-
-    let CURRENT_STUDENT = null;
-    let CURRENT_CLASS = null;
-    let ALL_SUBJECTS = [];
-    let ALL_JOURNALS = [];
-    let ALL_STUDENTS = [];
-    let CLASS_STUDENT_IDS = [];
-    let CURRENT_SCHEDULE = null;
-    let PERIODS = [];
-    let PERIOD_SYSTEM = '';
-    let ACTIVE_PERIOD_INDEX = 0;
-
-    function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
-    function formatDateRu(d) { return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`; }
-    function isoDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-    function parseKey(key) { const p = String(key).split('_'); const d = new Date(p[0] + 'T00:00:00'); return { date: isNaN(d.getTime()) ? null : d, dateRu: isNaN(d.getTime()) ? p[0] : formatDateRu(d), lesson: p[1] || '' }; }
-    function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
-    function gradeClass(grade) { const s = String(grade == null ? '' : grade); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) { const d = c - 48; if (d === 5 || d === 4) return 'g5'; if (d === 3) return 'g3'; if (d === 2 || d === 1) return 'g2'; } } return 'gn'; }
-    function firstDigit(v) { const s = String(v == null ? '' : v); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) return c - 48; } return null; }
-    function isNumericGrade(v) { return firstDigit(v) !== null; }
-    function plural(n, forms) { const a = Math.abs(n) % 100; const b = a % 10; if (a > 10 && a < 20) return forms[2]; if (b > 1 && b < 5) return forms[1]; if (b === 1) return forms[0]; return forms[2]; }
-
-    function calcAverage(map) {
-        let sum = 0, cnt = 0;
-        Object.values(map || {}).forEach(raw => {
-            if (raw === null || raw === undefined) return;
-            const parsed = parseCell(raw);
-            const cleaned = String(parsed.grade || '').replace(/[НОБП]|СП/g, '').trim();
-            if (!cleaned) return;
-            if (cleaned.includes('/')) {
-                cleaned.split('/').forEach(p => { const d = firstDigit(p); if (d !== null) { sum += d; cnt++; } });
-            } else {
-                const d = firstDigit(cleaned);
-                if (d !== null) { sum += d; cnt++; }
-            }
-        });
-        return cnt === 0 ? null : (sum / cnt).toFixed(2).replace(/\.00$/, '');
-    }
-
-    async function logout() {
-        if (!confirm('Выйти из кабинета?')) return;
-        try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
-        try { localStorage.removeItem('sj_session'); } catch (e) {}
-        window.location.replace('index.html');
-    }
-
-    (async function init() {
-        try {
-            const fb = await window._fbReady;
-            const user = await new Promise((resolve) => {
-                const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
-            });
-            if (!user) { window.location.replace('index.html'); return; }
-            const login = user.email.split('@')[0];
-            const students = await DB.getAll('students');
-            const student = students.find(s => s.login === login);
-            if (!student) { window.location.replace('index.html'); return; }
-            CURRENT_STUDENT = student;
-            document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
-            await loadAll();
-            document.getElementById('infoBanner').innerHTML = `
-                <div class="info-banner-item"><div class="info-banner-label">ФИО</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.full_name)}</div></div>
-                <div class="info-banner-item"><div class="info-banner-label">Класс</div><div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>
-                <div class="info-banner-item"><div class="info-banner-label">Логин</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.login)}</div></div>`;
-            renderWarnings();
-            renderPeriodTabs();
-            renderGradesTable();
-        } catch (err) {
-            console.error(err);
+/* ===== PRELOAD NAVIGATION ===== */
+(function () {
+    const INTERNAL = ['student.html', 'student-diary.html', 'student-grades.html'];
+    let indicator = null, indicatorTimer = null;
+    function showIndicator() {
+        if (indicator) return;
+        if (!document.getElementById('pna-style')) {
+            const st = document.createElement('style');
+            st.id = 'pna-style';
+            st.textContent = '@keyframes pna-spin { to { transform: rotate(360deg); } }';
+            document.head.appendChild(st);
         }
-    })();
-
-    async function loadAll() {
-        const [classes, subjects, journals, students, schedules, periodDocs] = await Promise.all([
-            DB.getAll('classes'), DB.getAll('subjects'),
-            DB.getAll('journals'), DB.getAll('students'),
-            DB.getAll('class_schedules'), DB.getAll('educational_periods')
-        ]);
-        ALL_STUDENTS = students;
-        CURRENT_CLASS = classes.find(c => c.id === CURRENT_STUDENT.class_id) || null;
-        ALL_SUBJECTS = subjects;
-        ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
-        const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
-        if (withData.length > 0) ALL_JOURNALS = withData;
-        CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
-        const classSchedules = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
-        const mergedGrid = {};
-        classSchedules.forEach(s => {
-            if (!s.grid) return;
-            Object.entries(s.grid).forEach(([day, lessons]) => {
-                if (!mergedGrid[day]) mergedGrid[day] = {};
-                Object.entries(lessons || {}).forEach(([num, lesson]) => {
-                    if (lesson && lesson.subject && !mergedGrid[day][num]) mergedGrid[day][num] = lesson;
-                });
-            });
-        });
-        CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
-        const pd = periodDocs[0] || null;
-        PERIODS = pd ? (pd.periods || []) : [];
-        PERIOD_SYSTEM = pd ? (pd.system || '') : '';
-        ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
+        indicator = document.createElement('div');
+        indicator.style.cssText = 'position:fixed;top:12px;right:12px;z-index:99999;width:22px;height:22px;border-radius:50%;border:3px solid rgba(25,118,210,0.2);border-top-color:#1976d2;animation:pna-spin 0.7s linear infinite;pointer-events:none;';
+        document.body.appendChild(indicator);
     }
-    function findActivePeriodIndex() {
-        if (PERIODS.length === 0) return 0;
-        const t = new Date(); t.setHours(0,0,0,0);
-        for (let i = 0; i < PERIODS.length; i++) {
-            const s = new Date(PERIODS[i].start + 'T00:00:00');
-            const e = new Date(PERIODS[i].end + 'T23:59:59');
-            if (t >= s && t <= e) return i;
+    function hideIndicator() {
+        clearTimeout(indicatorTimer); indicatorTimer = null;
+        if (indicator) { indicator.remove(); indicator = null; }
+    }
+    function isInternalLink(href) {
+        if (!href) return false;
+        const h = String(href).split('#')[0].split('?')[0].replace(/^\.\//, '').replace(/^\//, '');
+        return INTERNAL.includes(h);
+    }
+    document.addEventListener('click', function (e) {
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        const a = e.target.closest('a');
+        if (!a) return;
+        const href = a.getAttribute('href');
+        if (!isInternalLink(href)) return;
+        if (a.target === '_blank') return;
+        const current = window.location.pathname.split('/').pop();
+        const target = String(href).split('?')[0].split('#')[0];
+        if (target === current) return;
+        e.preventDefault();
+        clearTimeout(indicatorTimer);
+        indicatorTimer = setTimeout(showIndicator, 150);
+        const iframe = document.createElement('iframe');
+        iframe.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden;';
+        iframe.src = href;
+        let done = false;
+        const finish = () => { if (done) return; done = true; hideIndicator(); window.location.href = href; };
+        iframe.addEventListener('load', finish);
+        setTimeout(finish, 5000);
+        document.body.appendChild(iframe);
+    }, true);
+})();
+
+/* ===== ОСНОВНАЯ ЛОГИКА ===== */
+const PERIOD_LABELS = {
+    'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
+    'Полугодия': ['I полугодие', 'II полугодие'],
+    'Триместры': ['I триместр', 'II триместр', 'III триместр'],
+    'Семестры':  ['I семестр', 'II семестр']
+};
+const DEFAULT_LESSON_TYPE = 'ОТВ';
+
+let CURRENT_STUDENT = null;
+let CURRENT_CLASS = null;
+let ALL_SUBJECTS = [];
+let ALL_JOURNALS = [];
+let ALL_STUDENTS = [];
+let CLASS_STUDENT_IDS = [];
+let CURRENT_SCHEDULE = null;
+let PERIODS = [];
+let PERIOD_SYSTEM = '';
+let ACTIVE_PERIOD_INDEX = 0;
+
+function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
+function formatDateRu(d) { return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`; }
+function isoDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function parseKey(key) { const p = String(key).split('_'); const d = new Date(p[0] + 'T00:00:00'); return { date: isNaN(d.getTime()) ? null : d, dateRu: isNaN(d.getTime()) ? p[0] : formatDateRu(d), lesson: p[1] || '' }; }
+function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
+function gradeClass(grade) { const s = String(grade == null ? '' : grade); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) { const d = c - 48; if (d === 5 || d === 4) return 'g5'; if (d === 3) return 'g3'; if (d === 2 || d === 1) return 'g2'; } } return 'gn'; }
+function firstDigit(v) { const s = String(v == null ? '' : v); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) return c - 48; } return null; }
+function isNumericGrade(v) { return firstDigit(v) !== null; }
+function plural(n, forms) { const a = Math.abs(n) % 100; const b = a % 10; if (a > 10 && a < 20) return forms[2]; if (b > 1 && b < 5) return forms[1]; if (b === 1) return forms[0]; return forms[2]; }
+
+function calcAverage(map) {
+    let sum = 0, cnt = 0;
+    Object.values(map || {}).forEach(raw => {
+        if (raw === null || raw === undefined) return;
+        const parsed = parseCell(raw);
+        const cleaned = String(parsed.grade || '').replace(/[НОБП]|СП/g, '').trim();
+        if (!cleaned) return;
+        if (cleaned.includes('/')) {
+            cleaned.split('/').forEach(p => { const d = firstDigit(p); if (d !== null) { sum += d; cnt++; } });
+        } else {
+            const d = firstDigit(cleaned);
+            if (d !== null) { sum += d; cnt++; }
         }
-        return 0;
-    }
-    function getScheduleSubjects() {
-        if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) return [];
-        const set = new Set();
-        Object.values(CURRENT_SCHEDULE.grid).forEach(g => Object.values(g || {}).forEach(l => { if (l && l.subject) set.add(l.subject); }));
-        return Array.from(set).sort((a, b) => a.localeCompare(b, 'ru'));
-    }
+    });
+    return cnt === 0 ? null : (sum / cnt).toFixed(2).replace(/\.00$/, '');
+}
 
-    function renderPeriodTabs() {
-        const container = document.getElementById('periodTabs');
-        container.innerHTML = '';
-        if (PERIODS.length === 0) {
-            const tab = document.createElement('button');
-            tab.type = 'button'; tab.className = 'tab-pill active';
-            tab.textContent = 'Периоды не созданы'; tab.disabled = true;
-            tab.style.cursor = 'default'; container.appendChild(tab); return;
-        }
-        const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
-        PERIODS.forEach((p, idx) => {
-            const tab = document.createElement('button');
-            tab.type = 'button';
-            tab.className = 'tab-pill' + (idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
-            tab.textContent = labels[idx] || ('Период ' + (idx + 1));
-            tab.title = `${p.start} – ${p.end}`;
-            tab.addEventListener('click', () => { ACTIVE_PERIOD_INDEX = idx; renderPeriodTabs(); renderGradesTable(); });
-            container.appendChild(tab);
+async function logout() {
+    if (!confirm('Выйти из кабинета?')) return;
+    try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
+    try { localStorage.removeItem('sj_session'); } catch (e) {}
+    window.location.replace('index.html');
+}
+
+(async function init() {
+    try {
+        const fb = await window._fbReady;
+        const user = await new Promise((resolve) => {
+            const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
         });
-    }
+        if (!user) { window.location.replace('index.html'); return; }
+        const login = user.email.split('@')[0];
+        const students = await DB.getAll('students');
+        const student = students.find(s => s.login === login);
+        if (!student) { window.location.replace('index.html'); return; }
+        CURRENT_STUDENT = student;
+        document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
+        await loadAll();
+        document.getElementById('infoBanner').innerHTML = `
+            <div class="info-banner-item"><div class="info-banner-label">ФИО</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.full_name)}</div></div>
+            <div class="info-banner-item"><div class="info-banner-label">Класс</div><div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>
+            <div class="info-banner-item"><div class="info-banner-label">Логин</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.login)}</div></div>`;
+        renderWarnings();
+        renderPeriodTabs();
+        renderGradesTable();
+    } catch (err) { console.error(err); }
+})();
 
-    function collectAllStudentGrades() {
-        const result = [];
-        ALL_JOURNALS.forEach(journal => {
-            const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
-            const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
-            if (!subjObj) return;
-            Object.entries(sg).forEach(([key, val]) => {
-                if (val === '' || val === null || val === undefined) return;
-                const parsed = parseKey(key);
-                const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
-                const cell = parseCell(val);
-                const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson, type };
-                if (cell.grade) result.push({ ...base, kind: 'grade', grade: cell.grade, presence: '' });
-                if (cell.presence) result.push({ ...base, kind: 'presence', grade: '', presence: cell.presence });
+async function loadAll() {
+    const [classes, subjects, journals, students, schedules, periodDocs] = await Promise.all([
+        DB.getAll('classes'), DB.getAll('subjects'),
+        DB.getAll('journals'), DB.getAll('students'),
+        DB.getAll('class_schedules'), DB.getAll('educational_periods')
+    ]);
+    ALL_STUDENTS = students;
+    CURRENT_CLASS = classes.find(c => c.id === CURRENT_STUDENT.class_id) || null;
+    ALL_SUBJECTS = subjects;
+    ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
+    const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
+    if (withData.length > 0) ALL_JOURNALS = withData;
+    CLASS_STUDENT_IDS = ALL_STUDENTS.filter(s => s.class_id === CURRENT_STUDENT.class_id).map(s => s.id);
+    const classSchedules = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
+    const mergedGrid = {};
+    classSchedules.forEach(s => {
+        if (!s.grid) return;
+        Object.entries(s.grid).forEach(([day, lessons]) => {
+            if (!mergedGrid[day]) mergedGrid[day] = {};
+            Object.entries(lessons || {}).forEach(([num, lesson]) => {
+                if (lesson && lesson.subject && !mergedGrid[day][num]) mergedGrid[day][num] = lesson;
             });
         });
-        return result;
+    });
+    CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
+    const pd = periodDocs[0] || null;
+    PERIODS = pd ? (pd.periods || []) : [];
+    PERIOD_SYSTEM = pd ? (pd.system || '') : '';
+    ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
+}
+function findActivePeriodIndex() {
+    if (PERIODS.length === 0) return 0;
+    const t = new Date(); t.setHours(0,0,0,0);
+    for (let i = 0; i < PERIODS.length; i++) {
+        const s = new Date(PERIODS[i].start + 'T00:00:00');
+        const e = new Date(PERIODS[i].end + 'T23:59:59');
+        if (t >= s && t <= e) return i;
     }
+    return 0;
+}
+function getScheduleSubjects() {
+    if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) return [];
+    const set = new Set();
+    Object.values(CURRENT_SCHEDULE.grid).forEach(g => Object.values(g || {}).forEach(l => { if (l && l.subject) set.add(l.subject); }));
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'ru'));
+}
 
-    function renderWarnings() {
-        const container = document.getElementById('warningContainer');
-        container.innerHTML = '';
-        const all = collectAllStudentGrades();
-        const fails = all.filter(g => g.kind === 'grade' && firstDigit(g.grade) === 2).sort((a, b) => (b.date || 0) - (a.date || 0));
-        const absences = all.filter(g => g.kind === 'presence' && String(g.presence).toUpperCase() === 'Н').sort((a, b) => (b.date || 0) - (a.date || 0));
+function renderPeriodTabs() {
+    const container = document.getElementById('periodTabs');
+    container.innerHTML = '';
+    if (PERIODS.length === 0) {
+        const tab = document.createElement('button');
+        tab.type = 'button'; tab.className = 'tab-pill active';
+        tab.textContent = 'Периоды не созданы'; tab.disabled = true;
+        tab.style.cursor = 'default'; container.appendChild(tab); return;
+    }
+    const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
+    PERIODS.forEach((p, idx) => {
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = 'tab-pill' + (idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
+        tab.textContent = labels[idx] || ('Период ' + (idx + 1));
+        tab.title = `${p.start} – ${p.end}`;
+        tab.addEventListener('click', () => { ACTIVE_PERIOD_INDEX = idx; renderPeriodTabs(); renderGradesTable(); });
+        container.appendChild(tab);
+    });
+}
 
-        if (fails.length > 0) {
-            const box = document.createElement('div');
-            box.className = 'warn-box fails';
-            const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
-            let titleHtml, listHtml = '';
-            if (fails.length === 1) titleHtml = `Тебе поставили <b>2</b> по предмету «${escapeHtml(fails[0].subject)}» (${fails[0].dateRu}).`;
-            else { titleHtml = `Тебе поставили двойки:`; listHtml = `<ul class="warn-list">${fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${f.dateRu}</li>`).join('')}</ul>`; }
-            box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Обычно оценку можно исправить. <b>Спроси учителя, что ты можешь для этого сделать.</b></div></div>`;
-            container.appendChild(box);
+function collectAllStudentGrades() {
+    const result = [];
+    ALL_JOURNALS.forEach(journal => {
+        const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
+        const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
+        if (!subjObj) return;
+        Object.entries(sg).forEach(([key, val]) => {
+            if (val === '' || val === null || val === undefined) return;
+            const parsed = parseKey(key);
+            const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
+            const cell = parseCell(val);
+            const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson, type };
+            if (cell.grade) result.push({ ...base, kind: 'grade', grade: cell.grade, presence: '' });
+            if (cell.presence) result.push({ ...base, kind: 'presence', grade: '', presence: cell.presence });
+        });
+    });
+    return result;
+}
+
+function renderWarnings() {
+    const container = document.getElementById('warningContainer');
+    container.innerHTML = '';
+    const all = collectAllStudentGrades();
+    const fails = all.filter(g => g.kind === 'grade' && firstDigit(g.grade) === 2).sort((a, b) => (b.date || 0) - (a.date || 0));
+    const absences = all.filter(g => g.kind === 'presence' && String(g.presence).toUpperCase() === 'Н').sort((a, b) => (b.date || 0) - (a.date || 0));
+
+    if (fails.length > 0) {
+        const box = document.createElement('div');
+        box.className = 'warn-box fails';
+        const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
+        let titleHtml, listHtml = '';
+        if (fails.length === 1) titleHtml = `Тебе поставили <b>2</b> по предмету «${escapeHtml(fails[0].subject)}» (${fails[0].dateRu}).`;
+        else { titleHtml = `Тебе поставили двойки:`; listHtml = `<ul class="warn-list">${fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${f.dateRu}</li>`).join('')}</ul>`; }
+        box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Обычно оценку можно исправить. <b>Спроси учителя, что ты можешь для этого сделать.</b></div></div>`;
+        container.appendChild(box);
+    }
+    if (absences.length > 0) {
+        const box = document.createElement('div');
+        box.className = 'warn-box absences';
+        const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M11 7h2v6h-2zm0 8h2v2h-2zm1-13C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>';
+        let titleHtml, listHtml = '';
+        if (absences.length === 1) titleHtml = `Тебя не было на уроке «${escapeHtml(absences[0].subject)}» (${absences[0].dateRu}).`;
+        else { titleHtml = `Тебя не было на уроках:`; listHtml = `<ul class="warn-list">${absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> — ${a.dateRu}</li>`).join('')}</ul>`; }
+        box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Если есть уважительная причина, <b>обсуди её с учителем.</b></div></div>`;
+        container.appendChild(box);
+    }
+}
+
+function getPeriodRange() {
+    if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
+    const p = PERIODS[ACTIVE_PERIOD_INDEX];
+    return { start: new Date(p.start + 'T00:00:00'), end: new Date(p.end + 'T23:59:59') };
+}
+function renderGradesTable() {
+    const container = document.getElementById('gradesTableContainer');
+    const subjectsFromSchedule = getScheduleSubjects();
+    if (subjectsFromSchedule.length === 0) {
+        container.innerHTML = `<div class="empty-state"><h3>Расписание ещё не составлено</h3><p>Обратитесь к администратору школы.</p></div>`;
+        return;
+    }
+    const range = getPeriodRange();
+    const all = collectAllStudentGrades();
+    const periodLabel = PERIODS.length > 0 ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Итог') : 'Итог';
+    let html = '<div class="grades-table-wrapper"><table class="grades-table">';
+    html += '<colgroup><col style="width:34%"><col style="width:46%"><col style="width:10%"><col style="width:10%"></colgroup>';
+    html += '<thead><tr><th>Предмет</th><th>Оценки</th><th class="center">Ср. балл</th><th class="center">' + escapeHtml(periodLabel) + '</th></tr></thead><tbody>';
+    subjectsFromSchedule.forEach(subjectName => {
+        let records = all.filter(g => g.subject === subjectName);
+        if (range) records = records.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
+        records.sort((a, b) => a.key.localeCompare(b.key));
+        const gradesMap = {};
+        records.forEach(r => { if (r.kind === 'grade') gradesMap[r.key] = r.grade; });
+        const avg = calcAverage(gradesMap);
+        const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
+        const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
+        const qtrGrades = journal && journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
+        const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
+
+        html += '<tr>';
+        html += `<td class="subject-cell">${escapeHtml(subjectName)}</td>`;
+        if (records.length === 0) {
+            html += '<td><span class="no-grades-text">Нет выставленных оценок</span></td>';
+        } else {
+            html += '<td><div class="grades-flex-inner">';
+            records.forEach(r => {
+                const isGrade = r.kind === 'grade';
+                const val = isGrade ? r.grade : r.presence;
+                const cls = gradeClass(val);
+                const isNum = isGrade && isNumericGrade(r.grade);
+                html += `<span class="mini-grade ${cls}" ${isNum ? `data-subject="${escapeHtml(r.subject)}" data-key="${escapeHtml(r.key)}"` : ''}><span class="grade-tile-value">${escapeHtml(val)}</span></span>`;
+            });
+            html += '</div></td>';
         }
-        if (absences.length > 0) {
-            const box = document.createElement('div');
-            box.className = 'warn-box absences';
-            const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24"><path d="M11 7h2v6h-2zm0 8h2v2h-2zm1-13C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>';
-            let titleHtml, listHtml = '';
-            if (absences.length === 1) titleHtml = `Тебя не было на уроке «${escapeHtml(absences[0].subject)}» (${absences[0].dateRu}).`;
-            else { titleHtml = `Тебя не было на уроках:`; listHtml = `<ul class="warn-list">${absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> — ${a.dateRu}</li>`).join('')}</ul>`; }
-            box.innerHTML = `${iconSvg}<div class="warn-body"><div class="warn-title">${titleHtml}</div>${listHtml}<div class="warn-hint">Если есть уважительная причина, <b>обсуди её с учителем.</b></div></div>`;
-            container.appendChild(box);
-        }
-    }
+        html += avg !== null ? `<td class="avg-cell">${escapeHtml(String(avg))}</td>` : '<td class="avg-cell no-grade">-</td>';
+        if (periodQtr) html += `<td class="qtr-cell"><span class="qtr-grade ${gradeClass(periodQtr)}">${escapeHtml(String(periodQtr))}</span></td>`;
+        else html += '<td class="qtr-cell"><span class="qtr-grade no-grade">-</span></td>';
+        html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+    container.querySelectorAll('.mini-grade[data-subject]').forEach(box => {
+        box.addEventListener('click', () => { openStats(box.dataset.subject, box.dataset.key); });
+    });
+}
 
-    function getPeriodRange() {
-        if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
-        const p = PERIODS[ACTIVE_PERIOD_INDEX];
-        return { start: new Date(p.start + 'T00:00:00'), end: new Date(p.end + 'T23:59:59') };
-    }
-    function renderGradesTable() {
-        const container = document.getElementById('gradesTableContainer');
-        const subjectsFromSchedule = getScheduleSubjects();
-        if (subjectsFromSchedule.length === 0) {
-            container.innerHTML = `<div class="empty-state"><h3>Расписание ещё не составлено</h3><p>Обратитесь к администратору школы.</p></div>`;
-            return;
-        }
-        const range = getPeriodRange();
-        const all = collectAllStudentGrades();
-        const periodLabel = PERIODS.length > 0 ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Итог') : 'Итог';
-        let html = '<div class="grades-table-wrapper"><table class="grades-table">';
-        html += '<colgroup><col style="width:34%"><col style="width:46%"><col style="width:10%"><col style="width:10%"></colgroup>';
-        html += '<thead><tr><th>Предмет</th><th>Оценки</th><th class="center">Ср. балл</th><th class="center">' + escapeHtml(periodLabel) + '</th></tr></thead><tbody>';
-        subjectsFromSchedule.forEach(subjectName => {
-            let records = all.filter(g => g.subject === subjectName);
-            if (range) records = records.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
-            records.sort((a, b) => a.key.localeCompare(b.key));
-            const gradesMap = {};
-            records.forEach(r => { if (r.kind === 'grade') gradesMap[r.key] = r.grade; });
-            const avg = calcAverage(gradesMap);
-            const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
-            const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
-            const qtrGrades = journal && journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
-            const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
-
-            html += '<tr>';
-            html += `<td class="subject-cell">${escapeHtml(subjectName)}</td>`;
-            if (records.length === 0) {
-                html += '<td><span class="no-grades-text">Нет выставленных оценок</span></td>';
-            } else {
-                html += '<td><div class="grades-flex-inner">';
-                records.forEach(r => {
-                    const isGrade = r.kind === 'grade';
-                    const val = isGrade ? r.grade : r.presence;
-                    const cls = gradeClass(val);
-                    const isNum = isGrade && isNumericGrade(r.grade);
-                    html += `<span class="mini-grade ${cls}" ${isNum ? `data-subject="${escapeHtml(r.subject)}" data-key="${escapeHtml(r.key)}"` : ''}><span class="grade-tile-value">${escapeHtml(val)}</span></span>`;
-                });
-                html += '</div></td>';
-            }
-            html += avg !== null ? `<td class="avg-cell">${escapeHtml(String(avg))}</td>` : '<td class="avg-cell no-grade">-</td>';
-            if (periodQtr) html += `<td class="qtr-cell"><span class="qtr-grade ${gradeClass(periodQtr)}">${escapeHtml(String(periodQtr))}</span></td>`;
-            else html += '<td class="qtr-cell"><span class="qtr-grade no-grade">-</span></td>';
-            html += '</tr>';
-        });
-        html += '</tbody></table></div>';
-        container.innerHTML = html;
-        container.querySelectorAll('.mini-grade[data-subject]').forEach(box => {
-            box.addEventListener('click', () => { openStats(box.dataset.subject, box.dataset.key); });
-        });
-    }
-
-    function openStats(subjectName, lessonKey) {
-        const journal = ALL_JOURNALS.find(j => {
-            const subjObj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
-            return subjObj && subjObj.name === subjectName;
-        });
-        const modal = document.getElementById('statsModal');
-        const title = document.getElementById('statsTitle');
-        const subtitle = document.getElementById('statsSubtitle');
-        const list = document.getElementById('statsList');
-        const total = document.getElementById('statsTotal');
-        const parsed = parseKey(lessonKey);
-        title.textContent = subjectName;
-        subtitle.textContent = `${parsed.dateRu} · ${parsed.lesson}-й урок`;
-        if (!journal) { list.innerHTML = '<div class="stats-empty">Статистика недоступна.</div>'; total.textContent = ''; modal.classList.add('show'); return; }
-        const counters = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
-        const validIds = new Set(CLASS_STUDENT_IDS);
-        Object.entries(journal.grades || {}).forEach(([sid, sg]) => {
-            if (!validIds.has(sid)) return;
-            const val = sg && sg[lessonKey];
-            if (val === undefined || val === null) return;
-            const parsedCell = parseCell(val);
-            if (!parsedCell.grade) return;
-            const d = firstDigit(parsedCell.grade);
-            if (d !== null) counters[String(d)]++;
-        });
-        const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
-        if (totalCount === 0) { list.innerHTML = '<div class="stats-empty">Пока нет оценок за этот урок.</div>'; total.textContent = ''; modal.classList.add('show'); return; }
-        let html = '';
-        ['5', '4', '3', '2', '1'].forEach(g => {
-            const count = counters[g];
-            const percent = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
-            const barWidth = percent > 0 ? Math.max(percent, 6) : 0;
-            const cls = gradeClass(g);
-            const word = plural(count, ['человек', 'человека', 'человек']);
-            const barColor = (cls === 'g5') ? '#65A30D' : (cls === 'g3') ? '#FB923C' : (cls === 'g2') ? '#DC2626' : '#94A3B8';
-            html += `<div class="stat-row"><div class="stat-badge ${cls}">${g}</div><div class="stat-bar-wrap"><div class="stat-bar" style="width:${barWidth}%;background:${barColor}">${percent > 15 ? percent + '%' : ''}</div></div><div class="stat-count">${count} <small>${word}</small></div></div>`;
-        });
-        list.innerHTML = html;
-        total.textContent = `Всего оценок за урок: ${totalCount}`;
-        modal.classList.add('show');
-    }
-    function closeStats() { document.getElementById('statsModal').classList.remove('show'); }
-    document.getElementById('statsModal').addEventListener('click', (e) => { if (e.target.id === 'statsModal') closeStats(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStats(); });
+function openStats(subjectName, lessonKey) {
+    const journal = ALL_JOURNALS.find(j => {
+        const subjObj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
+        return subjObj && subjObj.name === subjectName;
+    });
+    const modal = document.getElementById('statsModal');
+    const title = document.getElementById('statsTitle');
+    const subtitle = document.getElementById('statsSubtitle');
+    const list = document.getElementById('statsList');
+    const total = document.getElementById('statsTotal');
+    const parsed = parseKey(lessonKey);
+    title.textContent = subjectName;
+    subtitle.textContent = `${parsed.dateRu} · ${parsed.lesson}-й урок`;
+    if (!journal) { list.innerHTML = '<div class="stats-empty">Статистика недоступна.</div>'; total.textContent = ''; modal.classList.add('show'); return; }
+    const counters = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
+    const validIds = new Set(CLASS_STUDENT_IDS);
+    Object.entries(journal.grades || {}).forEach(([sid, sg]) => {
+        if (!validIds.has(sid)) return;
+        const val = sg && sg[lessonKey];
+        if (val === undefined || val === null) return;
+        const parsedCell = parseCell(val);
+        if (!parsedCell.grade) return;
+        const d = firstDigit(parsedCell.grade);
+        if (d !== null) counters[String(d)]++;
+    });
+    const totalCount = Object.values(counters).reduce((a, b) => a + b, 0);
+    if (totalCount === 0) { list.innerHTML = '<div class="stats-empty">Пока нет оценок за этот урок.</div>'; total.textContent = ''; modal.classList.add('show'); return; }
+    let html = '';
+    ['5', '4', '3', '2', '1'].forEach(g => {
+        const count = counters[g];
+        const percent = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
+        const barWidth = percent > 0 ? Math.max(percent, 6) : 0;
+        const cls = gradeClass(g);
+        const word = plural(count, ['человек', 'человека', 'человек']);
+        const barColor = (cls === 'g5') ? '#65A30D' : (cls === 'g3') ? '#FB923C' : (cls === 'g2') ? '#DC2626' : '#94A3B8';
+        html += `<div class="stat-row"><div class="stat-badge ${cls}">${g}</div><div class="stat-bar-wrap"><div class="stat-bar" style="width:${barWidth}%;background:${barColor}">${percent > 15 ? percent + '%' : ''}</div></div><div class="stat-count">${count} <small>${word}</small></div></div>`;
+    });
+    list.innerHTML = html;
+    total.textContent = `Всего оценок за урок: ${totalCount}`;
+    modal.classList.add('show');
+}
+function closeStats() { document.getElementById('statsModal').classList.remove('show'); }
+document.getElementById('statsModal').addEventListener('click', (e) => { if (e.target.id === 'statsModal') closeStats(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStats(); });
 </script>
 </body>
 </html>
