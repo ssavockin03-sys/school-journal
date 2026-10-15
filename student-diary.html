@@ -84,6 +84,7 @@
         .lesson-value { color: #334155; }
         .lesson-value.hw { color: #1e40af; }
 
+        /* ===== ПЛАШКИ ОЦЕНОК И ПРИСУТСТВИЯ В ДНЕВНИКЕ — УМЕНЬШЕНЫ ===== */
         .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 3px; align-items: flex-start; }
         .lesson-grade {
             position: relative;
@@ -158,220 +159,172 @@
 
 <script src="supabase-config.js"></script>
 <script>
-/* ===== PRELOAD NAVIGATION ===== */
-(function () {
-    const INTERNAL = ['student.html', 'student-diary.html', 'student-grades.html'];
-    let indicator = null, indicatorTimer = null;
-    function showIndicator() {
-        if (indicator) return;
-        if (!document.getElementById('pna-style')) {
-            const st = document.createElement('style');
-            st.id = 'pna-style';
-            st.textContent = '@keyframes pna-spin { to { transform: rotate(360deg); } }';
-            document.head.appendChild(st);
+    const DAYS_KEYS   = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const DAYS_RU     = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
+    const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
+    const DEFAULT_LESSON_TYPE = 'ОТВ';
+
+    let CURRENT_STUDENT = null;
+    let CURRENT_CLASS = null;
+    let ALL_SUBJECTS = [];
+    let ALL_TEACHERS = [];
+    let ALL_JOURNALS = [];
+    let CURRENT_SCHEDULE = null;
+    let ALL_ROOMS = [];
+
+    function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
+    function formatDateRu(d) { return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`; }
+    function formatDateShort(d) { return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`; }
+    function isoDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+    function parseKey(key) { const p = String(key).split('_'); const d = new Date(p[0] + 'T00:00:00'); return { date: isNaN(d.getTime()) ? null : d, lesson: p[1] || '' }; }
+    function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
+    function gradeClass(grade) { const s = String(grade == null ? '' : grade); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) { const d = c - 48; if (d === 5 || d === 4) return 'g5'; if (d === 3) return 'g3'; if (d === 2 || d === 1) return 'g2'; } } return 'gn'; }
+    function getMondayOfCurrentWeek() { const t = new Date(); t.setHours(0,0,0,0); const dow = t.getDay(); const diff = (dow === 0 ? -6 : 1 - dow); const m = new Date(t); m.setDate(t.getDate() + diff); return m; }
+
+    async function logout() {
+        if (!confirm('Выйти из кабинета?')) return;
+        try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
+        try { localStorage.removeItem('sj_session'); } catch (e) {}
+        window.location.replace('index.html');
+    }
+
+    (async function init() {
+        try {
+            const fb = await window._fbReady;
+            const user = await new Promise((resolve) => {
+                const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
+            });
+            if (!user) { window.location.replace('index.html'); return; }
+            const login = user.email.split('@')[0];
+            const students = await DB.getAll('students');
+            const student = students.find(s => s.login === login);
+            if (!student) { window.location.replace('index.html'); return; }
+            CURRENT_STUDENT = student;
+            document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
+            await loadAll();
+            document.getElementById('infoBanner').innerHTML = `
+                <div class="info-banner-item"><div class="info-banner-label">ФИО</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.full_name)}</div></div>
+                <div class="info-banner-item"><div class="info-banner-label">Класс</div><div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>
+                <div class="info-banner-item"><div class="info-banner-label">Логин</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.login)}</div></div>`;
+            renderDiary();
+        } catch (err) {
+            console.error(err);
         }
-        indicator = document.createElement('div');
-        indicator.style.cssText = 'position:fixed;top:12px;right:12px;z-index:99999;width:22px;height:22px;border-radius:50%;border:3px solid rgba(25,118,210,0.2);border-top-color:#1976d2;animation:pna-spin 0.7s linear infinite;pointer-events:none;';
-        document.body.appendChild(indicator);
-    }
-    function hideIndicator() {
-        clearTimeout(indicatorTimer); indicatorTimer = null;
-        if (indicator) { indicator.remove(); indicator = null; }
-    }
-    function isInternalLink(href) {
-        if (!href) return false;
-        const h = String(href).split('#')[0].split('?')[0].replace(/^\.\//, '').replace(/^\//, '');
-        return INTERNAL.includes(h);
-    }
-    document.addEventListener('click', function (e) {
-        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
-        const a = e.target.closest('a');
-        if (!a) return;
-        const href = a.getAttribute('href');
-        if (!isInternalLink(href)) return;
-        if (a.target === '_blank') return;
-        const current = window.location.pathname.split('/').pop();
-        const target = String(href).split('?')[0].split('#')[0];
-        if (target === current) return;
-        e.preventDefault();
-        clearTimeout(indicatorTimer);
-        indicatorTimer = setTimeout(showIndicator, 150);
-        const iframe = document.createElement('iframe');
-        iframe.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden;';
-        iframe.src = href;
-        let done = false;
-        const finish = () => { if (done) return; done = true; hideIndicator(); window.location.href = href; };
-        iframe.addEventListener('load', finish);
-        setTimeout(finish, 5000);
-        document.body.appendChild(iframe);
-    }, true);
-})();
+    })();
 
-/* ===== ОСНОВНАЯ ЛОГИКА ===== */
-const DAYS_KEYS   = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-const DAYS_RU     = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
-const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
-const DEFAULT_LESSON_TYPE = 'ОТВ';
-
-let CURRENT_STUDENT = null;
-let CURRENT_CLASS = null;
-let ALL_SUBJECTS = [];
-let ALL_TEACHERS = [];
-let ALL_JOURNALS = [];
-let CURRENT_SCHEDULE = null;
-let ALL_ROOMS = [];
-
-function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
-function formatDateRu(d) { return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`; }
-function formatDateShort(d) { return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`; }
-function isoDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-function parseKey(key) { const p = String(key).split('_'); const d = new Date(p[0] + 'T00:00:00'); return { date: isNaN(d.getTime()) ? null : d, lesson: p[1] || '' }; }
-function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
-function gradeClass(grade) { const s = String(grade == null ? '' : grade); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) { const d = c - 48; if (d === 5 || d === 4) return 'g5'; if (d === 3) return 'g3'; if (d === 2 || d === 1) return 'g2'; } } return 'gn'; }
-function getMondayOfCurrentWeek() { const t = new Date(); t.setHours(0,0,0,0); const dow = t.getDay(); const diff = (dow === 0 ? -6 : 1 - dow); const m = new Date(t); m.setDate(t.getDate() + diff); return m; }
-
-async function logout() {
-    if (!confirm('Выйти из кабинета?')) return;
-    try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
-    try { localStorage.removeItem('sj_session'); } catch (e) {}
-    window.location.replace('index.html');
-}
-
-(async function init() {
-    try {
-        const fb = await window._fbReady;
-        const user = await new Promise((resolve) => {
-            const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
-        });
-        if (!user) { window.location.replace('index.html'); return; }
-        const login = user.email.split('@')[0];
-        const students = await DB.getAll('students');
-        const student = students.find(s => s.login === login);
-        if (!student) { window.location.replace('index.html'); return; }
-        CURRENT_STUDENT = student;
-        document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
-        await loadAll();
-        document.getElementById('infoBanner').innerHTML = `
-            <div class="info-banner-item"><div class="info-banner-label">ФИО</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.full_name)}</div></div>
-            <div class="info-banner-item"><div class="info-banner-label">Класс</div><div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>
-            <div class="info-banner-item"><div class="info-banner-label">Логин</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.login)}</div></div>`;
-        renderDiary();
-    } catch (err) { console.error(err); }
-})();
-
-async function loadAll() {
-    const [classes, subjects, teachers, journals, students, schedules, rooms] = await Promise.all([
-        DB.getAll('classes'), DB.getAll('subjects'), DB.getAll('teachers'),
-        DB.getAll('journals'), DB.getAll('students'),
-        DB.getAll('class_schedules'), DB.getAll('rooms')
-    ]);
-    ALL_ROOMS = rooms;
-    CURRENT_CLASS = classes.find(c => c.id === CURRENT_STUDENT.class_id) || null;
-    ALL_SUBJECTS = subjects;
-    ALL_TEACHERS = teachers;
-    ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
-    const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
-    if (withData.length > 0) ALL_JOURNALS = withData;
-    const classSchedules = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
-    const mergedGrid = {};
-    classSchedules.forEach(s => {
-        if (!s.grid) return;
-        Object.entries(s.grid).forEach(([day, lessons]) => {
-            if (!mergedGrid[day]) mergedGrid[day] = {};
-            Object.entries(lessons || {}).forEach(([num, lesson]) => {
-                if (lesson && lesson.subject && !mergedGrid[day][num]) mergedGrid[day][num] = lesson;
+    async function loadAll() {
+        const [classes, subjects, teachers, journals, students, schedules, rooms] = await Promise.all([
+            DB.getAll('classes'), DB.getAll('subjects'), DB.getAll('teachers'),
+            DB.getAll('journals'), DB.getAll('students'),
+            DB.getAll('class_schedules'), DB.getAll('rooms')
+        ]);
+        ALL_ROOMS = rooms;
+        CURRENT_CLASS = classes.find(c => c.id === CURRENT_STUDENT.class_id) || null;
+        ALL_SUBJECTS = subjects;
+        ALL_TEACHERS = teachers;
+        ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
+        const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
+        if (withData.length > 0) ALL_JOURNALS = withData;
+        const classSchedules = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
+        const mergedGrid = {};
+        classSchedules.forEach(s => {
+            if (!s.grid) return;
+            Object.entries(s.grid).forEach(([day, lessons]) => {
+                if (!mergedGrid[day]) mergedGrid[day] = {};
+                Object.entries(lessons || {}).forEach(([num, lesson]) => {
+                    if (lesson && lesson.subject && !mergedGrid[day][num]) mergedGrid[day][num] = lesson;
+                });
             });
         });
-    });
-    CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
-}
-
-function collectAllStudentGrades() {
-    const result = [];
-    ALL_JOURNALS.forEach(journal => {
-        const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
-        const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
-        if (!subjObj) return;
-        Object.entries(sg).forEach(([key, val]) => {
-            if (val === '' || val === null || val === undefined) return;
-            const parsed = parseKey(key);
-            const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
-            const cell = parseCell(val);
-            const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, lesson: parsed.lesson, type };
-            if (cell.grade) result.push({ ...base, kind: 'grade', grade: cell.grade, presence: '' });
-            if (cell.presence) result.push({ ...base, kind: 'presence', grade: '', presence: cell.presence });
-        });
-    });
-    return result;
-}
-
-function renderDiary() {
-    const container = document.getElementById('diaryContent');
-    const monday = getMondayOfCurrentWeek();
-    const saturday = new Date(monday); saturday.setDate(monday.getDate() + 5);
-    const rangeText = `${formatDateShort(monday)} – ${formatDateRu(saturday)}`;
-    if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
-        container.innerHTML = `<div class="empty-state"><h3>Расписание ещё не составлено</h3><p>Обратитесь к администратору школы.</p></div>`;
-        return;
+        CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
     }
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    let html = `<div class="week-title-bar"><div><div class="week-title">Текущая неделя</div><div class="week-range">${rangeText}</div></div><div class="week-badge">Расписание</div></div><div class="week-grid">`;
-    const grid = CURRENT_SCHEDULE.grid;
-    let maxLesson = 7;
-    DAYS_KEYS.forEach(day => {
-        const dayGrid = grid[day] || {};
-        Object.keys(dayGrid).forEach(num => { const n = parseInt(num, 10); if (!isNaN(n) && n > maxLesson) maxLesson = n; });
-    });
-    const all = collectAllStudentGrades();
-    DAYS_KEYS.forEach((dayKey, idx) => {
-        const date = new Date(monday); date.setDate(monday.getDate() + idx);
-        const isToday = date.getTime() === today.getTime();
-        const dayGrid = grid[dayKey] || {};
-        let lessonsHtml = '';
-        for (let n = 1; n <= maxLesson; n++) {
-            const lesson = dayGrid[n] || dayGrid[String(n)];
-            if (!lesson || !lesson.subject) { lessonsHtml += `<div class="lesson-card empty"><div class="lesson-subject">Урок ${n} —</div></div>`; continue; }
-            let teacherName = lesson.teacherName || '';
-            if (!teacherName && lesson.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId); if (t) teacherName = t.full_name; }
-            let roomName = lesson.roomName || '';
-            if (!roomName && lesson.roomId) { const r = ALL_ROOMS.find(x => x.id === lesson.roomId); if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : ''); }
-            const key = isoDate(date) + '_' + n;
-            let topic = '', homework = '';
-            const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
-            if (subjObj) {
-                const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
-                if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
-            }
-            const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
-            const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
-            const gradeVal = gradeRec ? gradeRec.grade : null;
-            const presVal  = presRec ? presRec.presence : null;
 
-            let gradesWrap = '';
-            if (presVal)  gradesWrap += `<div class="lesson-grade ${gradeClass(presVal)}"><span class="grade-tile-value">${escapeHtml(presVal)}</span></div>`;
-            if (gradeVal) gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}"><span class="grade-tile-value">${escapeHtml(gradeVal)}</span></div>`;
-            if (!presVal && !gradeVal) gradesWrap = `<div class="lesson-grade no-grade">—</div>`;
+    function collectAllStudentGrades() {
+        const result = [];
+        ALL_JOURNALS.forEach(journal => {
+            const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
+            const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
+            if (!subjObj) return;
+            Object.entries(sg).forEach(([key, val]) => {
+                if (val === '' || val === null || val === undefined) return;
+                const parsed = parseKey(key);
+                const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
+                const cell = parseCell(val);
+                const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, lesson: parsed.lesson, type };
+                if (cell.grade) result.push({ ...base, kind: 'grade', grade: cell.grade, presence: '' });
+                if (cell.presence) result.push({ ...base, kind: 'presence', grade: '', presence: cell.presence });
+            });
+        });
+        return result;
+    }
 
-            const metaParts = [];
-            if (teacherName) metaParts.push(teacherName);
-            if (roomName) metaParts.push('каб. ' + roomName);
-            const metaHtml = metaParts.length ? `<div class="lesson-meta">${escapeHtml(metaParts.join(' · '))}</div>` : '';
-            const topicHtml = topic ? `<div class="lesson-section"><span class="lesson-label">Тема:</span><span class="lesson-value">${escapeHtml(topic)}</span></div>` : '';
-            const hwHtml = homework ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value hw">${escapeHtml(homework)}</span></div>` : '';
-            lessonsHtml += `<div class="lesson-card" data-subject="${escapeHtml(lesson.subject)}" data-date="${isoDate(date)}" data-num="${n}">
-                <div class="lesson-grades-wrap">${gradesWrap}</div>
-                <div class="lesson-row-head"><div class="lesson-num">${n}</div><div class="lesson-subject">${escapeHtml(lesson.subject)}</div></div>
-                ${metaHtml}${topicHtml}${hwHtml}
-            </div>`;
+    function renderDiary() {
+        const container = document.getElementById('diaryContent');
+        const monday = getMondayOfCurrentWeek();
+        const saturday = new Date(monday); saturday.setDate(monday.getDate() + 5);
+        const rangeText = `${formatDateShort(monday)} – ${formatDateRu(saturday)}`;
+        if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
+            container.innerHTML = `<div class="empty-state"><h3>Расписание ещё не составлено</h3><p>Обратитесь к администратору школы.</p></div>`;
+            return;
         }
-        html += `<div class="day-column ${isToday ? 'today' : ''}">
-            <div class="day-header"><div class="day-header-left"><div class="day-name">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div><div class="day-date">${formatDateRu(date)}</div></div>${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}</div>
-            <div class="day-body">${lessonsHtml}</div>
-        </div>`;
-    });
-    html += '</div>';
-    container.innerHTML = html;
-}
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        let html = `<div class="week-title-bar"><div><div class="week-title">Текущая неделя</div><div class="week-range">${rangeText}</div></div><div class="week-badge">Расписание</div></div><div class="week-grid">`;
+        const grid = CURRENT_SCHEDULE.grid;
+        let maxLesson = 7;
+        DAYS_KEYS.forEach(day => {
+            const dayGrid = grid[day] || {};
+            Object.keys(dayGrid).forEach(num => { const n = parseInt(num, 10); if (!isNaN(n) && n > maxLesson) maxLesson = n; });
+        });
+        const all = collectAllStudentGrades();
+        DAYS_KEYS.forEach((dayKey, idx) => {
+            const date = new Date(monday); date.setDate(monday.getDate() + idx);
+            const isToday = date.getTime() === today.getTime();
+            const dayGrid = grid[dayKey] || {};
+            let lessonsHtml = '';
+            for (let n = 1; n <= maxLesson; n++) {
+                const lesson = dayGrid[n] || dayGrid[String(n)];
+                if (!lesson || !lesson.subject) { lessonsHtml += `<div class="lesson-card empty"><div class="lesson-subject">Урок ${n} —</div></div>`; continue; }
+                let teacherName = lesson.teacherName || '';
+                if (!teacherName && lesson.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId); if (t) teacherName = t.full_name; }
+                let roomName = lesson.roomName || '';
+                if (!roomName && lesson.roomId) { const r = ALL_ROOMS.find(x => x.id === lesson.roomId); if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : ''); }
+                const key = isoDate(date) + '_' + n;
+                let topic = '', homework = '';
+                const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
+                if (subjObj) {
+                    const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
+                    if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
+                }
+                const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
+                const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
+                const gradeVal = gradeRec ? gradeRec.grade : null;
+                const presVal  = presRec ? presRec.presence : null;
+
+                let gradesWrap = '';
+                if (presVal)  gradesWrap += `<div class="lesson-grade ${gradeClass(presVal)}"><span class="grade-tile-value">${escapeHtml(presVal)}</span></div>`;
+                if (gradeVal) gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}"><span class="grade-tile-value">${escapeHtml(gradeVal)}</span></div>`;
+                if (!presVal && !gradeVal) gradesWrap = `<div class="lesson-grade no-grade">—</div>`;
+
+                const metaParts = [];
+                if (teacherName) metaParts.push(teacherName);
+                if (roomName) metaParts.push('каб. ' + roomName);
+                const metaHtml = metaParts.length ? `<div class="lesson-meta">${escapeHtml(metaParts.join(' · '))}</div>` : '';
+                const topicHtml = topic ? `<div class="lesson-section"><span class="lesson-label">Тема:</span><span class="lesson-value">${escapeHtml(topic)}</span></div>` : '';
+                const hwHtml = homework ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value hw">${escapeHtml(homework)}</span></div>` : '';
+                lessonsHtml += `<div class="lesson-card" data-subject="${escapeHtml(lesson.subject)}" data-date="${isoDate(date)}" data-num="${n}">
+                    <div class="lesson-grades-wrap">${gradesWrap}</div>
+                    <div class="lesson-row-head"><div class="lesson-num">${n}</div><div class="lesson-subject">${escapeHtml(lesson.subject)}</div></div>
+                    ${metaHtml}${topicHtml}${hwHtml}
+                </div>`;
+            }
+            html += `<div class="day-column ${isToday ? 'today' : ''}">
+                <div class="day-header"><div class="day-header-left"><div class="day-name">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div><div class="day-date">${formatDateRu(date)}</div></div>${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}</div>
+                <div class="day-body">${lessonsHtml}</div>
+            </div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
 </script>
 </body>
 </html>
