@@ -9,13 +9,6 @@
         html, body { background: #fff; }
         body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 14px; font-weight: 400; padding: 0; }
 
-        .loading-screen { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; }
-        .loading-screen.hidden { display: none; }
-        .loading-box { background: #fff; border-radius: 24px; padding: 44px 40px; max-width: 420px; width: 100%; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35); text-align: center; }
-        .loading-spinner { width: 56px; height: 56px; border: 5px solid rgba(42,82,152,0.15); border-top-color: #2a5298; border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { font-size: 15px; color: #5a6a85; font-weight: 500; }
-
         .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
 
         .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
@@ -50,7 +43,7 @@
 
         .container { padding: 0 0 60px; }
 
-        .info-banner { background: #fff; border-radius: 12px; padding: 14px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin: 16px 0 20px; display: flex; flex-wrap: wrap; gap: 24px; }
+        .info-banner { background: #fff; border-radius: 12px; padding: 14px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin: 16px 0 20px; display: flex; flex-wrap: wrap; gap: 24px; min-height: 46px; }
         .info-banner-item { display: flex; flex-direction: column; gap: 3px; }
         .info-banner-label { font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; }
         .info-banner-value { font-size: 14px; font-weight: 600; color: #1a2b4a; }
@@ -77,8 +70,6 @@
         .grade-tile.gn .grade-tile-box { background: #94A3B8; }
         .grade-tile-subject { font-size: 11.5px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
         .grade-tile-type { font-size: 10px; color: #94a3b8; line-height: 1.2; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
-        .grades-hint { font-size: 12px; color: #b8720a; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
-        .grades-hint::before { content: '👉'; }
 
         .grade-tile-icon {
             position: absolute;
@@ -134,7 +125,6 @@
         .today-lesson-grade .grade-tile-icon svg { width: 34px; height: 34px; }
         .today-lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 
-        /* страница занятия */
         .lesson-page { background: #fff; border-radius: 14px; padding: 32px 36px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; max-width: 1100px; margin: 0 auto; }
         .lesson-page-title { font-size: 26px; font-weight: 400; color: #1976d2; margin-bottom: 24px; }
         .lesson-section-title { font-size: 15px; font-weight: 700; color: #475569; margin-top: 24px; margin-bottom: 10px; }
@@ -163,57 +153,48 @@
 </head>
 <body>
 
-<div class="loading-screen" id="loginScreen">
-    <div class="loading-box">
-        <div class="loading-spinner"></div>
-        <div class="loading-text" id="loadingText">Загружаем данные...</div>
-    </div>
-</div>
-
-<div id="appContainer" style="display:none;">
-    <div class="app-shell">
-        <header class="header">
-            <div class="header-inner">
-                <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
-                <div class="d-user-profile-zone">
-                    <div class="d-user-info">
-                        <span class="d-user-name" id="userName">Ученик</span>
-                        <span class="d-user-role" id="userRole">Ученик</span>
-                    </div>
-                    <div class="d-user-actions">
-                        <button class="d-action-link" onclick="return false">Помощь</button>
-                        <button class="d-action-link logout" onclick="logout()">Выход</button>
-                    </div>
+<div class="app-shell">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
+            <div class="d-user-profile-zone">
+                <div class="d-user-info">
+                    <span class="d-user-name" id="userName">&nbsp;</span>
+                    <span class="d-user-role">Ученик</span>
+                </div>
+                <div class="d-user-actions">
+                    <button class="d-action-link" onclick="return false">Помощь</button>
+                    <button class="d-action-link logout" onclick="logout()">Выход</button>
                 </div>
             </div>
-        </header>
-
-        <div class="d-top-blue-bar">
-            <div class="d-top-blue-inner">
-                <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
-                <a href="#" class="d-nav-item" onclick="return false">ОБЩЕНИЕ</a>
-                <a href="#" class="d-nav-item" onclick="return false">ПРИЛОЖЕНИЯ</a>
-            </div>
         </div>
+    </header>
 
-        <div class="d-sub-menu-bar">
-            <div class="d-sub-menu-inner">
-                <a href="student.html"        class="d-sub-item active">Сегодня</a>
-                <a href="student-diary.html"  class="d-sub-item">Дневник</a>
-                <a href="student-grades.html" class="d-sub-item">Оценки</a>
-            </div>
+    <div class="d-top-blue-bar">
+        <div class="d-top-blue-inner">
+            <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ОБЩЕНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ПРИЛОЖЕНИЯ</a>
         </div>
+    </div>
 
-        <div class="school-bar">
-            <div class="school-name">ГОУ ЛНР «АСШ № 6»</div>
-            <h1 class="page-title">Сегодня</h1>
+    <div class="d-sub-menu-bar">
+        <div class="d-sub-menu-inner">
+            <a href="student.html"        class="d-sub-item active">Сегодня</a>
+            <a href="student-diary.html"  class="d-sub-item">Дневник</a>
+            <a href="student-grades.html" class="d-sub-item">Оценки</a>
         </div>
+    </div>
 
-        <div class="container">
-            <div class="info-banner" id="infoBanner"></div>
-            <div id="todayContent"></div>
-            <div id="lessonPage" style="display:none;"><div class="lesson-page" id="lessonPageContent"></div></div>
-        </div>
+    <div class="school-bar">
+        <div class="school-name">ГОУ ЛНР «АСШ № 6»</div>
+        <h1 class="page-title">Сегодня</h1>
+    </div>
+
+    <div class="container">
+        <div class="info-banner" id="infoBanner"></div>
+        <div id="todayContent"></div>
+        <div id="lessonPage" style="display:none;"><div class="lesson-page" id="lessonPageContent"></div></div>
     </div>
 </div>
 
@@ -270,7 +251,8 @@
         window.location.replace('index.html');
     }
 
-    window.addEventListener('load', async () => {
+    // Скрываем мигание: стартуем сразу, но без спиннера. Просто белый фон.
+    (async function init() {
         try {
             const fb = await window._fbReady;
             const user = await new Promise((resolve) => {
@@ -284,8 +266,6 @@
             CURRENT_STUDENT = student;
             document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
             await loadAll();
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('appContainer').style.display = 'block';
             document.getElementById('infoBanner').innerHTML = `
                 <div class="info-banner-item"><div class="info-banner-label">ФИО</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.full_name)}</div></div>
                 <div class="info-banner-item"><div class="info-banner-label">Класс</div><div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>
@@ -293,9 +273,8 @@
             renderToday();
         } catch (err) {
             console.error(err);
-            document.getElementById('loadingText').textContent = 'Ошибка загрузки. Проверьте консоль.';
         }
-    });
+    })();
 
     async function loadAll() {
         const [classes, subjects, teachers, journals, students, schedules, rooms] = await Promise.all([
