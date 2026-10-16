@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рейтинг — Дневник.ру</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { background: #f0f4f9; }
+        body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 14px; font-weight: 400; padding: 0; }
+
+        .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
+        .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
+        .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+        .logo { font-size: 22px; color: #007baf; }
+        .logo-bold { font-weight: 700; }
+        .logo-sub { color: #777; }
+        .d-user-profile-zone { display: flex; align-items: center; gap: 40px; }
+        .d-user-info { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+        .d-user-name { font-size: 14px; font-weight: 700; color: #333; }
+        .d-user-role { font-size: 12px; color: #888; }
+        .d-user-actions { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+        .d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+        .d-action-link:hover { text-decoration: underline; }
+        .d-action-link.logout { color: #d9534f; }
+
+        .d-top-blue-bar { background: #166a94; }
+        .d-top-blue-inner { padding: 0; display: flex; }
+        .d-nav-item { display: inline-block; padding: 12px 20px; color: #fff; text-decoration: none; cursor: pointer; font: 400 14px/1 inherit; border-bottom: 3px solid transparent; }
+        .d-nav-item:hover { background: rgba(255,255,255,0.12); }
+        .d-nav-item.active { background: #0f4f70; border-bottom-color: #fff; }
+
+        .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
+        .d-sub-menu-inner { padding: 0; display: flex; flex-wrap: wrap; }
+        .d-sub-item { display: inline-block; padding: 10px 15px; color: #555; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; text-decoration: none; }
+        .d-sub-item:hover { color: #1d82b5; }
+        .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
+
+        /* ===== Страница рейтинга ===== */
+        .rating-page {
+            background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 16px;
+            padding: 40px 44px 60px;
+            margin: 20px 0 40px;
+            color: #fff;
+            min-height: calc(100vh - 200px);
+        }
+
+        .rating-head {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .rating-back {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .rating-back:hover { background: rgba(255,255,255,0.2); }
+        .rating-back svg { width: 18px; height: 18px; fill: currentColor; }
+        .rating-title {
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            flex: 1;
+        }
+
+        .rating-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .rating-section-title .qmark {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: help;
+        }
+
+        .rating-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 40px;
+        }
+
+        .rating-card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 22px 24px;
+        }
+        .rating-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        .rating-card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .rating-card-link {
+            font-size: 13px;
+            color: #7dd3fc;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            padding: 0;
+        }
+        .rating-card-link:hover { text-decoration: underline; }
+
+        .rating-row {
+            display: grid;
+            grid-template-columns: 40px 1fr auto auto;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            background: rgba(255,255,255,0.04);
+            transition: background 0.15s;
+        }
+        .rating-row:hover { background: rgba(255,255,255,0.08); }
+        .rating-row.me {
+            background: rgba(99,102,241,0.25);
+            border: 1px solid rgba(129,140,248,0.5);
+        }
+
+        .rating-rank {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #fbbf24;
+            color: #78350f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .rating-rank.r1 { background: #fbbf24; color: #78350f; }
+        .rating-rank.r2 { background: #e5e7eb; color: #374151; }
+        .rating-rank.r3 { background: #fb923c; color: #7c2d12; }
+        .rating-rank.r4 { background: #93c5fd; color: #1e40af; }
+        .rating-rank.r5 { background: #f0abfc; color: #701a75; }
+        .rating-rank.other { background: rgba(255,255,255,0.12); color: #fff; }
+
+        .rating-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+        .rating-class-pill {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+            text-transform: uppercase;
+        }
+        .rating-class-pill.pink { background: #ec4899; }
+        .rating-class-pill.green { background: #22c55e; }
+        .rating-class-pill.blue { background: #3b82f6; }
+
+        .rating-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .rating-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .rating-score {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            text-align: right;
+            min-width: 44px;
+        }
+        .rating-delta {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 44px;
+            flex-shrink: 0;
+        }
+        .rating-delta.neg { background: rgba(220,38,38,0.85); color: #fff; }
+        .rating-delta.pos { background: rgba(34,197,94,0.85); color: #fff; }
+        .rating-delta.zero { background: rgba(255,255,255,0.15); color: #fff; }
+
+        /* Рейтинг по предметам */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .subject-row {
+            display: grid;
+            grid-template-columns: 40px 1fr auto 24px;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+            transition: background 0.15s;
+            cursor: default;
+        }
+        .subject-row:hover { background: rgba(255,255,255,0.06); }
+        .subject-row .subject-name {
+            font-size: 14px;
+            color: #fff;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .subject-row .subject-score {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .subject-row .fire {
+            font-size: 12px;
+            margin-left: 6px;
+        }
+        .subject-row .subject-arrow {
+            color: #7dd3fc;
+            font-size: 14px;
+            text-align: center;
+        }
+        .subject-delta {
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 11px;
+            margin-left: 6px;
+        }
+
+        /* ===== Персональный рейтинг ===== */
+        .personal-block {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 32px 44px 28px;
+            display: none;
+        }
+        .personal-block.show { display: block; }
+
+        .personal-name {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .personal-status {
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 30px;
+        }
+        .personal-status b { font-weight: 700; }
+
+        .personal-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .personal-cols-label {
+            display: flex;
+            gap: 40px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            flex: 1;
+        }
+        .personal-show-all {
+            padding: 8px 18px;
+            border: 1.5px solid #7dd3fc;
+            background: transparent;
+            color: #7dd3fc;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .personal-show-all:hover { background: rgba(125,211,252,0.12); }
+        .personal-show-all.showing { background: #7dd3fc; color: #1e3c72; }
+
+        .personal-row {
+            display: grid;
+            grid-template-columns: 40px 1fr auto auto auto;
+            gap: 14px;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 4px;
+            background: rgba(255,255,255,0.04);
+        }
+        .personal-row.me {
+            background: rgba(99,102,241,0.25);
+            border: 1px solid rgba(129,140,248,0.5);
+        }
+        .personal-rank-pill {
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: #ec4899;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .personal-class-place {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #fbbf24;
+            color: #78350f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+        }
+        .personal-class-place-txt {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            line-height: 1.2;
+        }
+        .personal-class-place-txt b {
+            display: block;
+            font-size: 13px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 30px 10px;
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+            .rating-block, .subjects-grid { grid-template-columns: 1fr; }
+            .rating-page { padding: 24px 20px 40px; }
+        }
+        @media (max-width: 700px) {
+            .app-shell { padding: 0 14px; }
+            .header-inner { column-gap: 16px; }
+            .rating-title { font-size: 20px; }
+            .rating-row { grid-template-columns: 32px 1fr auto auto; gap: 8px; padding: 8px 10px; }
+            .rating-score { font-size: 13px; min-width: 36px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
+            <div class="d-user-profile-zone">
+                <div class="d-user-info">
+                    <span class="d-user-name" id="userName">&nbsp;</span>
+                    <span class="d-user-role">Ученик</span>
+                </div>
+                <div class="d-user-actions">
+                    <button class="d-action-link" onclick="return false">Помощь</button>
+                    <button class="d-action-link logout" onclick="logout()">Выход</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="d-top-blue-bar">
+        <div class="d-top-blue-inner">
+            <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ОБЩЕНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ПРИЛОЖЕНИЯ</a>
+        </div>
+    </div>
+
+    <div class="d-sub-menu-bar">
+        <div class="d-sub-menu-inner">
+            <a href="student.html"           class="d-sub-item">Сегодня</a>
+            <a href="student-diary.html"     class="d-sub-item">Дневник</a>
+            <a href="student-grades.html"    class="d-sub-item">Оценки</a>
+            <a href="student-group.html"     class="d-sub-item">Моя группа</a>
+            <a href="student-schedule.html"  class="d-sub-item">Расписание</a>
+        </div>
+    </div>
+
+    <div class="rating-page" id="ratingPage">
+        <div class="no-data">Загрузка рейтинга...</div>
+    </div>
+</div>
+
+<script src="supabase-config.js"></script>
+<script>
+    const PERIOD_LABELS = {
+        'Четверти':  ['I четверть','II четверть','III четверть','IV четверть'],
+        'Полугодия': ['I полугодие','II полугодие'],
+        'Триместры': ['I триместр','II триместр','III триместр'],
+        'Семестры':  ['I семестр','II семестр']
+    };
+
+    let CURRENT_STUDENT = null;
+    let CURRENT_CLASS = null;
+    let ALL_STUDENTS = [];
+    let ALL_CLASSES = [];
+    let ALL_SUBJECTS = [];
+    let ALL_JOURNALS = [];
+    let PERIODS = [];
+    let PERIOD_SYSTEM = '';
+    let ACTIVE_PERIOD_INDEX = 0;
+    let SHOW_ALL_PERSONAL = false;
+
+    function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
+    function firstDigit(v) { const s = String(v == null ? '' : v); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) return c - 48; } return null; }
+    function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
+    function initials(name) { return (name || '').split(' ').map(w => w[0] || '').slice(0, 2).join('').toUpperCase(); }
+
+    async function logout() {
+        if (!confirm('Выйти из кабинета?')) return;
+        try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
+        try { localStorage.removeItem('sj_session'); } catch (e) {}
+        window.location.replace('index.html');
+    }
+
+    (async function init() {
+        try {
+            const fb = await window._fbReady;
+            const user = await new Promise((resolve) => {
+                const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
+            });
+            if (!user) { window.location.replace('index.html'); return; }
+            const login = user.email.split('@')[0];
+
+            const [students, classes, subjects, journals, periodDocs] = await Promise.all([
+                DB.getAll('students'), DB.getAll('classes'), DB.getAll('subjects'),
+                DB.getAll('journals'), DB.getAll('educational_periods')
+            ]);
+            const student = students.find(s => s.login === login);
+            if (!student) { window.location.replace('index.html'); return; }
+            CURRENT_STUDENT = student;
+            CURRENT_CLASS = classes.find(c => c.id === student.class_id) || null;
+            ALL_STUDENTS = students;
+            ALL_CLASSES = classes;
+            ALL_SUBJECTS = subjects;
+            ALL_JOURNALS = journals;
+            const pd = periodDocs[0] || null;
+            PERIODS = pd ? (pd.periods || []) : [];
+            PERIOD_SYSTEM = pd ? (pd.system || '') : '';
+            ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
+
+            document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
+
+            render();
+        } catch (err) {
+            console.error(err);
+            document.getElementById('ratingPage').innerHTML = '<div class="no-data">Ошибка загрузки. Проверьте консоль.</div>';
+        }
+    })();
+
+    function findActivePeriodIndex() {
+        if (PERIODS.length === 0) return 0;
+        const t = new Date(); t.setHours(0,0,0,0);
+        for (let i = 0; i < PERIODS.length; i++) {
+            const s = new Date(PERIODS[i].start + 'T00:00:00');
+            const e = new Date(PERIODS[i].end + 'T23:59:59');
+            if (t >= s && t <= e) return i;
+        }
+        return 0;
+    }
+
+    // Получить параллель класса
+    function getParallelOfClass(cls) {
+        if (!cls) return null;
+        if (cls.parallel) return String(cls.parallel);
+        const m = String(cls.name || '').match(/^(\d+)/);
+        return m ? m[1] : null;
+    }
+
+    // Средний балл ученика за период по всем предметам (из журналов)
+    function calcStudentAvg(studentId, periodRange) {
+        let sum = 0, cnt = 0;
+        ALL_JOURNALS.forEach(journal => {
+            const sg = (journal.grades && journal.grades[studentId]) || {};
+            Object.entries(sg).forEach(([key, val]) => {
+                if (val == null || val === '') return;
+                if (key.endsWith('_pres')) return;
+                const p = String(key).split('_');
+                const dateStr = p[0];
+                if (periodRange) {
+                    if (dateStr < periodRange.start || dateStr > periodRange.end) return;
+                }
+                const cell = parseCell(val);
+                const d = firstDigit(cell.grade);
+                if (d !== null) { sum += d; cnt++; }
+            });
+        });
+        return cnt === 0 ? null : sum / cnt;
+    }
+
+    // Средний балл ученика по конкретному предмету за период
+    function calcStudentSubjectAvg(studentId, subjectId, periodRange) {
+        const journal = ALL_JOURNALS.find(j => j.subject_id === subjectId);
+        if (!journal) return null;
+        const sg = (journal.grades && journal.grades[studentId]) || {};
+        let sum = 0, cnt = 0;
+        Object.entries(sg).forEach(([key, val]) => {
+            if (val == null || val === '') return;
+            if (key.endsWith('_pres')) return;
+            const p = String(key).split('_');
+            const dateStr = p[0];
+            if (periodRange) {
+                if (dateStr < periodRange.start || dateStr > periodRange.end) return;
+            }
+            const cell = parseCell(val);
+            const d = firstDigit(cell.grade);
+            if (d !== null) { sum += d; cnt++; }
+        });
+        return cnt === 0 ? null : sum / cnt;
+    }
+
+    // Средний балл класса по предмету за период
+    function calcClassSubjectAvg(classStudentsIds, subjectId, periodRange) {
+        let totalSum = 0, totalCnt = 0;
+        classStudentsIds.forEach(sid => {
+            const avg = calcStudentSubjectAvg(sid, subjectId, periodRange);
+            if (avg != null) { totalSum += avg; totalCnt++; }
+        });
+        return totalCnt === 0 ? null : totalSum / totalCnt;
+    }
+
+    function getPeriodRange() {
+        if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
+        return { start: PERIODS[ACTIVE_PERIOD_INDEX].start, end: PERIODS[ACTIVE_PERIOD_INDEX].end };
+    }
+
+    function fmtScore(n) {
+        if (n == null) return '—';
+        return n.toFixed(2);
+    }
+
+    function render() {
+        const container = document.getElementById('ratingPage');
+        if (!CURRENT_CLASS) {
+            container.innerHTML = '<div class="no-data">Класс не найден.</div>';
+            return;
+        }
+
+        const periodRange = getPeriodRange();
+        const myId = CURRENT_STUDENT.id;
+        const myClassId = CURRENT_CLASS.id;
+        const myParallel = getParallelOfClass(CURRENT_CLASS);
+
+        // Ученики класса
+        const classStudents = ALL_STUDENTS.filter(s => s.class_id === myClassId);
+        const classStudentIds = classStudents.map(s => s.id);
+
+        // Ученики параллели
+        const parallelStudents = ALL_STUDENTS.filter(s => {
+            const cls = ALL_CLASSES.find(c => c.id === s.class_id);
+            return getParallelOfClass(cls) === myParallel;
+        });
+
+        // === Средние баллы класса ===
+        const classAvgs = classStudents.map(s => ({
+            id: s.id,
+            full_name: s.full_name,
+            avg: calcStudentAvg(s.id, periodRange)
+        })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
+
+        const myClassEntry = classAvgs.find(x => x.id === myId);
+        const myClassAvg = myClassEntry ? myClassEntry.avg : null;
+        const myClassPlace = myClassEntry ? (classAvgs.findIndex(x => x.id === myId) + 1) : null;
+
+        // === Средние баллы параллели ===
+        const parallelAvgs = parallelStudents.map(s => ({
+            id: s.id,
+            full_name: s.full_name,
+            avg: calcStudentAvg(s.id, periodRange),
+            class_id: s.class_id
+        })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
+
+        const myParallelEntry = parallelAvgs.find(x => x.id === myId);
+        const myParallelAvg = myParallelEntry ? myParallelEntry.avg : null;
+        const myParallelPlace = myParallelEntry ? (parallelAvgs.findIndex(x => x.id === myId) + 1) : null;
+
+        // === Рейтинг по предметам ===
+        // Для моего класса собираем предметы из журналов класса
+        const classSubjects = new Map();
+        ALL_JOURNALS.filter(j => j.class_id === myClassId).forEach(j => {
+            const subj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
+            if (subj && !classSubjects.has(subj.id)) classSubjects.set(subj.id, subj);
+        });
+
+        const subjectRows = [];
+        classSubjects.forEach(subj => {
+            const myAvg = calcStudentSubjectAvg(myId, subj.id, periodRange);
+            const classAvg = calcClassSubjectAvg(classStudentIds, subj.id, periodRange);
+            // Место среди одноклассников по предмету
+            const studentsWithAvg = classStudents.map(s => ({
+                id: s.id, avg: calcStudentSubjectAvg(s.id, subj.id, periodRange)
+            })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
+            const myPlaceInSubject = studentsWithAvg.findIndex(x => x.id === myId) + 1;
+            subjectRows.push({
+                subject: subj,
+                myAvg: myAvg,
+                classAvg: classAvg,
+                place: myPlaceInSubject || null,
+                totalInClass: studentsWithAvg.length
+            });
+        });
+        // Сортируем: сначала где я выше (место 1), потом по алфавиту
+        subjectRows.sort((a, b) => {
+            if (a.place && b.place) return a.place - b.place;
+            if (a.place) return -1;
+            if (b.place) return 1;
+            return (a.subject.name || '').localeCompare(b.subject.name || '', 'ru');
+        });
+
+        // Вторая колонка: средние по классу (топ по среднему)
+        const subjectByClassAvg = subjectRows.slice().sort((a, b) => (b.classAvg || 0) - (a.classAvg || 0));
+
+        const periodName = PERIODS.length > 0 ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Период') : '';
+
+        // === Рендер ===
+        container.innerHTML = `
+            <div class="rating-head">
+                <a href="student-grades.html" class="rating-back">
+                    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                </a>
+                <div class="rating-title">Ваш рейтинг</div>
+            </div>
+
+            <div class="rating-section-title">
+                Рейтинг общий
+                <span class="qmark" title="Средний балл = среднее арифметическое всех оценок за ${escapeHtml(periodName)}">?</span>
+            </div>
+            <div class="rating-block">
+                <div class="rating-card">
+                    <div class="rating-card-head">
+                        <div class="rating-card-title">Место в классе</div>
+                        <button class="rating-card-link" onclick="alert('Полный список — на странице «Оценки»')">Открыть все</button>
+                    </div>
+                    ${classAvgs.length === 0 ? '<div class="no-data">Нет данных за период</div>' : classAvgs.slice(0, 5).map((row, i) => {
+                        const place = i + 1;
+                        const isMe = row.id === myId;
+                        const delta = myClassAvg != null ? (row.avg - myClassAvg) : null;
+                        return renderOverallRow(place, row, isMe, delta, getClassOf(row.id));
+                    }).join('')}
+                </div>
+
+                <div class="rating-card">
+                    <div class="rating-card-head">
+                        <div class="rating-card-title">Место в параллели</div>
+                        <button class="rating-card-link" onclick="togglePersonal()">Открыть все</button>
+                    </div>
+                    ${parallelAvgs.length === 0 ? '<div class="no-data">Нет данных за период</div>' : parallelAvgs.slice(0, 5).map((row, i) => {
+                        const place = i + 1;
+                        const isMe = row.id === myId;
+                        const delta = myParallelAvg != null ? (row.avg - myParallelAvg) : null;
+                        return renderOverallRow(place, row, isMe, delta, getClassOf(row.id));
+                    }).join('')}
+                </div>
+            </div>
+
+            <div class="rating-section-title">Рейтинг по предметам</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:16px;">
+                На основе данных о среднем балле учащихся в параллели (${escapeHtml(periodName)})
+            </div>
+            <div class="subjects-grid">
+                <div class="rating-card">
+                    <div class="rating-card-title" style="margin-bottom:14px;">Ваш рейтинг по предметам</div>
+                    ${subjectRows.length === 0 ? '<div class="no-data">Нет данных</div>' : subjectRows.map(sr => `
+                        <div class="subject-row">
+                            <div class="rating-rank other">${sr.place || '—'}</div>
+                            <div class="subject-name">
+                                ${escapeHtml(sr.subject.name)}
+                                ${sr.place === 1 && sr.myAvg === 5 ? '<span class="fire">🔥</span>' : ''}
+                            </div>
+                            <div class="subject-score">${fmtScore(sr.myAvg)}</div>
+                            <div class="subject-arrow">›</div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="rating-card">
+                    <div class="rating-card-title" style="margin-bottom:14px;">Средний балл класса по предметам</div>
+                    ${subjectByClassAvg.length === 0 ? '<div class="no-data">Нет данных</div>' : subjectByClassAvg.map(sr => {
+                        const delta = (sr.classAvg != null && sr.myAvg != null) ? (sr.myAvg - sr.classAvg) : null;
+                        const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
+                        const deltaTxt = delta == null ? '' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
+                        return `
+                        <div class="subject-row">
+                            <div class="rating-rank other">${sr.place || '—'}</div>
+                            <div class="subject-name">${escapeHtml(sr.subject.name)}</div>
+                            <div class="subject-score">
+                                ${fmtScore(sr.classAvg)}
+                                ${deltaTxt ? `<span class="subject-delta rating-delta ${deltaCls}">${deltaTxt}</span>` : ''}
+                            </div>
+                            <div class="subject-arrow">›</div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>
+
+            <div class="personal-block ${SHOW_ALL_PERSONAL ? 'show' : ''}" id="personalBlock">
+                ${renderPersonalBlock(parallelAvgs, myId, myParallelPlace, myClassPlace, periodName)}
+            </div>
+        `;
+
+        container.querySelectorAll('.rating-card-link').forEach(b => {
+            if (b.textContent.includes('Открыть все')) {
+                b.onclick = () => togglePersonal();
+            }
+        });
+    }
+
+    function renderOverallRow(place, row, isMe, delta, cls) {
+        let rankCls = 'other';
+        if (place === 1) rankCls = 'r1';
+        else if (place === 2) rankCls = 'r2';
+        else if (place === 3) rankCls = 'r3';
+        else if (place === 4) rankCls = 'r4';
+        else if (place === 5) rankCls = 'r5';
+        const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
+        const deltaTxt = delta == null ? '·' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
+        const clsName = cls ? cls.name : '';
+        const pillColor = clsName && clsName.includes('Г') ? 'pink' : (clsName && clsName.includes('Л') ? 'green' : 'blue');
+        return `<div class="rating-row ${isMe ? 'me' : ''}">
+            <div class="rating-rank ${rankCls}">${place}</div>
+            <div class="rating-name-cell">
+                <span class="rating-class-pill ${pillColor}">${escapeHtml(clsName)}</span>
+                <div class="rating-avatar">${escapeHtml(initials(row.full_name))}</div>
+            </div>
+            <div class="rating-score">${fmtScore(row.avg)}</div>
+            <div class="rating-delta ${deltaCls}">${deltaTxt}</div>
+        </div>`;
+    }
+
+    function getClassOf(studentId) {
+        const s = ALL_STUDENTS.find(x => x.id === studentId);
+        if (!s) return null;
+        return ALL_CLASSES.find(c => c.id === s.class_id) || null;
+    }
+
+    function renderPersonalBlock(parallelAvgs, myId, myParallelPlace, myClassPlace, periodName) {
+        const me = ALL_STUDENTS.find(x => x.id === myId);
+        const myName = me ? me.full_name : '';
+        const list = SHOW_ALL_PERSONAL ? parallelAvgs : parallelAvgs.slice(0, 10);
+        // Индексы мест в классе — по каждому ученику в его классе
+        const classPlaces = {};
+        // Сначала проходим по каждому классу параллели и считаем места
+        const parallelClasses = new Set(parallelAvgs.map(x => getClassOf(x.id)?.id));
+        parallelClasses.forEach(cid => {
+            if (!cid) return;
+            const ofClass = parallelAvgs.filter(x => getClassOf(x.id)?.id === cid);
+            ofClass.forEach((x, i) => { classPlaces[x.id] = i + 1; });
+        });
+
+        return `
+            <div style="text-align: center; margin-bottom: 26px;">
+                <div class="personal-name">${escapeHtml(myName)}</div>
+                <div class="personal-status">
+                    сейчас на <b>${myClassPlace || '—'}-м месте</b> 🥇 в классе<br>
+                    и на <b>${myParallelPlace || '—'}-м месте</b> в параллели
+                </div>
+            </div>
+            <div class="personal-controls">
+                <div class="personal-cols-label" style="padding-left: 54px;">
+                    <span>Место в параллели</span>
+                    <span style="margin-left: auto; margin-right: 80px;">Ср. балл</span>
+                </div>
+                <button class="personal-show-all ${SHOW_ALL_PERSONAL ? 'showing' : ''}" id="personalToggle" onclick="togglePersonal()">
+                    ${SHOW_ALL_PERSONAL ? 'Свернуть' : 'Показать все'}
+                </button>
+            </div>
+            ${list.map((row, i) => {
+                const place = i + 1;
+                const isMe = row.id === myId;
+                const cls = getClassOf(row.id);
+                const clsName = cls ? cls.name : '';
+                const pillColor = clsName && clsName.includes('Г') ? 'pink' : (clsName && clsName.includes('Л') ? 'green' : 'blue');
+                const clsPlace = classPlaces[row.id];
+                const delta = (myParallelAvg() != null) ? (row.avg - myParallelAvg()) : null;
+                const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
+                const deltaTxt = delta == null ? '' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
+                return `<div class="personal-row ${isMe ? 'me' : ''}">
+                    <div class="rating-rank other">${place}</div>
+                    <div class="rating-name-cell">
+                        <span class="rating-class-pill ${pillColor}">${escapeHtml(clsName)}</span>
+                        <div class="rating-avatar">${escapeHtml(initials(row.full_name))}</div>
+                    </div>
+                    <div class="rating-score">${fmtScore(row.avg)}</div>
+                    <div class="rating-delta ${deltaCls}">${deltaTxt}</div>
+                    <div class="personal-class-place-txt">
+                        <b>${clsPlace || '—'}</b>
+                        место<br>в ${escapeHtml(clsName)}
+                    </div>
+                </div>`;
+            }).join('')}
+        `;
+    }
+
+    // Хелпер для доступа к моему среднему в параллели из renderPersonalBlock
+    let _myParallelAvgCache = null;
+    function myParallelAvg() { return _myParallelAvgCache; }
+
+    window.togglePersonal = function () {
+        SHOW_ALL_PERSONAL = !SHOW_ALL_PERSONAL;
+        render();
+        // Прокрутка к блоку
+        const el = document.getElementById('personalBlock');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    // Небольшая правка: кэшируем средний балл перед вызовом render
+    const _origRender = render;
+    render = function () {
+        try {
+            const periodRange = getPeriodRange();
+            _myParallelAvgCache = CURRENT_STUDENT ? calcStudentAvg(CURRENT_STUDENT.id, periodRange) : null;
+        } catch (e) { _myParallelAvgCache = null; }
+        return _origRender.apply(this, arguments);
+    };
+</script>
+</body>
+</html>
