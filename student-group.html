@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя группа — Дневник.ру</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { background: #fff; }
+        body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 14px; font-weight: 400; padding: 0; }
+
+        .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
+        .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
+        .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+        .logo { font-size: 22px; color: #007baf; }
+        .logo-bold { font-weight: 700; }
+        .logo-sub { color: #777; font-weight: 400; }
+        .d-user-profile-zone { display: flex; align-items: center; gap: 40px; }
+        .d-user-info { display: flex; flex-direction: column; align-items: flex-start; text-align: left; line-height: 1.3; }
+        .d-user-name { font-size: 14px; font-weight: 700; color: #333; }
+        .d-user-role { font-size: 12px; font-weight: 400; color: #888; }
+        .d-user-actions { display: flex; flex-direction: column; align-items: flex-start; text-align: left; line-height: 1.3; }
+        .d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; font-weight: 400; background: none; border: none; font-family: inherit; padding: 0; }
+        .d-action-link:hover { text-decoration: underline; }
+        .d-action-link.logout { color: #d9534f; }
+
+        .d-top-blue-bar { background: #166a94; }
+        .d-top-blue-inner { padding: 0; display: flex; }
+        .d-nav-item { display: inline-block; padding: 12px 20px; color: #ffffff; text-decoration: none; cursor: pointer; font: 400 14px/1 inherit; border-bottom: 3px solid transparent; }
+        .d-nav-item:hover { background: rgba(255,255,255,0.12); }
+        .d-nav-item.active { background: #0f4f70; border-bottom-color: #ffffff; }
+
+        .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
+        .d-sub-menu-inner { padding: 0; display: flex; flex-wrap: wrap; }
+        .d-sub-item { display: inline-block; padding: 10px 15px; color: #555; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; text-decoration: none; }
+        .d-sub-item:hover { color: #1d82b5; }
+        .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
+
+        .container { padding: 0 0 60px; }
+
+        /* ===== Страница группы ===== */
+        .group-page { background: #fff; border-radius: 12px; padding: 28px 32px 40px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; }
+
+        .group-header-top {
+            font-size: 11px;
+            font-weight: 700;
+            color: #b8b8d0;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 14px;
+        }
+        .group-header {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid #eef2f8;
+        }
+        .group-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #5cc47a, #3da55e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .group-icon svg { width: 34px; height: 34px; fill: #fff; }
+        .group-header-info { flex: 1; }
+        .group-title {
+            font-size: 26px;
+            font-weight: 400;
+            color: #7b6b99;
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+        .group-title-sub {
+            font-size: 14px;
+            color: #a89ec2;
+            font-weight: 400;
+            margin-bottom: 12px;
+        }
+        .group-year {
+            font-size: 13px;
+            color: #94a3b8;
+            display: inline-block;
+        }
+
+        .group-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #eef2f8;
+            flex-wrap: wrap;
+        }
+        .group-tab {
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+        .group-tab:hover { color: #1d82b5; }
+        .group-tab.active { color: #1d82b5; border-bottom-color: #1d82b5; }
+
+        .group-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .group-main {
+            min-height: 320px;
+        }
+        .group-pane { display: none; }
+        .group-pane.active { display: block; }
+
+        /* Заглушка "пусто" */
+        .group-empty {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+        .group-empty-img {
+            width: 180px;
+            height: 140px;
+            margin: 0 auto 22px;
+            position: relative;
+        }
+        .group-empty-img svg { width: 100%; height: 100%; }
+        .group-empty-text {
+            font-size: 15px;
+            color: #5a6a85;
+            font-weight: 400;
+        }
+
+        /* Обучающиеся */
+        .students-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .student-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #eef2f8;
+            transition: background 0.15s;
+        }
+        .student-row:hover { background: #f0f7ff; }
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1976d2, #2196f3);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .student-name {
+            font-size: 14px;
+            color: #1a2b4a;
+            font-weight: 500;
+        }
+        .student-name.me {
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        /* Правая колонка */
+        .group-side {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .side-block-title {
+            font-size: 13px;
+            color: #7a8aa3;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+        .staff-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #f0f4f9;
+            border: 1px solid #e0e8f0;
+            border-radius: 10px;
+        }
+        .staff-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #e0e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .staff-avatar svg { width: 24px; height: 24px; fill: #b8c4d4; }
+        .staff-name {
+            font-size: 14px;
+            color: #16a34a;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+        .staff-role {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .empty-block {
+            padding: 22px 16px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #eef2f8;
+        }
+
+        @media (max-width: 900px) {
+            .group-layout { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 700px) {
+            .app-shell { padding: 0 14px; }
+            .header-inner { column-gap: 16px; }
+            .group-page { padding: 20px 16px 28px; }
+            .group-title { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
+            <div class="d-user-profile-zone">
+                <div class="d-user-info">
+                    <span class="d-user-name" id="userName">&nbsp;</span>
+                    <span class="d-user-role">Ученик</span>
+                </div>
+                <div class="d-user-actions">
+                    <button class="d-action-link" onclick="return false">Помощь</button>
+                    <button class="d-action-link logout" onclick="logout()">Выход</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="d-top-blue-bar">
+        <div class="d-top-blue-inner">
+            <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ОБЩЕНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ПРИЛОЖЕНИЯ</a>
+        </div>
+    </div>
+
+    <div class="d-sub-menu-bar">
+        <div class="d-sub-menu-inner">
+            <a href="student.html"        class="d-sub-item">Сегодня</a>
+            <a href="student-diary.html"  class="d-sub-item">Дневник</a>
+            <a href="student-grades.html" class="d-sub-item">Оценки</a>
+            <a href="student-group.html"  class="d-sub-item active">Моя группа</a>
+        </div>
+    </div>
+
+    <div class="container" style="padding-top: 16px;">
+        <div class="group-page" id="groupPage"></div>
+    </div>
+</div>
+
+<script src="supabase-config.js"></script>
+<script>
+    let CURRENT_STUDENT = null;
+    let CURRENT_CLASS = null;
+
+    function escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        const div = document.createElement('div');
+        div.textContent = String(text);
+        return div.innerHTML;
+    }
+    function initials(name) {
+        return (name || '').split(' ').map(w => w[0] || '').slice(0, 2).join('').toUpperCase();
+    }
+
+    async function logout() {
+        if (!confirm('Выйти из кабинета?')) return;
+        try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
+        try { localStorage.removeItem('sj_session'); } catch (e) {}
+        window.location.replace('index.html');
+    }
+
+    (async function init() {
+        try {
+            const fb = await window._fbReady;
+            const user = await new Promise((resolve) => {
+                const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
+            });
+            if (!user) { window.location.replace('index.html'); return; }
+            const login = user.email.split('@')[0];
+            const [students, classes] = await Promise.all([
+                DB.getAll('students'),
+                DB.getAll('classes')
+            ]);
+            const student = students.find(s => s.login === login);
+            if (!student) { window.location.replace('index.html'); return; }
+            CURRENT_STUDENT = student;
+            CURRENT_CLASS = classes.find(c => c.id === student.class_id) || null;
+
+            document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
+            renderGroupPage();
+        } catch (err) {
+            console.error(err);
+            document.getElementById('groupPage').innerHTML = '<div style="padding: 40px; text-align:center; color:#d32f2f;">Ошибка загрузки. Проверьте консоль.</div>';
+        }
+    })();
+
+    async function renderGroupPage() {
+        const container = document.getElementById('groupPage');
+        if (!CURRENT_CLASS) {
+            container.innerHTML = '<div style="padding:40px;text-align:center;color:#94a3b8;">Класс не найден. Обратитесь к администратору.</div>';
+            return;
+        }
+
+        const [allStudents, teachers] = await Promise.all([
+            DB.getAll('students'),
+            DB.getAll('teachers')
+        ]);
+
+        const classStudents = allStudents
+            .filter(s => s.class_id === CURRENT_CLASS.id)
+            .sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
+
+        const classTeacher = teachers.find(t => t.id === CURRENT_CLASS.teacher_id);
+
+        // Название группы
+        const groupName = CURRENT_CLASS.full_name
+            ? 'Группа: ' + CURRENT_CLASS.name + ' (' + CURRENT_CLASS.full_name + ')'
+            : 'Группа: ' + CURRENT_CLASS.name;
+
+        const classType = CURRENT_CLASS.type || '';
+        const yearText = (CURRENT_CLASS.year || '') ? (CURRENT_CLASS.year + ' учебный год') : '';
+
+        container.innerHTML = `
+            <div class="group-header-top">КГБ ПОУ ЖХСТО</div>
+
+            <div class="group-header">
+                <div class="group-icon">
+                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                </div>
+                <div class="group-header-info">
+                    <div class="group-title">${escapeHtml(groupName)}</div>
+                    ${classType ? `<div class="group-title-sub">${escapeHtml(classType)}</div>` : ''}
+                    ${yearText ? `<div class="group-year">${escapeHtml(yearText)}</div>` : ''}
+                </div>
+            </div>
+
+            <div class="group-tabs">
+                <button type="button" class="group-tab active" data-tab="announcements">Объявления</button>
+                <button type="button" class="group-tab" data-tab="students">Обучающиеся</button>
+                <button type="button" class="group-tab" data-tab="achievements">Достижения</button>
+            </div>
+
+            <div class="group-layout">
+                <div class="group-main">
+                    <div class="group-pane active" id="pane-announcements">
+                        <div class="group-empty">
+                            <div class="group-empty-img">
+                                <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+                                    <ellipse cx="100" cy="118" rx="70" ry="12" fill="#e8eef5"/>
+                                    <ellipse cx="60" cy="118" rx="4" ry="8" fill="#c8d4e0"/>
+                                    <ellipse cx="140" cy="118" rx="4" ry="8" fill="#c8d4e0"/>
+                                    <path d="M 70 80 Q 100 40 130 80 L 130 100 Q 100 110 70 100 Z" fill="#dbeafe"/>
+                                    <ellipse cx="100" cy="60" rx="30" ry="14" fill="#3b82f6"/>
+                                    <path d="M 85 55 L 65 50 L 68 58 Z" fill="#dc2626"/>
+                                    <path d="M 115 55 L 135 50 L 132 58 Z" fill="#dc2626"/>
+                                    <path d="M 90 65 L 90 78" stroke="#1e40af" stroke-width="2"/>
+                                    <path d="M 110 65 L 110 78" stroke="#1e40af" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div class="group-empty-text">В этом разделе ещё никто не создавал записи.</div>
+                        </div>
+                    </div>
+
+                    <div class="group-pane" id="pane-students">
+                        <div class="students-list">
+                            ${classStudents.length === 0
+                                ? '<div class="empty-block">В классе пока нет учеников</div>'
+                                : classStudents.map(s => {
+                                    const isMe = s.id === CURRENT_STUDENT.id;
+                                    return `<div class="student-row">
+                                        <div class="student-avatar">${escapeHtml(initials(s.full_name))}</div>
+                                        <div class="student-name${isMe ? ' me' : ''}">${escapeHtml(s.full_name)}${isMe ? ' (ты)' : ''}</div>
+                                    </div>`;
+                                }).join('')
+                            }
+                        </div>
+                    </div>
+
+                    <div class="group-pane" id="pane-achievements">
+                        <div class="group-empty">
+                            <div class="group-empty-img">
+                                <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+                                    <ellipse cx="100" cy="118" rx="70" ry="12" fill="#e8eef5"/>
+                                    <circle cx="100" cy="70" r="34" fill="#fef3c7"/>
+                                    <circle cx="100" cy="70" r="26" fill="#fcd34d"/>
+                                    <path d="M 100 52 L 103 62 L 114 62 L 105 69 L 108 79 L 100 73 L 92 79 L 95 69 L 86 62 L 97 62 Z" fill="#b45309"/>
+                                </svg>
+                            </div>
+                            <div class="group-empty-text">Пока нет достижений.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group-side">
+                    <div>
+                        <div class="side-block-title">Сотрудники группы</div>
+                        ${classTeacher
+                            ? `<div class="staff-card">
+                                <div class="staff-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+                                <div>
+                                    <div class="staff-name">${escapeHtml(classTeacher.full_name)}</div>
+                                    <div class="staff-role">Куратор</div>
+                                </div>
+                            </div>`
+                            : '<div class="empty-block">Нет куратора</div>'
+                        }
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Переключение вкладок
+        container.querySelectorAll('.group-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                container.querySelectorAll('.group-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                container.querySelectorAll('.group-pane').forEach(p => p.classList.remove('active'));
+                const pane = container.querySelector('#pane-' + tab.dataset.tab);
+                if (pane) pane.classList.add('active');
+            });
+        });
+    }
+</script>
+</body>
+</html>
