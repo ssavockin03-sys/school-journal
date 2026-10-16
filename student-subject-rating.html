@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рейтинг по предмету — Дневник.ру</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { background: #f0f4f9; }
+        body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 14px; font-weight: 400; padding: 0; }
+
+        .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
+        .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
+        .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+        .logo { font-size: 22px; color: #007baf; }
+        .logo-bold { font-weight: 700; }
+        .logo-sub { color: #777; }
+        .d-user-profile-zone { display: flex; align-items: center; gap: 40px; }
+        .d-user-info { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+        .d-user-name { font-size: 14px; font-weight: 700; color: #333; }
+        .d-user-role { font-size: 12px; color: #888; }
+        .d-user-actions { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+        .d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+        .d-action-link:hover { text-decoration: underline; }
+        .d-action-link.logout { color: #d9534f; }
+
+        .d-top-blue-bar { background: #166a94; }
+        .d-top-blue-inner { padding: 0; display: flex; }
+        .d-nav-item { display: inline-block; padding: 12px 20px; color: #fff; text-decoration: none; cursor: pointer; font: 400 14px/1 inherit; border-bottom: 3px solid transparent; }
+        .d-nav-item:hover { background: rgba(255,255,255,0.12); }
+        .d-nav-item.active { background: #0f4f70; border-bottom-color: #fff; }
+
+        .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
+        .d-sub-menu-inner { padding: 0; display: flex; flex-wrap: wrap; }
+        .d-sub-item { display: inline-block; padding: 10px 15px; color: #555; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; text-decoration: none; }
+        .d-sub-item:hover { color: #1d82b5; }
+        .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
+
+        /* ===== Страница ===== */
+        .subj-page {
+            background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 16px;
+            padding: 40px 44px 60px;
+            margin: 20px 0 40px;
+            color: #fff;
+            min-height: calc(100vh - 200px);
+        }
+        .subj-head {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .subj-back {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .subj-back:hover { background: rgba(255,255,255,0.2); }
+        .subj-back svg { width: 18px; height: 18px; fill: currentColor; }
+        .subj-title {
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            flex: 1;
+        }
+
+        .subj-info-card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 22px 26px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 22px;
+        }
+        .subj-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .subj-info-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+        .subj-info-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .subj-info-value small { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 400; }
+
+        .subj-list-card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 22px 26px;
+        }
+        .subj-list-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .student-row {
+            display: grid;
+            grid-template-columns: 44px 1fr auto auto;
+            gap: 14px;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            background: rgba(255,255,255,0.04);
+            transition: background 0.15s;
+        }
+        .student-row:hover { background: rgba(255,255,255,0.08); }
+        .student-row.me {
+            background: rgba(99,102,241,0.25);
+            border: 1px solid rgba(129,140,248,0.5);
+        }
+
+        .rank-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #fbbf24;
+            color: #78350f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .rank-circle.r1 { background: #fbbf24; color: #78350f; }
+        .rank-circle.r2 { background: #e5e7eb; color: #374151; }
+        .rank-circle.r3 { background: #fb923c; color: #7c2d12; }
+        .rank-circle.r4 { background: #93c5fd; color: #1e40af; }
+        .rank-circle.r5 { background: #f0abfc; color: #701a75; }
+        .rank-circle.other { background: rgba(255,255,255,0.12); color: #fff; }
+
+        .name-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+        .avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .name-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .name-text.me { font-weight: 700; }
+
+        .score {
+            font-size: 17px;
+            font-weight: 700;
+            color: #fff;
+            text-align: right;
+            min-width: 54px;
+        }
+
+        .delta {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 52px;
+            flex-shrink: 0;
+        }
+        .delta.neg { background: rgba(220,38,38,0.85); color: #fff; }
+        .delta.pos { background: rgba(34,197,94,0.85); color: #fff; }
+        .delta.zero { background: rgba(255,255,255,0.15); color: #fff; }
+
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            .app-shell { padding: 0 14px; }
+            .header-inner { column-gap: 16px; }
+            .subj-page { padding: 24px 18px 40px; }
+            .subj-title { font-size: 20px; }
+            .subj-info-card { grid-template-columns: 1fr; gap: 14px; padding: 18px; }
+            .student-row { grid-template-columns: 36px 1fr auto; gap: 8px; padding: 10px 12px; }
+            .score { font-size: 15px; min-width: 44px; }
+            .delta { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
+            <div class="d-user-profile-zone">
+                <div class="d-user-info">
+                    <span class="d-user-name" id="userName">&nbsp;</span>
+                    <span class="d-user-role">Ученик</span>
+                </div>
+                <div class="d-user-actions">
+                    <button class="d-action-link" onclick="return false">Помощь</button>
+                    <button class="d-action-link logout" onclick="logout()">Выход</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="d-top-blue-bar">
+        <div class="d-top-blue-inner">
+            <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ОБЩЕНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ПРИЛОЖЕНИЯ</a>
+        </div>
+    </div>
+
+    <div class="d-sub-menu-bar">
+        <div class="d-sub-menu-inner">
+            <a href="student.html"           class="d-sub-item">Сегодня</a>
+            <a href="student-diary.html"     class="d-sub-item">Дневник</a>
+            <a href="student-grades.html"    class="d-sub-item">Оценки</a>
+            <a href="student-group.html"     class="d-sub-item">Моя группа</a>
+            <a href="student-schedule.html"  class="d-sub-item">Расписание</a>
+        </div>
+    </div>
+
+    <div class="subj-page" id="subjPage">
+        <div class="no-data">Загрузка...</div>
+    </div>
+</div>
+
+<script src="supabase-config.js"></script>
+<script>
+    const PERIOD_LABELS = {
+        'Четверти':  ['I четверть','II четверть','III четверть','IV четверть'],
+        'Полугодия': ['I полугодие','II полугодие'],
+        'Триместры': ['I триместр','II триместр','III триместр'],
+        'Семестры':  ['I семестр','II семестр']
+    };
+
+    let CURRENT_STUDENT = null;
+    let CURRENT_CLASS = null;
+    let ALL_STUDENTS = [];
+    let ALL_CLASSES = [];
+    let ALL_SUBJECTS = [];
+    let ALL_JOURNALS = [];
+    let PERIODS = [];
+    let PERIOD_SYSTEM = '';
+    let ACTIVE_PERIOD_INDEX = 0;
+    let TARGET_SUBJECT = null;
+
+    function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
+    function firstDigit(v) { const s = String(v == null ? '' : v); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) return c - 48; } return null; }
+    function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
+    function initials(name) { return (name || '').split(' ').map(w => w[0] || '').slice(0, 2).join('').toUpperCase(); }
+
+    async function logout() {
+        if (!confirm('Выйти из кабинета?')) return;
+        try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
+        try { localStorage.removeItem('sj_session'); } catch (e) {}
+        window.location.replace('index.html');
+    }
+
+    (async function init() {
+        try {
+            const fb = await window._fbReady;
+            const user = await new Promise((resolve) => {
+                const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
+            });
+            if (!user) { window.location.replace('index.html'); return; }
+            const login = user.email.split('@')[0];
+
+            const params = new URLSearchParams(window.location.search);
+            const subjectId = params.get('subject');
+            if (!subjectId) {
+                document.getElementById('subjPage').innerHTML = '<div class="no-data">Не указан предмет.</div>';
+                return;
+            }
+
+            const [students, classes, subjects, journals, periodDocs] = await Promise.all([
+                DB.getAll('students'), DB.getAll('classes'), DB.getAll('subjects'),
+                DB.getAll('journals'), DB.getAll('educational_periods')
+            ]);
+            const student = students.find(s => s.login === login);
+            if (!student) { window.location.replace('index.html'); return; }
+            CURRENT_STUDENT = student;
+            CURRENT_CLASS = classes.find(c => c.id === student.class_id) || null;
+            ALL_STUDENTS = students;
+            ALL_CLASSES = classes;
+            ALL_SUBJECTS = subjects;
+            ALL_JOURNALS = journals;
+            TARGET_SUBJECT = subjects.find(s => s.id === subjectId);
+            if (!TARGET_SUBJECT) {
+                document.getElementById('subjPage').innerHTML = '<div class="no-data">Предмет не найден.</div>';
+                return;
+            }
+            const pd = periodDocs[0] || null;
+            PERIODS = pd ? (pd.periods || []) : [];
+            PERIOD_SYSTEM = pd ? (pd.system || '') : '';
+            ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
+
+            document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
+
+            render();
+        } catch (err) {
+            console.error(err);
+            document.getElementById('subjPage').innerHTML = '<div class="no-data">Ошибка загрузки. Проверьте консоль.</div>';
+        }
+    })();
+
+    function findActivePeriodIndex() {
+        if (PERIODS.length === 0) return 0;
+        const t = new Date(); t.setHours(0,0,0,0);
+        for (let i = 0; i < PERIODS.length; i++) {
+            const s = new Date(PERIODS[i].start + 'T00:00:00');
+            const e = new Date(PERIODS[i].end + 'T23:59:59');
+            if (t >= s && t <= e) return i;
+        }
+        return 0;
+    }
+    function getPeriodRange() {
+        if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
+        return { start: PERIODS[ACTIVE_PERIOD_INDEX].start, end: PERIODS[ACTIVE_PERIOD_INDEX].end };
+    }
+
+    function calcStudentSubjectAvg(studentId, subjectId, periodRange) {
+        const journal = ALL_JOURNALS.find(j => j.subject_id === subjectId);
+        if (!journal) return null;
+        const sg = (journal.grades && journal.grades[studentId]) || {};
+        let sum = 0, cnt = 0;
+        Object.entries(sg).forEach(([key, val]) => {
+            if (val == null || val === '') return;
+            if (key.endsWith('_pres')) return;
+            const p = String(key).split('_');
+            const dateStr = p[0];
+            if (periodRange) {
+                if (dateStr < periodRange.start || dateStr > periodRange.end) return;
+            }
+            const cell = parseCell(val);
+            const d = firstDigit(cell.grade);
+            if (d !== null) { sum += d; cnt++; }
+        });
+        return cnt === 0 ? null : sum / cnt;
+    }
+
+    function fmtScore(n) { return n == null ? '—' : n.toFixed(2); }
+
+    function render() {
+        const container = document.getElementById('subjPage');
+        if (!CURRENT_CLASS) {
+            container.innerHTML = '<div class="no-data">Класс не найден.</div>';
+            return;
+        }
+
+        const periodRange = getPeriodRange();
+        const myId = CURRENT_STUDENT.id;
+        const classStudents = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id);
+
+        const rows = classStudents.map(s => ({
+            id: s.id,
+            full_name: s.full_name,
+            avg: calcStudentSubjectAvg(s.id, TARGET_SUBJECT.id, periodRange)
+        })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
+
+        const myEntry = rows.find(x => x.id === myId);
+        const myAvg = myEntry ? myEntry.avg : null;
+        const myPlace = myEntry ? (rows.findIndex(x => x.id === myId) + 1) : null;
+        const classAvg = rows.length ? (rows.reduce((s, x) => s + x.avg, 0) / rows.length) : null;
+        const totalStudents = rows.length;
+
+        const periodName = PERIODS.length > 0 ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Период') : '';
+
+        container.innerHTML = `
+            <div class="subj-head">
+                <a href="student-rating.html" class="subj-back">
+                    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                </a>
+                <div class="subj-title">${escapeHtml(TARGET_SUBJECT.name)}</div>
+            </div>
+
+            <div class="subj-info-card">
+                <div class="subj-info-item">
+                    <div class="subj-info-label">Ваше место</div>
+                    <div class="subj-info-value">${myPlace || '—'} <small>из ${totalStudents}</small></div>
+                </div>
+                <div class="subj-info-item">
+                    <div class="subj-info-label">Ваш средний балл</div>
+                    <div class="subj-info-value">${fmtScore(myAvg)}</div>
+                </div>
+                <div class="subj-info-item">
+                    <div class="subj-info-label">Средний балл класса</div>
+                    <div class="subj-info-value">${fmtScore(classAvg)}</div>
+                </div>
+            </div>
+
+            <div class="subj-list-card">
+                <div class="subj-list-title">Рейтинг класса по предмету ${periodName ? '(' + escapeHtml(periodName) + ')' : ''}</div>
+                ${rows.length === 0 ? '<div class="no-data">Нет оценок за этот период</div>' : rows.map((row, i) => {
+                    const place = i + 1;
+                    const isMe = row.id === myId;
+                    let rankCls = 'other';
+                    if (place === 1) rankCls = 'r1';
+                    else if (place === 2) rankCls = 'r2';
+                    else if (place === 3) rankCls = 'r3';
+                    else if (place === 4) rankCls = 'r4';
+                    else if (place === 5) rankCls = 'r5';
+                    const delta = myAvg != null ? (row.avg - myAvg) : null;
+                    const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
+                    const deltaTxt = delta == null ? '·' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
+                    return `<div class="student-row ${isMe ? 'me' : ''}">
+                        <div class="rank-circle ${rankCls}">${place}</div>
+                        <div class="name-cell">
+                            <div class="avatar">${escapeHtml(initials(row.full_name))}</div>
+                            <div class="name-text ${isMe ? 'me' : ''}">${escapeHtml(row.full_name)}${isMe ? ' (ты)' : ''}</div>
+                        </div>
+                        <div class="score">${fmtScore(row.avg)}</div>
+                        <div class="delta ${deltaCls}">${deltaTxt}</div>
+                    </div>`;
+                }).join('')}
+            </div>
+        `;
+    }
+</script>
+</body>
+</html>
