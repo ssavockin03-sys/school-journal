@@ -717,17 +717,17 @@
             <div class="subjects-grid">
                 <div class="rating-card">
                     <div class="rating-card-title" style="margin-bottom:14px;">Ваш рейтинг по предметам</div>
-                    ${subjectRows.length === 0 ? '<div class="no-data">Нет данных</div>' : subjectRows.map(sr => `
-                        <div class="subject-row">
-                            <div class="rating-rank other">${sr.place || '—'}</div>
-                            <div class="subject-name">
-                                ${escapeHtml(sr.subject.name)}
-                                ${sr.place === 1 && sr.myAvg === 5 ? '<span class="fire">🔥</span>' : ''}
-                            </div>
-                            <div class="subject-score">${fmtScore(sr.myAvg)}</div>
-                            <div class="subject-arrow">›</div>
-                        </div>
-                    `).join('')}
+${subjectRows.length === 0 ? '<div class="no-data">Нет данных</div>' : subjectRows.map(sr => `
+    <a href="student-subject-rating.html?subject=${encodeURIComponent(sr.subject.id)}" class="subject-row" style="text-decoration:none;color:inherit;display:grid;">
+        <div class="rating-rank other">${sr.place || '—'}</div>
+        <div class="subject-name">
+            ${escapeHtml(sr.subject.name)}
+            ${sr.place === 1 && sr.myAvg === 5 ? '<span class="fire">🔥</span>' : ''}
+        </div>
+        <div class="subject-score">${fmtScore(sr.myAvg)}</div>
+        <div class="subject-arrow">›</div>
+    </a>
+`).join('')}
                 </div>
 
                 <div class="rating-card">
