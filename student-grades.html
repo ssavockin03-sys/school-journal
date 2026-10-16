@@ -341,12 +341,18 @@
         <h1 class="page-title">Оценки</h1>
     </div>
 
-    <div class="container">
-        <div class="info-banner" id="infoBanner"></div>
-        <div id="warningContainer"></div>
-        <div class="period-tabs-wrapper"><div class="period-tabs-group" id="periodTabs"></div></div>
-        <div id="gradesTableContainer"></div>
+<div class="container">
+    <div class="info-banner" id="infoBanner"></div>
+    <div id="warningContainer"></div>
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+        <div class="period-tabs-wrapper" style="margin:0;"><div class="period-tabs-group" id="periodTabs"></div></div>
+        <a href="student-rating.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;text-decoration:none;border-radius:10px;font-size:13px;font-weight:700;box-shadow:0 2px 8px rgba(99,102,241,0.3);">
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            Рейтинг
+        </a>
     </div>
+    <div id="gradesTableContainer"></div>
+</div>
 </div>
 
 <div class="modal-overlay" id="statsModal">
