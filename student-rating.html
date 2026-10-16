@@ -732,21 +732,21 @@ ${subjectRows.length === 0 ? '<div class="no-data">Нет данных</div>' : 
 
                 <div class="rating-card">
                     <div class="rating-card-title" style="margin-bottom:14px;">Средний балл класса по предметам</div>
-                    ${subjectByClassAvg.length === 0 ? '<div class="no-data">Нет данных</div>' : subjectByClassAvg.map(sr => {
-                        const delta = (sr.classAvg != null && sr.myAvg != null) ? (sr.myAvg - sr.classAvg) : null;
-                        const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
-                        const deltaTxt = delta == null ? '' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
-                        return `
-                        <div class="subject-row">
-                            <div class="rating-rank other">${sr.place || '—'}</div>
-                            <div class="subject-name">${escapeHtml(sr.subject.name)}</div>
-                            <div class="subject-score">
-                                ${fmtScore(sr.classAvg)}
-                                ${deltaTxt ? `<span class="subject-delta rating-delta ${deltaCls}">${deltaTxt}</span>` : ''}
-                            </div>
-                            <div class="subject-arrow">›</div>
-                        </div>`;
-                    }).join('')}
+${subjectByClassAvg.length === 0 ? '<div class="no-data">Нет данных</div>' : subjectByClassAvg.map(sr => {
+    const delta = (sr.classAvg != null && sr.myAvg != null) ? (sr.myAvg - sr.classAvg) : null;
+    const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
+    const deltaTxt = delta == null ? '' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
+    return `
+    <a href="student-subject-rating.html?subject=${encodeURIComponent(sr.subject.id)}" class="subject-row" style="text-decoration:none;color:inherit;display:grid;">
+        <div class="rating-rank other">${sr.place || '—'}</div>
+        <div class="subject-name">${escapeHtml(sr.subject.name)}</div>
+        <div class="subject-score">
+            ${fmtScore(sr.classAvg)}
+            ${deltaTxt ? `<span class="subject-delta rating-delta ${deltaCls}">${deltaTxt}</span>` : ''}
+        </div>
+        <div class="subject-arrow">›</div>
+    </a>`;
+}).join('')}
                 </div>
             </div>
 
