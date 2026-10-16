@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание — Дневник.ру</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { background: #fff; }
+        body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 14px; font-weight: 400; padding: 0; }
+
+        .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
+        .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
+        .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+        .logo { font-size: 22px; color: #007baf; }
+        .logo-bold { font-weight: 700; }
+        .logo-sub { color: #777; font-weight: 400; }
+        .d-user-profile-zone { display: flex; align-items: center; gap: 40px; }
+        .d-user-info { display: flex; flex-direction: column; align-items: flex-start; text-align: left; line-height: 1.3; }
+        .d-user-name { font-size: 14px; font-weight: 700; color: #333; }
+        .d-user-role { font-size: 12px; font-weight: 400; color: #888; }
+        .d-user-actions { display: flex; flex-direction: column; align-items: flex-start; text-align: left; line-height: 1.3; }
+        .d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; font-weight: 400; background: none; border: none; font-family: inherit; padding: 0; }
+        .d-action-link:hover { text-decoration: underline; }
+        .d-action-link.logout { color: #d9534f; }
+
+        .d-top-blue-bar { background: #166a94; }
+        .d-top-blue-inner { padding: 0; display: flex; }
+        .d-nav-item { display: inline-block; padding: 12px 20px; color: #ffffff; text-decoration: none; cursor: pointer; font: 400 14px/1 inherit; border-bottom: 3px solid transparent; }
+        .d-nav-item:hover { background: rgba(255,255,255,0.12); }
+        .d-nav-item.active { background: #0f4f70; border-bottom-color: #ffffff; }
+
+        .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
+        .d-sub-menu-inner { padding: 0; display: flex; flex-wrap: wrap; }
+        .d-sub-item { display: inline-block; padding: 10px 15px; color: #555; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; text-decoration: none; }
+        .d-sub-item:hover { color: #1d82b5; }
+        .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
+
+        .container { padding: 16px 0 60px; }
+
+        /* Breadcrumbs */
+        .crumbs {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .crumbs a { color: #94a3b8; text-decoration: none; }
+        .crumbs a:hover { color: #1976d2; }
+
+        /* Заголовок */
+        .page-h1 {
+            font-size: 32px;
+            font-weight: 400;
+            color: #5a3d7a;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        .page-h1 b {
+            font-weight: 700;
+            color: #4a2a6a;
+        }
+
+        /* Вкладки семестров */
+        .sem-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #e8eef5;
+            padding-bottom: 0;
+        }
+        .sem-tab {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1976d2;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-family: inherit;
+            margin-bottom: -1px;
+        }
+        .sem-tab:hover { background: #f0f7ff; border-radius: 6px 6px 0 0; }
+        .sem-tab.active {
+            color: #d97706;
+            border-bottom-color: #d97706;
+            background: #fff7ed;
+            border-radius: 6px 6px 0 0;
+        }
+
+        /* Строка недели */
+        .week-nav {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .week-arrows {
+            display: flex;
+            gap: 6px;
+        }
+        .week-arrow {
+            width: 34px;
+            height: 34px;
+            border: 1px solid #d0dce8;
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1976d2;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .week-arrow:hover { background: #f0f7ff; border-color: #1976d2; }
+        .week-arrow:disabled { opacity: 0.4; cursor: not-allowed; }
+        .week-range {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a2b4a;
+        }
+        .week-count {
+            font-size: 12px;
+            color: #7a8aa3;
+            font-weight: 400;
+        }
+        .week-count b { color: #2a3a52; font-weight: 700; }
+        .week-count .z { color: #d97706; font-weight: 700; }
+        .week-count .o { color: #d9534f; font-weight: 700; }
+
+        /* Переключатель "текущая неделя / весь период" */
+        .week-mode {
+            display: inline-flex;
+            gap: 4px;
+            margin-bottom: 14px;
+        }
+        .week-mode-btn {
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1976d2;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            border-bottom: 2px solid transparent;
+        }
+        .week-mode-btn.active {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border-radius: 6px 6px 0 0;
+            border-bottom-color: #1976d2;
+        }
+
+        /* Сетка */
+        .schedule-wrap {
+            overflow-x: auto;
+            border: 1px solid #d0dce8;
+            border-radius: 4px;
+            background: #fff;
+        }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+            table-layout: fixed;
+        }
+        .schedule-table col.lesson-col { width: 40px; }
+        .schedule-table col.day-col { width: calc((100% - 40px) / 7); }
+
+        .schedule-table thead th {
+            background: #f7fafc;
+            border: 1px solid #d0dce8;
+            padding: 8px 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a5a72;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .schedule-table thead th.sun {
+            color: #d9534f;
+        }
+        .schedule-table thead th.corner {
+            background: #fff;
+            border: 1px solid #d0dce8;
+        }
+
+        .schedule-table tbody td {
+            border: 1px solid #d0dce8;
+            padding: 0;
+            vertical-align: top;
+            background: #fff;
+            height: 60px;
+            position: relative;
+        }
+        .schedule-table tbody td.num {
+            background: #f7fafc;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: 400;
+            color: #4a5a72;
+            font-size: 13px;
+        }
+        .schedule-table tbody td.empty-day {
+            background: #f0f2f5;
+        }
+        .schedule-table tbody td.sun {
+            background: #f0f2f5;
+        }
+
+        /* Карточка урока */
+        .lesson-card {
+            padding: 6px 8px;
+            margin: 3px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 3px;
+            font-size: 11.5px;
+            line-height: 1.35;
+            color: #2a3a52;
+        }
+        .lesson-card .subj {
+            font-weight: 700;
+            color: #1976d2;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .lesson-card .teacher {
+            color: #2a3a52;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .lesson-card .time {
+            color: #2a3a52;
+            display: block;
+            white-space: nowrap;
+        }
+        .lesson-card .room {
+            color: #2a3a52;
+            display: block;
+            white-space: nowrap;
+        }
+        /* Цветные варианты для разных предметов — по индексу */
+        .lesson-card.c0 { background: #f0f7ff; }
+        .lesson-card.c1 { background: #f0faf0; }
+        .lesson-card.c2 { background: #fff8e6; }
+        .lesson-card.c3 { background: #f8f0ff; }
+        .lesson-card.c4 { background: #fff0f3; }
+        .lesson-card.c5 { background: #f0faf8; }
+
+        .empty-schedule {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            .app-shell { padding: 0 14px; }
+            .header-inner { column-gap: 16px; }
+            .page-h1 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
+            <div class="d-user-profile-zone">
+                <div class="d-user-info">
+                    <span class="d-user-name" id="userName">&nbsp;</span>
+                    <span class="d-user-role">Ученик</span>
+                </div>
+                <div class="d-user-actions">
+                    <button class="d-action-link" onclick="return false">Помощь</button>
+                    <button class="d-action-link logout" onclick="logout()">Выход</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="d-top-blue-bar">
+        <div class="d-top-blue-inner">
+            <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ОБЩЕНИЕ</a>
+            <a href="#" class="d-nav-item" onclick="return false">ПРИЛОЖЕНИЯ</a>
+        </div>
+    </div>
+
+    <div class="d-sub-menu-bar">
+        <div class="d-sub-menu-inner">
+            <a href="student.html"           class="d-sub-item">Сегодня</a>
+            <a href="student-diary.html"     class="d-sub-item">Дневник</a>
+            <a href="student-grades.html"    class="d-sub-item">Оценки</a>
+            <a href="student-group.html"     class="d-sub-item">Моя группа</a>
+            <a href="student-schedule.html"  class="d-sub-item active">Расписание</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="crumbs">
+            <a href="#">ГОУ ЛНР «АСШ № 6»</a> &nbsp;»&nbsp; Расписания занятий
+        </div>
+
+        <h1 class="page-h1" id="pageH1">Расписание</h1>
+
+        <div class="sem-tabs" id="semTabs"></div>
+
+        <div class="week-nav">
+            <div class="week-arrows">
+                <button type="button" class="week-arrow" id="prevWeekBtn">◀</button>
+                <button type="button" class="week-arrow" id="nextWeekBtn">▶</button>
+            </div>
+            <div class="week-range" id="weekRange">—</div>
+            <div class="week-count" id="weekCount"></div>
+        </div>
+
+        <div class="week-mode">
+            <button type="button" class="week-mode-btn active" data-mode="week">Текущая неделя</button>
+            <button type="button" class="week-mode-btn" data-mode="all">Расписание на весь период</button>
+        </div>
+
+        <div id="scheduleContainer"></div>
+    </div>
+</div>
+
+<script src="supabase-config.js"></script>
+<script>
+    const DAYS_RU = ['пн','вт','ср','чт','пт','сб','вс'];
+    const DAYS_FULL = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
+    const JS_DAY_MAP = { 1:'mon', 2:'tue', 3:'wed', 4:'thu', 5:'fri', 6:'sat' };
+    const MONTHS_GEN = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+
+    let CURRENT_STUDENT = null;
+    let CURRENT_CLASS = null;
+    let ALL_TEACHERS = [];
+    let ALL_ROOMS = [];
+    let ALL_SUBJECTS = [];
+    let CURRENT_SCHEDULE = null;
+    let CURRENT_BELLS = null;
+    let CURRENT_SEMESTER_INDEX = 0;
+    let CURRENT_WEEK_START = null;
+    let CURRENT_MODE = 'week';
+
+    function escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        const div = document.createElement('div');
+        div.textContent = String(text);
+        return div.innerHTML;
+    }
+    function isoDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+    function getMondayOf(date) {
+        const d = new Date(date); d.setHours(0,0,0,0);
+        const dow = d.getDay();
+        const diff = (dow === 0 ? -6 : 1 - dow);
+        d.setDate(d.getDate() + diff);
+        return d;
+    }
+    function addDays(date, n) {
+        const d = new Date(date);
+        d.setDate(d.getDate() + n);
+        return d;
+    }
+
+    async function logout() {
+        if (!confirm('Выйти из кабинета?')) return;
+        try { const fb = await window._fbReady; await fb.signOut(fb.auth); } catch (e) {}
+        try { localStorage.removeItem('sj_session'); } catch (e) {}
+        window.location.replace('index.html');
+    }
+
+    (async function init() {
+        try {
+            const fb = await window._fbReady;
+            const user = await new Promise((resolve) => {
+                const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
+            });
+            if (!user) { window.location.replace('index.html'); return; }
+            const login = user.email.split('@')[0];
+
+            const [students, classes, teachers, rooms, subjects, schedules, bells, periods] = await Promise.all([
+                DB.getAll('students'),
+                DB.getAll('classes'),
+                DB.getAll('teachers'),
+                DB.getAll('rooms'),
+                DB.getAll('subjects'),
+                DB.getAll('class_schedules'),
+                DB.getAll('bell_schedules'),
+                DB.getAll('educational_periods')
+            ]);
+
+            const student = students.find(s => s.login === login);
+            if (!student) { window.location.replace('index.html'); return; }
+            CURRENT_STUDENT = student;
+            CURRENT_CLASS = classes.find(c => c.id === student.class_id) || null;
+            ALL_TEACHERS = teachers;
+            ALL_ROOMS = rooms;
+            ALL_SUBJECTS = subjects;
+
+            document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
+
+            // Расписание класса — берём первое непустое или объединённое
+            const classSchedules = schedules.filter(s => s.class_id === student.class_id);
+            const mergedGrid = {};
+            classSchedules.forEach(s => {
+                if (!s.grid) return;
+                Object.entries(s.grid).forEach(([day, lessons]) => {
+                    if (!mergedGrid[day]) mergedGrid[day] = {};
+                    Object.entries(lessons || {}).forEach(([num, lesson]) => {
+                        if (lesson && lesson.subject && !mergedGrid[day][num]) mergedGrid[day][num] = lesson;
+                    });
+                });
+            });
+            CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
+
+            // Звонки — по смене класса
+            const shiftName = (CURRENT_CLASS && CURRENT_CLASS.shift) || 'Первая смена';
+            const shiftObj = await DB.getAll('bell_shifts');
+            const ourShift = shiftObj.find(x => x.name === shiftName) || shiftObj[0];
+            const bellSchedule = ourShift ? bells.find(b => b.shift_id === ourShift.id) : null;
+            CURRENT_BELLS = bellSchedule || null;
+
+            // Периоды
+            const periodDoc = periods[0] || null;
+            const PERIODS = periodDoc ? (periodDoc.periods || []) : [];
+            const SYSTEM = periodDoc ? (periodDoc.system || '') : '';
+
+            document.getElementById('pageH1').innerHTML = 'Расписание ' +
+                '<b>' + escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '') + '</b>' +
+                (CURRENT_CLASS && CURRENT_CLASS.year ? ' (' + escapeHtml(CURRENT_CLASS.year) + ')' : '');
+
+            renderSemesterTabs(PERIODS, SYSTEM);
+            CURRENT_WEEK_START = getMondayOf(new Date());
+            renderSchedule();
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById('scheduleContainer').innerHTML = '<div style="padding: 40px; text-align: center; color: #d32f2f;">Ошибка загрузки. Проверьте консоль.</div>';
+        }
+    })();
+
+    function renderSemesterTabs(periods, system) {
+        const container = document.getElementById('semTabs');
+        container.innerHTML = '';
+        if (periods.length === 0) {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'sem-tab active';
+            b.textContent = '1 семестр';
+            container.appendChild(b);
+        } else {
+            const labels = { 'Семестры': ['1 семестр','2 семестр'], 'Четверти': ['1 четверть','2 четверть','3 четверть','4 четверть'], 'Полугодия': ['1 полугодие','2 полугодие'], 'Триместры': ['1 триместр','2 триместр','3 триместр'] };
+            const names = labels[system] || periods.map((_, i) => (i+1) + ' период');
+            // Всегда добавляем "Звонки" в конце
+            periods.forEach((p, i) => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'sem-tab' + (i === CURRENT_SEMESTER_INDEX ? ' active' : '');
+                b.textContent = names[i] || (i + 1) + ' период';
+                b.dataset.idx = i;
+                b.addEventListener('click', () => {
+                    CURRENT_SEMESTER_INDEX = i;
+                    renderSemesterTabs(periods, system);
+                    CURRENT_WEEK_START = getMondayOf(new Date());
+                    renderSchedule();
+                });
+                container.appendChild(b);
+            });
+        }
+        // Кнопка "Звонки" — отдельная, ведёт на страницу звонков (сделаем заглушку)
+        const bellsBtn = document.createElement('button');
+        bellsBtn.type = 'button';
+        bellsBtn.className = 'sem-tab';
+        bellsBtn.textContent = 'Звонки';
+        bellsBtn.addEventListener('click', () => {
+            alert('Расписание звонков:\n\n' + formatBellSchedule());
+        });
+        container.appendChild(bellsBtn);
+    }
+
+    function formatBellSchedule() {
+        if (!CURRENT_BELLS || !CURRENT_BELLS.times) return 'Нет данных о звонках';
+        const nums = [1,2,3,4,5,6,7,8,9,10,11,12];
+        const lines = [];
+        nums.forEach(n => {
+            const st = CURRENT_BELLS.times['mon_' + n + '_start'];
+            const en = CURRENT_BELLS.times['mon_' + n + '_end'];
+            if (st && en) lines.push(n + ' урок:  ' + st + ' — ' + en);
+        });
+        return lines.length ? lines.join('\n') : 'Нет данных о звонках';
+    }
+
+    function getLessonsForDate(date) {
+        if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) return [];
+        const dow = date.getDay();
+        const dowKey = JS_DAY_MAP[dow];
+        if (!dowKey) return []; // воскресенье
+        const dayGrid = CURRENT_SCHEDULE.grid[dowKey] || {};
+        const nums = Object.keys(dayGrid).map(n => parseInt(n, 10)).filter(n => !isNaN(n));
+        if (nums.length === 0) return [];
+        const maxN = Math.max(...nums);
+        const out = [];
+        for (let n = 1; n <= maxN; n++) {
+            const lesson = dayGrid[n] || dayGrid[String(n)];
+            if (!lesson || !lesson.subject) continue;
+            let teacherName = lesson.teacherName || '';
+            if (!teacherName && lesson.teacherId) {
+                const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId);
+                if (t) teacherName = t.full_name;
+            }
+            let roomName = lesson.roomName || '';
+            if (!roomName && lesson.roomId) {
+                const r = ALL_ROOMS.find(x => x.id === lesson.roomId);
+                if (r) roomName = r.number + (r.name ? '' : '');
+            }
+            // Время из звонков
+            const stKey = 'mon_' + n + '_start';
+            const enKey = 'mon_' + n + '_end';
+            const start = CURRENT_BELLS && CURRENT_BELLS.times ? (CURRENT_BELLS.times[stKey] || '') : '';
+            const end = CURRENT_BELLS && CURRENT_BELLS.times ? (CURRENT_BELLS.times[enKey] || '') : '';
+            out.push({
+                num: n,
+                subject: lesson.subject,
+                teacherName,
+                roomName: roomName ? roomName + ' каб.' : '',
+                start, end
+            });
+        }
+        return out;
+    }
+
+    function formatWeekRange(start, end) {
+        const d1 = start.getDate();
+        const d2 = end.getDate();
+        const m1 = MONTHS_GEN[start.getMonth()];
+        const m2 = MONTHS_GEN[end.getMonth()];
+        const y = end.getFullYear();
+        if (m1 === m2) {
+            return d1 + ' – ' + d2 + ' ' + m1 + ' ' + y;
+        }
+        return d1 + ' ' + m1 + ' – ' + d2 + ' ' + m2 + ' ' + y;
+    }
+
+    function formatDayHeader(d, idx) {
+        const dayName = DAYS_RU[idx];
+        const dd = d.getDate();
+        const mm = MONTHS_GEN[d.getMonth()].slice(0, 3);
+        return dayName + ', ' + dd + ' ' + mm;
+    }
+
+    function renderSchedule() {
+        const container = document.getElementById('scheduleContainer');
+        if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
+            container.innerHTML = '<div class="empty-schedule">Расписание ещё не составлено. Обратитесь к администратору школы.</div>';
+            document.getElementById('weekRange').textContent = '—';
+            document.getElementById('weekCount').textContent = '';
+            return;
+        }
+
+        const weekStart = CURRENT_WEEK_START;
+        const weekEnd = addDays(weekStart, 6);
+        const weekDays = [];
+        for (let i = 0; i < 7; i++) weekDays.push(addDays(weekStart, i));
+
+        document.getElementById('weekRange').textContent = formatWeekRange(weekStart, weekEnd);
+
+        // Счётчики
+        const today = new Date(); today.setHours(0,0,0,0);
+        const weekLessons = [];
+        weekDays.forEach(d => { if (d.getDay() !== 0) weekLessons.push(...getLessonsForDate(d)); });
+        const totalCount = weekLessons.length;
+
+        document.getElementById('weekCount').innerHTML =
+            '<b>' + totalCount + '</b> по плану, <span class="z">0</span> замен/переносов, <span class="o">0</span> отмен';
+
+        // Определяем максимальное количество уроков в любой день недели
+        let maxNum = 0;
+        weekDays.forEach(d => {
+            const lessons = getLessonsForDate(d);
+            if (lessons.length) maxNum = Math.max(maxNum, Math.max(...lessons.map(l => l.num)));
+        });
+        if (maxNum === 0) maxNum = 7;
+        if (maxNum < 12) maxNum = Math.max(maxNum, 7);
+
+        // Строим HTML таблицы
+        let html = '<div class="schedule-wrap"><table class="schedule-table">';
+        html += '<colgroup><col class="lesson-col">';
+        for (let i = 0; i < 7; i++) html += '<col class="day-col">';
+        html += '</colgroup>';
+
+        // Заголовок
+        html += '<thead><tr><th class="corner"></th>';
+        weekDays.forEach((d, i) => {
+            const cls = i === 6 ? 'sun' : '';
+            html += '<th class="' + cls + '">' + formatDayHeader(d, i) + '</th>';
+        });
+        html += '</tr></thead><tbody>';
+
+        // Строки
+        for (let n = 1; n <= maxNum; n++) {
+            html += '<tr>';
+            html += '<td class="num">' + n + '</td>';
+            weekDays.forEach((d, i) => {
+                const isSunday = i === 6;
+                const lessons = getLessonsForDate(d);
+                const lessonsAtN = lessons.filter(l => l.num === n);
+                let cellCls = isSunday ? 'empty-day sun' : '';
+                if (lessonsAtN.length === 0) {
+                    html += '<td class="' + cellCls + '"></td>';
+                } else {
+                    let inner = '';
+                    lessonsAtN.forEach((l, k) => {
+                        const colorIdx = (l.subject.charCodeAt(0) || 0) % 6;
+                        inner += '<div class="lesson-card c' + colorIdx + '">';
+                        inner += '<span class="subj">' + escapeHtml(l.subject) + '</span>';
+                        if (l.teacherName) inner += '<span class="teacher">' + escapeHtml(l.teacherName) + '</span>';
+                        if (l.start || l.end) inner += '<span class="time">' + escapeHtml(l.start) + ' - ' + escapeHtml(l.end) + '</span>';
+                        if (l.roomName) inner += '<span class="room">' + escapeHtml(l.roomName) + '</span>';
+                        inner += '</div>';
+                    });
+                    html += '<td>' + inner + '</td>';
+                }
+            });
+            html += '</tr>';
+        }
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+    }
+
+    // Кнопки навигации
+    document.getElementById('prevWeekBtn').addEventListener('click', () => {
+        CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, -7);
+        renderSchedule();
+    });
+    document.getElementById('nextWeekBtn').addEventListener('click', () => {
+        CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, 7);
+        renderSchedule();
+    });
+
+    // Режимы "неделя / весь период"
+    document.querySelectorAll('.week-mode-btn').forEach(b => {
+        b.addEventListener('click', () => {
+            CURRENT_MODE = b.dataset.mode;
+            document.querySelectorAll('.week-mode-btn').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            if (CURRENT_MODE === 'all') {
+                document.getElementById('scheduleContainer').innerHTML = '<div class="empty-schedule">Функция «Расписание на весь период» в разработке.</div>';
+            } else {
+                renderSchedule();
+            }
+        });
+    });
+</script>
+</body>
+</html>
