@@ -38,221 +38,51 @@
 
         .container { padding: 16px 0 60px; }
 
-        /* Breadcrumbs */
-        .crumbs {
-            font-size: 11px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
+        .crumbs { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
         .crumbs a { color: #94a3b8; text-decoration: none; }
         .crumbs a:hover { color: #1976d2; }
 
-        /* Заголовок */
-        .page-h1 {
-            font-size: 32px;
-            font-weight: 400;
-            color: #5a3d7a;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-        .page-h1 b {
-            font-weight: 700;
-            color: #4a2a6a;
-        }
+        .page-h1 { font-size: 32px; font-weight: 400; color: #5a3d7a; margin-bottom: 20px; line-height: 1.2; }
+        .page-h1 b { font-weight: 700; color: #4a2a6a; }
 
-        /* Вкладки семестров */
-        .sem-tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 18px;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #e8eef5;
-            padding-bottom: 0;
-        }
-        .sem-tab {
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1976d2;
-            background: none;
-            border: none;
-            border-bottom: 2px solid transparent;
-            cursor: pointer;
-            font-family: inherit;
-            margin-bottom: -1px;
-        }
+        .sem-tabs { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; border-bottom: 1px solid #e8eef5; padding-bottom: 0; }
+        .sem-tab { padding: 8px 16px; font-size: 14px; font-weight: 500; color: #1976d2; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-family: inherit; margin-bottom: -1px; }
         .sem-tab:hover { background: #f0f7ff; border-radius: 6px 6px 0 0; }
-        .sem-tab.active {
-            color: #d97706;
-            border-bottom-color: #d97706;
-            background: #fff7ed;
-            border-radius: 6px 6px 0 0;
-        }
+        .sem-tab.active { color: #d97706; border-bottom-color: #d97706; background: #fff7ed; border-radius: 6px 6px 0 0; }
 
-        /* Строка недели */
-        .week-nav {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-        }
-        .week-arrows {
-            display: flex;
-            gap: 6px;
-        }
-        .week-arrow {
-            width: 34px;
-            height: 34px;
-            border: 1px solid #d0dce8;
-            background: #fff;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #1976d2;
-            font-size: 14px;
-            font-family: inherit;
-        }
+        .week-nav { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; flex-wrap: wrap; }
+        .week-arrows { display: flex; gap: 6px; }
+        .week-arrow { width: 34px; height: 34px; border: 1px solid #d0dce8; background: #fff; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1976d2; font-size: 14px; font-family: inherit; }
         .week-arrow:hover { background: #f0f7ff; border-color: #1976d2; }
-        .week-arrow:disabled { opacity: 0.4; cursor: not-allowed; }
-        .week-range {
-            font-size: 17px;
-            font-weight: 700;
-            color: #1a2b4a;
-        }
-        .week-count {
-            font-size: 12px;
-            color: #7a8aa3;
-            font-weight: 400;
-        }
+        .week-range { font-size: 17px; font-weight: 700; color: #1a2b4a; }
+        .week-count { font-size: 12px; color: #7a8aa3; font-weight: 400; }
         .week-count b { color: #2a3a52; font-weight: 700; }
         .week-count .z { color: #d97706; font-weight: 700; }
         .week-count .o { color: #d9534f; font-weight: 700; }
 
-        /* Переключатель "текущая неделя / весь период" */
-        .week-mode {
-            display: inline-flex;
-            gap: 4px;
-            margin-bottom: 14px;
-        }
-        .week-mode-btn {
-            padding: 6px 14px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #1976d2;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-family: inherit;
-            border-bottom: 2px solid transparent;
-        }
-        .week-mode-btn.active {
-            background: #e3f2fd;
-            color: #0d47a1;
-            border-radius: 6px 6px 0 0;
-            border-bottom-color: #1976d2;
-        }
+        .week-mode { display: inline-flex; gap: 4px; margin-bottom: 14px; }
+        .week-mode-btn { padding: 6px 14px; font-size: 13px; font-weight: 500; color: #1976d2; background: none; border: none; cursor: pointer; font-family: inherit; border-bottom: 2px solid transparent; }
+        .week-mode-btn.active { background: #e3f2fd; color: #0d47a1; border-radius: 6px 6px 0 0; border-bottom-color: #1976d2; }
 
-        /* Сетка */
-        .schedule-wrap {
-            overflow-x: auto;
-            border: 1px solid #d0dce8;
-            border-radius: 4px;
-            background: #fff;
-        }
-        .schedule-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 900px;
-            table-layout: fixed;
-        }
+        .schedule-wrap { overflow-x: auto; border: 1px solid #d0dce8; border-radius: 4px; background: #fff; }
+        .schedule-table { width: 100%; border-collapse: collapse; min-width: 900px; table-layout: fixed; }
         .schedule-table col.lesson-col { width: 40px; }
         .schedule-table col.day-col { width: calc((100% - 40px) / 7); }
 
-        .schedule-table thead th {
-            background: #f7fafc;
-            border: 1px solid #d0dce8;
-            padding: 8px 6px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #4a5a72;
-            text-align: center;
-            white-space: nowrap;
-        }
-        .schedule-table thead th.sun {
-            color: #d9534f;
-        }
-        .schedule-table thead th.corner {
-            background: #fff;
-            border: 1px solid #d0dce8;
-        }
+        .schedule-table thead th { background: #f7fafc; border: 1px solid #d0dce8; padding: 8px 6px; font-size: 12px; font-weight: 600; color: #4a5a72; text-align: center; white-space: nowrap; }
+        .schedule-table thead th.sun { color: #d9534f; }
+        .schedule-table thead th.corner { background: #fff; border: 1px solid #d0dce8; }
 
-        .schedule-table tbody td {
-            border: 1px solid #d0dce8;
-            padding: 0;
-            vertical-align: top;
-            background: #fff;
-            height: 60px;
-            position: relative;
-        }
-        .schedule-table tbody td.num {
-            background: #f7fafc;
-            text-align: center;
-            vertical-align: middle;
-            font-weight: 400;
-            color: #4a5a72;
-            font-size: 13px;
-        }
-        .schedule-table tbody td.empty-day {
-            background: #f0f2f5;
-        }
-        .schedule-table tbody td.sun {
-            background: #f0f2f5;
-        }
+        .schedule-table tbody td { border: 1px solid #d0dce8; padding: 0; vertical-align: top; background: #fff; height: 60px; position: relative; }
+        .schedule-table tbody td.num { background: #f7fafc; text-align: center; vertical-align: middle; font-weight: 400; color: #4a5a72; font-size: 13px; }
+        .schedule-table tbody td.empty-day { background: #f0f2f5; }
+        .schedule-table tbody td.sun { background: #f0f2f5; }
 
-        /* Карточка урока */
-        .lesson-card {
-            padding: 6px 8px;
-            margin: 3px;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 3px;
-            font-size: 11.5px;
-            line-height: 1.35;
-            color: #2a3a52;
-        }
-        .lesson-card .subj {
-            font-weight: 700;
-            color: #1976d2;
-            font-size: 12px;
-            display: block;
-            margin-bottom: 1px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .lesson-card .teacher {
-            color: #2a3a52;
-            display: block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .lesson-card .time {
-            color: #2a3a52;
-            display: block;
-            white-space: nowrap;
-        }
-        .lesson-card .room {
-            color: #2a3a52;
-            display: block;
-            white-space: nowrap;
-        }
-        /* Цветные варианты для разных предметов — по индексу */
+        .lesson-card { padding: 6px 8px; margin: 3px; background: #fff; border: 1px solid #e2e8f0; border-radius: 3px; font-size: 11.5px; line-height: 1.35; color: #2a3a52; }
+        .lesson-card .subj { font-weight: 700; color: #1976d2; font-size: 12px; display: block; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lesson-card .teacher { color: #2a3a52; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lesson-card .time { color: #2a3a52; display: block; white-space: nowrap; }
+        .lesson-card .room { color: #2a3a52; display: block; white-space: nowrap; }
         .lesson-card.c0 { background: #f0f7ff; }
         .lesson-card.c1 { background: #f0faf0; }
         .lesson-card.c2 { background: #fff8e6; }
@@ -260,12 +90,8 @@
         .lesson-card.c4 { background: #fff0f3; }
         .lesson-card.c5 { background: #f0faf8; }
 
-        .empty-schedule {
-            text-align: center;
-            padding: 40px 20px;
-            color: #94a3b8;
-            font-size: 14px;
-        }
+        .empty-schedule { text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 14px; border: 1px solid #d0dce8; border-radius: 6px; background: #f8fafc; }
+        .empty-schedule b { display: block; font-size: 16px; color: #5a6a85; margin-bottom: 8px; }
 
         @media (max-width: 700px) {
             .app-shell { padding: 0 14px; }
@@ -341,40 +167,31 @@
 <script src="supabase-config.js"></script>
 <script>
     const DAYS_RU = ['пн','вт','ср','чт','пт','сб','вс'];
-    const DAYS_FULL = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
     const JS_DAY_MAP = { 1:'mon', 2:'tue', 3:'wed', 4:'thu', 5:'fri', 6:'sat' };
     const MONTHS_GEN = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    const PERIOD_TITLES = {
+        'Семестры':  ['1 семестр','2 семестр'],
+        'Четверти':  ['1 четверть','2 четверть','3 четверть','4 четверть'],
+        'Полугодия': ['1 полугодие','2 полугодие'],
+        'Триместры': ['1 триместр','2 триместр','3 триместр']
+    };
 
     let CURRENT_STUDENT = null;
     let CURRENT_CLASS = null;
     let ALL_TEACHERS = [];
     let ALL_ROOMS = [];
-    let ALL_SUBJECTS = [];
-    let CURRENT_SCHEDULE = null;
+    let ALL_SCHEDULES = [];     // все class_schedules для класса
     let CURRENT_BELLS = null;
-    let CURRENT_SEMESTER_INDEX = 0;
+    let PERIODS = [];            // [{start, end}, ...] из educational_periods
+    let PERIOD_SYSTEM = '';
+    let ACTIVE_SEM_INDEX = 0;    // индекс вкладки семестра
     let CURRENT_WEEK_START = null;
     let CURRENT_MODE = 'week';
 
-    function escapeHtml(text) {
-        if (text === null || text === undefined) return '';
-        const div = document.createElement('div');
-        div.textContent = String(text);
-        return div.innerHTML;
-    }
-    function isoDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-    function getMondayOf(date) {
-        const d = new Date(date); d.setHours(0,0,0,0);
-        const dow = d.getDay();
-        const diff = (dow === 0 ? -6 : 1 - dow);
-        d.setDate(d.getDate() + diff);
-        return d;
-    }
-    function addDays(date, n) {
-        const d = new Date(date);
-        d.setDate(d.getDate() + n);
-        return d;
-    }
+    function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
+    function addDays(date, n) { const d = new Date(date); d.setDate(d.getDate() + n); return d; }
+    function getMondayOf(date) { const d = new Date(date); d.setHours(0,0,0,0); const dow = d.getDay(); const diff = (dow === 0 ? -6 : 1 - dow); d.setDate(d.getDate() + diff); return d; }
+    function isoDateOnly(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 
     async function logout() {
         if (!confirm('Выйти из кабинета?')) return;
@@ -392,12 +209,11 @@
             if (!user) { window.location.replace('index.html'); return; }
             const login = user.email.split('@')[0];
 
-            const [students, classes, teachers, rooms, subjects, schedules, bells, periods] = await Promise.all([
+            const [students, classes, teachers, rooms, schedules, bells, periodDocs] = await Promise.all([
                 DB.getAll('students'),
                 DB.getAll('classes'),
                 DB.getAll('teachers'),
                 DB.getAll('rooms'),
-                DB.getAll('subjects'),
                 DB.getAll('class_schedules'),
                 DB.getAll('bell_schedules'),
                 DB.getAll('educational_periods')
@@ -409,79 +225,95 @@
             CURRENT_CLASS = classes.find(c => c.id === student.class_id) || null;
             ALL_TEACHERS = teachers;
             ALL_ROOMS = rooms;
-            ALL_SUBJECTS = subjects;
 
             document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
 
-            // Расписание класса — берём первое непустое или объединённое
-            const classSchedules = schedules.filter(s => s.class_id === student.class_id);
-            const mergedGrid = {};
-            classSchedules.forEach(s => {
-                if (!s.grid) return;
-                Object.entries(s.grid).forEach(([day, lessons]) => {
-                    if (!mergedGrid[day]) mergedGrid[day] = {};
-                    Object.entries(lessons || {}).forEach(([num, lesson]) => {
-                        if (lesson && lesson.subject && !mergedGrid[day][num]) mergedGrid[day][num] = lesson;
-                    });
-                });
-            });
-            CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
+            // Все расписания класса (для всех периодов)
+            ALL_SCHEDULES = schedules.filter(s => s.class_id === student.class_id);
 
             // Звонки — по смене класса
             const shiftName = (CURRENT_CLASS && CURRENT_CLASS.shift) || 'Первая смена';
-            const shiftObj = await DB.getAll('bell_shifts');
-            const ourShift = shiftObj.find(x => x.name === shiftName) || shiftObj[0];
-            const bellSchedule = ourShift ? bells.find(b => b.shift_id === ourShift.id) : null;
-            CURRENT_BELLS = bellSchedule || null;
+            const shifts = await DB.getAll('bell_shifts');
+            const ourShift = shifts.find(x => x.name === shiftName) || shifts[0];
+            CURRENT_BELLS = ourShift ? bells.find(b => b.shift_id === ourShift.id) : null;
 
             // Периоды
-            const periodDoc = periods[0] || null;
-            const PERIODS = periodDoc ? (periodDoc.periods || []) : [];
-            const SYSTEM = periodDoc ? (periodDoc.system || '') : '';
+            const periodDoc = periodDocs[0] || null;
+            PERIODS = periodDoc ? (periodDoc.periods || []) : [];
+            PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
 
             document.getElementById('pageH1').innerHTML = 'Расписание ' +
                 '<b>' + escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '') + '</b>' +
                 (CURRENT_CLASS && CURRENT_CLASS.year ? ' (' + escapeHtml(CURRENT_CLASS.year) + ')' : '');
 
-            renderSemesterTabs(PERIODS, SYSTEM);
+            // Стартуем на текущей неделе. Если сегодня — в одном из периодов, активная вкладка = этот период
+            ACTIVE_SEM_INDEX = findPeriodIndexByDate(new Date());
+            if (ACTIVE_SEM_INDEX < 0) ACTIVE_SEM_INDEX = 0;
+
             CURRENT_WEEK_START = getMondayOf(new Date());
+
+            renderSemesterTabs();
             renderSchedule();
 
         } catch (err) {
             console.error(err);
-            document.getElementById('scheduleContainer').innerHTML = '<div style="padding: 40px; text-align: center; color: #d32f2f;">Ошибка загрузки. Проверьте консоль.</div>';
+            document.getElementById('scheduleContainer').innerHTML = '<div class="empty-schedule"><b>Ошибка загрузки</b>Проверьте консоль (F12)</div>';
         }
     })();
 
-    function renderSemesterTabs(periods, system) {
+    // Найти индекс периода, в который попадает дата
+    function findPeriodIndexByDate(date) {
+        if (!date || PERIODS.length === 0) return -1;
+        const t = new Date(date); t.setHours(0,0,0,0);
+        for (let i = 0; i < PERIODS.length; i++) {
+            const s = new Date(PERIODS[i].start + 'T00:00:00');
+            const e = new Date(PERIODS[i].end + 'T23:59:59');
+            if (t >= s && t <= e) return i;
+        }
+        return -1;
+    }
+
+    // Получить сетку для конкретного периода
+    function getGridForPeriod(periodIndex) {
+        if (periodIndex < 0) return null;
+        const sched = ALL_SCHEDULES.find(s => s.period_index === periodIndex);
+        if (!sched || !sched.grid) return null;
+        return sched.grid;
+    }
+
+    function renderSemesterTabs() {
         const container = document.getElementById('semTabs');
         container.innerHTML = '';
-        if (periods.length === 0) {
+
+        if (PERIODS.length === 0) {
             const b = document.createElement('button');
             b.type = 'button';
             b.className = 'sem-tab active';
-            b.textContent = '1 семестр';
+            b.textContent = 'Периоды не созданы';
+            b.disabled = true;
             container.appendChild(b);
         } else {
-            const labels = { 'Семестры': ['1 семестр','2 семестр'], 'Четверти': ['1 четверть','2 четверть','3 четверть','4 четверть'], 'Полугодия': ['1 полугодие','2 полугодие'], 'Триместры': ['1 триместр','2 триместр','3 триместр'] };
-            const names = labels[system] || periods.map((_, i) => (i+1) + ' период');
-            // Всегда добавляем "Звонки" в конце
-            periods.forEach((p, i) => {
+            const titles = PERIOD_TITLES[PERIOD_SYSTEM] || PERIODS.map((_, i) => (i+1) + ' период');
+            PERIODS.forEach((p, i) => {
                 const b = document.createElement('button');
                 b.type = 'button';
-                b.className = 'sem-tab' + (i === CURRENT_SEMESTER_INDEX ? ' active' : '');
-                b.textContent = names[i] || (i + 1) + ' период';
+                b.className = 'sem-tab' + (i === ACTIVE_SEM_INDEX ? ' active' : '');
+                b.textContent = titles[i] || (i + 1) + ' период';
                 b.dataset.idx = i;
+                b.title = p.start + ' — ' + p.end;
                 b.addEventListener('click', () => {
-                    CURRENT_SEMESTER_INDEX = i;
-                    renderSemesterTabs(periods, system);
-                    CURRENT_WEEK_START = getMondayOf(new Date());
+                    ACTIVE_SEM_INDEX = i;
+                    // Перескакиваем на неделю, которая попадает в начало этого периода
+                    const start = new Date(p.start + 'T00:00:00');
+                    CURRENT_WEEK_START = getMondayOf(start);
+                    renderSemesterTabs();
                     renderSchedule();
                 });
                 container.appendChild(b);
             });
         }
-        // Кнопка "Звонки" — отдельная, ведёт на страницу звонков (сделаем заглушку)
+
+        // Кнопка "Звонки"
         const bellsBtn = document.createElement('button');
         bellsBtn.type = 'button';
         bellsBtn.className = 'sem-tab';
@@ -504,12 +336,17 @@
         return lines.length ? lines.join('\n') : 'Нет данных о звонках';
     }
 
+    // Получить уроки на конкретную дату — с учётом периода
     function getLessonsForDate(date) {
-        if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) return [];
+        const periodIdx = findPeriodIndexByDate(date);
+        if (periodIdx < 0) return [];       // вне периода — пусто
+        const grid = getGridForPeriod(periodIdx);
+        if (!grid) return [];                // для этого периода сетки нет
+
         const dow = date.getDay();
         const dowKey = JS_DAY_MAP[dow];
-        if (!dowKey) return []; // воскресенье
-        const dayGrid = CURRENT_SCHEDULE.grid[dowKey] || {};
+        if (!dowKey) return [];              // воскресенье
+        const dayGrid = grid[dowKey] || {};
         const nums = Object.keys(dayGrid).map(n => parseInt(n, 10)).filter(n => !isNaN(n));
         if (nums.length === 0) return [];
         const maxN = Math.max(...nums);
@@ -525,9 +362,8 @@
             let roomName = lesson.roomName || '';
             if (!roomName && lesson.roomId) {
                 const r = ALL_ROOMS.find(x => x.id === lesson.roomId);
-                if (r) roomName = r.number + (r.name ? '' : '');
+                if (r) roomName = r.number;
             }
-            // Время из звонков
             const stKey = 'mon_' + n + '_start';
             const enKey = 'mon_' + n + '_end';
             const start = CURRENT_BELLS && CURRENT_BELLS.times ? (CURRENT_BELLS.times[stKey] || '') : '';
@@ -549,9 +385,7 @@
         const m1 = MONTHS_GEN[start.getMonth()];
         const m2 = MONTHS_GEN[end.getMonth()];
         const y = end.getFullYear();
-        if (m1 === m2) {
-            return d1 + ' – ' + d2 + ' ' + m1 + ' ' + y;
-        }
+        if (m1 === m2) return d1 + ' – ' + d2 + ' ' + m1 + ' ' + y;
         return d1 + ' ' + m1 + ' – ' + d2 + ' ' + m2 + ' ' + y;
     }
 
@@ -564,13 +398,6 @@
 
     function renderSchedule() {
         const container = document.getElementById('scheduleContainer');
-        if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
-            container.innerHTML = '<div class="empty-schedule">Расписание ещё не составлено. Обратитесь к администратору школы.</div>';
-            document.getElementById('weekRange').textContent = '—';
-            document.getElementById('weekCount').textContent = '';
-            return;
-        }
-
         const weekStart = CURRENT_WEEK_START;
         const weekEnd = addDays(weekStart, 6);
         const weekDays = [];
@@ -578,16 +405,13 @@
 
         document.getElementById('weekRange').textContent = formatWeekRange(weekStart, weekEnd);
 
-        // Счётчики
-        const today = new Date(); today.setHours(0,0,0,0);
-        const weekLessons = [];
-        weekDays.forEach(d => { if (d.getDay() !== 0) weekLessons.push(...getLessonsForDate(d)); });
-        const totalCount = weekLessons.length;
-
+        // Считаем уроки за неделю (игнорируя воскресенье)
+        let totalCount = 0;
+        weekDays.forEach(d => { if (d.getDay() !== 0) totalCount += getLessonsForDate(d).length; });
         document.getElementById('weekCount').innerHTML =
             '<b>' + totalCount + '</b> по плану, <span class="z">0</span> замен/переносов, <span class="o">0</span> отмен';
 
-        // Определяем максимальное количество уроков в любой день недели
+        // Определяем максимум уроков на неделе
         let maxNum = 0;
         weekDays.forEach(d => {
             const lessons = getLessonsForDate(d);
@@ -596,13 +420,20 @@
         if (maxNum === 0) maxNum = 7;
         if (maxNum < 12) maxNum = Math.max(maxNum, 7);
 
-        // Строим HTML таблицы
+        // Проверяем: попадает ли вся неделя ВНЕ периода? (например каникулы или лето)
+        const anyInPeriod = weekDays.some(d => findPeriodIndexByDate(d) >= 0);
+
+        if (!anyInPeriod) {
+            container.innerHTML = '<div class="empty-schedule"><b>Каникулы</b>На этой неделе занятий нет. Расписание появится, когда начнётся учебный период.</div>';
+            return;
+        }
+
+        // Строим таблицу
         let html = '<div class="schedule-wrap"><table class="schedule-table">';
         html += '<colgroup><col class="lesson-col">';
         for (let i = 0; i < 7; i++) html += '<col class="day-col">';
         html += '</colgroup>';
 
-        // Заголовок
         html += '<thead><tr><th class="corner"></th>';
         weekDays.forEach((d, i) => {
             const cls = i === 6 ? 'sun' : '';
@@ -610,7 +441,6 @@
         });
         html += '</tr></thead><tbody>';
 
-        // Строки
         for (let n = 1; n <= maxNum; n++) {
             html += '<tr>';
             html += '<td class="num">' + n + '</td>';
@@ -623,7 +453,7 @@
                     html += '<td class="' + cellCls + '"></td>';
                 } else {
                     let inner = '';
-                    lessonsAtN.forEach((l, k) => {
+                    lessonsAtN.forEach(l => {
                         const colorIdx = (l.subject.charCodeAt(0) || 0) % 6;
                         inner += '<div class="lesson-card c' + colorIdx + '">';
                         inner += '<span class="subj">' + escapeHtml(l.subject) + '</span>';
@@ -641,24 +471,29 @@
         container.innerHTML = html;
     }
 
-    // Кнопки навигации
     document.getElementById('prevWeekBtn').addEventListener('click', () => {
         CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, -7);
+        // подсвечиваем активный семестр по новой неделе
+        const newIdx = findPeriodIndexByDate(CURRENT_WEEK_START);
+        if (newIdx >= 0) ACTIVE_SEM_INDEX = newIdx;
+        renderSemesterTabs();
         renderSchedule();
     });
     document.getElementById('nextWeekBtn').addEventListener('click', () => {
         CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, 7);
+        const newIdx = findPeriodIndexByDate(CURRENT_WEEK_START);
+        if (newIdx >= 0) ACTIVE_SEM_INDEX = newIdx;
+        renderSemesterTabs();
         renderSchedule();
     });
 
-    // Режимы "неделя / весь период"
     document.querySelectorAll('.week-mode-btn').forEach(b => {
         b.addEventListener('click', () => {
             CURRENT_MODE = b.dataset.mode;
             document.querySelectorAll('.week-mode-btn').forEach(x => x.classList.remove('active'));
             b.classList.add('active');
             if (CURRENT_MODE === 'all') {
-                document.getElementById('scheduleContainer').innerHTML = '<div class="empty-schedule">Функция «Расписание на весь период» в разработке.</div>';
+                document.getElementById('scheduleContainer').innerHTML = '<div class="empty-schedule"><b>В разработке</b>Функция «Расписание на весь период» появится позже.</div>';
             } else {
                 renderSchedule();
             }
