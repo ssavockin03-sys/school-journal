@@ -93,7 +93,8 @@
         .grades-table td.avg-cell.no-grade { color: #94a3b8; font-weight: 400; }
         .grades-table td.qtr-cell { text-align: center; }
         .no-grades-text { color: #94a3b8; font-style: italic; font-size: 13px; }
-        .mini-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; border-radius: 7px; font-weight: 500; font-size: 16px; color: #fff; padding: 0 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+        .mini-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; border-radius: 7px; font-weight: 500; font-size: 16px; color: #fff; padding: 0 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+        .mini-grade:hover { transform: scale(1.12); box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
         .mini-grade.g5, .mini-grade.g4 { background: #65A30D; } .mini-grade.g3 { background: #FB923C; }
         .mini-grade.g2, .mini-grade.g1 { background: #DC2626; } .mini-grade.gn { background: #94A3B8; }
         .qtr-grade { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 28px; padding: 0 10px; border-radius: 6px; font-weight: 500; font-size: 15px; color: #fff; }
@@ -120,6 +121,7 @@
         .rating-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
         .rating-card-title { font-size: 15px; font-weight: 600; }
         .rating-card-link { font-size: 13px; color: #7dd3fc; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+        .rating-card-link:hover { text-decoration: underline; }
         .rating-row { display: grid; grid-template-columns: 40px 1fr auto auto; gap: 12px; align-items: center; padding: 10px 14px; border-radius: 12px; margin-bottom: 6px; background: rgba(255,255,255,0.04); }
         .rating-row.me { background: rgba(99,102,241,0.25); border: 1px solid rgba(129,140,248,0.5); }
         .rating-rank { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; }
@@ -133,7 +135,7 @@
         .rating-delta { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; text-align: center; min-width: 44px; }
         .rating-delta.neg { background: rgba(220,38,38,0.85); } .rating-delta.pos { background: rgba(34,197,94,0.85); } .rating-delta.zero { background: rgba(255,255,255,0.15); }
         .subjects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-        .subject-row { display: grid; grid-template-columns: 40px 1fr auto 24px; gap: 12px; align-items: center; padding: 10px 14px; border-radius: 10px; margin-bottom: 4px; text-decoration: none; color: inherit; }
+        .subject-row { display: grid; grid-template-columns: 40px 1fr auto 24px; gap: 12px; align-items: center; padding: 10px 14px; border-radius: 10px; margin-bottom: 4px; text-decoration: none; color: inherit; cursor: pointer; }
         .subject-row:hover { background: rgba(255,255,255,0.06); }
         .subject-row .subject-name { font-size: 14px; color: #fff; font-weight: 500; }
         .subject-row .subject-score { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
@@ -144,6 +146,7 @@
         #subjectModal.show { display: flex; }
         .subj-modal-box { background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%); width: 100%; max-width: 700px; border-radius: 16px; padding: 30px; color: #fff; box-shadow: 0 20px 60px rgba(0,0,0,0.4); position: relative; max-height: 90vh; overflow-y: auto; }
         .subj-modal-close { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.15); border: none; width: 34px; height: 34px; border-radius: 50%; color: #fff; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+        .subj-modal-close:hover { background: rgba(255,255,255,0.25); }
         .subj-modal-title { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 24px; }
         .subj-info-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
         .subj-info-label { font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
@@ -154,8 +157,41 @@
         .subj-rank-circle { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
         .subj-rank-circle.r1 { background: #fbbf24; color: #78350f; } .subj-rank-circle.r2 { background: #e5e7eb; color: #374151; } .subj-rank-circle.r3 { background: #fb923c; color: #7c2d12; } .subj-rank-circle.other { background: rgba(255,255,255,0.12); }
 
+        /* Модалка статистики оценки */
+        #gradeStatModal { display: none; position: fixed; inset: 0; background: rgba(26,43,74,0.6); z-index: 1100; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+        #gradeStatModal.show { display: flex; }
+        .stat-modal-box { background: #fff; width: 100%; max-width: 560px; border-radius: 16px; padding: 28px; color: #1a2b4a; box-shadow: 0 20px 60px rgba(0,0,0,0.35); position: relative; max-height: 90vh; overflow-y: auto; }
+        .stat-modal-close { position: absolute; top: 14px; right: 14px; background: #f1f5f9; border: none; width: 34px; height: 34px; border-radius: 50%; color: #475569; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+        .stat-modal-close:hover { background: #e2e8f0; }
+        .stat-modal-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 6px; }
+        .stat-modal-sub { font-size: 13px; color: #64748b; text-align: center; margin-bottom: 24px; }
+        .stat-big-grade-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+        .stat-big-grade { width: 72px; height: 72px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 700; color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+        .stat-big-grade.g5, .stat-big-grade.g4 { background: #65A30D; }
+        .stat-big-grade.g3 { background: #FB923C; }
+        .stat-big-grade.g2, .stat-big-grade.g1 { background: #DC2626; }
+        .stat-big-grade.gn { background: #94A3B8; }
+        .stat-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+        .stat-info-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; }
+        .stat-info-label { font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.3px; margin-bottom: 6px; }
+        .stat-info-val { font-size: 16px; font-weight: 700; color: #1e293b; }
+        .stat-section-title { font-size: 13px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 10px; }
+        .stat-dist { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+        .stat-dist-row { display: grid; grid-template-columns: 30px 1fr 44px; gap: 12px; align-items: center; }
+        .stat-dist-grade { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; }
+        .stat-dist-grade.g5, .stat-dist-grade.g4 { background: #65A30D; }
+        .stat-dist-grade.g3 { background: #FB923C; }
+        .stat-dist-grade.g2, .stat-dist-grade.g1 { background: #DC2626; }
+        .stat-dist-bar-wrap { height: 10px; background: #f1f5f9; border-radius: 6px; overflow: hidden; }
+        .stat-dist-bar { height: 100%; border-radius: 6px; transition: width 0.4s ease; }
+        .stat-dist-bar.g5, .stat-dist-bar.g4 { background: #65A30D; }
+        .stat-dist-bar.g3 { background: #FB923C; }
+        .stat-dist-bar.g2, .stat-dist-bar.g1 { background: #DC2626; }
+        .stat-dist-count { font-size: 13px; font-weight: 700; color: #475569; text-align: right; }
+        .stat-note { font-size: 12.5px; color: #64748b; line-height: 1.5; background: #f8fafc; border-radius: 10px; padding: 12px 14px; border: 1px solid #e2e8f0; }
+
         @media (max-width: 900px) { .rating-block, .subjects-grid, .subj-info-card { grid-template-columns: 1fr; } .toolbar-center { order: 3; flex: 100%; justify-content: flex-start; overflow-x: auto; } }
-        @media (max-width: 700px) { .app-shell { padding: 0 14px; } .subj-modal-box { padding: 20px; } .rating-page { padding: 20px; } }
+        @media (max-width: 700px) { .app-shell { padding: 0 14px; } .subj-modal-box { padding: 20px; } .rating-page { padding: 20px; } .stat-modal-box { padding: 20px; } }
     </style>
 </head>
 <body>
@@ -225,12 +261,27 @@
     </div>
 </div>
 
+<!-- Модалка по предмету -->
 <div id="subjectModal">
     <div class="subj-modal-box">
         <button class="subj-modal-close" onclick="document.getElementById('subjectModal').classList.remove('show')">×</button>
         <div class="subj-modal-title" id="subjModalTitle"></div>
         <div class="subj-info-card" id="subjModalInfo"></div>
         <div class="subj-list" id="subjModalList"></div>
+    </div>
+</div>
+
+<!-- Модалка статистики оценки -->
+<div id="gradeStatModal">
+    <div class="stat-modal-box">
+        <button class="stat-modal-close" onclick="document.getElementById('gradeStatModal').classList.remove('show')">×</button>
+        <div class="stat-modal-title" id="statTitle"></div>
+        <div class="stat-modal-sub" id="statSub"></div>
+        <div class="stat-big-grade-wrap"><div class="stat-big-grade" id="statBigGrade"></div></div>
+        <div class="stat-info-grid" id="statInfoGrid"></div>
+        <div class="stat-section-title">Распределение оценок по предмету</div>
+        <div class="stat-dist" id="statDist"></div>
+        <div class="stat-note" id="statNote"></div>
     </div>
 </div>
 
@@ -296,7 +347,7 @@
     }
 
     // ================================================================
-    // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК (вызывается сразу, не зависит от данных)
+    // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
     // ================================================================
     function setupViewSwitcher() {
         const viewBtns = document.querySelectorAll('.view-btn');
@@ -310,41 +361,25 @@
         const btn = e.currentTarget;
         const view = btn.dataset.view;
         if (!view) return;
-        
         document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        
         document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
         const pane = document.getElementById('pane-' + view);
-        if (pane) {
-            pane.classList.add('active');
-        } else {
-            console.warn('Pane not found for view:', view);
-        }
+        if (pane) pane.classList.add('active');
     }
 
     // ================================================================
     // ИНИЦИАЛИЗАЦИЯ
     // ================================================================
     (async function init() {
-        // Сначала подключаем переключатель вкладок, чтобы он работал даже без данных
         setupViewSwitcher();
-
         try {
-            if (!window._fbReady) {
-                setTimeout(init, 100);
-                return;
-            }
+            if (!window._fbReady) { setTimeout(init, 100); return; }
             const fb = await window._fbReady;
-            
             const user = await new Promise((resolve) => {
                 const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
             });
-            
-            if (!user) { 
-                document.getElementById('studentName').textContent = 'Нет пользователя. Войдите.';
-                return; 
-            }
+            if (!user) { document.getElementById('studentName').textContent = 'Нет пользователя. Войдите.'; return; }
 
             const login = user.email.split('@')[0];
             const [classes, subjects, teachers, journals, students, schedules, rooms, periodDocs] = await Promise.all([
@@ -354,10 +389,7 @@
             ]);
 
             const student = students.find(s => s.login === login);
-            if (!student) { 
-                document.getElementById('studentName').textContent = 'Ученик не найден.';
-                return; 
-            }
+            if (!student) { document.getElementById('studentName').textContent = 'Ученик не найден.'; return; }
             
             CURRENT_STUDENT = student;
             CURRENT_CLASS = classes.find(c => c.id === student.class_id) || null;
@@ -398,7 +430,6 @@
             document.getElementById('btnSemesters').textContent = semLabel;
 
             renderAll();
-            
         } catch (err) {
             console.error(err);
             document.getElementById('studentName').textContent = 'Ошибка загрузки.';
@@ -627,7 +658,11 @@
                     const isGrade = r.kind === 'grade';
                     const val = isGrade ? r.grade : r.presence;
                     const cls = gradeClass(val);
-                    html += `<span class="mini-grade ${cls}">${escapeHtml(val)}</span>`;
+                    const safeSubj = escapeHtml(subjectName).replace(/'/g, "\\'");
+                    const safeVal = escapeHtml(val).replace(/'/g, "\\'");
+                    const safeDate = escapeHtml(r.dateRu).replace(/'/g, "\\'");
+                    const kindAttr = isGrade ? 'grade' : 'presence';
+                    html += `<span class="mini-grade ${cls}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeDate}','${kindAttr}')">${escapeHtml(val)}</span>`;
                 });
                 html += '</div></td>';
             }
@@ -698,6 +733,9 @@
 
     function fmtScore(n) { return n == null ? '—' : Number(n).toFixed(2); }
 
+    // ================================================================
+    // РЕНДЕР РЕЙТИНГА
+    // ================================================================
     function renderRating() {
         const container = document.getElementById('ratingContent');
         if (!container) return;
@@ -714,6 +752,7 @@
         })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
         const myClassEntry = classAvgs.find(x => x.id === myId);
         const myClassAvg = myClassEntry ? myClassEntry.avg : null;
+        const myClassPlace = myClassEntry ? (classAvgs.findIndex(x => x.id === myId) + 1) : null;
 
         const parallelStudents = ALL_STUDENTS.filter(s => {
             const cls = ALL_CLASSES.find(c => c.id === s.class_id);
@@ -724,6 +763,7 @@
         })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
         const myParallelEntry = parallelAvgs.find(x => x.id === myId);
         const myParallelAvg = myParallelEntry ? myParallelEntry.avg : null;
+        const myParallelPlace = myParallelEntry ? (parallelAvgs.findIndex(x => x.id === myId) + 1) : null;
 
         const classSubjects = getClassSubjects(myClassId);
         const subjectRows = [];
@@ -747,11 +787,17 @@
             <div class="rating-section-title">Рейтинг общий</div>
             <div class="rating-block">
                 <div class="rating-card">
-                    <div class="rating-card-head"><div class="rating-card-title">Место в классе</div></div>
+                    <div class="rating-card-head">
+                        <div class="rating-card-title">Место в классе</div>
+                        <button class="rating-card-link" onclick="openOverallRatingModal('class')">Все →</button>
+                    </div>
                     ${classAvgs.length === 0 ? '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.6);">Нет данных</div>' : classAvgs.slice(0, 5).map((row, i) => renderOverallRow(i + 1, row, row.id === myId, myClassAvg != null ? (row.avg - myClassAvg) : null, getClassOf(row.id))).join('')}
                 </div>
                 <div class="rating-card">
-                    <div class="rating-card-head"><div class="rating-card-title">Место в параллели</div></div>
+                    <div class="rating-card-head">
+                        <div class="rating-card-title">Место в параллели</div>
+                        <button class="rating-card-link" onclick="openOverallRatingModal('parallel')">Все →</button>
+                    </div>
                     ${parallelAvgs.length === 0 ? '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.6);">Нет данных</div>' : parallelAvgs.slice(0, 5).map((row, i) => renderOverallRow(i + 1, row, row.id === myId, myParallelAvg != null ? (row.avg - myParallelAvg) : null, getClassOf(row.id))).join('')}
                 </div>
             </div>
@@ -807,6 +853,9 @@
         </div>`;
     }
 
+    // ================================================================
+    // МОДАЛКА ПРЕДМЕТА (как было)
+    // ================================================================
     window.openSubjectModal = function(subjectId) {
         const subject = ALL_SUBJECTS.find(s => s.id === subjectId);
         if (!subject) return;
@@ -851,6 +900,174 @@
         }).join('');
 
         document.getElementById('subjectModal').classList.add('show');
+    };
+
+    // ================================================================
+    // МОДАЛКА ОБЩЕГО РЕЙТИНГА (по клику "Все →" в Место в классе / параллели)
+    // ================================================================
+    window.openOverallRatingModal = function(scope) {
+        const periodRange = getPeriodRange();
+        const myId = CURRENT_STUDENT.id;
+        let students = [];
+        let title = '';
+        let avgForMe = null;
+        let baseClassId = CURRENT_CLASS.id;
+
+        if (scope === 'class') {
+            title = 'Место в классе — ' + CURRENT_CLASS.name;
+            students = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id);
+        } else {
+            const myParallel = getParallelOfClass(CURRENT_CLASS);
+            title = 'Место в параллели — ' + (myParallel || '') + ' параллель';
+            students = ALL_STUDENTS.filter(s => {
+                const cls = ALL_CLASSES.find(c => c.id === s.class_id);
+                return getParallelOfClass(cls) === myParallel;
+            });
+        }
+
+        const rows = students.map(s => ({
+            id: s.id,
+            full_name: s.full_name,
+            class_id: s.class_id,
+            avg: calcStudentOverallAvg(s.id, s.class_id, periodRange)
+        })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
+
+        const myEntry = rows.find(x => x.id === myId);
+        const myAvg = myEntry ? myEntry.avg : null;
+        const myPlace = myEntry ? (rows.findIndex(x => x.id === myId) + 1) : null;
+        const overallAvg = rows.length ? (rows.reduce((s, x) => s + x.avg, 0) / rows.length) : null;
+
+        document.getElementById('subjModalTitle').textContent = title;
+        document.getElementById('subjModalInfo').innerHTML = `
+            <div><div class="subj-info-label">Ваше место</div><div class="subj-info-val">${myPlace || '—'} <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,0.7);">из ${rows.length}</span></div></div>
+            <div><div class="subj-info-label">Ваш средний балл</div><div class="subj-info-val">${fmtScore(myAvg)}</div></div>
+            <div><div class="subj-info-label">Средний балл</div><div class="subj-info-val">${fmtScore(overallAvg)}</div></div>
+        `;
+
+        document.getElementById('subjModalList').innerHTML = rows.map((row, i) => {
+            const place = i + 1;
+            const isMe = row.id === myId;
+            let rankCls = 'other'; if (place === 1) rankCls = 'r1'; else if (place === 2) rankCls = 'r2'; else if (place === 3) rankCls = 'r3';
+            const delta = myAvg != null ? (row.avg - myAvg) : null;
+            const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
+            const deltaTxt = delta == null ? '·' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
+            const clsName = scope === 'parallel' ? (ALL_CLASSES.find(c => c.id === row.class_id)?.name || '') : '';
+            
+            return `<div class="subj-student-row ${isMe ? 'me' : ''}">
+                <div class="subj-rank-circle ${rankCls}">${place}</div>
+                <div class="rating-name-cell" style="color:#fff;">
+                    ${clsName ? `<span class="rating-class-pill ${clsName.includes('Г') ? 'pink' : (clsName.includes('Л') ? 'green' : 'blue')}" style="margin-right:6px;">${escapeHtml(clsName)}</span>` : ''}
+                    <div class="rating-avatar">${escapeHtml(initials(row.full_name))}</div>
+                    <span style="font-size:14px;${isMe ? 'font-weight:700;' : ''}">${escapeHtml(row.full_name)}</span>
+                </div>
+                <div class="rating-score">${fmtScore(row.avg)}</div>
+                <div class="rating-delta ${deltaCls}">${deltaTxt}</div>
+            </div>`;
+        }).join('');
+
+        document.getElementById('subjectModal').classList.add('show');
+    };
+
+    // ================================================================
+    // МОДАЛКА СТАТИСТИКИ ОЦЕНКИ
+    // ================================================================
+    window.openGradeStat = function(subjectName, value, dateRu, kind) {
+        if (!CURRENT_STUDENT) return;
+        const periodRange = getPeriodRange();
+        const myId = CURRENT_STUDENT.id;
+
+        // Найдём все записи этого предмета у текущего ученика в периоде
+        const all = collectAllStudentGrades();
+        const journal = ALL_JOURNALS.find(j => {
+            const s = ALL_SUBJECTS.find(x => x.name === subjectName);
+            return s && j.subject_id === s.id;
+        });
+
+        // Записи-оценки этого предмета в периоде
+        let subjectGrades = all.filter(g => g.subject === subjectName && g.kind === 'grade');
+        if (periodRange) {
+            subjectGrades = subjectGrades.filter(g => {
+                if (!g.date) return false;
+                const d = isoDate(g.date);
+                return d >= periodRange.start && d <= periodRange.end;
+            });
+        }
+
+        // Распределение по цифрам
+        const dist = { 5: 0, 4: 0, 3: 0, 2: 0 };
+        subjectGrades.forEach(g => {
+            const d = firstDigit(g.grade);
+            if (d && dist[d] !== undefined) dist[d]++;
+        });
+        const totalCounted = dist[5] + dist[4] + dist[3] + dist[2];
+
+        // Средний по предмету (в периоде)
+        const avg = calcAverageFromValues(subjectGrades.map(g => g.grade));
+
+        // Кол-во всех оценок (включая дроби — считаем штуки)
+        const totalMarks = subjectGrades.length;
+
+        // Класс ученика
+        const classStudents = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id);
+        const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
+        let myPlace = null;
+        let classAvg = null;
+        let classCount = 0;
+        if (subjObj) {
+            const rows = classStudents.map(s => ({
+                id: s.id, avg: calcStudentSubjectAvg(s.id, CURRENT_CLASS.id, subjObj.id, periodRange)
+            })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
+            classCount = rows.length;
+            const idx = rows.findIndex(x => x.id === myId);
+            myPlace = idx >= 0 ? idx + 1 : null;
+            classAvg = rows.length ? rows.reduce((s, x) => s + x.avg, 0) / rows.length : null;
+        }
+
+        // Заполнение модалки
+        document.getElementById('statTitle').textContent = subjectName;
+        document.getElementById('statSub').textContent = (kind === 'presence' ? 'Отметка о посещении: ' : 'Оценка: ') + value + ' — ' + dateRu;
+
+        const big = document.getElementById('statBigGrade');
+        big.textContent = value;
+        big.className = 'stat-big-grade ' + gradeClass(value);
+
+        // Инфо-сетка
+        let infoHtml = '';
+        infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Средний балл по предмету</div><div class="stat-info-val">${fmtScore(avg)}</div></div>`;
+        infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Всего оценок в периоде</div><div class="stat-info-val">${totalMarks}</div></div>`;
+        infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Место в классе</div><div class="stat-info-val">${myPlace || '—'}${classCount ? ' из ' + classCount : ''}</div></div>`;
+        infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Средний балл класса</div><div class="stat-info-val">${fmtScore(classAvg)}</div></div>`;
+        document.getElementById('statInfoGrid').innerHTML = infoHtml;
+
+        // Распределение
+        const maxBar = Math.max(1, dist[5], dist[4], dist[3], dist[2]);
+        let distHtml = '';
+        [5,4,3,2].forEach(d => {
+            const c = dist[d];
+            const w = totalCounted ? Math.round((c / maxBar) * 100) : 0;
+            const cls = d >= 4 ? 'g5' : (d === 3 ? 'g3' : 'g2');
+            distHtml += `<div class="stat-dist-row">
+                <div class="stat-dist-grade ${cls}">${d}</div>
+                <div class="stat-dist-bar-wrap"><div class="stat-dist-bar ${cls}" style="width:${w}%"></div></div>
+                <div class="stat-dist-count">${c}</div>
+            </div>`;
+        });
+        document.getElementById('statDist').innerHTML = distHtml;
+
+        // Заметка
+        let note = '';
+        if (kind === 'presence') {
+            note = 'Это отметка о посещении, а не оценка. Она не влияет на средний балл, но может учитываться учителем.';
+        } else {
+            const d = firstDigit(value);
+            if (d === 2) note = 'Оценка «2» — это сигнал. Обычно её можно исправить: обсуди с учителем, когда и как это сделать.';
+            else if (d === 3) note = 'Оценка «3» — базовая. Если хочешь выше — попроси дополнительные задания или уточни, что улучшить.';
+            else if (d === 4) note = 'Оценка «4» — хорошо. До «5» обычно не хватает мелочей: аккуратности, полноты ответа, примеров.';
+            else if (d === 5) note = 'Оценка «5» — отлично. Держи уровень: повторяй материал и помогай одноклассникам.';
+        }
+        document.getElementById('statNote').textContent = note;
+
+        document.getElementById('gradeStatModal').classList.add('show');
     };
 </script>
 </body>
