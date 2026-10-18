@@ -13,12 +13,21 @@
             font-family: "Open Sans", Arial, sans-serif; 
             font-size: 15px; 
             color: #0f3159; 
+            min-width: 990px; /* Из body */
         }
-        .app-shell { max-width: 940px; margin: 0 auto; position: relative; }
+        .app-shell { max-width: 968px; margin: 0 auto; position: relative; /* Из page-header */ }
 
         /* ===================== ШАПКА ===================== */
-        .header { background: #fff; width: 100%; padding: 10px 0; border-bottom: 1px solid #e0e0e0; }
-        .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 14px; }
+        .header { 
+            background: #fff; 
+            width: 100%; 
+            height: 180px; /* Из page-header (хотя реально она меньше, оставим авто) */
+            padding: 10px 0; 
+            border-bottom: 1px solid #e0e0e0; 
+            position: relative;
+            z-index: 15;
+        }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 14px; height: 60px; }
         .logo { font-size: 22px; color: #0273b2; font-weight: 700; text-decoration: none; }
         .logo span { font-weight: 400; color: #777; }
         .user-zone { display: flex; align-items: center; gap: 20px; }
@@ -29,19 +38,71 @@
         .user-actions a { color: #0273b2; text-decoration: none; }
         .user-actions a.logout { color: #d9534f; }
 
-        /* ===================== МЕНЮ ===================== */
-        .header-menu { height: 45px; width: 100%; background-color: #0273b2; border-radius: 5px 5px 0 0; display: flex; padding: 0; list-style: none; }
-        .header-menu li { display: block; height: 100%; }
-        .header-menu a { display: flex; align-items: center; height: 100%; padding: 0 20px; color: #fff; text-decoration: none; font-size: 14px; border-bottom: 3px solid transparent; }
+        /* ===================== СИНЕЕ МЕНЮ ===================== */
+        .header-menu { 
+            height: 45px; /* Из header-menu */
+            width: 940px; /* Из header-menu */
+            background-color: #0273b2; /* Из header-menu */
+            border-radius: 5px 5px 0 0; /* Из header-menu */
+            margin: 0 14px; /* Из header-menu */
+            display: flex; 
+            padding: 0; 
+            list-style: none; 
+            position: relative;
+        }
+        .header-menu li { 
+            display: inline-block; /* Из header-menu__item */
+            height: 45px; /* Из header-menu__item */
+            line-height: 45px; /* Из header-menu__item */
+            float: left; 
+        }
+        .header-menu a { 
+            display: block; 
+            height: 100%; 
+            padding: 0 20px; 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 14px; 
+            border-bottom: 3px solid transparent;
+        }
         .header-menu a.active { background: #015b8e; border-bottom-color: #fff; font-weight: 600; }
 
-        /* ===================== ПОДМЕНЮ ===================== */
-        .sub-menu { background: #fff; border-bottom: 1px solid #e0e0e0; display: flex; padding: 0 14px; border-radius: 0 0 5px 5px; margin-bottom: 20px; }
-        .sub-menu a { padding: 10px 15px; color: #555; text-decoration: none; font-size: 13px; border-bottom: 3px solid transparent; }
-        .sub-menu a.active { color: #0273b2; border-bottom-color: #0273b2; font-weight: 600; }
+        /* ===================== ПОДМЕНЮ (ТОЧНЫЕ СТИЛИ) ===================== */
+        .header-submenu {
+            position: absolute; /* Из header-submenu */
+            top: 45px; /* Из header-submenu */
+            left: 0; /* Из header-submenu */
+            width: 938px; /* Из header-submenu */
+            height: 42px; /* Из header-submenu */
+            background-color: #fff; /* Из header-submenu */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.11); /* Из header-submenu */
+            display: flex; /* Из header-submenu */
+            font-size: 14px; /* Из header-submenu */
+            overflow: hidden; /* Из header-submenu */
+            padding-left: 0; /* Из header-submenu */
+            list-style: none; /* Убираем точки списка */
+            margin: 0 14px; /* Выравниваем по синему меню */
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .header-submenu__item {
+            float: left; /* Из header-submenu__item */
+            margin: 0 0 0 18px; /* Из header-submenu__item */
+            line-height: 42px; /* Из header-submenu__item */
+            height: 42px; /* Из header-submenu__item */
+            list-style-type: none; /* Из header-submenu__item */
+        }
+        
+        .header-submenu__link {
+            text-decoration: none; /* Из header-submenu__link */
+            color: #000; /* Из header-submenu__link */
+            padding: 11px 0; /* Из header-submenu__link */
+            display: block;
+            font-size: 14px;
+        }
 
         /* ===================== КОНТЕНТ ===================== */
-        .content-wrap { padding: 0 14px 60px; }
+        .content-wrap { padding: 60px 14px 60px; /* Отступ сверху, чтобы подменю не перекрывало контент */ }
         
         .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 18px; font-weight: 700; flex-shrink: 0; }
@@ -180,20 +241,22 @@
                 </div>
             </div>
         </div>
+        
+        <!-- СИНЕЕ МЕНЮ И ПОДМЕНЮ -->
+        <ul class="header-menu">
+            <li><a href="#" class="active" onclick="return false">ОБРАЗОВАНИЕ</a></li>
+            <li><a href="#" onclick="return false">ОБЩЕНИЕ</a></li>
+            <li><a href="#" onclick="return false">ПРИЛОЖЕНИЯ</a></li>
+            
+            <!-- ТО САМОЕ ПОДМЕНЮ -->
+            <ul class="header-submenu">
+                <li class="header-submenu__item"><a href="student.html" class="header-submenu__link">Сегодня</a></li>
+                <li class="header-submenu__item"><a href="student-performance.html" class="header-submenu__link">Успеваемость</a></li>
+                <li class="header-submenu__item"><a href="student-group.html" class="header-submenu__link">Моя группа</a></li>
+                <li class="header-submenu__item"><a href="student-schedule.html" class="header-submenu__link">Расписание</a></li>
+            </ul>
+        </ul>
     </header>
-
-    <ul class="header-menu">
-        <li><a href="#" class="active" onclick="return false">ОБРАЗОВАНИЕ</a></li>
-        <li><a href="#" onclick="return false">ОБЩЕНИЕ</a></li>
-        <li><a href="#" onclick="return false">ПРИЛОЖЕНИЯ</a></li>
-    </ul>
-
-    <div class="sub-menu">
-        <a href="student.html">Сегодня</a>
-        <a href="student-performance.html" class="active">Успеваемость</a>
-        <a href="student-group.html">Моя группа</a>
-        <a href="student-schedule.html">Расписание</a>
-    </div>
 
     <div class="content-wrap">
         <div class="top-toolbar">
@@ -269,7 +332,6 @@
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
     const MONTHS_GEN  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
     
-    // УБРАЛИ РИМСКИЕ ЦИФРЫ, ТЕПЕРЬ ТОЛЬКО ПРЕФИКСЫ
     const PERIOD_NAMES = { 
         'Четверти': 'четверть', 
         'Семестры': 'семестр', 
@@ -521,9 +583,6 @@
         container.innerHTML = '';
     }
 
-    // ================================================================
-    // ОБНОВЛЕННАЯ ФУНКЦИЯ ПЕРЕКЛЮЧАТЕЛЕЙ ПЕРИОДОВ
-    // ================================================================
     function renderPeriodTabs() {
         const container = document.getElementById('periodTabs');
         if (!container) return;
@@ -536,14 +595,12 @@
             container.appendChild(tab); return;
         }
 
-        // Добавляем кнопки для каждого периода
         PERIODS.forEach((p, idx) => {
             const tab = document.createElement('button');
             tab.type = 'button';
             const isActive = (idx === ACTIVE_PERIOD_INDEX);
             tab.className = 'tab-pill' + (isActive ? ' active' : '');
             
-            // Логика: если активно — пишем "1 семестр", если нет — просто "2"
             if (isActive) {
                 const periodName = PERIOD_NAMES[PERIOD_SYSTEM] || 'период';
                 tab.textContent = (idx + 1) + ' ' + periodName;
@@ -555,12 +612,10 @@
             container.appendChild(tab);
         });
 
-        // В конце всегда добавляем "итог" (в реальном дневнике он тоже кликабельный, но у нас пока не реализована логика итога за год)
         const totalTab = document.createElement('button');
         totalTab.type = 'button';
         totalTab.className = 'tab-pill';
         totalTab.textContent = 'итог';
-        // Если хотите, чтобы "итог" тоже был кнопкой, можно добавить слушатель
         container.appendChild(totalTab);
     }
 
@@ -589,7 +644,6 @@
         const range = getPeriodRange();
         const all = collectAllStudentGrades();
         
-        // Определяем заголовок таблицы (например, "1 семестр")
         let periodLabel = 'Итог';
         if (PERIODS.length > 0 && PERIODS[ACTIVE_PERIOD_INDEX]) {
             const pName = PERIOD_NAMES[PERIOD_SYSTEM] || 'Период';
