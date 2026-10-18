@@ -55,54 +55,48 @@
         .view-pane { display: none; }
         .view-pane.active { display: block; }
 
-        /* ===================== ПЕРЕКЛЮЧАТЕЛИ ПЕРИОДОВ (ИЗ .LizK_ И .sF2Bq) ===================== */
+        /* ===================== ПЕРЕКЛЮЧАТЕЛИ ПЕРИОДОВ ===================== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         
         .period-tabs-group { 
-            display: flex; /* Из .LizK_ */
-            font-family: "Open Sans", sans-serif; /* Из .LizK_ */
-            border: 1px solid #e0e7ed; /* Из .LizK_ */
-            border-radius: 8px; /* Из .LizK_ */
-            font-weight: 400; /* Из .LizK_ */
-            font-size: 14px; /* Из .LizK_ */
-            line-height: 19px; /* Из .LizK_ */
-            background-color: #fff; /* Из .LizK_ */
-            align-items: center; /* Из .LizK_ */
-            margin-right: auto; /* Из .LizK_ */
-            width: fit-content; /* Чтобы не растягивался на весь экран */
+            display: flex; 
+            font-family: "Open Sans", sans-serif; 
+            border: 1px solid #e0e7ed; 
+            border-radius: 8px; 
+            font-weight: 400; 
+            font-size: 14px; 
+            line-height: 19px; 
+            background-color: #fff; 
+            align-items: center; 
+            margin-right: auto; 
+            width: fit-content; 
         }
         
         .tab-pill { 
-            margin: 6px 0; /* Из .sF2Bq (6px 0) */
-            padding: 0 8px; /* Из .sF2Bq */
-            border-style: solid; /* Из .sF2Bq */
-            border-color: #e0e7ed; /* Из .sF2Bq */
-            border-width: 0 1px 0 0; /* Из .sF2Bq (разделитель справа) */
-            color: #0f3159; /* Из .sF2Bq */
-            font-weight: 400; /* Из .sF2Bq */
-            cursor: pointer; /* Из .sF2Bq */
+            margin: 6px 0; 
+            padding: 0 8px; 
+            border-style: solid; 
+            border-color: #e0e7ed; 
+            border-width: 0 1px 0 0; 
+            color: #0f3159; 
+            font-weight: 400; 
+            cursor: pointer; 
             background: transparent;
             font-family: inherit;
             font-size: inherit;
             line-height: inherit;
         }
         
-        .tab-pill:first-child { 
-            border-radius: 8px 0 0 8px; /* Из .sF2Bq:first-child */
-        }
-        
-        .tab-pill:last-child { 
-            border-radius: 0 8px 8px 0; /* Из .sF2Bq:last-child */
-            border-width: 0; /* Убираем правую границу у последнего */
-        }
+        .tab-pill:first-child { border-radius: 8px 0 0 8px; }
+        .tab-pill:last-child { border-radius: 0 8px 8px 0; border-width: 0; }
         
         .tab-pill.active { 
-            padding: 6px 8px; /* Из .sF2Bq.UGCYw */
-            margin: -1px; /* Из .sF2Bq.UGCYw */
-            border: 1px solid #2f80ed; /* Из .sF2Bq.UGCYw */
-            border-radius: 8px; /* Из .sF2Bq.UGCYw */
-            color: #2f80ed; /* Из .sF2Bq.UGCYw */
-            z-index: 1; /* Из .sF2Bq.UGCYw */
+            padding: 6px 8px; 
+            margin: -1px; 
+            border: 1px solid #2f80ed; 
+            border-radius: 8px; 
+            color: #2f80ed; 
+            z-index: 1; 
             background: #fff;
         }
 
@@ -274,7 +268,14 @@
     const DAYS_RU     = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
     const MONTHS_GEN  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-    const PERIOD_LABELS = { 'Четверти': ['I четверть','II четверть','III четверть','IV четверть'], 'Полугодия': ['I полугодие','II полугодие'], 'Триместры': ['I триместр','II триместр','III триместр'], 'Семестры': ['I семестр','II семестр'] };
+    
+    // УБРАЛИ РИМСКИЕ ЦИФРЫ, ТЕПЕРЬ ТОЛЬКО ПРЕФИКСЫ
+    const PERIOD_NAMES = { 
+        'Четверти': 'четверть', 
+        'Семестры': 'семестр', 
+        'Триместры': 'триместр', 
+        'Полугодия': 'полугодие' 
+    };
 
     let CURRENT_STUDENT = null;
     let CURRENT_CLASS = null;
@@ -520,36 +521,47 @@
         container.innerHTML = '';
     }
 
-    // ОБНОВЛЕННАЯ ФУНКЦИЯ (ПЕРЕКЛЮЧАТЕЛИ ПЕРИОДОВ)
+    // ================================================================
+    // ОБНОВЛЕННАЯ ФУНКЦИЯ ПЕРЕКЛЮЧАТЕЛЕЙ ПЕРИОДОВ
+    // ================================================================
     function renderPeriodTabs() {
         const container = document.getElementById('periodTabs');
         if (!container) return;
         container.innerHTML = '';
+        
         if (PERIODS.length === 0) {
             const tab = document.createElement('button');
             tab.type = 'button'; tab.className = 'tab-pill active';
             tab.textContent = 'Периоды не созданы'; tab.disabled = true;
             container.appendChild(tab); return;
         }
-        const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
+
+        // Добавляем кнопки для каждого периода
         PERIODS.forEach((p, idx) => {
             const tab = document.createElement('button');
             tab.type = 'button';
-            tab.className = 'tab-pill' + (idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
+            const isActive = (idx === ACTIVE_PERIOD_INDEX);
+            tab.className = 'tab-pill' + (isActive ? ' active' : '');
             
-            // Формируем правильный текст (Четверть / Семестр)
-            let label = labels[idx];
-            if (!label) {
-                if (PERIOD_SYSTEM === 'Четверти') label = (idx + 1) + ' четверть';
-                else if (PERIOD_SYSTEM === 'Семестры') label = (idx + 1) + ' семестр';
-                else if (PERIOD_SYSTEM === 'Триместры') label = (idx + 1) + ' триместр';
-                else label = 'Период ' + (idx + 1);
+            // Логика: если активно — пишем "1 семестр", если нет — просто "2"
+            if (isActive) {
+                const periodName = PERIOD_NAMES[PERIOD_SYSTEM] || 'период';
+                tab.textContent = (idx + 1) + ' ' + periodName;
+            } else {
+                tab.textContent = (idx + 1);
             }
-            tab.textContent = label;
             
             tab.addEventListener('click', () => { ACTIVE_PERIOD_INDEX = idx; renderPeriodTabs(); renderGradesTable(); });
             container.appendChild(tab);
         });
+
+        // В конце всегда добавляем "итог" (в реальном дневнике он тоже кликабельный, но у нас пока не реализована логика итога за год)
+        const totalTab = document.createElement('button');
+        totalTab.type = 'button';
+        totalTab.className = 'tab-pill';
+        totalTab.textContent = 'итог';
+        // Если хотите, чтобы "итог" тоже был кнопкой, можно добавить слушатель
+        container.appendChild(totalTab);
     }
 
     function getScheduleSubjects() {
@@ -576,7 +588,13 @@
         }
         const range = getPeriodRange();
         const all = collectAllStudentGrades();
-        const periodLabel = PERIODS.length > 0 ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Итог') : 'Итог';
+        
+        // Определяем заголовок таблицы (например, "1 семестр")
+        let periodLabel = 'Итог';
+        if (PERIODS.length > 0 && PERIODS[ACTIVE_PERIOD_INDEX]) {
+            const pName = PERIOD_NAMES[PERIOD_SYSTEM] || 'Период';
+            periodLabel = (ACTIVE_PERIOD_INDEX + 1) + ' ' + pName;
+        }
 
         let html = '<div class="dnevnik-marks-wrapper">';
         html += '<div class="dnevnik-table-header">' + periodLabel + '</div>';
