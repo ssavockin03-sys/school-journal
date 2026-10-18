@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Успеваемость — Дневник.ру</title>
     <style>
-        /* Стили оставляем как были */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { background: #f0f4f9; }
         body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 14px; font-weight: 400; padding: 0; }
@@ -31,7 +30,6 @@
         .d-sub-item:hover { color: #1d82b5; } .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
         .container { padding: 16px 0 60px; }
 
-        /* Верхняя панель */
         .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 16px; font-weight: 700; color: #1a2b4a; }
         .toolbar-center { flex: 1; display: flex; justify-content: center; }
@@ -257,8 +255,6 @@
     let PERIODS = [];
     let PERIOD_SYSTEM = '';
     let ACTIVE_PERIOD_INDEX = 0;
-    let ALL_SCHEDULES = [];
-    let CURRENT_BELLS = null;
     let CURRENT_WEEK_START = null;
 
     function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
@@ -279,9 +275,7 @@
         window.location.replace('index.html');
     }
 
-    // ================================================================
-    // ФУНКЦИЯ СРЕДНЕГО БАЛЛА (РАЗБИРАЕТ "4-/5" КАК 4 И 5)
-    // ================================================================
+    // ЕДИНАЯ ФОРМУЛА СРЕДНЕГО (ИДЕНТИЧНАЯ ОЦЕНКАМ)
     function calcAverageFromValues(values) {
         let sum = 0, cnt = 0;
         (values || []).forEach(raw => {
@@ -299,23 +293,33 @@
         return cnt === 0 ? null : sum / cnt;
     }
 
+    // ГЛАВНОЕ ИСПРАВЛЕНИЕ: УБИРАЕМ ЖЁСТКИЙ РЕДИРЕКТ. Ждём загрузки Firebase.
     (async function init() {
         try {
+            // Ждём Firebase
             const fb = await window._fbReady;
+            // Ждём пользователя
             const user = await new Promise((resolve) => {
                 const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
             });
-            if (!user) { window.location.replace('index.html'); return; }
-            const login = user.email.split('@')[0];
+            
+            if (!user) { 
+                document.getElementById('studentName').textContent = 'Вы не авторизованы. Обновите страницу.';
+                return; 
+            }
 
-            const [classes, subjects, teachers, journals, students, schedules, rooms, bells, periodDocs] = await Promise.all([
+            const login = user.email.split('@')[0];
+            const [classes, subjects, teachers, journals, students, schedules, rooms, periodDocs] = await Promise.all([
                 DB.getAll('classes'), DB.getAll('subjects'), DB.getAll('teachers'),
                 DB.getAll('journals'), DB.getAll('students'), DB.getAll('class_schedules'),
-                DB.getAll('rooms'), DB.getAll('bell_schedules'), DB.getAll('educational_periods')
+                DB.getAll('rooms'), DB.getAll('educational_periods')
             ]);
 
             const student = students.find(s => s.login === login);
-            if (!student) { window.location.replace('index.html'); return; }
+            if (!student) { 
+                document.getElementById('studentName').textContent = 'Ученик не найден.';
+                return; 
+            }
             
             CURRENT_STUDENT = student;
             CURRENT_CLASS = classes.find(c => c.id === student.class_id) || null;
@@ -340,12 +344,6 @@
                 });
             });
             CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
-
-            ALL_SCHEDULES = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
-            const shiftName = (CURRENT_CLASS && CURRENT_CLASS.shift) || 'Первая смена';
-            const shifts = await DB.getAll('bell_shifts');
-            const ourShift = shifts.find(x => x.name === shiftName) || shifts[0];
-            CURRENT_BELLS = ourShift ? bells.find(b => b.shift_id === ourShift.id) : null;
 
             const pd = periodDocs[0] || null;
             PERIODS = pd ? (pd.periods || []) : [];
@@ -375,7 +373,7 @@
 
         } catch (err) {
             console.error(err);
-            document.getElementById('studentName').textContent = 'Ошибка загрузки.';
+            document.getElementById('studentName').textContent = 'Ошибка загрузки. Проверьте консоль.';
         }
     })();
 
@@ -388,11 +386,6 @@
             if (t >= s && t <= e) return i;
         }
         return 0;
-    }
-
-    function getPeriodRange() {
-        if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
-        return { start: PERIODS[ACTIVE_PERIOD_INDEX].start, end: PERIODS[ACTIVE_PERIOD_INDEX].end };
     }
 
     function collectAllStudentGrades() {
@@ -553,7 +546,12 @@
         return Array.from(set).sort((a, b) => a.localeCompare(b, 'ru'));
     }
 
-    // ИСПРАВЛЕННЫЙ ФИЛЬТР — ТОЧЬ-В-ТОЧЬ КАК В ОЦЕНКАХ
+    // ИСПРАВЛЕННЫЙ ФИЛЬТР: если у оценки нет даты - она остаётся
+    function getPeriodRange() {
+        if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
+        return { start: PERIODS[ACTIVE_PERIOD_INDEX].start, end: PERIODS[ACTIVE_PERIOD_INDEX].end };
+    }
+
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
         const subjectsFromSchedule = getScheduleSubjects();
@@ -570,17 +568,19 @@
         html += '<thead><tr><th>Предмет</th><th>Оценки</th><th class="center">Ср. балл</th><th class="center">' + escapeHtml(periodLabel) + '</th></tr></thead><tbody>';
         
         subjectsFromSchedule.forEach(subjectName => {
-            // ТУТ ГЛАВНОЕ: если у оценки НЕТ даты, она остаётся
             let records = all.filter(g => g.subject === subjectName);
+            // !!! ГЛАВНОЕ: без фильтра по дате - оставляем ВСЕ оценки
+            // if (range) records = records.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
+            
+            // Но средний балл посчитаем только по тем, что попали в период
+            let periodRecords = records;
             if (range) {
-                records = records.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
+                periodRecords = records.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
             }
             
             records.sort((a, b) => a.key.localeCompare(b.key));
             const gradesMap = {};
-            records.forEach(r => { if (r.kind === 'grade') gradesMap[r.key] = r.grade; });
-            
-            // Считаем средний через нашу функцию calcAverageFromValues
+            periodRecords.forEach(r => { if (r.kind === 'grade') gradesMap[r.key] = r.grade; });
             const avg = calcAverageFromValues(Object.values(gradesMap));
             
             const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
@@ -720,11 +720,11 @@
             <div class="rating-section-title">Рейтинг общий</div>
             <div class="rating-block">
                 <div class="rating-card">
-                    <div class="rating-card-head"><div class="rating-card-title">Место в классе</div><button class="rating-card-link" onclick="alert('Полный список в разделе рейтинга по предметам')">Открыть все</button></div>
+                    <div class="rating-card-head"><div class="rating-card-title">Место в классе</div></div>
                     ${classAvgs.length === 0 ? '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.6);">Нет данных</div>' : classAvgs.slice(0, 5).map((row, i) => renderOverallRow(i + 1, row, row.id === myId, myClassAvg != null ? (row.avg - myClassAvg) : null, getClassOf(row.id))).join('')}
                 </div>
                 <div class="rating-card">
-                    <div class="rating-card-head"><div class="rating-card-title">Место в параллели</div><button class="rating-card-link" onclick="alert('Полный список в разделе рейтинга по предметам')">Открыть все</button></div>
+                    <div class="rating-card-head"><div class="rating-card-title">Место в параллели</div></div>
                     ${parallelAvgs.length === 0 ? '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.6);">Нет данных</div>' : parallelAvgs.slice(0, 5).map((row, i) => renderOverallRow(i + 1, row, row.id === myId, myParallelAvg != null ? (row.avg - myParallelAvg) : null, getClassOf(row.id))).join('')}
                 </div>
             </div>
