@@ -160,11 +160,22 @@
         /* Модалка статистики оценки */
         #gradeStatModal { display: none; position: fixed; inset: 0; background: rgba(26,43,74,0.6); z-index: 1100; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
         #gradeStatModal.show { display: flex; }
-        .stat-modal-box { background: #fff; width: 100%; max-width: 560px; border-radius: 16px; padding: 28px; color: #1a2b4a; box-shadow: 0 20px 60px rgba(0,0,0,0.35); position: relative; max-height: 90vh; overflow-y: auto; }
+        .stat-modal-box { background: #fff; width: 100%; max-width: 580px; border-radius: 16px; padding: 28px; color: #1a2b4a; box-shadow: 0 20px 60px rgba(0,0,0,0.35); position: relative; max-height: 92vh; overflow-y: auto; }
         .stat-modal-close { position: absolute; top: 14px; right: 14px; background: #f1f5f9; border: none; width: 34px; height: 34px; border-radius: 50%; color: #475569; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
         .stat-modal-close:hover { background: #e2e8f0; }
         .stat-modal-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 6px; }
         .stat-modal-sub { font-size: 13px; color: #64748b; text-align: center; margin-bottom: 24px; }
+
+        /* Плашка «КОЛ» */
+        .stat-kol-banner { display: flex; align-items: center; justify-content: center; gap: 16px; background: linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%); border-radius: 16px; padding: 18px 22px; margin-bottom: 22px; box-shadow: 0 6px 24px rgba(0,0,0,0.45); position: relative; overflow: hidden; border: 2px solid #ff3b3b; }
+        .stat-kol-banner::before { content: ''; position: absolute; top: -25px; right: -25px; width: 130px; height: 130px; background: radial-gradient(circle, rgba(255,59,59,0.25) 0%, transparent 70%); border-radius: 50%; }
+        .stat-kol-banner::after { content: ''; position: absolute; bottom: -35px; left: 10px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,59,59,0.18) 0%, transparent 70%); border-radius: 50%; }
+        .stat-kol-circle { width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff5c5c 0%, #c81e1e 45%, #7a0a0a 100%); display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 900; color: #fff; flex-shrink: 0; z-index: 1; box-shadow: 0 4px 14px rgba(200,30,30,0.6), inset 0 -3px 6px rgba(0,0,0,0.35), inset 0 3px 6px rgba(255,255,255,0.25); font-family: 'Arial Black', Impact, sans-serif; line-height: 1; animation: kolPulse 1.6s ease-in-out infinite; }
+        @keyframes kolPulse { 0%,100% { transform: scale(1); box-shadow: 0 4px 14px rgba(200,30,30,0.6), inset 0 -3px 6px rgba(0,0,0,0.35), inset 0 3px 6px rgba(255,255,255,0.25); } 50% { transform: scale(1.08); box-shadow: 0 6px 22px rgba(255,59,59,0.85), inset 0 -3px 6px rgba(0,0,0,0.35), inset 0 3px 6px rgba(255,255,255,0.25); } }
+        .stat-kol-text { z-index: 1; }
+        .stat-kol-title { font-size: 17px; font-weight: 800; color: #ff4d4d; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .stat-kol-sub { font-size: 12.5px; color: rgba(255,255,255,0.78); margin-top: 3px; font-weight: 500; }
+
         .stat-big-grade-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
         .stat-big-grade { width: 72px; height: 72px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 700; color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
         .stat-big-grade.g5, .stat-big-grade.g4 { background: #65A30D; }
@@ -261,7 +272,7 @@
     </div>
 </div>
 
-<!-- Модалка по предмету -->
+<!-- Модалка по предмету / общему рейтингу -->
 <div id="subjectModal">
     <div class="subj-modal-box">
         <button class="subj-modal-close" onclick="document.getElementById('subjectModal').classList.remove('show')">×</button>
@@ -277,6 +288,15 @@
         <button class="stat-modal-close" onclick="document.getElementById('gradeStatModal').classList.remove('show')">×</button>
         <div class="stat-modal-title" id="statTitle"></div>
         <div class="stat-modal-sub" id="statSub"></div>
+
+        <div class="stat-kol-banner" id="statKolBanner">
+            <div class="stat-kol-circle">1</div>
+            <div class="stat-kol-text">
+                <div class="stat-kol-title">КОЛ — единица</div>
+                <div class="stat-kol-sub">Худшая оценка. Но всегда можно исправиться! 💪</div>
+            </div>
+        </div>
+
         <div class="stat-big-grade-wrap"><div class="stat-big-grade" id="statBigGrade"></div></div>
         <div class="stat-info-grid" id="statInfoGrid"></div>
         <div class="stat-section-title">Распределение оценок по предмету</div>
@@ -752,7 +772,6 @@
         })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
         const myClassEntry = classAvgs.find(x => x.id === myId);
         const myClassAvg = myClassEntry ? myClassEntry.avg : null;
-        const myClassPlace = myClassEntry ? (classAvgs.findIndex(x => x.id === myId) + 1) : null;
 
         const parallelStudents = ALL_STUDENTS.filter(s => {
             const cls = ALL_CLASSES.find(c => c.id === s.class_id);
@@ -763,7 +782,6 @@
         })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
         const myParallelEntry = parallelAvgs.find(x => x.id === myId);
         const myParallelAvg = myParallelEntry ? myParallelEntry.avg : null;
-        const myParallelPlace = myParallelEntry ? (parallelAvgs.findIndex(x => x.id === myId) + 1) : null;
 
         const classSubjects = getClassSubjects(myClassId);
         const subjectRows = [];
@@ -854,7 +872,7 @@
     }
 
     // ================================================================
-    // МОДАЛКА ПРЕДМЕТА (как было)
+    // МОДАЛКА ПРЕДМЕТА
     // ================================================================
     window.openSubjectModal = function(subjectId) {
         const subject = ALL_SUBJECTS.find(s => s.id === subjectId);
@@ -903,15 +921,13 @@
     };
 
     // ================================================================
-    // МОДАЛКА ОБЩЕГО РЕЙТИНГА (по клику "Все →" в Место в классе / параллели)
+    // МОДАЛКА ОБЩЕГО РЕЙТИНГА (Место в классе / параллели)
     // ================================================================
     window.openOverallRatingModal = function(scope) {
         const periodRange = getPeriodRange();
         const myId = CURRENT_STUDENT.id;
         let students = [];
         let title = '';
-        let avgForMe = null;
-        let baseClassId = CURRENT_CLASS.id;
 
         if (scope === 'class') {
             title = 'Место в классе — ' + CURRENT_CLASS.name;
@@ -969,21 +985,15 @@
     };
 
     // ================================================================
-    // МОДАЛКА СТАТИСТИКИ ОЦЕНКИ
+    // МОДАЛКА СТАТИСТИКИ ОЦЕНКИ (с плашкой КОЛ/1)
     // ================================================================
     window.openGradeStat = function(subjectName, value, dateRu, kind) {
         if (!CURRENT_STUDENT) return;
         const periodRange = getPeriodRange();
         const myId = CURRENT_STUDENT.id;
 
-        // Найдём все записи этого предмета у текущего ученика в периоде
         const all = collectAllStudentGrades();
-        const journal = ALL_JOURNALS.find(j => {
-            const s = ALL_SUBJECTS.find(x => x.name === subjectName);
-            return s && j.subject_id === s.id;
-        });
 
-        // Записи-оценки этого предмета в периоде
         let subjectGrades = all.filter(g => g.subject === subjectName && g.kind === 'grade');
         if (periodRange) {
             subjectGrades = subjectGrades.filter(g => {
@@ -993,21 +1003,16 @@
             });
         }
 
-        // Распределение по цифрам
-        const dist = { 5: 0, 4: 0, 3: 0, 2: 0 };
+        const dist = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
         subjectGrades.forEach(g => {
             const d = firstDigit(g.grade);
             if (d && dist[d] !== undefined) dist[d]++;
         });
-        const totalCounted = dist[5] + dist[4] + dist[3] + dist[2];
+        const totalCounted = dist[5] + dist[4] + dist[3] + dist[2] + dist[1];
 
-        // Средний по предмету (в периоде)
         const avg = calcAverageFromValues(subjectGrades.map(g => g.grade));
-
-        // Кол-во всех оценок (включая дроби — считаем штуки)
         const totalMarks = subjectGrades.length;
 
-        // Класс ученика
         const classStudents = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id);
         const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
         let myPlace = null;
@@ -1023,7 +1028,6 @@
             classAvg = rows.length ? rows.reduce((s, x) => s + x.avg, 0) / rows.length : null;
         }
 
-        // Заполнение модалки
         document.getElementById('statTitle').textContent = subjectName;
         document.getElementById('statSub').textContent = (kind === 'presence' ? 'Отметка о посещении: ' : 'Оценка: ') + value + ' — ' + dateRu;
 
@@ -1031,7 +1035,11 @@
         big.textContent = value;
         big.className = 'stat-big-grade ' + gradeClass(value);
 
-        // Инфо-сетка
+        // Плашка «КОЛ» — показываем только если это единица или кол
+        const kolBanner = document.getElementById('statKolBanner');
+        const isKol = kind !== 'presence' && firstDigit(value) === 1;
+        kolBanner.style.display = isKol ? 'flex' : 'none';
+
         let infoHtml = '';
         infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Средний балл по предмету</div><div class="stat-info-val">${fmtScore(avg)}</div></div>`;
         infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Всего оценок в периоде</div><div class="stat-info-val">${totalMarks}</div></div>`;
@@ -1039,10 +1047,9 @@
         infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Средний балл класса</div><div class="stat-info-val">${fmtScore(classAvg)}</div></div>`;
         document.getElementById('statInfoGrid').innerHTML = infoHtml;
 
-        // Распределение
-        const maxBar = Math.max(1, dist[5], dist[4], dist[3], dist[2]);
+        const maxBar = Math.max(1, dist[5], dist[4], dist[3], dist[2], dist[1]);
         let distHtml = '';
-        [5,4,3,2].forEach(d => {
+        [5,4,3,2,1].forEach(d => {
             const c = dist[d];
             const w = totalCounted ? Math.round((c / maxBar) * 100) : 0;
             const cls = d >= 4 ? 'g5' : (d === 3 ? 'g3' : 'g2');
@@ -1054,13 +1061,13 @@
         });
         document.getElementById('statDist').innerHTML = distHtml;
 
-        // Заметка
         let note = '';
         if (kind === 'presence') {
             note = 'Это отметка о посещении, а не оценка. Она не влияет на средний балл, но может учитываться учителем.';
         } else {
             const d = firstDigit(value);
-            if (d === 2) note = 'Оценка «2» — это сигнал. Обычно её можно исправить: обсуди с учителем, когда и как это сделать.';
+            if (d === 1) note = 'КОЛ (единица) — самая низкая оценка. Это серьёзный сигнал. Поговори с учителем: узнай, что именно нужно исправить, и попроси возможность пересдать.';
+            else if (d === 2) note = 'Оценка «2» — это сигнал. Обычно её можно исправить: обсуди с учителем, когда и как это сделать.';
             else if (d === 3) note = 'Оценка «3» — базовая. Если хочешь выше — попроси дополнительные задания или уточни, что улучшить.';
             else if (d === 4) note = 'Оценка «4» — хорошо. До «5» обычно не хватает мелочей: аккуратности, полноты ответа, примеров.';
             else if (d === 5) note = 'Оценка «5» — отлично. Держи уровень: повторяй материал и помогай одноклассникам.';
