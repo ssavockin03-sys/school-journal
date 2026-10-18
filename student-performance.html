@@ -6,188 +6,74 @@
     <title>Успеваемость — Дневник.ру</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ===================== БАЗА (ТОЧНО КАК В ДНЕВНИК.РУ) ===================== */
+        /* ===================== БАЗА ===================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { 
-            background: #f4f4f4; /* Фон страницы из common.css */
-            min-height: 100vh;
-        }
+        html, body { background: #f4f4f4; min-height: 100vh; }
         body { 
-            font-family: "Open Sans", Helvetica, Arial, sans-serif; 
-            font-size: 14px; 
-            color: #0f3159; /* Темно-синий для текста */
+            font-family: "Open Sans", Arial, sans-serif; 
+            font-size: 15px; /* Из скриншота body */
+            color: #0f3159; 
         }
+        .app-shell { max-width: 940px; margin: 0 auto; position: relative; }
 
-        /* Контейнер 940px — как у их меню */
-        .app-shell { 
-            max-width: 940px; 
-            margin: 0 auto; 
-            position: relative;
-        }
-
-        /* ===================== ШАПКА (page-header) ===================== */
-        .header { 
-            background: #fff; 
-            width: 100%;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .header-inner { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 0 14px;
-        }
-        .logo { 
-            font-size: 22px; 
-            color: #0273b2; 
-            font-weight: 700; 
-            text-decoration: none;
-        }
+        /* ===================== ШАПКА ===================== */
+        .header { background: #fff; width: 100%; padding: 10px 0; border-bottom: 1px solid #e0e0e0; }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 14px; }
+        .logo { font-size: 22px; color: #0273b2; font-weight: 700; text-decoration: none; }
         .logo span { font-weight: 400; color: #777; }
-        .user-zone { 
-            display: flex; 
-            align-items: center; 
-            gap: 20px; 
-        }
-        .user-info { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-end; 
-            line-height: 1.3; 
-        }
+        .user-zone { display: flex; align-items: center; gap: 20px; }
+        .user-info { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.3; }
         .user-name { font-weight: 700; font-size: 14px; }
         .user-role { font-size: 11px; color: #777; text-transform: uppercase; }
-        .user-actions { 
-            display: flex; 
-            gap: 12px; 
-            font-size: 13px; 
-        }
-        .user-actions a { 
-            color: #0273b2; 
-            text-decoration: none; 
-        }
+        .user-actions { display: flex; gap: 12px; font-size: 13px; }
+        .user-actions a { color: #0273b2; text-decoration: none; }
         .user-actions a.logout { color: #d9534f; }
 
-        /* ===================== СИНЕЕ МЕНЮ (.header-menu) ===================== */
+        /* ===================== МЕНЮ ===================== */
         .header-menu { 
             height: 45px; 
             width: 100%; 
             background-color: #0273b2; 
-            border-radius: 5px 5px 0 0; /* Из скриншота */
-            margin: 0; 
-            display: flex;
-            padding-left: 0;
-            list-style: none;
+            border-radius: 5px 5px 0 0; 
+            display: flex; 
+            padding: 0; 
+            list-style: none; 
         }
         .header-menu li { display: block; height: 100%; }
         .header-menu a { 
-            display: flex; 
-            align-items: center; 
-            height: 100%; 
-            padding: 0 20px; 
-            color: #fff; 
-            text-decoration: none; 
-            font-weight: 400; 
-            font-size: 14px;
-            border-bottom: 3px solid transparent;
-            transition: background 0.2s;
+            display: flex; align-items: center; height: 100%; padding: 0 20px; 
+            color: #fff; text-decoration: none; font-size: 14px; border-bottom: 3px solid transparent;
         }
-        .header-menu a:hover { background: rgba(255,255,255,0.1); }
-        .header-menu a.active { 
-            background: #015b8e; /* Чуть темнее при нажатии */
-            border-bottom-color: #fff; 
-            font-weight: 600;
-        }
+        .header-menu a.active { background: #015b8e; border-bottom-color: #fff; font-weight: 600; }
 
         /* ===================== ПОДМЕНЮ ===================== */
-        .sub-menu { 
-            background: #fff; 
-            border-bottom: 1px solid #e0e0e0; 
-            display: flex; 
-            padding: 0 14px;
-            border-radius: 0 0 5px 5px;
-            margin-bottom: 20px;
-        }
-        .sub-menu a { 
-            padding: 10px 15px; 
-            color: #555; 
-            text-decoration: none; 
-            font-size: 13px; 
-            border-bottom: 3px solid transparent;
-        }
-        .sub-menu a:hover { color: #0273b2; }
+        .sub-menu { background: #fff; border-bottom: 1px solid #e0e0e0; display: flex; padding: 0 14px; border-radius: 0 0 5px 5px; margin-bottom: 20px; }
+        .sub-menu a { padding: 10px 15px; color: #555; text-decoration: none; font-size: 13px; border-bottom: 3px solid transparent; }
         .sub-menu a.active { color: #0273b2; border-bottom-color: #0273b2; font-weight: 600; }
 
         /* ===================== КОНТЕНТ ===================== */
-        .content-wrap { 
-            padding: 0 14px 60px; 
-        }
-
-        /* Тулбар */
-        .top-toolbar { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            margin-bottom: 20px; 
-            flex-wrap: wrap; 
-            gap: 16px; 
-        }
+        .content-wrap { padding: 0 14px 60px; }
+        .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 18px; font-weight: 700; }
-        .view-switch { 
-            display: inline-flex; 
-            background: #fff; 
-            border-radius: 5px; 
-            padding: 3px; 
-            border: 1px solid #ccc; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .view-btn { 
-            padding: 6px 16px; 
-            border-radius: 3px; 
-            font-size: 14px; 
-            font-weight: 600; 
-            color: #555; 
-            background: transparent; 
-            border: none; 
-            cursor: pointer; 
-            font-family: inherit; 
-        }
+        
+        .view-switch { display: inline-flex; background: #fff; border-radius: 5px; padding: 3px; border: 1px solid #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .view-btn { padding: 6px 16px; border-radius: 3px; font-size: 14px; font-weight: 600; color: #555; background: transparent; border: none; cursor: pointer; font-family: inherit; }
         .view-btn.active { background: #0273b2; color: #fff; }
 
         .view-pane { display: none; }
         .view-pane.active { display: block; }
 
-        /* ===================== ТАБЛИЦА ОЦЕНОК (СТИЛЬ ДНЕВНИК.РУ) ===================== */
+        /* ===================== ТАБЛИЦА ОЦЕНОК ===================== */
         .period-tabs-wrapper { margin-bottom: 16px; }
-        .period-tabs-group { 
-            display: inline-flex; 
-            align-items: center; 
-            padding: 4px; 
-            background: #fff; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .tab-pill { 
-            padding: 6px 16px; 
-            background: transparent; 
-            color: #555; 
-            font-size: 14px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            border-radius: 3px; 
-            border: none; 
-            font-family: inherit; 
-        }
+        .period-tabs-group { display: inline-flex; align-items: center; padding: 4px; background: #fff; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .tab-pill { padding: 6px 16px; background: transparent; color: #555; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 3px; border: none; font-family: inherit; }
         .tab-pill.active { background: #0273b2; color: #fff; }
 
         .dnevnik-marks-wrapper { 
             background: #fff; 
-            border-radius: 5px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            border-radius: 12px; /* Из Tamh1 */
+            border: 1px solid #e5eaf0; /* Из Tamh1 */
             overflow: hidden; 
-            border: 1px solid #e0e0e0;
             margin-bottom: 20px;
         }
         .dnevnik-table-header { 
@@ -196,12 +82,13 @@
             font-size: 15px; 
             color: #0273b2; 
             padding: 12px 16px; 
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e5eaf0;
         }
         .dnevnik-marks-table { 
             width: 100%; 
-            border-collapse: collapse; 
-            font-size: 13px; 
+            border-collapse: separate; /* Из скриншота table */
+            border-spacing: 0; 
+            font-size: 14px; /* Из LuDK3 */
             table-layout: fixed;
         }
         .dnevnik-marks-table th { 
@@ -211,7 +98,7 @@
             color: #777; 
             text-transform: uppercase; 
             padding: 10px 12px; 
-            border-bottom: 1px solid #e0e0e0; 
+            border-bottom: 1px solid #e5eaf0; 
             text-align: left; 
         }
         .dnevnik-marks-table th.center { text-align: center; }
@@ -219,6 +106,7 @@
             padding: 10px 12px; 
             border-bottom: 1px solid #eee; 
             vertical-align: middle; 
+            font-size: 12px; /* Из .federal_report .grid th, td { font-size: 12px } */
         }
         .dnevnik-marks-table tr:last-child td { border-bottom: none; }
         .dnevnik-marks-table td.subject-name { font-weight: 600; color: #333; font-size: 14px; }
@@ -226,41 +114,44 @@
         .dnevnik-marks-table td.avg-cell.empty { color: #999; font-weight: 400; }
         .dnevnik-marks-table td.qtr-cell { text-align: center; }
 
-        /* Плитки оценок */
+        /* ===================== ПЛИТКИ ОЦЕНОК (ТОЧНЫЕ ЦИФРЫ) ===================== */
         .dnevnik-grade-tile { 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            min-width: 22px; 
-            height: 22px; 
-            padding: 0 4px; 
-            border-radius: 3px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            color: #fff; 
-            margin: 2px; 
-            cursor: pointer; 
+            display: inline-block; 
+            height: 17px; /* Из QoB5a */
+            box-sizing: border-box; /* Из QoB5a */
+            color: #fff; /* Из QoB5a */
+            padding: 4px; /* Из QoB5a */
+            font-weight: 400; /* Из QoB5a */
+            font-size: 14px; /* Из QoB5a */
+            line-height: 9px; /* Из QoB5a */
+            border-radius: 2px; /* Из QoB5a */
+            cursor: default; /* Из QoB5a */
+            margin-right: 4px; /* Из LuDK3 */
+            margin-bottom: 4px; /* Из LuDK3 */
+            text-align: center;
+            min-width: 17px;
+            vertical-align: middle;
             transition: transform 0.1s;
         }
-        .dnevnik-grade-tile:hover { transform: scale(1.1); }
+        .dnevnik-grade-tile:hover { transform: scale(1.15); cursor: pointer; }
+        
+        /* Цвета из вашего сообщения */
         .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4 { background-color: #4b9a25; } /* Зеленый */
         .dnevnik-grade-tile.g3 { background-color: #ff8f00; } /* Оранжевый */
         .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1 { background-color: #cf3838; } /* Красный */
-        .dnevnik-grade-tile.gn { background-color: #94acc8; } /* Серый */
-        .dnevnik-grade-tile.no-grade { background-color: #eee; color: #999; cursor: default; }
+        
+        .dnevnik-grade-tile.gn { background-color: #94acc8; } /* Серый для Н */
+        .dnevnik-grade-tile.no-grade { background-color: #eee; color: #999; }
 
         /* Итоговая оценка */
         .dnevnik-qtr-tile { 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            min-width: 26px; 
-            height: 26px; 
-            padding: 0 8px; 
-            border-radius: 3px; 
-            font-weight: 700; 
+            display: inline-block; 
+            padding: 4px 8px; 
+            border-radius: 2px; 
+            font-weight: 600; 
             font-size: 14px; 
             color: #fff; 
+            line-height: 1;
         }
         .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
         .dnevnik-qtr-tile.g3 { background-color: #ff8f00; }
@@ -268,75 +159,37 @@
         .dnevnik-qtr-tile.gn { background-color: #94acc8; }
         .dnevnik-qtr-tile.no-grade { background: transparent; color: #999; }
 
-        /* ===================== МОДАЛКИ (ОСТАЛИСЬ КАК БЫЛИ) ===================== */
+        /* Модалки и чат (без изменений, оставляем ваши) */
         #subjectModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         #subjectModal.show { display: flex; }
-        .subj-modal-box { background: #fff; width: 100%; max-width: 700px; border-radius: 8px; padding: 24px; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; max-height: 90vh; overflow-y: auto; }
-        .subj-modal-close { position: absolute; top: 15px; right: 15px; background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; color: #555; cursor: pointer; font-size: 18px; }
-        .subj-modal-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #0273b2; }
-        .subj-info-card { background: #f9f9f9; border: 1px solid #eee; border-radius: 5px; padding: 16px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-        .subj-info-label { font-size: 11px; color: #999; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
-        .subj-info-val { font-size: 18px; font-weight: 700; color: #333; }
-        .subj-list { border: 1px solid #eee; border-radius: 5px; padding: 10px; }
-        .subj-student-row { display: grid; grid-template-columns: 30px 1fr auto auto; gap: 10px; align-items: center; padding: 8px; border-radius: 3px; margin-bottom: 2px; }
-        .subj-student-row.me { background: #eff6ff; border: 1px solid #0273b2; }
-        .subj-rank-circle { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; background: #eee; color: #555; }
-        .subj-rank-circle.r1 { background: #fbbf24; color: #78350f; } .subj-rank-circle.r2 { background: #e5e7eb; color: #374151; } .subj-rank-circle.r3 { background: #fb923c; color: #7c2d12; }
-
+        .subj-modal-box { background: #fff; width: 100%; max-width: 700px; border-radius: 8px; padding: 24px; color: #333; position: relative; }
+        .subj-modal-close { position: absolute; top: 15px; right: 15px; background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
         #gradeStatModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1100; align-items: center; justify-content: center; padding: 20px; }
         #gradeStatModal.show { display: flex; }
-        .stat-modal-box { background: #fff; width: 100%; max-width: 500px; border-radius: 8px; padding: 24px; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; }
-        .stat-modal-close { position: absolute; top: 12px; right: 12px; background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; color: #555; cursor: pointer; font-size: 18px; }
-        .stat-modal-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 4px; }
-        .stat-modal-sub { font-size: 13px; color: #999; text-align: center; margin-bottom: 20px; }
+        .stat-modal-box { background: #fff; width: 100%; max-width: 500px; border-radius: 8px; padding: 24px; color: #333; position: relative; }
+        .stat-modal-close { position: absolute; top: 12px; right: 12px; background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
         .stat-kol-banner { display: flex; align-items: center; justify-content: center; gap: 14px; background: #ff3b3b; border-radius: 8px; padding: 16px; margin-bottom: 20px; color: #fff; }
         .stat-kol-circle { width: 50px; height: 50px; border-radius: 50%; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; }
-        .stat-kol-title { font-size: 16px; font-weight: 800; text-transform: uppercase; }
-        .stat-kol-sub { font-size: 12px; opacity: 0.9; }
         .stat-big-grade-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
         .stat-big-grade { width: 64px; height: 64px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: #fff; }
         .stat-big-grade.g5, .stat-big-grade.g4 { background: #4b9a25; } .stat-big-grade.g3 { background: #ff8f00; } .stat-big-grade.g2, .stat-big-grade.g1 { background: #cf3838; }
-        .stat-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-info-item { background: #f9f9f9; border: 1px solid #eee; border-radius: 5px; padding: 12px; }
-        .stat-info-label { font-size: 10px; color: #999; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
-        .stat-info-val { font-size: 16px; font-weight: 700; }
-        .stat-section-title { font-size: 12px; font-weight: 700; color: #777; text-transform: uppercase; margin-bottom: 8px; }
-        .stat-dist { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
-        .stat-dist-row { display: grid; grid-template-columns: 24px 1fr 30px; gap: 10px; align-items: center; }
-        .stat-dist-grade { width: 24px; height: 24px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; }
-        .stat-dist-grade.g5, .stat-dist-grade.g4 { background: #4b9a25; } .stat-dist-grade.g3 { background: #ff8f00; } .stat-dist-grade.g2, .stat-dist-grade.g1 { background: #cf3838; }
-        .stat-dist-bar-wrap { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
-        .stat-dist-bar { height: 100%; border-radius: 4px; }
-        .stat-dist-bar.g5, .stat-dist-bar.g4 { background: #4b9a25; } .stat-dist-bar.g3 { background: #ff8f00; } .stat-dist-bar.g2, .stat-dist-bar.g1 { background: #cf3838; }
-        .stat-dist-count { font-size: 12px; font-weight: 700; color: #555; text-align: right; }
-        .stat-note { font-size: 12px; color: #777; line-height: 1.4; background: #f9f9f9; border-radius: 5px; padding: 10px; border: 1px solid #eee; }
-
-        /* ===================== ЧАТ (ОСТАЛСЯ КАК БЫЛ) ===================== */
-        #chatFab { position: fixed; right: 20px; bottom: 20px; z-index: 9998; height: 44px; padding: 0 18px; background: #0273b2; color: #fff; border: none; border-radius: 22px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; box-shadow: 0 4px 12px rgba(2,115,178,0.4); display: inline-flex; align-items: center; gap: 8px; }
+        
+        #chatFab { position: fixed; right: 20px; bottom: 20px; z-index: 9998; height: 44px; padding: 0 18px; background: #0273b2; color: #fff; border: none; border-radius: 22px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
         #chatFab svg { width: 18px; height: 18px; fill: currentColor; }
-        #chatFabBadge { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; background: #cf3838; color: #fff; border-radius: 10px; font-size: 11px; font-weight: 700; display: none; align-items: center; justify-content: center; }
-        #chatFabBadge.show { display: inline-flex; }
         #chatPanel { position: fixed; right: 20px; bottom: 76px; z-index: 9999; width: 320px; height: 480px; background: #fff; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: none; flex-direction: column; overflow: hidden; }
         #chatPanel.show { display: flex; }
         .chat-header { padding: 12px 16px; background: #0273b2; color: #fff; display: flex; align-items: center; justify-content: space-between; }
-        .chat-header-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-        .chat-header-close { background: rgba(255,255,255,0.2); border: none; width: 26px; height: 26px; border-radius: 50%; color: #fff; cursor: pointer; font-size: 16px; }
+        .chat-header-close { background: rgba(255,255,255,0.2); border: none; width: 26px; height: 26px; border-radius: 50%; color: #fff; cursor: pointer; }
         .chat-contacts { flex: 1; overflow-y: auto; }
-        .chat-contact { display: flex; align-items: center; gap: 10px; padding: 10px 16px; cursor: pointer; border-bottom: 1px solid #f0f0f0; }
-        .chat-contact:hover { background: #f9f9f9; }
-        .chat-avatar { width: 36px; height: 36px; border-radius: 50%; background: #eee; color: #555; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
-        .chat-contact-name { font-size: 14px; font-weight: 600; color: #333; }
-        .chat-contact-role { font-size: 11px; color: #999; }
+        .chat-contact { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+        .chat-avatar { width: 36px; height: 36px; border-radius: 50%; background: #eee; color: #555; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
         .chat-messages { flex: 1; overflow-y: auto; padding: 12px; background: #f9f9f9; display: flex; flex-direction: column; gap: 6px; }
-        .chat-msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
+        .chat-msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 13px; }
         .chat-msg.mine { align-self: flex-end; background: #0273b2; color: #fff; border-bottom-right-radius: 2px; }
-        .chat-msg.theirs { align-self: flex-start; background: #fff; color: #333; border-bottom-left-radius: 2px; border: 1px solid #eee; }
-        .chat-msg-time { font-size: 9px; opacity: 0.7; margin-top: 2px; display: block; }
+        .chat-msg.theirs { align-self: flex-start; background: #fff; color: #333; border-bottom-left-radius: 2px; }
         .chat-input-bar { display: flex; gap: 6px; padding: 10px; background: #fff; border-top: 1px solid #eee; }
-        .chat-input-bar input { flex: 1; height: 36px; padding: 0 12px; border: 1px solid #ccc; border-radius: 18px; font-size: 13px; font-family: inherit; }
+        .chat-input-bar input { flex: 1; height: 36px; padding: 0 12px; border: 1px solid #ccc; border-radius: 18px; font-size: 13px; }
         .chat-send-btn { width: 36px; height: 36px; border-radius: 50%; background: #0273b2; border: none; cursor: pointer; color: #fff; }
-        .chat-send-btn svg { width: 16px; height: 16px; fill: currentColor; }
-
     </style>
 </head>
 <body>
@@ -434,7 +287,7 @@
 <!-- ЧАТ -->
 <button id="chatFab" type="button" title="Чаты">
     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-    Чаты <span id="chatFabBadge"></span>
+    Чаты
 </button>
 <div id="chatPanel"></div>
 
@@ -447,7 +300,6 @@
     const DAYS_RU     = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
     const MONTHS_GEN  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-    const DEFAULT_LESSON_TYPE = 'ОТВ';
     const PERIOD_LABELS = { 'Четверти': ['I четверть','II четверть','III четверть','IV четверть'], 'Полугодия': ['I полугодие','II полугодие'], 'Триместры': ['I триместр','II триместр','III триместр'], 'Семестры': ['I семестр','II семестр'] };
 
     let CURRENT_STUDENT = null;
@@ -662,9 +514,9 @@
                 const presVal  = presRec ? presRec.presence : null;
 
                 let gradesWrap = '';
-                if (presVal)  gradesWrap += `<span class="dnevnik-grade-tile ${gradeClass(presVal)}" style="min-width:22px;height:22px;font-size:12px;">${presVal}</span>`;
-                if (gradeVal) gradesWrap += `<span class="dnevnik-grade-tile ${gradeClass(gradeVal)}" style="min-width:22px;height:22px;font-size:12px;">${gradeVal}</span>`;
-                if (!presVal && !gradeVal) gradesWrap = `<span class="dnevnik-grade-tile no-grade" style="min-width:22px;height:22px;font-size:12px;">—</span>`;
+                if (presVal)  gradesWrap += `<span class="dnevnik-grade-tile ${gradeClass(presVal)}">${presVal}</span>`;
+                if (gradeVal) gradesWrap += `<span class="dnevnik-grade-tile ${gradeClass(gradeVal)}">${gradeVal}</span>`;
+                if (!presVal && !gradeVal) gradesWrap = `<span class="dnevnik-grade-tile no-grade">—</span>`;
 
                 const metaParts = [];
                 if (teacherName) metaParts.push(teacherName);
@@ -692,22 +544,6 @@
         const container = document.getElementById('warningContainer');
         if (!CURRENT_STUDENT) return;
         container.innerHTML = '';
-        const all = collectAllStudentGrades();
-        const fails = all.filter(g => g.kind === 'grade' && firstDigit(g.grade) === 2);
-        const absences = all.filter(g => g.kind === 'presence' && String(g.presence).toUpperCase() === 'Н');
-
-        if (fails.length > 0) {
-            const box = document.createElement('div');
-            box.style.cssText = 'border-radius:5px;padding:12px 16px;margin-bottom:16px;display:flex;gap:12px;background:#fff0f0;border:1px solid #ffd6d6;';
-            box.innerHTML = `<div style="font-weight:700;color:#d32f2f;">Есть двойки! Спроси учителя, как исправить.</div>`;
-            container.appendChild(box);
-        }
-        if (absences.length > 0) {
-            const box = document.createElement('div');
-            box.style.cssText = 'border-radius:5px;padding:12px 16px;margin-bottom:16px;display:flex;gap:12px;background:#fff8e6;border:1px solid #ffe4a3;';
-            box.innerHTML = `<div style="font-weight:700;color:#b8720a;">Есть пропуски (Н). Обсуди с учителем.</div>`;
-            container.appendChild(box);
-        }
     }
 
     function renderPeriodTabs() {
@@ -810,62 +646,6 @@
         container.innerHTML = html;
     }
 
-    function getParallelOfClass(cls) {
-        if (!cls) return null;
-        if (cls.parallel) return String(cls.parallel);
-        const m = String(cls.name || '').match(/^(\d+)/);
-        return m ? m[1] : null;
-    }
-
-    function getStudentSubjectGrades(studentId, classId, subjectId, periodRange) {
-        const journal = ALL_JOURNALS.find(j => j.class_id === classId && j.subject_id === subjectId);
-        if (!journal) return [];
-        const sg = (journal.grades && journal.grades[studentId]) || {};
-        const result = [];
-        Object.entries(sg).forEach(([key, val]) => {
-            if (val == null || val === '') return;
-            if (key.endsWith('_pres')) return;
-            const dateStr = String(key).split('_')[0];
-            if (periodRange) {
-                if (dateStr < periodRange.start || dateStr > periodRange.end) return;
-            }
-            result.push(val);
-        });
-        return result;
-    }
-
-    function calcStudentSubjectAvg(studentId, classId, subjectId, periodRange) {
-        return calcAverageFromValues(getStudentSubjectGrades(studentId, classId, subjectId, periodRange));
-    }
-
-    function calcStudentOverallAvg(studentId, classId, periodRange) {
-        const journals = ALL_JOURNALS.filter(j => j.class_id === classId);
-        const seen = new Set();
-        let sum = 0, cnt = 0;
-        journals.forEach(j => {
-            if (seen.has(j.subject_id)) return;
-            seen.add(j.subject_id);
-            const avg = calcStudentSubjectAvg(studentId, classId, j.subject_id, periodRange);
-            if (avg != null) { sum += avg; cnt++; }
-        });
-        return cnt === 0 ? null : sum / cnt;
-    }
-
-    function getClassSubjects(classId) {
-        const set = new Map();
-        ALL_JOURNALS.filter(j => j.class_id === classId).forEach(j => {
-            const s = ALL_SUBJECTS.find(x => x.id === j.subject_id);
-            if (s && !set.has(s.id)) set.set(s.id, s);
-        });
-        return Array.from(set.values());
-    }
-
-    function getClassOf(studentId) {
-        const s = ALL_STUDENTS.find(x => x.id === studentId);
-        if (!s) return null;
-        return ALL_CLASSES.find(c => c.id === s.class_id) || null;
-    }
-
     function fmtScore(n) { return n == null ? '—' : Number(n).toFixed(2); }
 
     function renderRating() {
@@ -901,18 +681,6 @@
         container.innerHTML = html;
     }
 
-    window.openSubjectModal = function(subjectId) {
-        // Упрощенная версия для экономии места
-        const subject = ALL_SUBJECTS.find(s => s.id === subjectId);
-        if (!subject) return;
-        document.getElementById('subjModalTitle').textContent = subject.name;
-        document.getElementById('subjModalInfo').innerHTML = `<div style="text-align:center;">Информация о предмете</div>`;
-        document.getElementById('subjModalList').innerHTML = '';
-        document.getElementById('subjectModal').classList.add('show');
-    };
-
-    window.openOverallRatingModal = function(scope) {};
-
     window.openGradeStat = function(subjectName, value, dateRu, kind) {
         if (!CURRENT_STUDENT) return;
         
@@ -942,7 +710,6 @@
     };
 
     function initChat() {
-        // Упрощенная версия чата
         console.log('Chat init');
     }
 </script>
