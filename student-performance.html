@@ -30,20 +30,9 @@
         .user-actions a.logout { color: #d9534f; }
 
         /* ===================== МЕНЮ ===================== */
-        .header-menu { 
-            height: 45px; 
-            width: 100%; 
-            background-color: #0273b2; 
-            border-radius: 5px 5px 0 0; 
-            display: flex; 
-            padding: 0; 
-            list-style: none; 
-        }
+        .header-menu { height: 45px; width: 100%; background-color: #0273b2; border-radius: 5px 5px 0 0; display: flex; padding: 0; list-style: none; }
         .header-menu li { display: block; height: 100%; }
-        .header-menu a { 
-            display: flex; align-items: center; height: 100%; padding: 0 20px; 
-            color: #fff; text-decoration: none; font-size: 14px; border-bottom: 3px solid transparent;
-        }
+        .header-menu a { display: flex; align-items: center; height: 100%; padding: 0 20px; color: #fff; text-decoration: none; font-size: 14px; border-bottom: 3px solid transparent; }
         .header-menu a.active { background: #015b8e; border-bottom-color: #fff; font-weight: 600; }
 
         /* ===================== ПОДМЕНЮ ===================== */
@@ -54,171 +43,93 @@
         /* ===================== КОНТЕНТ ===================== */
         .content-wrap { padding: 0 14px 60px; }
         
-        /* ТУЛБАР - ИСПРАВЛЕН ДЛЯ ЦЕНТРИРОВАНИЯ */
-        .top-toolbar { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            margin-bottom: 20px; 
-            flex-wrap: wrap; 
-            gap: 16px; 
-        }
+        .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 18px; font-weight: 700; flex-shrink: 0; }
-        .toolbar-center { 
-            flex: 1; 
-            display: flex; 
-            justify-content: center; /* Центрируем переключатель */
-            min-width: 0;
-        }
+        .toolbar-center { flex: 1; display: flex; justify-content: center; min-width: 0; }
         
-        /* ===================== ПЕРЕКЛЮЧАТЕЛИ ===================== */
-        .view-switch { 
-            display: flex; 
-            font-family: "Open Sans", sans-serif; 
-            border-radius: 8px; 
-            font-weight: 600; 
-            font-size: 14px; 
-            background-color: #fff; 
-            padding: 1px; 
-            box-shadow: 0 3.11111px 6.22222px rgba(0,0,0,0.06); 
-            border: 1px solid #e5eaf0; 
-            margin: 0 auto; /* Дополнительное центрирование */
-        }
-        
-        .view-btn { 
-            margin: 1px; 
-            padding: 5px 12px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            white-space: nowrap; 
-            text-decoration: none; 
-            color: #0f3159; 
-            background: transparent;
-            border: none;
-            font-family: inherit;
-            font-size: inherit;
-            font-weight: inherit;
-        }
-        
-        .view-btn.active { 
-            background: #2f80ed; 
-            color: #fff; 
-        }
+        /* Переключатели Текущая / По периодам */
+        .view-switch { display: flex; font-family: "Open Sans", sans-serif; border-radius: 8px; font-weight: 600; font-size: 14px; background-color: #fff; padding: 1px; box-shadow: 0 3.11111px 6.22222px rgba(0,0,0,0.06); border: 1px solid #e5eaf0; margin: 0 auto; }
+        .view-btn { margin: 1px; padding: 5px 12px; border-radius: 8px; cursor: pointer; white-space: nowrap; text-decoration: none; color: #0f3159; background: transparent; border: none; font-family: inherit; font-size: inherit; font-weight: inherit; }
+        .view-btn.active { background: #2f80ed; color: #fff; }
 
         .view-pane { display: none; }
         .view-pane.active { display: block; }
 
-        /* ===================== ТАБЛИЦА ОЦЕНОК ===================== */
+        /* ===================== ПЕРЕКЛЮЧАТЕЛИ ПЕРИОДОВ (ИЗ .LizK_ И .sF2Bq) ===================== */
         .period-tabs-wrapper { margin-bottom: 16px; }
-        .period-tabs-group { display: inline-flex; align-items: center; padding: 4px; background: #fff; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .tab-pill { padding: 6px 16px; background: transparent; color: #555; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 3px; border: none; font-family: inherit; }
-        .tab-pill.active { background: #0273b2; color: #fff; }
+        
+        .period-tabs-group { 
+            display: flex; /* Из .LizK_ */
+            font-family: "Open Sans", sans-serif; /* Из .LizK_ */
+            border: 1px solid #e0e7ed; /* Из .LizK_ */
+            border-radius: 8px; /* Из .LizK_ */
+            font-weight: 400; /* Из .LizK_ */
+            font-size: 14px; /* Из .LizK_ */
+            line-height: 19px; /* Из .LizK_ */
+            background-color: #fff; /* Из .LizK_ */
+            align-items: center; /* Из .LizK_ */
+            margin-right: auto; /* Из .LizK_ */
+            width: fit-content; /* Чтобы не растягивался на весь экран */
+        }
+        
+        .tab-pill { 
+            margin: 6px 0; /* Из .sF2Bq (6px 0) */
+            padding: 0 8px; /* Из .sF2Bq */
+            border-style: solid; /* Из .sF2Bq */
+            border-color: #e0e7ed; /* Из .sF2Bq */
+            border-width: 0 1px 0 0; /* Из .sF2Bq (разделитель справа) */
+            color: #0f3159; /* Из .sF2Bq */
+            font-weight: 400; /* Из .sF2Bq */
+            cursor: pointer; /* Из .sF2Bq */
+            background: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+        }
+        
+        .tab-pill:first-child { 
+            border-radius: 8px 0 0 8px; /* Из .sF2Bq:first-child */
+        }
+        
+        .tab-pill:last-child { 
+            border-radius: 0 8px 8px 0; /* Из .sF2Bq:last-child */
+            border-width: 0; /* Убираем правую границу у последнего */
+        }
+        
+        .tab-pill.active { 
+            padding: 6px 8px; /* Из .sF2Bq.UGCYw */
+            margin: -1px; /* Из .sF2Bq.UGCYw */
+            border: 1px solid #2f80ed; /* Из .sF2Bq.UGCYw */
+            border-radius: 8px; /* Из .sF2Bq.UGCYw */
+            color: #2f80ed; /* Из .sF2Bq.UGCYw */
+            z-index: 1; /* Из .sF2Bq.UGCYw */
+            background: #fff;
+        }
 
-        .dnevnik-marks-wrapper { 
-            background: #fff; 
-            border-radius: 12px; 
-            border: 1px solid #e5eaf0; 
-            overflow: hidden; 
-            margin-bottom: 20px;
-        }
-        .dnevnik-table-header { 
-            background: #f2f6fb; 
-            font-weight: 700; 
-            font-size: 15px; 
-            color: #0273b2; 
-            padding: 12px 16px; 
-            border-bottom: 1px solid #e5eaf0;
-        }
+        /* ===================== ТАБЛИЦА ОЦЕНОК ===================== */
+        .dnevnik-marks-wrapper { background: #fff; border-radius: 12px; border: 1px solid #e5eaf0; overflow: hidden; margin-bottom: 20px; }
+        .dnevnik-table-header { background: #f2f6fb; font-weight: 700; font-size: 15px; color: #0273b2; padding: 12px 16px; border-bottom: 1px solid #e5eaf0; }
         
-        .dnevnik-marks-table { 
-            width: 100%; 
-            border-collapse: separate; 
-            border-spacing: 0; 
-            font-size: 14px; 
-            table-layout: fixed;
-        }
-        
-        .dnevnik-marks-table th { 
-            background: #f9f9f9; 
-            font-weight: 600; 
-            font-size: 11px; 
-            color: #777; 
-            text-transform: uppercase; 
-            padding: 10px 12px; 
-            border-bottom: 1px solid #e5eaf0; 
-            text-align: left; 
-        }
+        .dnevnik-marks-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; table-layout: fixed; }
+        .dnevnik-marks-table th { background: #f9f9f9; font-weight: 600; font-size: 11px; color: #777; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; text-align: left; }
         .dnevnik-marks-table th.center { text-align: center; }
-        
-        .dnevnik-marks-table td { 
-            min-height: 28px; 
-            vertical-align: top; 
-            padding: 10px 12px; 
-            border-bottom: 1px solid #e5eaf0; 
-            font-size: 12px; 
-            line-height: 1.4;
-        }
-        .dnevnik-marks-table tr:last-child td { 
-            border-bottom: none; 
-        }
-        
-        .dnevnik-marks-table td.subject-name { 
-            font-weight: 600; 
-            color: #333; 
-            font-size: 14px; 
-        }
-        
-        .dnevnik-marks-table td.avg-cell { 
-            text-align: center; 
-            font-weight: 700; 
-            color: #4b9a25; 
-            font-size: 15px; 
-        }
-        .dnevnik-marks-table td.avg-cell.empty { 
-            color: #999; 
-            font-weight: 400; 
-        }
-        
-        .dnevnik-marks-table td.qtr-cell { 
-            text-align: center; 
-        }
+        .dnevnik-marks-table td { min-height: 28px; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; font-size: 12px; line-height: 1.4; }
+        .dnevnik-marks-table tr:last-child td { border-bottom: none; }
+        .dnevnik-marks-table td.subject-name { font-weight: 600; color: #333; font-size: 14px; }
+        .dnevnik-marks-table td.avg-cell { text-align: center; font-weight: 700; color: #4b9a25; font-size: 15px; }
+        .dnevnik-marks-table td.avg-cell.empty { color: #999; font-weight: 400; }
+        .dnevnik-marks-table td.qtr-cell { text-align: center; }
 
-        /* ===================== ПЛИТКИ ОЦЕНОК ===================== */
-        .dnevnik-grade-tile { 
-            display: inline-block; 
-            height: 17px; 
-            box-sizing: border-box; 
-            color: #fff; 
-            padding: 4px; 
-            font-weight: 400; 
-            font-size: 14px; 
-            line-height: 9px; 
-            border-radius: 2px; 
-            cursor: default; 
-            margin-right: 4px; 
-            margin-bottom: 4px; 
-            text-align: center;
-            min-width: 17px;
-            vertical-align: middle;
-            transition: transform 0.1s;
-        }
+        /* Плитки оценок */
+        .dnevnik-grade-tile { display: inline-block; height: 17px; box-sizing: border-box; color: #fff; padding: 4px; font-weight: 400; font-size: 14px; line-height: 9px; border-radius: 2px; cursor: default; margin-right: 4px; margin-bottom: 4px; text-align: center; min-width: 17px; vertical-align: middle; transition: transform 0.1s; }
         .dnevnik-grade-tile:hover { transform: scale(1.15); cursor: pointer; }
-        
         .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4 { background-color: #4b9a25; }
         .dnevnik-grade-tile.g3 { background-color: #ff8f00; }
         .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1 { background-color: #cf3838; }
         .dnevnik-grade-tile.gn { background-color: #94acc8; }
         .dnevnik-grade-tile.no-grade { background-color: #eee; color: #999; }
 
-        .dnevnik-qtr-tile { 
-            display: inline-block; 
-            padding: 4px 8px; 
-            border-radius: 2px; 
-            font-weight: 600; 
-            font-size: 14px; 
-            color: #fff; 
-            line-height: 1;
-        }
+        .dnevnik-qtr-tile { display: inline-block; padding: 4px 8px; border-radius: 2px; font-weight: 600; font-size: 14px; color: #fff; line-height: 1; }
         .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
         .dnevnik-qtr-tile.g3 { background-color: #ff8f00; }
         .dnevnik-qtr-tile.g2, .dnevnik-qtr-tile.g1 { background-color: #cf3838; }
@@ -291,7 +202,6 @@
     </div>
 
     <div class="content-wrap">
-        <!-- ИСПРАВЛЕННЫЙ ТУЛБАР -->
         <div class="top-toolbar">
             <div class="student-name" id="studentName">Загрузка...</div>
             <div class="toolbar-center">
@@ -610,6 +520,7 @@
         container.innerHTML = '';
     }
 
+    // ОБНОВЛЕННАЯ ФУНКЦИЯ (ПЕРЕКЛЮЧАТЕЛИ ПЕРИОДОВ)
     function renderPeriodTabs() {
         const container = document.getElementById('periodTabs');
         if (!container) return;
@@ -625,7 +536,17 @@
             const tab = document.createElement('button');
             tab.type = 'button';
             tab.className = 'tab-pill' + (idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
-            tab.textContent = labels[idx] || ('Период ' + (idx + 1));
+            
+            // Формируем правильный текст (Четверть / Семестр)
+            let label = labels[idx];
+            if (!label) {
+                if (PERIOD_SYSTEM === 'Четверти') label = (idx + 1) + ' четверть';
+                else if (PERIOD_SYSTEM === 'Семестры') label = (idx + 1) + ' семестр';
+                else if (PERIOD_SYSTEM === 'Триместры') label = (idx + 1) + ' триместр';
+                else label = 'Период ' + (idx + 1);
+            }
+            tab.textContent = label;
+            
             tab.addEventListener('click', () => { ACTIVE_PERIOD_INDEX = idx; renderPeriodTabs(); renderGradesTable(); });
             container.appendChild(tab);
         });
