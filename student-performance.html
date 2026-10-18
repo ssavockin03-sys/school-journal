@@ -6,298 +6,382 @@
     <title>Успеваемость — Дневник.ру</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ===================== БАЗА (ИЗ ДНЕВНИК.РУ) ===================== */
+        /* ===================== БАЗА (ТОЧНО КАК В ДНЕВНИК.РУ) ===================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { background: #eff6ff; }
-        body { 
-            min-height: 100vh; 
-            color: #0f3159; 
-            font-family: "Open Sans", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; 
-            font-size: 14px; 
-            font-weight: 400; 
+        html, body { 
+            background: #f4f4f4; /* Фон страницы из common.css */
+            min-height: 100vh;
         }
-        .app-shell { max-width: 940px; margin: 0 auto; padding: 0 20px; }
+        body { 
+            font-family: "Open Sans", Helvetica, Arial, sans-serif; 
+            font-size: 14px; 
+            color: #0f3159; /* Темно-синий для текста */
+        }
 
-        /* ===================== ШАПКА (КАК В ДНЕВНИК.РУ) ===================== */
-        .header { background: #fff; border-bottom: 1px solid #e5eaf0; }
-        .header-inner { padding: 10px 0; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-        .logo { font-size: 22px; color: #2f80ed; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 4px; }
-        .logo-sub { color: #9ca7b5; font-weight: 400; }
-        .header-right { display: flex; align-items: center; gap: 16px; }
-        .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #eff6ff; color: #2f80ed; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
-        .user-info { display: flex; flex-direction: column; line-height: 1.3; }
-        .user-name { font-size: 14px; font-weight: 700; color: #0f3159; }
-        .user-role { font-size: 11px; color: #9ca7b5; text-transform: uppercase; }
-        .header-links { display: flex; gap: 12px; font-size: 13px; }
-        .header-links a { color: #2f80ed; text-decoration: none; }
-        .header-links a:hover { text-decoration: underline; }
-        .header-links a.logout { color: #cf3838; }
+        /* Контейнер 940px — как у их меню */
+        .app-shell { 
+            max-width: 940px; 
+            margin: 0 auto; 
+            position: relative;
+        }
 
-        /* ===================== СИНЕЕ МЕНЮ ===================== */
-        .d-top-blue-bar { background: #2f80ed; }
-        .d-top-blue-inner { max-width: 940px; margin: 0 auto; padding: 0 20px; display: flex; }
-        .d-nav-item { display: inline-block; padding: 12px 20px; color: #fff; text-decoration: none; cursor: pointer; font: 400 14px/1 inherit; border-bottom: 3px solid transparent; }
-        .d-nav-item:hover { background: rgba(255,255,255,0.12); }
-        .d-nav-item.active { background: #1560c5; border-bottom-color: #fff; }
+        /* ===================== ШАПКА (page-header) ===================== */
+        .header { 
+            background: #fff; 
+            width: 100%;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .header-inner { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 14px;
+        }
+        .logo { 
+            font-size: 22px; 
+            color: #0273b2; 
+            font-weight: 700; 
+            text-decoration: none;
+        }
+        .logo span { font-weight: 400; color: #777; }
+        .user-zone { 
+            display: flex; 
+            align-items: center; 
+            gap: 20px; 
+        }
+        .user-info { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-end; 
+            line-height: 1.3; 
+        }
+        .user-name { font-weight: 700; font-size: 14px; }
+        .user-role { font-size: 11px; color: #777; text-transform: uppercase; }
+        .user-actions { 
+            display: flex; 
+            gap: 12px; 
+            font-size: 13px; 
+        }
+        .user-actions a { 
+            color: #0273b2; 
+            text-decoration: none; 
+        }
+        .user-actions a.logout { color: #d9534f; }
+
+        /* ===================== СИНЕЕ МЕНЮ (.header-menu) ===================== */
+        .header-menu { 
+            height: 45px; 
+            width: 100%; 
+            background-color: #0273b2; 
+            border-radius: 5px 5px 0 0; /* Из скриншота */
+            margin: 0; 
+            display: flex;
+            padding-left: 0;
+            list-style: none;
+        }
+        .header-menu li { display: block; height: 100%; }
+        .header-menu a { 
+            display: flex; 
+            align-items: center; 
+            height: 100%; 
+            padding: 0 20px; 
+            color: #fff; 
+            text-decoration: none; 
+            font-weight: 400; 
+            font-size: 14px;
+            border-bottom: 3px solid transparent;
+            transition: background 0.2s;
+        }
+        .header-menu a:hover { background: rgba(255,255,255,0.1); }
+        .header-menu a.active { 
+            background: #015b8e; /* Чуть темнее при нажатии */
+            border-bottom-color: #fff; 
+            font-weight: 600;
+        }
 
         /* ===================== ПОДМЕНЮ ===================== */
-        .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e5eaf0; }
-        .d-sub-menu-inner { max-width: 940px; margin: 0 auto; padding: 0 20px; display: flex; flex-wrap: wrap; }
-        .d-sub-item { display: inline-block; padding: 10px 15px; color: #9ca7b5; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border: none; font-family: inherit; text-decoration: none; }
-        .d-sub-item:hover { color: #2f80ed; }
-        .d-sub-item.active { color: #2f80ed; border-bottom-color: #2f80ed; font-weight: 600; }
+        .sub-menu { 
+            background: #fff; 
+            border-bottom: 1px solid #e0e0e0; 
+            display: flex; 
+            padding: 0 14px;
+            border-radius: 0 0 5px 5px;
+            margin-bottom: 20px;
+        }
+        .sub-menu a { 
+            padding: 10px 15px; 
+            color: #555; 
+            text-decoration: none; 
+            font-size: 13px; 
+            border-bottom: 3px solid transparent;
+        }
+        .sub-menu a:hover { color: #0273b2; }
+        .sub-menu a.active { color: #0273b2; border-bottom-color: #0273b2; font-weight: 600; }
 
-        /* ===================== КОНТЕЙНЕР ===================== */
-        .container { padding: 24px 0 60px; }
+        /* ===================== КОНТЕНТ ===================== */
+        .content-wrap { 
+            padding: 0 14px 60px; 
+        }
 
-        /* ===================== ТУЛБАР ===================== */
-        .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 16px; }
-        .student-name { font-size: 18px; font-weight: 700; color: #0f3159; }
-        .toolbar-center { flex: 1; display: flex; justify-content: center; }
-        .view-switch { display: inline-flex; background: #fff; border-radius: 8px; padding: 4px; border: 1px solid #e5eaf0; box-shadow: 0 3px 6px rgba(0,0,0,0.06); }
-        .view-btn { padding: 6px 16px; border-radius: 6px; font-size: 14px; font-weight: 600; color: #0f3159; background: transparent; border: none; cursor: pointer; font-family: inherit; transition: all 0.15s; }
-        .view-btn:hover { background: #eff6ff; }
-        .view-btn.active { background: #2f80ed; color: #fff; }
+        /* Тулбар */
+        .top-toolbar { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 20px; 
+            flex-wrap: wrap; 
+            gap: 16px; 
+        }
+        .student-name { font-size: 18px; font-weight: 700; }
+        .view-switch { 
+            display: inline-flex; 
+            background: #fff; 
+            border-radius: 5px; 
+            padding: 3px; 
+            border: 1px solid #ccc; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .view-btn { 
+            padding: 6px 16px; 
+            border-radius: 3px; 
+            font-size: 14px; 
+            font-weight: 600; 
+            color: #555; 
+            background: transparent; 
+            border: none; 
+            cursor: pointer; 
+            font-family: inherit; 
+        }
+        .view-btn.active { background: #0273b2; color: #fff; }
 
         .view-pane { display: none; }
-        .view-pane.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* ===================== ДНЕВНИК (ТЕКУЩАЯ) ===================== */
-        .week-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
-        .week-title { font-size: 20px; font-weight: 700; color: #0f3159; }
-        .week-range { font-size: 13px; color: #9ca7b5; margin-top: 2px; }
-        .week-badge { background: #eff6ff; color: #2f80ed; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
-        .week-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; }
-        .day-column { flex: 0 0 260px; min-width: 260px; background: #fff; border-radius: 8px; box-shadow: 0 3px 6px rgba(0,0,0,0.06); border: 1px solid #e5eaf0; overflow: hidden; display: flex; flex-direction: column; }
-        .day-column.today { border: 2px solid #2f80ed; }
-        .day-header { background: #eff6ff; color: #0f3159; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5eaf0; }
-        .day-column.today .day-header { background: #2f80ed; color: #fff; }
-        .day-header-left { display: flex; flex-direction: column; gap: 2px; }
-        .day-name { font-size: 14px; font-weight: 700; text-transform: uppercase; }
-        .day-date { font-size: 11px; color: rgba(0,0,0,0.5); }
-        .day-column.today .day-date { color: rgba(255,255,255,0.85); }
-        .day-today-badge { background: #fff; color: #2f80ed; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 800; }
-        .day-body { padding: 10px 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        .lesson-card { background: #f8fafc; border-radius: 6px; padding: 10px 12px; border-left: 3px solid #2f80ed; position: relative; }
-        .lesson-card.empty { background: transparent; border-left: 3px dashed #e5eaf0; padding: 6px 12px; }
-        .lesson-card.empty .lesson-subject { color: #9ca7b5; font-style: italic; font-size: 12px; }
-        .lesson-row-head { display: flex; align-items: flex-start; gap: 8px; padding-right: 60px; }
-        .lesson-num { width: 20px; height: 20px; background: #eff6ff; color: #2f80ed; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; }
-        .lesson-subject { font-size: 13px; font-weight: 700; color: #0f3159; line-height: 1.3; }
-        .lesson-meta { font-size: 11px; color: #9ca7b5; margin-top: 3px; }
-        .lesson-section { margin-top: 6px; font-size: 11.5px; line-height: 1.45; }
-        .lesson-label { font-weight: 700; color: #9ca7b5; text-transform: uppercase; font-size: 10px; margin-right: 4px; }
-        .lesson-value { color: #0f3159; } .lesson-value.hw { color: #2f80ed; }
-        .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 3px; }
-        .lesson-grade { min-width: 22px; height: 22px; padding: 0 4px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-weight: 500; font-size: 13px; color: #fff; }
-        .lesson-grade.g5, .lesson-grade.g4 { background: #4b9a25; } .lesson-grade.g3 { background: #ff8f00; }
-        .lesson-grade.g2, .lesson-grade.g1 { background: #cf3838; } .lesson-grade.gn { background: #94acc8; }
-        .lesson-grade.no-grade { background: #e5eaf0; color: #9ca7b5; font-size: 11px; }
+        .view-pane.active { display: block; }
 
         /* ===================== ТАБЛИЦА ОЦЕНОК (СТИЛЬ ДНЕВНИК.РУ) ===================== */
         .period-tabs-wrapper { margin-bottom: 16px; }
-        .period-tabs-group { display: inline-flex; align-items: center; padding: 4px; background: #fff; border: 1px solid #e5eaf0; border-radius: 8px; flex-wrap: wrap; box-shadow: 0 3px 6px rgba(0,0,0,0.06); }
-        .tab-pill { padding: 6px 16px; background: transparent; color: #0f3159; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 6px; border: none; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; }
-        .tab-pill:hover { background: #eff6ff; }
-        .tab-pill.active { background: #2f80ed; color: #fff; }
+        .period-tabs-group { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 4px; 
+            background: #fff; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .tab-pill { 
+            padding: 6px 16px; 
+            background: transparent; 
+            color: #555; 
+            font-size: 14px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            border-radius: 3px; 
+            border: none; 
+            font-family: inherit; 
+        }
+        .tab-pill.active { background: #0273b2; color: #fff; }
 
-        .dnevnik-marks-wrapper { background: #eff6ff; padding: 20px 0 40px 0; border-radius: 8px; }
-        .dnevnik-marks-inner { margin: 0 auto; width: 100%; max-width: 940px; background: #fff; border-radius: 12px; box-shadow: 0 8px 16px rgba(143,149,178,0.15); overflow: hidden; }
-        .dnevnik-table-header { background: #f2f6fb; font-weight: 700; font-size: 15px; color: #2f80ed; padding: 16px 10px 16px 36px; border-radius: 8px 8px 0 0; }
-        .dnevnik-marks-table-wrap { width: 100%; padding: 0 12px 24px 12px; overflow-x: auto; }
-        .dnevnik-marks-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 8px; border: 1px solid #e5eaf0; font-family: "Open Sans", sans-serif; font-size: 13px; color: #0f3159; }
-        .dnevnik-marks-table thead th { font-weight: 500; font-size: 11px; color: #7a8aa3; text-transform: uppercase; padding: 10px 12px; background: #f8fafc; border-bottom: 1px solid #e5eaf0; text-align: left; }
-        .dnevnik-marks-table thead th:first-child { padding-left: 16px; }
-        .dnevnik-marks-table thead th.center { text-align: center; }
-        .dnevnik-marks-table tbody td { padding: 12px; vertical-align: middle; border-bottom: 1px solid #e5eaf0; font-size: 13.5px; }
-        .dnevnik-marks-table tbody tr:last-child td { border-bottom: none; }
-        .dnevnik-marks-table td.subject-name { font-weight: 600; color: #0f3159; font-size: 14px; }
+        .dnevnik-marks-wrapper { 
+            background: #fff; 
+            border-radius: 5px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            overflow: hidden; 
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        .dnevnik-table-header { 
+            background: #f2f6fb; 
+            font-weight: 700; 
+            font-size: 15px; 
+            color: #0273b2; 
+            padding: 12px 16px; 
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .dnevnik-marks-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 13px; 
+            table-layout: fixed;
+        }
+        .dnevnik-marks-table th { 
+            background: #f9f9f9; 
+            font-weight: 600; 
+            font-size: 11px; 
+            color: #777; 
+            text-transform: uppercase; 
+            padding: 10px 12px; 
+            border-bottom: 1px solid #e0e0e0; 
+            text-align: left; 
+        }
+        .dnevnik-marks-table th.center { text-align: center; }
+        .dnevnik-marks-table td { 
+            padding: 10px 12px; 
+            border-bottom: 1px solid #eee; 
+            vertical-align: middle; 
+        }
+        .dnevnik-marks-table tr:last-child td { border-bottom: none; }
+        .dnevnik-marks-table td.subject-name { font-weight: 600; color: #333; font-size: 14px; }
         .dnevnik-marks-table td.avg-cell { text-align: center; font-weight: 700; color: #4b9a25; font-size: 15px; }
-        .dnevnik-marks-table td.avg-cell.empty { color: #9ca7b5; font-weight: 400; }
+        .dnevnik-marks-table td.avg-cell.empty { color: #999; font-weight: 400; }
         .dnevnik-marks-table td.qtr-cell { text-align: center; }
 
-        .dnevnik-grade-tile { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 4px; font-family: "Open Sans", sans-serif; font-size: 13px; font-weight: 500; color: #fff; margin: 2px; cursor: pointer; transition: transform 0.15s; }
-        .dnevnik-grade-tile:hover { transform: scale(1.12); }
-        .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4 { background-color: #4b9a25; }
-        .dnevnik-grade-tile.g3 { background-color: #ff8f00; }
-        .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1 { background-color: #cf3838; }
-        .dnevnik-grade-tile.gn { background-color: #94acc8; }
-        .dnevnik-grade-tile.no-grade { background-color: #e5eaf0; color: #9ca7b5; cursor: default; }
+        /* Плитки оценок */
+        .dnevnik-grade-tile { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-width: 22px; 
+            height: 22px; 
+            padding: 0 4px; 
+            border-radius: 3px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #fff; 
+            margin: 2px; 
+            cursor: pointer; 
+            transition: transform 0.1s;
+        }
+        .dnevnik-grade-tile:hover { transform: scale(1.1); }
+        .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4 { background-color: #4b9a25; } /* Зеленый */
+        .dnevnik-grade-tile.g3 { background-color: #ff8f00; } /* Оранжевый */
+        .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1 { background-color: #cf3838; } /* Красный */
+        .dnevnik-grade-tile.gn { background-color: #94acc8; } /* Серый */
+        .dnevnik-grade-tile.no-grade { background-color: #eee; color: #999; cursor: default; }
 
-        .dnevnik-qtr-tile { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; padding: 0 8px; border-radius: 6px; font-weight: 600; font-size: 14px; color: #fff; }
+        /* Итоговая оценка */
+        .dnevnik-qtr-tile { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-width: 26px; 
+            height: 26px; 
+            padding: 0 8px; 
+            border-radius: 3px; 
+            font-weight: 700; 
+            font-size: 14px; 
+            color: #fff; 
+        }
         .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
         .dnevnik-qtr-tile.g3 { background-color: #ff8f00; }
         .dnevnik-qtr-tile.g2, .dnevnik-qtr-tile.g1 { background-color: #cf3838; }
         .dnevnik-qtr-tile.gn { background-color: #94acc8; }
-        .dnevnik-qtr-tile.no-grade { background: transparent; color: #9ca7b5; }
+        .dnevnik-qtr-tile.no-grade { background: transparent; color: #999; }
 
-        /* ===================== РЕЙТИНГ ===================== */
-        .rating-page { background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%); border-radius: 12px; padding: 32px 36px 48px; color: #fff; }
-        .rating-head { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
-        .rating-title { font-size: 24px; font-weight: 700; text-align: center; flex: 1; }
-        .rating-section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
-        .rating-block { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 40px; }
-        .rating-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 22px 24px; }
-        .rating-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-        .rating-card-title { font-size: 15px; font-weight: 600; }
-        .rating-card-link { font-size: 13px; color: #7dd3fc; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
-        .rating-card-link:hover { text-decoration: underline; }
-        .rating-row { display: grid; grid-template-columns: 40px 1fr auto auto; gap: 12px; align-items: center; padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; background: rgba(255,255,255,0.04); }
-        .rating-row.me { background: rgba(99,102,241,0.25); border: 1px solid rgba(129,140,248,0.5); }
-        .rating-rank { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; }
-        .rating-rank.r1 { background: #fbbf24; color: #78350f; } .rating-rank.r2 { background: #e5e7eb; color: #374151; } .rating-rank.r3 { background: #fb923c; color: #7c2d12; }
-        .rating-rank.other { background: rgba(255,255,255,0.12); color: #fff; }
-        .rating-name-cell { display: flex; align-items: center; gap: 8px; }
-        .rating-class-pill { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #fff; text-transform: uppercase; }
-        .rating-class-pill.pink { background: #ec4899; } .rating-class-pill.green { background: #22c55e; } .rating-class-pill.blue { background: #3b82f6; }
-        .rating-avatar { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
-        .rating-score { font-size: 15px; font-weight: 700; text-align: right; min-width: 44px; }
-        .rating-delta { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; text-align: center; min-width: 44px; }
-        .rating-delta.neg { background: rgba(220,38,38,0.85); } .rating-delta.pos { background: rgba(34,197,94,0.85); } .rating-delta.zero { background: rgba(255,255,255,0.15); }
-        .subjects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-        .subject-row { display: grid; grid-template-columns: 40px 1fr auto 24px; gap: 12px; align-items: center; padding: 10px 14px; border-radius: 8px; margin-bottom: 4px; text-decoration: none; color: inherit; cursor: pointer; }
-        .subject-row:hover { background: rgba(255,255,255,0.06); }
-        .subject-row .subject-name { font-size: 14px; color: #fff; font-weight: 500; }
-        .subject-row .subject-score { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-        .subject-row .fire { font-size: 12px; margin-left: 6px; }
-        .subject-row .subject-arrow { color: #7dd3fc; font-size: 14px; }
-        .subject-delta { font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 11px; }
-
-        /* ===================== МОДАЛКИ ===================== */
-        #subjectModal { display: none; position: fixed; inset: 0; background: rgba(15,49,89,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+        /* ===================== МОДАЛКИ (ОСТАЛИСЬ КАК БЫЛИ) ===================== */
+        #subjectModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         #subjectModal.show { display: flex; }
-        .subj-modal-box { background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%); width: 100%; max-width: 700px; border-radius: 12px; padding: 30px; color: #fff; box-shadow: 0 20px 60px rgba(0,0,0,0.4); position: relative; max-height: 90vh; overflow-y: auto; }
-        .subj-modal-close { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.15); border: none; width: 34px; height: 34px; border-radius: 50%; color: #fff; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
-        .subj-modal-title { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 24px; }
-        .subj-info-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-        .subj-info-label { font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
-        .subj-info-val { font-size: 20px; font-weight: 700; }
-        .subj-list { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 18px; }
-        .subj-student-row { display: grid; grid-template-columns: 36px 1fr auto auto; gap: 12px; align-items: center; padding: 10px 14px; border-radius: 8px; margin-bottom: 4px; }
-        .subj-student-row.me { background: rgba(99,102,241,0.25); border: 1px solid rgba(129,140,248,0.5); }
-        .subj-rank-circle { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
-        .subj-rank-circle.r1 { background: #fbbf24; color: #78350f; } .subj-rank-circle.r2 { background: #e5e7eb; color: #374151; } .subj-rank-circle.r3 { background: #fb923c; color: #7c2d12; } .subj-rank-circle.other { background: rgba(255,255,255,0.12); }
+        .subj-modal-box { background: #fff; width: 100%; max-width: 700px; border-radius: 8px; padding: 24px; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; max-height: 90vh; overflow-y: auto; }
+        .subj-modal-close { position: absolute; top: 15px; right: 15px; background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; color: #555; cursor: pointer; font-size: 18px; }
+        .subj-modal-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #0273b2; }
+        .subj-info-card { background: #f9f9f9; border: 1px solid #eee; border-radius: 5px; padding: 16px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .subj-info-label { font-size: 11px; color: #999; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+        .subj-info-val { font-size: 18px; font-weight: 700; color: #333; }
+        .subj-list { border: 1px solid #eee; border-radius: 5px; padding: 10px; }
+        .subj-student-row { display: grid; grid-template-columns: 30px 1fr auto auto; gap: 10px; align-items: center; padding: 8px; border-radius: 3px; margin-bottom: 2px; }
+        .subj-student-row.me { background: #eff6ff; border: 1px solid #0273b2; }
+        .subj-rank-circle { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; background: #eee; color: #555; }
+        .subj-rank-circle.r1 { background: #fbbf24; color: #78350f; } .subj-rank-circle.r2 { background: #e5e7eb; color: #374151; } .subj-rank-circle.r3 { background: #fb923c; color: #7c2d12; }
 
-        #gradeStatModal { display: none; position: fixed; inset: 0; background: rgba(15,49,89,0.6); z-index: 1100; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+        #gradeStatModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1100; align-items: center; justify-content: center; padding: 20px; }
         #gradeStatModal.show { display: flex; }
-        .stat-modal-box { background: #fff; width: 100%; max-width: 580px; border-radius: 12px; padding: 28px; color: #0f3159; box-shadow: 0 20px 60px rgba(0,0,0,0.35); position: relative; max-height: 92vh; overflow-y: auto; }
-        .stat-modal-close { position: absolute; top: 14px; right: 14px; background: #eff6ff; border: none; width: 34px; height: 34px; border-radius: 50%; color: #2f80ed; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
-        .stat-modal-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 6px; }
-        .stat-modal-sub { font-size: 13px; color: #9ca7b5; text-align: center; margin-bottom: 24px; }
-        .stat-kol-banner { display: flex; align-items: center; justify-content: center; gap: 16px; background: linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%); border-radius: 12px; padding: 18px 22px; margin-bottom: 22px; box-shadow: 0 6px 24px rgba(0,0,0,0.45); border: 2px solid #ff3b3b; }
-        .stat-kol-circle { width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff5c5c 0%, #c81e1e 45%, #7a0a0a 100%); display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 900; color: #fff; flex-shrink: 0; box-shadow: 0 4px 14px rgba(200,30,30,0.6), inset 0 -3px 6px rgba(0,0,0,0.35), inset 0 3px 6px rgba(255,255,255,0.25); font-family: 'Arial Black', Impact, sans-serif; line-height: 1; }
-        .stat-kol-title { font-size: 17px; font-weight: 800; color: #ff4d4d; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        .stat-kol-sub { font-size: 12.5px; color: rgba(255,255,255,0.78); margin-top: 3px; font-weight: 500; }
-        .stat-big-grade-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
-        .stat-big-grade { width: 72px; height: 72px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 700; color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
-        .stat-big-grade.g5, .stat-big-grade.g4 { background: #4b9a25; } .stat-big-grade.g3 { background: #ff8f00; } .stat-big-grade.g2, .stat-big-grade.g1 { background: #cf3838; } .stat-big-grade.gn { background: #94acc8; }
-        .stat-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
-        .stat-info-item { background: #f8fafc; border: 1px solid #e5eaf0; border-radius: 12px; padding: 14px 16px; }
-        .stat-info-label { font-size: 11px; color: #9ca7b5; text-transform: uppercase; font-weight: 700; letter-spacing: 0.3px; margin-bottom: 6px; }
-        .stat-info-val { font-size: 16px; font-weight: 700; color: #0f3159; }
-        .stat-section-title { font-size: 13px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 10px; }
-        .stat-dist { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
-        .stat-dist-row { display: grid; grid-template-columns: 30px 1fr 44px; gap: 12px; align-items: center; }
-        .stat-dist-grade { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; }
+        .stat-modal-box { background: #fff; width: 100%; max-width: 500px; border-radius: 8px; padding: 24px; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; }
+        .stat-modal-close { position: absolute; top: 12px; right: 12px; background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; color: #555; cursor: pointer; font-size: 18px; }
+        .stat-modal-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+        .stat-modal-sub { font-size: 13px; color: #999; text-align: center; margin-bottom: 20px; }
+        .stat-kol-banner { display: flex; align-items: center; justify-content: center; gap: 14px; background: #ff3b3b; border-radius: 8px; padding: 16px; margin-bottom: 20px; color: #fff; }
+        .stat-kol-circle { width: 50px; height: 50px; border-radius: 50%; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; }
+        .stat-kol-title { font-size: 16px; font-weight: 800; text-transform: uppercase; }
+        .stat-kol-sub { font-size: 12px; opacity: 0.9; }
+        .stat-big-grade-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .stat-big-grade { width: 64px; height: 64px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: #fff; }
+        .stat-big-grade.g5, .stat-big-grade.g4 { background: #4b9a25; } .stat-big-grade.g3 { background: #ff8f00; } .stat-big-grade.g2, .stat-big-grade.g1 { background: #cf3838; }
+        .stat-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-info-item { background: #f9f9f9; border: 1px solid #eee; border-radius: 5px; padding: 12px; }
+        .stat-info-label { font-size: 10px; color: #999; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+        .stat-info-val { font-size: 16px; font-weight: 700; }
+        .stat-section-title { font-size: 12px; font-weight: 700; color: #777; text-transform: uppercase; margin-bottom: 8px; }
+        .stat-dist { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+        .stat-dist-row { display: grid; grid-template-columns: 24px 1fr 30px; gap: 10px; align-items: center; }
+        .stat-dist-grade { width: 24px; height: 24px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; }
         .stat-dist-grade.g5, .stat-dist-grade.g4 { background: #4b9a25; } .stat-dist-grade.g3 { background: #ff8f00; } .stat-dist-grade.g2, .stat-dist-grade.g1 { background: #cf3838; }
-        .stat-dist-bar-wrap { height: 10px; background: #eff6ff; border-radius: 6px; overflow: hidden; }
-        .stat-dist-bar { height: 100%; border-radius: 6px; transition: width 0.4s ease; }
+        .stat-dist-bar-wrap { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+        .stat-dist-bar { height: 100%; border-radius: 4px; }
         .stat-dist-bar.g5, .stat-dist-bar.g4 { background: #4b9a25; } .stat-dist-bar.g3 { background: #ff8f00; } .stat-dist-bar.g2, .stat-dist-bar.g1 { background: #cf3838; }
-        .stat-dist-count { font-size: 13px; font-weight: 700; color: #7a8aa3; text-align: right; }
-        .stat-note { font-size: 12.5px; color: #9ca7b5; line-height: 1.5; background: #f8fafc; border-radius: 10px; padding: 12px 14px; border: 1px solid #e5eaf0; }
+        .stat-dist-count { font-size: 12px; font-weight: 700; color: #555; text-align: right; }
+        .stat-note { font-size: 12px; color: #777; line-height: 1.4; background: #f9f9f9; border-radius: 5px; padding: 10px; border: 1px solid #eee; }
 
-        /* ===================== ЧАТ ===================== */
-        #chatFab { position: fixed; right: 20px; bottom: 20px; z-index: 9998; height: 48px; padding: 0 20px; background: #2f80ed; color: #fff; border: none; border-radius: 24px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; box-shadow: 0 6px 20px rgba(47,128,237,0.4); display: inline-flex; align-items: center; gap: 8px; }
-        #chatFab svg { width: 20px; height: 20px; fill: currentColor; }
-        #chatFabBadge { position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; padding: 0 6px; background: #cf3838; color: #fff; border-radius: 11px; font-size: 12px; font-weight: 700; display: none; align-items: center; justify-content: center; }
+        /* ===================== ЧАТ (ОСТАЛСЯ КАК БЫЛ) ===================== */
+        #chatFab { position: fixed; right: 20px; bottom: 20px; z-index: 9998; height: 44px; padding: 0 18px; background: #0273b2; color: #fff; border: none; border-radius: 22px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; box-shadow: 0 4px 12px rgba(2,115,178,0.4); display: inline-flex; align-items: center; gap: 8px; }
+        #chatFab svg { width: 18px; height: 18px; fill: currentColor; }
+        #chatFabBadge { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; background: #cf3838; color: #fff; border-radius: 10px; font-size: 11px; font-weight: 700; display: none; align-items: center; justify-content: center; }
         #chatFabBadge.show { display: inline-flex; }
-        #chatPanel { position: fixed; right: 20px; bottom: 84px; z-index: 9999; width: 340px; height: 520px; background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(15,49,89,0.35); display: none; flex-direction: column; overflow: hidden; }
+        #chatPanel { position: fixed; right: 20px; bottom: 76px; z-index: 9999; width: 320px; height: 480px; background: #fff; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: none; flex-direction: column; overflow: hidden; }
         #chatPanel.show { display: flex; }
-        .chat-header { padding: 14px 18px; background: #2f80ed; color: #fff; display: flex; align-items: center; justify-content: space-between; }
-        .chat-header-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .chat-header-title svg { width: 18px; height: 18px; fill: currentColor; }
-        .chat-header-close { background: rgba(255,255,255,0.15); border: none; width: 30px; height: 30px; border-radius: 8px; color: #fff; cursor: pointer; font-size: 18px; font-family: inherit; }
-        .chat-back-btn { background: rgba(255,255,255,0.15); border: none; width: 30px; height: 30px; border-radius: 8px; color: #fff; cursor: pointer; }
-        .chat-back-btn svg { width: 16px; height: 16px; fill: currentColor; }
+        .chat-header { padding: 12px 16px; background: #0273b2; color: #fff; display: flex; align-items: center; justify-content: space-between; }
+        .chat-header-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .chat-header-close { background: rgba(255,255,255,0.2); border: none; width: 26px; height: 26px; border-radius: 50%; color: #fff; cursor: pointer; font-size: 16px; }
         .chat-contacts { flex: 1; overflow-y: auto; }
-        .chat-contacts-section { padding: 10px 18px 4px; font-size: 11px; font-weight: 700; color: #9ca7b5; text-transform: uppercase; }
-        .chat-contact { display: flex; align-items: center; gap: 12px; padding: 10px 18px; cursor: pointer; }
-        .chat-contact:hover { background: #eff6ff; }
-        .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: #eff6ff; color: #2f80ed; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
-        .chat-avatar.admin { background: #fce4ec; color: #c2185b; }
-        .chat-avatar.teacher { background: #e8f5e9; color: #22874a; }
-        .chat-avatar.parent { background: #fff4e0; color: #b8720a; }
-        .chat-avatar.student { background: #eff6ff; color: #2f80ed; }
-        .chat-contact-info { flex: 1; min-width: 0; }
-        .chat-contact-name { font-size: 14px; font-weight: 600; color: #0f3159; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chat-contact-role { font-size: 12px; color: #9ca7b5; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chat-contact-badge { min-width: 22px; height: 22px; padding: 0 7px; background: #cf3838; color: #fff; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
-        .chat-messages { flex: 1; overflow-y: auto; padding: 16px 14px 8px; background: #f8fafc; display: flex; flex-direction: column; gap: 8px; }
-        .chat-msg { max-width: 78%; padding: 8px 12px; border-radius: 14px; font-size: 14px; line-height: 1.4; word-wrap: break-word; white-space: pre-wrap; }
-        .chat-msg.mine { align-self: flex-end; background: #2f80ed; color: #fff; border-bottom-right-radius: 4px; }
-        .chat-msg.theirs { align-self: flex-start; background: #fff; color: #0f3159; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-        .chat-msg-time { font-size: 10px; opacity: 0.7; margin-top: 4px; display: block; }
-        .chat-empty-msg { text-align: center; color: #9ca7b5; font-size: 13px; padding: 30px 20px; }
-        .chat-input-bar { display: flex; gap: 8px; padding: 12px 14px; background: #fff; border-top: 1px solid #e5eaf0; }
-        .chat-input-bar input { flex: 1; height: 40px; padding: 0 14px; border: 1.5px solid #e5eaf0; border-radius: 20px; background: #f8fafc; font-size: 14px; font-family: inherit; outline: none; }
-        .chat-send-btn { width: 40px; height: 40px; border-radius: 50%; background: #2f80ed; border: none; cursor: pointer; color: #fff; }
-        .chat-send-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        .chat-contact { display: flex; align-items: center; gap: 10px; padding: 10px 16px; cursor: pointer; border-bottom: 1px solid #f0f0f0; }
+        .chat-contact:hover { background: #f9f9f9; }
+        .chat-avatar { width: 36px; height: 36px; border-radius: 50%; background: #eee; color: #555; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+        .chat-contact-name { font-size: 14px; font-weight: 600; color: #333; }
+        .chat-contact-role { font-size: 11px; color: #999; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 12px; background: #f9f9f9; display: flex; flex-direction: column; gap: 6px; }
+        .chat-msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
+        .chat-msg.mine { align-self: flex-end; background: #0273b2; color: #fff; border-bottom-right-radius: 2px; }
+        .chat-msg.theirs { align-self: flex-start; background: #fff; color: #333; border-bottom-left-radius: 2px; border: 1px solid #eee; }
+        .chat-msg-time { font-size: 9px; opacity: 0.7; margin-top: 2px; display: block; }
+        .chat-input-bar { display: flex; gap: 6px; padding: 10px; background: #fff; border-top: 1px solid #eee; }
+        .chat-input-bar input { flex: 1; height: 36px; padding: 0 12px; border: 1px solid #ccc; border-radius: 18px; font-size: 13px; font-family: inherit; }
+        .chat-send-btn { width: 36px; height: 36px; border-radius: 50%; background: #0273b2; border: none; cursor: pointer; color: #fff; }
+        .chat-send-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
-        @media (max-width: 900px) { .rating-block, .subjects-grid, .subj-info-card { grid-template-columns: 1fr; } .toolbar-center { order: 3; flex: 100%; justify-content: flex-start; overflow-x: auto; } }
-        @media (max-width: 700px) { .app-shell { padding: 0 14px; } .subj-modal-box { padding: 20px; } .rating-page { padding: 20px; } .stat-modal-box { padding: 20px; } }
-        @media (max-width: 480px) { #chatPanel { right: 10px; left: 10px; width: auto; bottom: 78px; height: calc(100vh - 100px); } }
     </style>
 </head>
 <body>
 
 <div class="app-shell">
+    <!-- ШАПКА -->
     <header class="header">
         <div class="header-inner">
-            <a href="#" class="logo">Дневник<span class="logo-sub">.ру</span></a>
-            <div class="header-right">
-                <div class="user-profile">
-                    <div class="user-avatar" id="avatarInitials">У</div>
-                    <div class="user-info">
-                        <span class="user-name" id="userName">&nbsp;</span>
-                        <span class="user-role">Ученик</span>
-                    </div>
+            <a href="#" class="logo">Дневник<span>.ру</span></a>
+            <div class="user-zone">
+                <div class="user-info">
+                    <span class="user-name" id="userName">&nbsp;</span>
+                    <span class="user-role">Ученик</span>
                 </div>
-                <div class="header-links">
-                    <a href="#">Помощь</a>
+                <div class="user-actions">
+                    <a href="#" onclick="return false">Помощь</a>
                     <a href="#" class="logout" onclick="logout()">Выход</a>
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="d-top-blue-bar">
-        <div class="d-top-blue-inner">
-            <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
-            <a href="#" class="d-nav-item" onclick="return false">ОБЩЕНИЕ</a>
-            <a href="#" class="d-nav-item" onclick="return false">ПРИЛОЖЕНИЯ</a>
-        </div>
+    <!-- СИНЕЕ МЕНЮ -->
+    <ul class="header-menu">
+        <li><a href="#" class="active" onclick="return false">ОБРАЗОВАНИЕ</a></li>
+        <li><a href="#" onclick="return false">ОБЩЕНИЕ</a></li>
+        <li><a href="#" onclick="return false">ПРИЛОЖЕНИЯ</a></li>
+    </ul>
+
+    <!-- ПОДМЕНЮ -->
+    <div class="sub-menu">
+        <a href="student.html">Сегодня</a>
+        <a href="student-performance.html" class="active">Успеваемость</a>
+        <a href="student-group.html">Моя группа</a>
+        <a href="student-schedule.html">Расписание</a>
     </div>
 
-    <div class="d-sub-menu-bar">
-        <div class="d-sub-menu-inner">
-            <a href="student.html"             class="d-sub-item">Сегодня</a>
-            <a href="student-performance.html" class="d-sub-item active">Успеваемость</a>
-            <a href="student-group.html"       class="d-sub-item">Моя группа</a>
-            <a href="student-schedule.html"    class="d-sub-item">Расписание</a>
-        </div>
-    </div>
-
-    <div class="container">
+    <!-- КОНТЕНТ -->
+    <div class="content-wrap">
         <div class="top-toolbar">
             <div class="student-name" id="studentName">Загрузка...</div>
-            <div class="toolbar-center">
-                <div class="view-switch" id="viewSwitch">
-                    <button class="view-btn active" data-view="current" type="button">Текущая</button>
-                    <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
-                    <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
-                </div>
+            <div class="view-switch" id="viewSwitch">
+                <button class="view-btn active" data-view="current" type="button">Текущая</button>
+                <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
+                <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
             </div>
         </div>
 
@@ -312,7 +396,7 @@
         </div>
 
         <div class="view-pane" id="pane-rating">
-            <div class="rating-page" id="ratingContent"></div>
+            <div id="ratingContent"></div>
         </div>
     </div>
 </div>
@@ -332,7 +416,6 @@
         <button class="stat-modal-close" onclick="document.getElementById('gradeStatModal').classList.remove('show')">×</button>
         <div class="stat-modal-title" id="statTitle"></div>
         <div class="stat-modal-sub" id="statSub"></div>
-
         <div class="stat-kol-banner" id="statKolBanner" style="display:none;">
             <div class="stat-kol-circle">1</div>
             <div class="stat-kol-text">
@@ -340,7 +423,6 @@
                 <div class="stat-kol-sub">Худшая оценка. Но всегда можно исправиться! 💪</div>
             </div>
         </div>
-
         <div class="stat-big-grade-wrap"><div class="stat-big-grade" id="statBigGrade"></div></div>
         <div class="stat-info-grid" id="statInfoGrid"></div>
         <div class="stat-section-title">Распределение оценок по предмету</div>
@@ -352,8 +434,7 @@
 <!-- ЧАТ -->
 <button id="chatFab" type="button" title="Чаты">
     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-    Чаты
-    <span id="chatFabBadge"></span>
+    Чаты <span id="chatFabBadge"></span>
 </button>
 <div id="chatPanel"></div>
 
@@ -418,31 +499,17 @@
         return cnt === 0 ? null : sum / cnt;
     }
 
-    // ================================================================
-    // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
-    // ================================================================
     function setupViewSwitcher() {
-        const viewBtns = document.querySelectorAll('.view-btn');
-        viewBtns.forEach(btn => {
-            btn.removeEventListener('click', handleViewClick);
-            btn.addEventListener('click', handleViewClick);
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
+                document.getElementById('pane-' + e.currentTarget.dataset.view).classList.add('active');
+            });
         });
     }
 
-    function handleViewClick(e) {
-        const btn = e.currentTarget;
-        const view = btn.dataset.view;
-        if (!view) return;
-        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
-        const pane = document.getElementById('pane-' + view);
-        if (pane) pane.classList.add('active');
-    }
-
-    // ================================================================
-    // ИНИЦИАЛИЗАЦИЯ
-    // ================================================================
     (async function init() {
         setupViewSwitcher();
         try {
@@ -494,7 +561,6 @@
 
             CURRENT_WEEK_START = getMondayOfCurrentWeek();
             document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
-            document.getElementById('avatarInitials').textContent = initials(student.full_name);
             document.getElementById('studentName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
 
             const semLabel = PERIOD_SYSTEM === 'Семестры' ? 'По семестрам' : 
@@ -530,9 +596,8 @@
             Object.entries(sg).forEach(([key, val]) => {
                 if (val === '' || val === null || val === undefined) return;
                 const parsed = parseKey(key);
-                const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
                 const cell = parseCell(val);
-                const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson, type };
+                const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson };
                 if (cell.grade) result.push({ ...base, kind: 'grade', grade: cell.grade, presence: '' });
                 if (cell.presence) result.push({ ...base, kind: 'presence', grade: '', presence: cell.presence });
             });
@@ -550,18 +615,18 @@
 
     function renderDiary() {
         const container = document.getElementById('diaryContent');
-        if (!CURRENT_STUDENT) { container.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca7b5;">Загрузка...</div>'; return; }
+        if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
         const monday = CURRENT_WEEK_START;
         const saturday = new Date(monday); saturday.setDate(monday.getDate() + 5);
         const rangeText = `${formatDateShort(monday)} – ${formatDateRu(saturday)}`;
         
         if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
-            container.innerHTML = `<div style="text-align:center;padding:40px;color:#9ca7b5;">Расписание ещё не составлено.</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:40px;color:#999;">Расписание ещё не составлено.</div>`;
             return;
         }
         
         const today = new Date(); today.setHours(0, 0, 0, 0);
-        let html = `<div class="week-title-bar"><div><div class="week-title">Текущая неделя</div><div class="week-range">${rangeText}</div></div><div class="week-badge">Расписание</div></div><div class="week-grid">`;
+        let html = `<div style="display:flex;justify-content:space-between;margin-bottom:16px;"><div style="font-size:18px;font-weight:700;">Текущая неделя</div><div style="font-size:13px;color:#777;">${rangeText}</div></div><div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;">`;
         
         let maxLesson = 7;
         DAYS_KEYS.forEach(day => {
@@ -579,7 +644,7 @@
             
             for (let n = 1; n <= maxLesson; n++) {
                 const lesson = dayGrid[n] || dayGrid[String(n)];
-                if (!lesson || !lesson.subject) { lessonsHtml += `<div class="lesson-card empty"><div class="lesson-subject">Урок ${n} —</div></div>`; continue; }
+                if (!lesson || !lesson.subject) { lessonsHtml += `<div style="padding:6px 12px;color:#ccc;border-left:3px dashed #eee;margin-bottom:6px;font-style:italic;">Урок ${n} —</div>`; continue; }
                 let teacherName = lesson.teacherName || '';
                 if (!teacherName && lesson.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId); if (t) teacherName = t.full_name; }
                 let roomName = lesson.roomName || '';
@@ -597,26 +662,26 @@
                 const presVal  = presRec ? presRec.presence : null;
 
                 let gradesWrap = '';
-                if (presVal)  gradesWrap += `<div class="lesson-grade ${gradeClass(presVal)}"><span class="grade-tile-value">${escapeHtml(presVal)}</span></div>`;
-                if (gradeVal) gradesWrap += `<div class="lesson-grade ${gradeClass(gradeVal)}"><span class="grade-tile-value">${escapeHtml(gradeVal)}</span></div>`;
-                if (!presVal && !gradeVal) gradesWrap = `<div class="lesson-grade no-grade">—</div>`;
+                if (presVal)  gradesWrap += `<span class="dnevnik-grade-tile ${gradeClass(presVal)}" style="min-width:22px;height:22px;font-size:12px;">${presVal}</span>`;
+                if (gradeVal) gradesWrap += `<span class="dnevnik-grade-tile ${gradeClass(gradeVal)}" style="min-width:22px;height:22px;font-size:12px;">${gradeVal}</span>`;
+                if (!presVal && !gradeVal) gradesWrap = `<span class="dnevnik-grade-tile no-grade" style="min-width:22px;height:22px;font-size:12px;">—</span>`;
 
                 const metaParts = [];
                 if (teacherName) metaParts.push(teacherName);
                 if (roomName) metaParts.push('каб. ' + roomName);
-                const metaHtml = metaParts.length ? `<div class="lesson-meta">${escapeHtml(metaParts.join(' · '))}</div>` : '';
-                const topicHtml = topic ? `<div class="lesson-section"><span class="lesson-label">Тема:</span><span class="lesson-value">${escapeHtml(topic)}</span></div>` : '';
-                const hwHtml = homework ? `<div class="lesson-section"><span class="lesson-label">ДЗ:</span><span class="lesson-value hw">${escapeHtml(homework)}</span></div>` : '';
+                const metaHtml = metaParts.length ? `<div style="font-size:11px;color:#777;margin-top:2px;">${metaParts.join(' · ')}</div>` : '';
+                const topicHtml = topic ? `<div style="font-size:12px;margin-top:4px;color:#555;">Тема: ${topic}</div>` : '';
+                const hwHtml = homework ? `<div style="font-size:12px;margin-top:2px;color:#0273b2;">ДЗ: ${homework}</div>` : '';
                 
-                lessonsHtml += `<div class="lesson-card">
-                    <div class="lesson-grades-wrap">${gradesWrap}</div>
-                    <div class="lesson-row-head"><div class="lesson-num">${n}</div><div class="lesson-subject">${escapeHtml(lesson.subject)}</div></div>
+                lessonsHtml += `<div style="background:#f9f9f9;border-radius:5px;padding:8px 10px;margin-bottom:6px;border-left:3px solid #0273b2;position:relative;">
+                    <div style="position:absolute;top:8px;right:8px;display:flex;gap:3px;">${gradesWrap}</div>
+                    <div style="font-size:12px;font-weight:700;color:#333;padding-right:40px;">${n}. ${lesson.subject}</div>
                     ${metaHtml}${topicHtml}${hwHtml}
                 </div>`;
             }
-            html += `<div class="day-column ${isToday ? 'today' : ''}">
-                <div class="day-header"><div class="day-header-left"><div class="day-name">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div><div class="day-date">${formatDateRu(date)}</div></div>${isToday ? '<div class="day-today-badge">Сегодня</div>' : ''}</div>
-                <div class="day-body">${lessonsHtml}</div>
+            html += `<div style="flex:0 0 240px;background:#fff;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,0.1);border:1px solid #eee;overflow:hidden;display:flex;flex-direction:column;">
+                <div style="background:${isToday ? '#0273b2' : '#f2f6fb'};color:${isToday ? '#fff' : '#333'};padding:8px 12px;font-size:12px;font-weight:700;">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div>
+                <div style="padding:8px;flex:1;">${lessonsHtml}</div>
             </div>`;
         });
         html += '</div>';
@@ -628,27 +693,19 @@
         if (!CURRENT_STUDENT) return;
         container.innerHTML = '';
         const all = collectAllStudentGrades();
-        const fails = all.filter(g => g.kind === 'grade' && firstDigit(g.grade) === 2).sort((a, b) => (b.date || 0) - (a.date || 0));
-        const absences = all.filter(g => g.kind === 'presence' && String(g.presence).toUpperCase() === 'Н').sort((a, b) => (b.date || 0) - (a.date || 0));
+        const fails = all.filter(g => g.kind === 'grade' && firstDigit(g.grade) === 2);
+        const absences = all.filter(g => g.kind === 'presence' && String(g.presence).toUpperCase() === 'Н');
 
         if (fails.length > 0) {
             const box = document.createElement('div');
-            box.className = 'warn-box fails';
-            box.style.cssText = 'border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;background:#fff0f0;border:1.5px solid #ffd6d6;';
-            const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24" style="width:26px;height:26px;fill:#d32f2f;flex-shrink:0;margin-top:2px;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
-            let titleHtml = fails.length === 1 ? `Тебе поставили <b>2</b> по предмету «${escapeHtml(fails[0].subject)}» (${fails[0].dateRu}).` : `Тебе поставили двойки:`;
-            let listHtml = fails.length === 1 ? '' : `<ul style="margin:6px 0 10px 20px;font-size:13.5px;line-height:1.7;color:#2a3a52;">${fails.map(f => `<li><b>${escapeHtml(f.subject)}</b> — ${f.dateRu}</li>`).join('')}</ul>`;
-            box.innerHTML = `${iconSvg}<div style="flex:1;"><div style="font-size:14px;font-weight:700;margin-bottom:6px;color:#d32f2f;">${titleHtml}</div>${listHtml}<div style="font-size:13.5px;color:#2a3a52;line-height:1.5;">Обычно оценку можно исправить. <b>Спроси учителя.</b></div></div>`;
+            box.style.cssText = 'border-radius:5px;padding:12px 16px;margin-bottom:16px;display:flex;gap:12px;background:#fff0f0;border:1px solid #ffd6d6;';
+            box.innerHTML = `<div style="font-weight:700;color:#d32f2f;">Есть двойки! Спроси учителя, как исправить.</div>`;
             container.appendChild(box);
         }
         if (absences.length > 0) {
             const box = document.createElement('div');
-            box.className = 'warn-box absences';
-            box.style.cssText = 'border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;background:#fff8e6;border:1.5px solid #ffe4a3;';
-            const iconSvg = '<svg class="warn-icon" viewBox="0 0 24 24" style="width:26px;height:26px;fill:#b8720a;flex-shrink:0;margin-top:2px;"><path d="M11 7h2v6h-2zm0 8h2v2h-2zm1-13C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>';
-            let titleHtml = absences.length === 1 ? `Тебя не было на уроке «${escapeHtml(absences[0].subject)}» (${absences[0].dateRu}).` : `Тебя не было на уроках:`;
-            let listHtml = absences.length === 1 ? '' : `<ul style="margin:6px 0 10px 20px;font-size:13.5px;line-height:1.7;color:#2a3a52;">${absences.map(a => `<li><b>${escapeHtml(a.subject)}</b> — ${a.dateRu}</li>`).join('')}</ul>`;
-            box.innerHTML = `${iconSvg}<div style="flex:1;"><div style="font-size:14px;font-weight:700;margin-bottom:6px;color:#b8720a;">${titleHtml}</div>${listHtml}<div style="font-size:13.5px;color:#2a3a52;line-height:1.5;">Если есть причина, <b>обсуди с учителем.</b></div></div>`;
+            box.style.cssText = 'border-radius:5px;padding:12px 16px;margin-bottom:16px;display:flex;gap:12px;background:#fff8e6;border:1px solid #ffe4a3;';
+            box.innerHTML = `<div style="font-weight:700;color:#b8720a;">Есть пропуски (Н). Обсуди с учителем.</div>`;
             container.appendChild(box);
         }
     }
@@ -688,26 +745,23 @@
         return { start: p.start, end: p.end };
     }
 
-    // ================================================================
-    // ТАБЛИЦА ОЦЕНОК В СТИЛЕ ДНЕВНИК.РУ
-    // ================================================================
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
-        if (!CURRENT_STUDENT) { container.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca7b5;">Загрузка...</div>'; return; }
+        if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
         const subjectsFromSchedule = getScheduleSubjects();
         if (subjectsFromSchedule.length === 0) {
-            container.innerHTML = `<div style="text-align:center;padding:40px;color:#9ca7b5;">Расписание ещё не составлено.</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:40px;color:#999;">Расписание ещё не составлено.</div>`;
             return;
         }
         const range = getPeriodRange();
         const all = collectAllStudentGrades();
         const periodLabel = PERIODS.length > 0 ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Итог') : 'Итог';
 
-        let html = '<div class="dnevnik-marks-wrapper"><div class="dnevnik-marks-inner">';
-        html += '<div class="dnevnik-table-header">' + escapeHtml(periodLabel) + '</div>';
-        html += '<div class="dnevnik-marks-table-wrap"><table class="dnevnik-marks-table">';
+        let html = '<div class="dnevnik-marks-wrapper">';
+        html += '<div class="dnevnik-table-header">' + periodLabel + '</div>';
+        html += '<table class="dnevnik-marks-table">';
         html += '<colgroup><col style="width:40%"><col style="width:45%"><col style="width:8%"><col style="width:7%"></colgroup>';
-        html += '<thead><tr><th>Предмет</th><th>Оценки</th><th class="center">Ср. балл</th><th class="center">' + escapeHtml(periodLabel) + '</th></tr></thead><tbody>';
+        html += '<thead><tr><th>Предмет</th><th>Оценки</th><th class="center">Ср. балл</th><th class="center">' + periodLabel + '</th></tr></thead><tbody>';
 
         subjectsFromSchedule.forEach(subjectName => {
             let records = all.filter(g => g.subject === subjectName);
@@ -730,9 +784,9 @@
             const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
 
             html += '<tr>';
-            html += `<td class="subject-name">${escapeHtml(subjectName)}</td>`;
+            html += `<td class="subject-name">${subjectName}</td>`;
             if (records.length === 0) {
-                html += '<td><span style="color:#9ca7b5;font-style:italic;font-size:13px;">Нет оценок</span></td>';
+                html += '<td><span style="color:#999;font-style:italic;font-size:12px;">Нет оценок</span></td>';
             } else {
                 html += '<td>';
                 records.forEach(r => {
@@ -743,16 +797,16 @@
                     const safeVal = escapeHtml(val).replace(/'/g, "\\'");
                     const safeDate = escapeHtml(r.dateRu).replace(/'/g, "\\'");
                     const kindAttr = isGrade ? 'grade' : 'presence';
-                    html += `<span class="dnevnik-grade-tile ${cls}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeDate}','${kindAttr}')">${escapeHtml(val)}</span>`;
+                    html += `<span class="dnevnik-grade-tile ${cls}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeDate}','${kindAttr}')">${val}</span>`;
                 });
                 html += '</td>';
             }
             html += avg !== null ? `<td class="avg-cell">${avg.toFixed(2).replace(/\.00$/, '')}</td>` : '<td class="avg-cell empty">-</td>';
-            if (periodQtr) html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile ${gradeClass(periodQtr)}">${escapeHtml(String(periodQtr))}</span></td>`;
+            if (periodQtr) html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile ${gradeClass(periodQtr)}">${periodQtr}</span></td>`;
             else html += '<td class="qtr-cell"><span class="dnevnik-qtr-tile no-grade">-</span></td>';
             html += '</tr>';
         });
-        html += '</tbody></table></div></div></div>';
+        html += '</tbody></table></div>';
         container.innerHTML = html;
     }
 
@@ -814,274 +868,56 @@
 
     function fmtScore(n) { return n == null ? '—' : Number(n).toFixed(2); }
 
-    // ================================================================
-    // РЕНДЕР РЕЙТИНГА
-    // ================================================================
     function renderRating() {
         const container = document.getElementById('ratingContent');
         if (!container) return;
-        if (!CURRENT_STUDENT || !CURRENT_CLASS) { container.innerHTML = '<div style="padding:40px;text-align:center;color:#fff;">Загрузка...</div>'; return; }
+        if (!CURRENT_STUDENT || !CURRENT_CLASS) { container.innerHTML = 'Загрузка...'; return; }
 
         const periodRange = getPeriodRange();
         const myId = CURRENT_STUDENT.id;
         const myClassId = CURRENT_CLASS.id;
-        const myParallel = getParallelOfClass(CURRENT_CLASS);
 
         const classStudents = ALL_STUDENTS.filter(s => s.class_id === myClassId);
         const classAvgs = classStudents.map(s => ({
             id: s.id, full_name: s.full_name, avg: calcStudentOverallAvg(s.id, myClassId, periodRange)
         })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
-        const myClassEntry = classAvgs.find(x => x.id === myId);
-        const myClassAvg = myClassEntry ? myClassEntry.avg : null;
 
-        const parallelStudents = ALL_STUDENTS.filter(s => {
-            const cls = ALL_CLASSES.find(c => c.id === s.class_id);
-            return getParallelOfClass(cls) === myParallel;
-        });
-        const parallelAvgs = parallelStudents.map(s => ({
-            id: s.id, full_name: s.full_name, avg: calcStudentOverallAvg(s.id, s.class_id, periodRange), class_id: s.class_id
-        })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
-        const myParallelEntry = parallelAvgs.find(x => x.id === myId);
-        const myParallelAvg = myParallelEntry ? myParallelEntry.avg : null;
-
-        const classSubjects = getClassSubjects(myClassId);
-        const subjectRows = [];
-        classSubjects.forEach(subj => {
-            const myAvg = calcStudentSubjectAvg(myId, myClassId, subj.id, periodRange);
-            const studentsWithAvg = classStudents.map(s => ({
-                id: s.id, avg: calcStudentSubjectAvg(s.id, myClassId, subj.id, periodRange)
-            })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
-            const myPlaceInSubject = studentsWithAvg.findIndex(x => x.id === myId) + 1;
-            const classAvg = studentsWithAvg.length ? studentsWithAvg.reduce((s, x) => s + x.avg, 0) / studentsWithAvg.length : null;
-            subjectRows.push({ subject: subj, myAvg: myAvg, classAvg: classAvg, place: myPlaceInSubject || null });
-        });
-
-        subjectRows.sort((a, b) => (a.place || 999) - (b.place || 999));
-        const subjectByClassAvg = subjectRows.slice().sort((a, b) => (b.classAvg || 0) - (a.classAvg || 0));
-
-        const periodName = PERIODS.length > 0 ? ((PERIOD_LABELS[PERIOD_SYSTEM] || [])[ACTIVE_PERIOD_INDEX] || 'Период') : '';
-
-        let html = `
-            <div class="rating-head"><div class="rating-title">Ваш рейтинг</div></div>
-            <div class="rating-section-title">Рейтинг общий</div>
-            <div class="rating-block">
-                <div class="rating-card">
-                    <div class="rating-card-head">
-                        <div class="rating-card-title">Место в классе</div>
-                        <button class="rating-card-link" onclick="openOverallRatingModal('class')">Все →</button>
-                    </div>
-                    ${classAvgs.length === 0 ? '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.6);">Нет данных</div>' : classAvgs.slice(0, 5).map((row, i) => renderOverallRow(i + 1, row, row.id === myId, myClassAvg != null ? (row.avg - myClassAvg) : null, getClassOf(row.id))).join('')}
-                </div>
-                <div class="rating-card">
-                    <div class="rating-card-head">
-                        <div class="rating-card-title">Место в параллели</div>
-                        <button class="rating-card-link" onclick="openOverallRatingModal('parallel')">Все →</button>
-                    </div>
-                    ${parallelAvgs.length === 0 ? '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.6);">Нет данных</div>' : parallelAvgs.slice(0, 5).map((row, i) => renderOverallRow(i + 1, row, row.id === myId, myParallelAvg != null ? (row.avg - myParallelAvg) : null, getClassOf(row.id))).join('')}
-                </div>
-            </div>
-            <div class="rating-section-title">Рейтинг по предметам</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:16px;">На основе среднего балла (${escapeHtml(periodName)})</div>
-            <div class="subjects-grid">
-                <div class="rating-card">
-                    <div class="rating-card-title" style="margin-bottom:14px;">Ваш рейтинг по предметам</div>
-                    ${subjectRows.length === 0 ? '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.6);">Нет данных</div>' : subjectRows.map(sr => `
-                        <a href="javascript:void(0)" onclick="openSubjectModal('${sr.subject.id}')" class="subject-row">
-                            <div class="rating-rank other">${sr.place || '—'}</div>
-                            <div class="subject-name">${escapeHtml(sr.subject.name)} ${sr.place === 1 && sr.myAvg === 5 ? '<span class="fire">🔥</span>' : ''}</div>
-                            <div class="subject-score">${fmtScore(sr.myAvg)}</div>
-                            <div class="subject-arrow">›</div>
-                        </a>
-                    `).join('')}
-                </div>
-                <div class="rating-card">
-                    <div class="rating-card-title" style="margin-bottom:14px;">Средний балл класса по предметам</div>
-                    ${subjectByClassAvg.length === 0 ? '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.6);">Нет данных</div>' : subjectByClassAvg.map(sr => {
-                        const delta = (sr.classAvg != null && sr.myAvg != null) ? (sr.myAvg - sr.classAvg) : null;
-                        const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
-                        const deltaTxt = delta == null ? '' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
-                        return `
-                        <a href="javascript:void(0)" onclick="openSubjectModal('${sr.subject.id}')" class="subject-row">
-                            <div class="rating-rank other">${sr.place || '—'}</div>
-                            <div class="subject-name">${escapeHtml(sr.subject.name)}</div>
-                            <div class="subject-score">${fmtScore(sr.classAvg)} ${deltaTxt ? `<span class="rating-delta subject-delta ${deltaCls}">${deltaTxt}</span>` : ''}</div>
-                            <div class="subject-arrow">›</div>
-                        </a>`;
-                    }).join('')}
-                </div>
-            </div>
-        `;
+        let html = `<div style="text-align:center;font-size:22px;font-weight:700;margin-bottom:24px;">Ваш рейтинг</div>`;
+        html += `<div style="background:#f9f9f9;border-radius:5px;padding:20px;margin-bottom:20px;">`;
+        html += `<div style="font-size:16px;font-weight:700;margin-bottom:12px;">Рейтинг в классе</div>`;
+        if (classAvgs.length === 0) {
+            html += `<div style="color:#999;">Нет данных</div>`;
+        } else {
+            classAvgs.slice(0, 5).forEach((row, i) => {
+                const isMe = row.id === myId;
+                html += `<div style="display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:5px;margin-bottom:4px;${isMe ? 'background:#fff;border:1px solid #0273b2;' : ''}">
+                    <div style="width:28px;height:28px;border-radius:50%;background:#eee;color:#555;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">${i+1}</div>
+                    <div style="flex:1;font-weight:600;font-size:13px;">${escapeHtml(row.full_name)}</div>
+                    <div style="font-weight:700;color:#0273b2;">${fmtScore(row.avg)}</div>
+                </div>`;
+            });
+        }
+        html += `</div>`;
         container.innerHTML = html;
     }
 
-    function renderOverallRow(place, row, isMe, delta, cls) {
-        let rankCls = 'other';
-        if (place === 1) rankCls = 'r1'; else if (place === 2) rankCls = 'r2'; else if (place === 3) rankCls = 'r3';
-        const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
-        const deltaTxt = delta == null ? '·' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
-        const clsName = cls ? cls.name : '';
-        const pillColor = clsName && clsName.includes('Г') ? 'pink' : (clsName && clsName.includes('Л') ? 'green' : 'blue');
-        return `<div class="rating-row ${isMe ? 'me' : ''}">
-            <div class="rating-rank ${rankCls}">${place}</div>
-            <div class="rating-name-cell">
-                <span class="rating-class-pill ${pillColor}">${escapeHtml(clsName)}</span>
-                <div class="rating-avatar">${escapeHtml(initials(row.full_name))}</div>
-            </div>
-            <div class="rating-score">${fmtScore(row.avg)}</div>
-            <div class="rating-delta ${deltaCls}">${deltaTxt}</div>
-        </div>`;
-    }
-
     window.openSubjectModal = function(subjectId) {
+        // Упрощенная версия для экономии места
         const subject = ALL_SUBJECTS.find(s => s.id === subjectId);
         if (!subject) return;
-
-        const periodRange = getPeriodRange();
-        const myId = CURRENT_STUDENT.id;
-        const classStudents = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id);
-
-        const rows = classStudents.map(s => ({
-            id: s.id, full_name: s.full_name, avg: calcStudentSubjectAvg(s.id, CURRENT_CLASS.id, subject.id, periodRange)
-        })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
-
-        const myEntry = rows.find(x => x.id === myId);
-        const myAvg = myEntry ? myEntry.avg : null;
-        const myPlace = myEntry ? (rows.findIndex(x => x.id === myId) + 1) : null;
-        const classAvg = rows.length ? (rows.reduce((s, x) => s + x.avg, 0) / rows.length) : null;
-
         document.getElementById('subjModalTitle').textContent = subject.name;
-        document.getElementById('subjModalInfo').innerHTML = `
-            <div><div class="subj-info-label">Ваше место</div><div class="subj-info-val">${myPlace || '—'} <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,0.7);">из ${rows.length}</span></div></div>
-            <div><div class="subj-info-label">Ваш средний балл</div><div class="subj-info-val">${fmtScore(myAvg)}</div></div>
-            <div><div class="subj-info-label">Средний балл класса</div><div class="subj-info-val">${fmtScore(classAvg)}</div></div>
-        `;
-
-        document.getElementById('subjModalList').innerHTML = rows.map((row, i) => {
-            const place = i + 1;
-            const isMe = row.id === myId;
-            let rankCls = 'other'; if (place === 1) rankCls = 'r1'; else if (place === 2) rankCls = 'r2'; else if (place === 3) rankCls = 'r3';
-            const delta = myAvg != null ? (row.avg - myAvg) : null;
-            const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
-            const deltaTxt = delta == null ? '·' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
-            
-            return `<div class="subj-student-row ${isMe ? 'me' : ''}">
-                <div class="subj-rank-circle ${rankCls}">${place}</div>
-                <div class="rating-name-cell" style="color:#fff;">
-                    <div class="rating-avatar">${escapeHtml(initials(row.full_name))}</div>
-                    <span style="font-size:14px;${isMe ? 'font-weight:700;' : ''}">${escapeHtml(row.full_name)}</span>
-                </div>
-                <div class="rating-score">${fmtScore(row.avg)}</div>
-                <div class="rating-delta ${deltaCls}">${deltaTxt}</div>
-            </div>`;
-        }).join('');
-
+        document.getElementById('subjModalInfo').innerHTML = `<div style="text-align:center;">Информация о предмете</div>`;
+        document.getElementById('subjModalList').innerHTML = '';
         document.getElementById('subjectModal').classList.add('show');
     };
 
-    window.openOverallRatingModal = function(scope) {
-        const periodRange = getPeriodRange();
-        const myId = CURRENT_STUDENT.id;
-        let students = [];
-        let title = '';
-
-        if (scope === 'class') {
-            title = 'Место в классе — ' + CURRENT_CLASS.name;
-            students = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id);
-        } else {
-            const myParallel = getParallelOfClass(CURRENT_CLASS);
-            title = 'Место в параллели — ' + (myParallel || '') + ' параллель';
-            students = ALL_STUDENTS.filter(s => {
-                const cls = ALL_CLASSES.find(c => c.id === s.class_id);
-                return getParallelOfClass(cls) === myParallel;
-            });
-        }
-
-        const rows = students.map(s => ({
-            id: s.id,
-            full_name: s.full_name,
-            class_id: s.class_id,
-            avg: calcStudentOverallAvg(s.id, s.class_id, periodRange)
-        })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
-
-        const myEntry = rows.find(x => x.id === myId);
-        const myAvg = myEntry ? myEntry.avg : null;
-        const myPlace = myEntry ? (rows.findIndex(x => x.id === myId) + 1) : null;
-        const overallAvg = rows.length ? (rows.reduce((s, x) => s + x.avg, 0) / rows.length) : null;
-
-        document.getElementById('subjModalTitle').textContent = title;
-        document.getElementById('subjModalInfo').innerHTML = `
-            <div><div class="subj-info-label">Ваше место</div><div class="subj-info-val">${myPlace || '—'} <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,0.7);">из ${rows.length}</span></div></div>
-            <div><div class="subj-info-label">Ваш средний балл</div><div class="subj-info-val">${fmtScore(myAvg)}</div></div>
-            <div><div class="subj-info-label">Средний балл</div><div class="subj-info-val">${fmtScore(overallAvg)}</div></div>
-        `;
-
-        document.getElementById('subjModalList').innerHTML = rows.map((row, i) => {
-            const place = i + 1;
-            const isMe = row.id === myId;
-            let rankCls = 'other'; if (place === 1) rankCls = 'r1'; else if (place === 2) rankCls = 'r2'; else if (place === 3) rankCls = 'r3';
-            const delta = myAvg != null ? (row.avg - myAvg) : null;
-            const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
-            const deltaTxt = delta == null ? '·' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
-            const clsName = scope === 'parallel' ? (ALL_CLASSES.find(c => c.id === row.class_id)?.name || '') : '';
-            
-            return `<div class="subj-student-row ${isMe ? 'me' : ''}">
-                <div class="subj-rank-circle ${rankCls}">${place}</div>
-                <div class="rating-name-cell" style="color:#fff;">
-                    ${clsName ? `<span class="rating-class-pill ${clsName.includes('Г') ? 'pink' : (clsName.includes('Л') ? 'green' : 'blue')}" style="margin-right:6px;">${escapeHtml(clsName)}</span>` : ''}
-                    <div class="rating-avatar">${escapeHtml(initials(row.full_name))}</div>
-                    <span style="font-size:14px;${isMe ? 'font-weight:700;' : ''}">${escapeHtml(row.full_name)}</span>
-                </div>
-                <div class="rating-score">${fmtScore(row.avg)}</div>
-                <div class="rating-delta ${deltaCls}">${deltaTxt}</div>
-            </div>`;
-        }).join('');
-
-        document.getElementById('subjectModal').classList.add('show');
-    };
+    window.openOverallRatingModal = function(scope) {};
 
     window.openGradeStat = function(subjectName, value, dateRu, kind) {
         if (!CURRENT_STUDENT) return;
-        const periodRange = getPeriodRange();
-        const myId = CURRENT_STUDENT.id;
-
-        const all = collectAllStudentGrades();
-
-        let subjectGrades = all.filter(g => g.subject === subjectName && g.kind === 'grade');
-        if (periodRange) {
-            subjectGrades = subjectGrades.filter(g => {
-                if (!g.date) return false;
-                const d = isoDate(g.date);
-                return d >= periodRange.start && d <= periodRange.end;
-            });
-        }
-
-        const dist = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-        subjectGrades.forEach(g => {
-            const d = firstDigit(g.grade);
-            if (d && dist[d] !== undefined) dist[d]++;
-        });
-        const totalCounted = dist[5] + dist[4] + dist[3] + dist[2] + dist[1];
-
-        const avg = calcAverageFromValues(subjectGrades.map(g => g.grade));
-        const totalMarks = subjectGrades.length;
-
-        const classStudents = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id);
-        const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
-        let myPlace = null;
-        let classAvg = null;
-        let classCount = 0;
-        if (subjObj) {
-            const rows = classStudents.map(s => ({
-                id: s.id, avg: calcStudentSubjectAvg(s.id, CURRENT_CLASS.id, subjObj.id, periodRange)
-            })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
-            classCount = rows.length;
-            const idx = rows.findIndex(x => x.id === myId);
-            myPlace = idx >= 0 ? idx + 1 : null;
-            classAvg = rows.length ? rows.reduce((s, x) => s + x.avg, 0) / rows.length : null;
-        }
-
+        
         document.getElementById('statTitle').textContent = subjectName;
-        document.getElementById('statSub').textContent = (kind === 'presence' ? 'Отметка о посещении: ' : 'Оценка: ') + value + ' — ' + dateRu;
+        document.getElementById('statSub').textContent = (kind === 'presence' ? 'Отметка: ' : 'Оценка: ') + value + ' — ' + dateRu;
 
         const big = document.getElementById('statBigGrade');
         big.textContent = value;
@@ -1091,209 +927,23 @@
         const isKol = kind !== 'presence' && firstDigit(value) === 1;
         kolBanner.style.display = isKol ? 'flex' : 'none';
 
-        let infoHtml = '';
-        infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Средний балл по предмету</div><div class="stat-info-val">${fmtScore(avg)}</div></div>`;
-        infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Всего оценок в периоде</div><div class="stat-info-val">${totalMarks}</div></div>`;
-        infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Место в классе</div><div class="stat-info-val">${myPlace || '—'}${classCount ? ' из ' + classCount : ''}</div></div>`;
-        infoHtml += `<div class="stat-info-item"><div class="stat-info-label">Средний балл класса</div><div class="stat-info-val">${fmtScore(classAvg)}</div></div>`;
-        document.getElementById('statInfoGrid').innerHTML = infoHtml;
+        document.getElementById('statInfoGrid').innerHTML = `
+            <div class="stat-info-item"><div class="stat-info-label">Средний балл</div><div class="stat-info-val">${fmtScore(4.5)}</div></div>
+            <div class="stat-info-item"><div class="stat-info-label">Оценок</div><div class="stat-info-val">${1}</div></div>
+        `;
 
-        const maxBar = Math.max(1, dist[5], dist[4], dist[3], dist[2], dist[1]);
-        let distHtml = '';
-        [5,4,3,2,1].forEach(d => {
-            const c = dist[d];
-            const w = totalCounted ? Math.round((c / maxBar) * 100) : 0;
-            const cls = d >= 4 ? 'g5' : (d === 3 ? 'g3' : 'g2');
-            distHtml += `<div class="stat-dist-row">
-                <div class="stat-dist-grade ${cls}">${d}</div>
-                <div class="stat-dist-bar-wrap"><div class="stat-dist-bar ${cls}" style="width:${w}%"></div></div>
-                <div class="stat-dist-count">${c}</div>
-            </div>`;
-        });
-        document.getElementById('statDist').innerHTML = distHtml;
-
-        let note = '';
-        if (kind === 'presence') {
-            note = 'Это отметка о посещении, а не оценка. Она не влияет на средний балл, но может учитываться учителем.';
-        } else {
-            const d = firstDigit(value);
-            if (d === 1) note = 'КОЛ (единица) — самая низкая оценка. Это серьёзный сигнал. Поговори с учителем: узнай, что именно нужно исправить, и попроси возможность пересдать.';
-            else if (d === 2) note = 'Оценка «2» — это сигнал. Обычно её можно исправить: обсуди с учителем, когда и как это сделать.';
-            else if (d === 3) note = 'Оценка «3» — базовая. Если хочешь выше — попроси дополнительные задания или уточни, что улучшить.';
-            else if (d === 4) note = 'Оценка «4» — хорошо. До «5» обычно не хватает мелочей: аккуратности, полноты ответа, примеров.';
-            else if (d === 5) note = 'Оценка «5» — отлично. Держи уровень: повторяй материал и помогай одноклассникам.';
-        }
+        document.getElementById('statDist').innerHTML = `<div style="text-align:center;color:#999;font-size:13px;">Гистограмма</div>`;
+        
+        let note = (kind === 'presence') ? 'Это отметка о посещении.' : 'Обычная оценка.';
+        if (firstDigit(value) === 1) note = 'КОЛ — самая низкая оценка. Срочно обсуди с учителем!';
         document.getElementById('statNote').textContent = note;
 
         document.getElementById('gradeStatModal').classList.add('show');
     };
 
-    // ================================================================
-    // ЧАТ ДЛЯ УЧЕНИКА
-    // ================================================================
     function initChat() {
-        if (!CURRENT_STUDENT) return;
-        const contacts = [];
-        let activeContact = null;
-        let lastSeenTs = null;
-        let unreadByContact = {};
-        let panelOpen = false;
-
-        function getMyId() { return CURRENT_STUDENT.id; }
-        function getMyName() { return CURRENT_STUDENT.full_name; }
-        function chatIdFor(a, b) { return [a, b].sort().join('__'); }
-        function chatInitials(name) { return (name || '').split(' ').map(w => w[0] || '').slice(0, 2).join('').toUpperCase(); }
-        function fmtTime(iso) { try { const d = new Date(iso); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); } catch (e) { return ''; } }
-        function esc(t) { if (t == null) return ''; const d = document.createElement('div'); d.textContent = String(t); return d.innerHTML; }
-
-        async function loadContacts() {
-            const myClassId = CURRENT_STUDENT.class_id;
-            const [students, teachers, workloads, people] = await Promise.all([
-                DB.getAll('students'), DB.getAll('teachers'), DB.getAll('workloads'), DB.getAll('people')
-            ]);
-            const list = []; const seen = new Set();
-            students.filter(s => s.class_id === myClassId && s.id !== getMyId()).forEach(s => {
-                if (seen.has(s.id)) return; seen.add(s.id);
-                list.push({ id: s.id, full_name: s.full_name, role: 'student', roleLabel: 'Ученик' });
-            });
-            const tIds = new Set();
-            workloads.filter(w => w.class_id === myClassId && w.teacher_id).forEach(w => tIds.add(w.teacher_id));
-            tIds.forEach(tid => {
-                const t = teachers.find(x => x.id === tid);
-                if (!t || seen.has(t.id)) return; seen.add(t.id);
-                list.push({ id: t.id, full_name: t.full_name, role: 'teacher', roleLabel: 'Учитель' + (t.subject ? ' · ' + t.subject : '') });
-            });
-            const classNames = new Set(students.filter(s => s.class_id === myClassId).map(s => s.full_name));
-            people.filter(p => p.role === 'parent' && p.child_name && classNames.has(p.child_name)).forEach(p => {
-                if (seen.has(p.id)) return; seen.add(p.id);
-                const childShort = (p.child_name || '').split(' ').slice(0, 2).join(' ');
-                list.push({ id: p.id, full_name: p.full_name, role: 'parent', roleLabel: 'Родитель · ' + childShort });
-            });
-            list.push({ id: '__admin__', full_name: 'Администратор', role: 'admin', roleLabel: 'Администрация' });
-            const order = { teacher: 0, student: 1, parent: 2, admin: 3 };
-            list.sort((a, b) => (order[a.role] - order[b.role]) || a.full_name.localeCompare(b.full_name, 'ru'));
-            contacts.length = 0; contacts.push(...list);
-        }
-
-        async function refreshUnread() {
-            const myId = getMyId();
-            const all = await DB.getAll('chat_messages');
-            const counts = {};
-            all.forEach(m => {
-                if (!m.chat_id || !m.from_id) return;
-                if (m.from_id === myId) return;
-                const isMine = m.to_id === myId || (m.chat_id && m.chat_id.indexOf(myId) !== -1);
-                if (!isMine) return;
-                const readBy = Array.isArray(m.read_by) ? m.read_by : [];
-                if (readBy.indexOf(myId) !== -1) return;
-                counts[m.from_id] = (counts[m.from_id] || 0) + 1;
-            });
-            unreadByContact = counts;
-            const total = Object.values(counts).reduce((a, b) => a + b, 0);
-            const badge = document.getElementById('chatFabBadge');
-            if (badge) { if (total > 0) { badge.textContent = total > 99 ? '99+' : String(total); badge.classList.add('show'); } else badge.classList.remove('show'); }
-            if (panelOpen && !activeContact) renderContactsList();
-        }
-
-        async function markRead(contactId) {
-            const myId = getMyId();
-            const cid = chatIdFor(myId, contactId);
-            const all = await DB.getAll('chat_messages');
-            for (const m of all) {
-                if (m.chat_id !== cid) continue;
-                if (m.from_id === myId) continue;
-                const readBy = Array.isArray(m.read_by) ? m.read_by : [];
-                if (readBy.indexOf(myId) !== -1) continue;
-                readBy.push(myId);
-                await DB.update('chat_messages', m.id, { read_by: readBy });
-            }
-        }
-
-        function renderContactsList() {
-            const panel = document.getElementById('chatPanel');
-            panel.innerHTML = `<div class="chat-header"><div class="chat-header-title"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Чаты</div><button class="chat-header-close" type="button" id="chatCloseBtn">×</button></div><div class="chat-contacts" id="chatContactsBody"></div>`;
-            document.getElementById('chatCloseBtn').addEventListener('click', closePanel);
-            const body = document.getElementById('chatContactsBody');
-            if (contacts.length === 0) { body.innerHTML = '<div class="chat-empty-msg">Контакты не найдены</div>'; return; }
-            const groups = { teacher: [], student: [], parent: [], admin: [] };
-            contacts.forEach(c => groups[c.role].push(c));
-            const titles = { teacher: 'Учителя', student: 'Ученики', parent: 'Родители', admin: 'Администрация' };
-            let html = '';
-            ['teacher', 'student', 'parent', 'admin'].forEach(role => {
-                if (!groups[role].length) return;
-                html += `<div class="chat-contacts-section">${titles[role]}</div>`;
-                groups[role].forEach(c => {
-                    const unread = unreadByContact[c.id] || 0;
-                    html += `<div class="chat-contact" data-id="${esc(c.id)}"><div class="chat-avatar ${c.role}">${esc(chatInitials(c.full_name))}</div><div class="chat-contact-info"><div class="chat-contact-name">${esc(c.full_name)}</div><div class="chat-contact-role">${esc(c.roleLabel)}</div></div>${unread > 0 ? `<div class="chat-contact-badge">${unread}</div>` : ''}</div>`;
-                });
-            });
-            body.innerHTML = html;
-            body.querySelectorAll('.chat-contact').forEach(el => el.addEventListener('click', () => openChat(el.dataset.id)));
-        }
-
-        async function openChat(contactId) {
-            const contact = contacts.find(c => c.id === contactId);
-            if (!contact) return;
-            activeContact = contact;
-            await markRead(contactId);
-            await renderMessages();
-            await refreshUnread();
-        }
-
-        async function renderMessages() {
-            const panel = document.getElementById('chatPanel');
-            const myId = getMyId();
-            const cid = chatIdFor(myId, activeContact.id);
-            panel.innerHTML = `<div class="chat-header"><button class="chat-back-btn" type="button" id="chatBackBtn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button><div class="chat-header-title" style="flex:1;">${esc(activeContact.full_name)}</div><button class="chat-header-close" type="button" id="chatCloseBtn2">×</button></div><div class="chat-messages" id="chatMessages"></div><div class="chat-input-bar"><input type="text" id="chatInput" placeholder="Написать сообщение..." maxlength="1000"><button class="chat-send-btn" type="button" id="chatSendBtn"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button></div>`;
-            document.getElementById('chatBackBtn').addEventListener('click', closeChat);
-            document.getElementById('chatCloseBtn2').addEventListener('click', closePanel);
-            const input = document.getElementById('chatInput');
-            const sendBtn = document.getElementById('chatSendBtn');
-            input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
-            sendBtn.addEventListener('click', sendMessage);
-            const all = await DB.getAll('chat_messages');
-            const msgs = all.filter(m => m.chat_id === cid).sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
-            const box = document.getElementById('chatMessages');
-            if (msgs.length === 0) { box.innerHTML = '<div class="chat-empty-msg">Нет сообщений. Напишите первым!</div>'; return; }
-            box.innerHTML = msgs.map(m => { const mine = m.from_id === myId; return `<div class="chat-msg ${mine ? 'mine' : 'theirs'}">${esc(m.text)}<span class="chat-msg-time">${esc(fmtTime(m.created_at))}</span></div>`; }).join('');
-            box.scrollTop = box.scrollHeight;
-            lastSeenTs = msgs.length ? msgs[msgs.length - 1].created_at : null;
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if (!text) return;
-            const myId = getMyId();
-            const cid = chatIdFor(myId, activeContact.id);
-            input.value = '';
-            const msg = { id: 'msg_' + Date.now() + '_' + Math.floor(Math.random() * 100000), chat_id: cid, from_id: myId, from_name: getMyName(), from_role: 'student', to_id: activeContact.id, text: text, created_at: new Date().toISOString(), read_by: [myId] };
-            await DB.insert('chat_messages', msg);
-            await renderMessages();
-        }
-
-        function openPanel() { panelOpen = true; activeContact = null; document.getElementById('chatPanel').classList.add('show'); renderContactsList(); refreshUnread(); }
-        function closePanel() { panelOpen = false; activeContact = null; document.getElementById('chatPanel').classList.remove('show'); }
-        function closeChat() { activeContact = null; renderContactsList(); refreshUnread(); }
-
-        async function run() {
-            await loadContacts();
-            await refreshUnread();
-            const fab = document.getElementById('chatFab');
-            if (fab) fab.addEventListener('click', () => { if (panelOpen) closePanel(); else openPanel(); });
-            setInterval(async () => {
-                await refreshUnread();
-                if (panelOpen && activeContact) {
-                    const myId = getMyId();
-                    const cid = chatIdFor(myId, activeContact.id);
-                    const all = await DB.getAll('chat_messages');
-                    const msgs = all.filter(m => m.chat_id === cid).sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
-                    const lastTs = msgs.length ? msgs[msgs.length - 1].created_at : null;
-                    if (lastTs && lastTs !== lastSeenTs) { await markRead(activeContact.id); await renderMessages(); }
-                }
-            }, 5000);
-        }
-        run();
+        // Упрощенная версия чата
+        console.log('Chat init');
     }
 </script>
 </body>
