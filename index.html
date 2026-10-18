@@ -44,7 +44,14 @@ body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298);
 const AUTH_EMAIL_DOMAIN = '@school-journal-8f39a.firebaseapp.com';
 const SESSION_KEY = 'sj_session';
 const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
-const ROUTES = { admin: 'admin.html', teacher: 'teacher.html', student: 'student.html', parent: 'parent.html' };
+
+// Маршруты для всех ролей
+const ROUTES = { 
+    admin: 'admin.html', 
+    teacher: 'teacher.html', 
+    student: 'student.html', 
+    parent: 'parent.html' 
+};
 
 const form = document.getElementById('loginForm');
 const loginInput = document.getElementById('loginInput');
@@ -60,39 +67,48 @@ function resetButton() { loginBtn.disabled = false; loginBtn.textContent = 'Во
 function saveSession(user, role) { try { localStorage.setItem(SESSION_KEY, JSON.stringify({ uid: user.uid, email: user.email, role, loggedAt: Date.now(), expiresAt: Date.now() + SESSION_DURATION_MS })); } catch(e){} }
 function clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch(e){} }
 
+// ================================================================
+// ОПРЕДЕЛЕНИЕ РОЛИ (ПРОСТОЕ И НАДЕЖНОЕ)
+// ================================================================
 async function determineRole(fb, user) {
     if (!user || !user.email) return null;
     const login = user.email.split('@')[0];
-    // 1. Админ
+    
     try {
-        const adminDoc = await fb.getDocs(fb.query(fb.collection(fb.db, 'admins'), fb.where('__name__', '==', user.uid)));
-        if (!adminDoc.empty) return 'admin';
-    } catch (e) {}
-    try {
-        const docRef = await fb.getDocs(fb.query(fb.collection(fb.db, 'admins')));
-        if (docRef.docs.some(d => d.id === user.uid)) return 'admin';
-    } catch (e) {}
-    // 2. Учитель
-    try {
-        const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'teachers'), fb.where('login', '==', login)));
-        if (!snap.empty) return 'teacher';
-    } catch (e) {}
-    // 3. Ученик
-    try {
-        const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'students'), fb.where('login', '==', login)));
-        if (!snap.empty) return 'student';
-    } catch (e) {}
-    // 4. Родитель (people с ролью parent)
-    try {
-        const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'people'), fb.where('login', '==', login)));
-        if (!snap.empty) {
-            const doc = snap.docs[0].data();
-            if (doc.role === 'parent') return 'parent';
+        // 1. Проверяем админа (по UID)
+        const admins = await DB.getAll('admins');
+        if (admins.some(a => a.id === user.uid || a.user_id === user.uid)) {
+            return 'admin';
         }
-    } catch (e) {}
+
+        // 2. Проверяем учителя (по логину)
+        const teachers = await DB.getAll('teachers');
+        if (teachers.some(t => t.login === login)) {
+            return 'teacher';
+        }
+
+        // 3. Проверяем ученика (по логину)
+        const students = await DB.getAll('students');
+        if (students.some(s => s.login === login)) {
+            return 'student';
+        }
+
+        // 4. Проверяем родителя (по логину)
+        const people = await DB.getAll('people');
+        if (people.some(p => p.login === login && p.role === 'parent')) {
+            return 'parent';
+        }
+
+    } catch (e) {
+        console.error('Ошибка при определении роли:', e);
+    }
+
     return null;
 }
 
+// ================================================================
+// ВХОД
+// ================================================================
 async function loginFlow(rawLogin, password) {
     clearError();
     const login = String(rawLogin || '').trim();
@@ -108,9 +124,11 @@ async function loginFlow(rawLogin, password) {
 
     let user = null;
     try {
+        // Пытаемся войти
         const cred = await fb.signInWithEmailAndPassword(fb.auth, email, password);
         user = cred.user;
     } catch (err) {
+        // Если аккаунта нет - пробуем создать (для первого входа)
         const noAcc = err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/invalid-login-credentials';
         if (noAcc) {
             setStatus('Первый вход — создаём аккаунт...');
@@ -136,29 +154,48 @@ async function loginFlow(rawLogin, password) {
 
     setStatus('Определяем роль...');
     const role = await determineRole(fb, user);
+    
     if (!role) {
         showError('Доступ запрещён: роль не найдена.');
         try { await fb.signOut(fb.auth); } catch(e){}
         clearSession(); resetButton(); setStatus(''); return;
     }
+
     saveSession(user, role);
     setStatus('Роль: ' + role + '. Переходим...');
-    window.location.replace(ROUTES[role]);
+    
+    // Перенаправляем
+    const route = ROUTES[role];
+    if (route) {
+        window.location.replace(route);
+    } else {
+        showError('Маршрут для роли не найден.');
+        resetButton();
+    }
 }
 
 form.addEventListener('submit', (e) => { e.preventDefault(); loginFlow(loginInput.value, passInput.value); });
 
+// ================================================================
+// АВТОВХОД (ЕСЛИ СЕССИЯ ЕСТЬ)
+// ================================================================
 window.addEventListener('load', async () => {
     let fb;
     try { fb = await window._fbReady; } catch (e) { return; }
+    
     const user = await new Promise((resolve) => {
         const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
     });
+    
     if (!user) { clearSession(); return; }
+    
+    // Проверяем сохраненную сессию
     const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
     if (session && session.uid === user.uid && session.role && ROUTES[session.role]) {
         window.location.replace(ROUTES[session.role]); return;
     }
+    
+    // Если сессии нет - определяем роль заново
     const role = await determineRole(fb, user);
     if (!role) { try { await fb.signOut(fb.auth); } catch(e){} clearSession(); return; }
     saveSession(user, role);
