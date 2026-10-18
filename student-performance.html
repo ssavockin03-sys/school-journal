@@ -56,14 +56,44 @@
         .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 18px; font-weight: 700; }
         
-        .view-switch { display: inline-flex; background: #fff; border-radius: 5px; padding: 3px; border: 1px solid #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .view-btn { padding: 6px 16px; border-radius: 3px; font-size: 14px; font-weight: 600; color: #555; background: transparent; border: none; cursor: pointer; font-family: inherit; }
-        .view-btn.active { background: #0273b2; color: #fff; }
+        /* ===================== ПЕРЕКЛЮЧАТЕЛИ (ИЗ HhPlq И XZC4H) ===================== */
+        .view-switch { 
+            display: flex; /* Из HhPlq */
+            font-family: "Open Sans", sans-serif; /* Из HhPlq */
+            border-radius: 8px; /* Из HhPlq */
+            font-weight: 600; /* Из HhPlq */
+            font-size: 14px; /* Из HhPlq */
+            background-color: #fff; /* Из HhPlq */
+            padding: 1px; /* Из HhPlq */
+            margin-bottom: 16px; /* Из HhPlq */
+            box-shadow: 0 3.11111px 6.22222px rgba(0,0,0,0.06); /* Из HhPlq */
+            border: 1px solid #e5eaf0; /* Из HhPlq */
+        }
+        
+        .view-btn { 
+            margin: 1px; /* Из XZC4H */
+            padding: 5px 12px; /* Из XZC4H */
+            border-radius: 8px; /* Из XZC4H */
+            cursor: pointer; /* Из XZC4H */
+            white-space: nowrap; /* Из XZC4H */
+            text-decoration: none; /* Из XZC4H */
+            color: #0f3159; /* Из XZC4H */
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+        }
+        
+        .view-btn.active { 
+            background: #2f80ed; /* Из XZC4H.Jkx5X */
+            color: #fff; /* Из XZC4H.Jkx5X */
+        }
 
         .view-pane { display: none; }
         .view-pane.active { display: block; }
 
-        /* ===================== ТАБЛИЦА ОЦЕНОК (ТОЧНЫЕ ДАННЫЕ ИЗ DEVTOOLS) ===================== */
+        /* ===================== ТАБЛИЦА ОЦЕНОК ===================== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; padding: 4px; background: #fff; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .tab-pill { padding: 6px 16px; background: transparent; color: #555; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 3px; border: none; font-family: inherit; }
@@ -71,8 +101,8 @@
 
         .dnevnik-marks-wrapper { 
             background: #fff; 
-            border-radius: 12px; /* Из Tamh1 */
-            border: 1px solid #e5eaf0; /* Из Tamh1 */
+            border-radius: 12px; 
+            border: 1px solid #e5eaf0; 
             overflow: hidden; 
             margin-bottom: 20px;
         }
@@ -85,16 +115,14 @@
             border-bottom: 1px solid #e5eaf0;
         }
         
-        /* Главная таблица */
         .dnevnik-marks-table { 
             width: 100%; 
-            border-collapse: separate; /* Из скриншота */
-            border-spacing: 0; /* Из Tamh1 */
+            border-collapse: separate; 
+            border-spacing: 0; 
             font-size: 14px; 
             table-layout: fixed;
         }
         
-        /* Шапка таблицы */
         .dnevnik-marks-table th { 
             background: #f9f9f9; 
             font-weight: 600; 
@@ -102,32 +130,29 @@
             color: #777; 
             text-transform: uppercase; 
             padding: 10px 12px; 
-            border-bottom: 1px solid #e5eaf0; /* Из Tamh1 */
+            border-bottom: 1px solid #e5eaf0; 
             text-align: left; 
         }
         .dnevnik-marks-table th.center { text-align: center; }
         
-        /* Строки таблицы */
         .dnevnik-marks-table td { 
-            min-height: 28px; /* Из скриншота */
-            vertical-align: top; /* Из скриншота */
+            min-height: 28px; 
+            vertical-align: top; 
             padding: 10px 12px; 
-            border-bottom: 1px solid #e5eaf0; /* Из скриншота */
-            font-size: 12px; /* Из federal_report .grid th, td */
+            border-bottom: 1px solid #e5eaf0; 
+            font-size: 12px; 
             line-height: 1.4;
         }
         .dnevnik-marks-table tr:last-child td { 
             border-bottom: none; 
         }
         
-        /* Ячейка с названием предмета */
         .dnevnik-marks-table td.subject-name { 
             font-weight: 600; 
             color: #333; 
             font-size: 14px; 
         }
         
-        /* Ячейка со средним баллом */
         .dnevnik-marks-table td.avg-cell { 
             text-align: center; 
             font-weight: 700; 
@@ -139,12 +164,11 @@
             font-weight: 400; 
         }
         
-        /* Ячейка с итоговой оценкой */
         .dnevnik-marks-table td.qtr-cell { 
             text-align: center; 
         }
 
-        /* ===================== ПЛИТКИ ОЦЕНОК (ИЗ QoB5a) ===================== */
+        /* ===================== ПЛИТКИ ОЦЕНОК ===================== */
         .dnevnik-grade-tile { 
             display: inline-block; 
             height: 17px; 
@@ -171,7 +195,6 @@
         .dnevnik-grade-tile.gn { background-color: #94acc8; }
         .dnevnik-grade-tile.no-grade { background-color: #eee; color: #999; }
 
-        /* Итоговая оценка */
         .dnevnik-qtr-tile { 
             display: inline-block; 
             padding: 4px 8px; 
@@ -187,7 +210,7 @@
         .dnevnik-qtr-tile.gn { background-color: #94acc8; }
         .dnevnik-qtr-tile.no-grade { background: transparent; color: #999; }
 
-        /* ===================== МОДАЛКИ И ЧАТ (БЕЗ ИЗМЕНЕНИЙ) ===================== */
+        /* ===================== МОДАЛКИ И ЧАТ ===================== */
         #subjectModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         #subjectModal.show { display: flex; }
         .subj-modal-box { background: #fff; width: 100%; max-width: 700px; border-radius: 8px; padding: 24px; color: #333; position: relative; }
@@ -255,6 +278,7 @@
     <div class="content-wrap">
         <div class="top-toolbar">
             <div class="student-name" id="studentName">Загрузка...</div>
+            <!-- ПЕРЕКЛЮЧАТЕЛИ С ТОЧНЫМИ СТИЛЯМИ -->
             <div class="view-switch" id="viewSwitch">
                 <button class="view-btn active" data-view="current" type="button">Текущая</button>
                 <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
