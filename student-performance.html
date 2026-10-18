@@ -53,31 +53,46 @@
 
         /* ===================== КОНТЕНТ ===================== */
         .content-wrap { padding: 0 14px 60px; }
-        .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
-        .student-name { font-size: 18px; font-weight: 700; }
         
-        /* ===================== ПЕРЕКЛЮЧАТЕЛИ (ИЗ HhPlq И XZC4H) ===================== */
+        /* ТУЛБАР - ИСПРАВЛЕН ДЛЯ ЦЕНТРИРОВАНИЯ */
+        .top-toolbar { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 20px; 
+            flex-wrap: wrap; 
+            gap: 16px; 
+        }
+        .student-name { font-size: 18px; font-weight: 700; flex-shrink: 0; }
+        .toolbar-center { 
+            flex: 1; 
+            display: flex; 
+            justify-content: center; /* Центрируем переключатель */
+            min-width: 0;
+        }
+        
+        /* ===================== ПЕРЕКЛЮЧАТЕЛИ ===================== */
         .view-switch { 
-            display: flex; /* Из HhPlq */
-            font-family: "Open Sans", sans-serif; /* Из HhPlq */
-            border-radius: 8px; /* Из HhPlq */
-            font-weight: 600; /* Из HhPlq */
-            font-size: 14px; /* Из HhPlq */
-            background-color: #fff; /* Из HhPlq */
-            padding: 1px; /* Из HhPlq */
-            margin-bottom: 16px; /* Из HhPlq */
-            box-shadow: 0 3.11111px 6.22222px rgba(0,0,0,0.06); /* Из HhPlq */
-            border: 1px solid #e5eaf0; /* Из HhPlq */
+            display: flex; 
+            font-family: "Open Sans", sans-serif; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            font-size: 14px; 
+            background-color: #fff; 
+            padding: 1px; 
+            box-shadow: 0 3.11111px 6.22222px rgba(0,0,0,0.06); 
+            border: 1px solid #e5eaf0; 
+            margin: 0 auto; /* Дополнительное центрирование */
         }
         
         .view-btn { 
-            margin: 1px; /* Из XZC4H */
-            padding: 5px 12px; /* Из XZC4H */
-            border-radius: 8px; /* Из XZC4H */
-            cursor: pointer; /* Из XZC4H */
-            white-space: nowrap; /* Из XZC4H */
-            text-decoration: none; /* Из XZC4H */
-            color: #0f3159; /* Из XZC4H */
+            margin: 1px; 
+            padding: 5px 12px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            white-space: nowrap; 
+            text-decoration: none; 
+            color: #0f3159; 
             background: transparent;
             border: none;
             font-family: inherit;
@@ -86,8 +101,8 @@
         }
         
         .view-btn.active { 
-            background: #2f80ed; /* Из XZC4H.Jkx5X */
-            color: #fff; /* Из XZC4H.Jkx5X */
+            background: #2f80ed; 
+            color: #fff; 
         }
 
         .view-pane { display: none; }
@@ -276,13 +291,15 @@
     </div>
 
     <div class="content-wrap">
+        <!-- ИСПРАВЛЕННЫЙ ТУЛБАР -->
         <div class="top-toolbar">
             <div class="student-name" id="studentName">Загрузка...</div>
-            <!-- ПЕРЕКЛЮЧАТЕЛИ С ТОЧНЫМИ СТИЛЯМИ -->
-            <div class="view-switch" id="viewSwitch">
-                <button class="view-btn active" data-view="current" type="button">Текущая</button>
-                <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
-                <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
+            <div class="toolbar-center">
+                <div class="view-switch" id="viewSwitch">
+                    <button class="view-btn active" data-view="current" type="button">Текущая</button>
+                    <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
+                    <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
+                </div>
             </div>
         </div>
 
