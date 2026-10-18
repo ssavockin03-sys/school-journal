@@ -8,52 +8,27 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { background: #f0f4f9; }
         body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 14px; font-weight: 400; padding: 0; }
-        
-        /* ================= ШАПКА (как в оригинале Дневник.ру) ================= */
         .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
         .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
-        .header-inner { padding: 10px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; position: relative; }
-        
-        .logo { font-size: 22px; color: #007baf; text-decoration: none; display: flex; align-items: center; }
-        .logo-bold { font-weight: 700; } 
-        .logo-sub { color: #777; }
-
-        .header-right { display: flex; align-items: center; gap: 24px; }
-        
-        /* Профиль */
-        .user-profile { display: flex; align-items: center; gap: 12px; cursor: pointer; position: relative; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e3f2fd; color: #166a94; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
-        .user-info { display: flex; flex-direction: column; line-height: 1.3; }
-        .user-name { font-size: 14px; font-weight: 700; color: #333; }
-        .user-role { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        /* Выпадающее меню профиля */
-        .user-dropdown { display: none; position: absolute; top: 50px; right: 0; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 180px; z-index: 100; flex-direction: column; padding: 6px 0; }
-        .user-dropdown.show { display: flex; }
-        .user-dropdown a { padding: 10px 16px; color: #333; text-decoration: none; font-size: 13px; }
-        .user-dropdown a:hover { background: #f0f4f9; color: #007baf; }
-        .user-dropdown a.logout { color: #d9534f; border-top: 1px solid #eee; margin-top: 4px; padding-top: 12px; }
-
-        .header-links { display: flex; align-items: center; gap: 16px; font-size: 13px; }
-        .header-links a { color: #007baf; text-decoration: none; }
-        .header-links a:hover { text-decoration: underline; }
-        
-        /* Синяя полоса меню */
+        .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+        .logo { font-size: 22px; color: #007baf; }
+        .logo-bold { font-weight: 700; } .logo-sub { color: #777; }
+        .d-user-profile-zone { display: flex; align-items: center; gap: 40px; }
+        .d-user-info { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+        .d-user-name { font-size: 14px; font-weight: 700; color: #333; }
+        .d-user-role { font-size: 12px; color: #888; }
+        .d-user-actions { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+        .d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+        .d-action-link:hover { text-decoration: underline; } .d-action-link.logout { color: #d9534f; }
         .d-top-blue-bar { background: #166a94; }
-        .d-top-blue-inner { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; }
+        .d-top-blue-inner { padding: 0; display: flex; }
         .d-nav-item { display: inline-block; padding: 12px 20px; color: #fff; text-decoration: none; cursor: pointer; font: 400 14px/1 inherit; border-bottom: 3px solid transparent; }
-        .d-nav-item:hover { background: rgba(255,255,255,0.12); } 
-        .d-nav-item.active { background: #0f4f70; border-bottom-color: #fff; }
-        
-        /* Подменю */
+        .d-nav-item:hover { background: rgba(255,255,255,0.12); } .d-nav-item.active { background: #0f4f70; border-bottom-color: #fff; }
         .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
-        .d-sub-menu-inner { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; flex-wrap: wrap; }
+        .d-sub-menu-inner { padding: 0; display: flex; flex-wrap: wrap; }
         .d-sub-item { display: inline-block; padding: 10px 15px; color: #555; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; text-decoration: none; }
-        .d-sub-item:hover { color: #1d82b5; } 
-        .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
-
-        /* ================= ОСНОВНОЙ КОНТЕНТ ================= */
-        .container { padding: 16px 0 60px; max-width: 1400px; margin: 0 auto; padding-left: 32px; padding-right: 32px; }
+        .d-sub-item:hover { color: #1d82b5; } .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
+        .container { padding: 16px 0 60px; }
 
         .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 16px; font-weight: 700; color: #1a2b4a; }
@@ -62,6 +37,8 @@
         .view-btn { padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #64748b; background: transparent; border: none; cursor: pointer; font-family: inherit; transition: all 0.2s; }
         .view-btn:hover { color: #1e293b; }
         .view-btn.active { background: #fff; color: #1976d2; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .toolbar-right { display: flex; align-items: center; gap: 16px; }
+        .tool-icon { width: 24px; height: 24px; fill: #94a3b8; cursor: pointer; }
         
         .view-pane { display: none; }
         .view-pane.active { display: block; animation: fadeIn 0.3s ease; }
@@ -262,38 +239,30 @@
         .chat-send-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #166a94, #1d82b5); border: none; cursor: pointer; color: #fff; }
         .chat-send-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
-        @media (max-width: 900px) { .rating-block, .subjects-grid, .subj-info-card { grid-template-columns: 1fr; } .toolbar-center { order: 3; flex: 100%; justify-content: flex-start; overflow-x: auto; } .app-shell, .d-top-blue-inner, .d-sub-menu-inner, .container { padding-left: 14px; padding-right: 14px; } }
+        @media (max-width: 900px) { .rating-block, .subjects-grid, .subj-info-card { grid-template-columns: 1fr; } .toolbar-center { order: 3; flex: 100%; justify-content: flex-start; overflow-x: auto; } }
+        @media (max-width: 700px) { .app-shell { padding: 0 14px; } .subj-modal-box { padding: 20px; } .rating-page { padding: 20px; } .stat-modal-box { padding: 20px; } }
         @media (max-width: 480px) { #chatPanel { right: 10px; left: 10px; width: auto; bottom: 78px; height: calc(100vh - 100px); } }
     </style>
 </head>
 <body>
 
 <div class="app-shell">
-    <!-- ШАПКА КАК В ДНЕВНИК.РУ -->
     <header class="header">
         <div class="header-inner">
-            <a href="#" class="logo"><span class="logo-bold">Дневник</span><span class="logo-sub">.ру</span></a>
-            <div class="header-right">
-                <div class="user-profile" id="profileToggle">
-                    <div class="user-avatar" id="avatarInitials">У</div>
-                    <div class="user-info">
-                        <span class="user-name" id="userName">&nbsp;</span>
-                        <span class="user-role">Ученик</span>
-                    </div>
-                    <div class="user-dropdown" id="profileDropdown">
-                        <a href="#">Мой профиль</a>
-                        <a href="#">Настройки</a>
-                        <a href="#" class="logout" onclick="logout()">Выйти</a>
-                    </div>
+            <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
+            <div class="d-user-profile-zone">
+                <div class="d-user-info">
+                    <span class="d-user-name" id="userName">&nbsp;</span>
+                    <span class="d-user-role">Ученик</span>
                 </div>
-                <div class="header-links">
-                    <a href="#">Помощь</a>
+                <div class="d-user-actions">
+                    <button class="d-action-link" onclick="return false">Помощь</button>
+                    <button class="d-action-link logout" onclick="logout()">Выход</button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- СИНЕЕ МЕНЮ -->
     <div class="d-top-blue-bar">
         <div class="d-top-blue-inner">
             <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
@@ -302,7 +271,6 @@
         </div>
     </div>
 
-    <!-- ПОДМЕНЮ -->
     <div class="d-sub-menu-bar">
         <div class="d-sub-menu-inner">
             <a href="student.html"             class="d-sub-item">Сегодня</a>
@@ -312,7 +280,6 @@
         </div>
     </div>
 
-    <!-- КОНТЕНТ -->
     <div class="container">
         <div class="top-toolbar">
             <div class="student-name" id="studentName">Загрузка...</div>
@@ -322,6 +289,9 @@
                     <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
                     <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
                 </div>
+            </div>
+            <div class="toolbar-right">
+                <svg class="tool-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
             </div>
         </div>
 
@@ -442,15 +412,6 @@
         return cnt === 0 ? null : sum / cnt;
     }
 
-    // Выпадающее меню профиля
-    document.getElementById('profileToggle').addEventListener('click', function(e) {
-        e.stopPropagation();
-        document.getElementById('profileDropdown').classList.toggle('show');
-    });
-    document.addEventListener('click', function() {
-        document.getElementById('profileDropdown').classList.remove('show');
-    });
-
     // ================================================================
     // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
     // ================================================================
@@ -526,10 +487,7 @@
             ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
 
             CURRENT_WEEK_START = getMondayOfCurrentWeek();
-            
-            // Заполняем шапку
             document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
-            document.getElementById('avatarInitials').textContent = initials(student.full_name);
             document.getElementById('studentName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
 
             const semLabel = PERIOD_SYSTEM === 'Семестры' ? 'По семестрам' : 
