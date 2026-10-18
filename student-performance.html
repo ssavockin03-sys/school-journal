@@ -198,10 +198,10 @@
         <div class="top-toolbar">
             <div class="student-name" id="studentName">Загрузка...</div>
             <div class="toolbar-center">
-                <div class="view-switch">
-                    <button class="view-btn active" data-view="current">Текущая</button>
-                    <button class="view-btn" data-view="semesters" id="btnSemesters">По периодам</button>
-                    <button class="view-btn" data-view="rating">Рейтинг</button>
+                <div class="view-switch" id="viewSwitch">
+                    <button class="view-btn active" data-view="current" type="button">Текущая</button>
+                    <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
+                    <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
                 </div>
             </div>
             <div class="toolbar-right">
@@ -296,18 +296,47 @@
     }
 
     // ================================================================
-    // ИНИЦИАЛИЗАЦИЯ БЕЗ РЕДИРЕКТА
+    // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК (вызывается сразу, не зависит от данных)
+    // ================================================================
+    function setupViewSwitcher() {
+        const viewBtns = document.querySelectorAll('.view-btn');
+        viewBtns.forEach(btn => {
+            btn.removeEventListener('click', handleViewClick);
+            btn.addEventListener('click', handleViewClick);
+        });
+    }
+
+    function handleViewClick(e) {
+        const btn = e.currentTarget;
+        const view = btn.dataset.view;
+        if (!view) return;
+        
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
+        const pane = document.getElementById('pane-' + view);
+        if (pane) {
+            pane.classList.add('active');
+        } else {
+            console.warn('Pane not found for view:', view);
+        }
+    }
+
+    // ================================================================
+    // ИНИЦИАЛИЗАЦИЯ
     // ================================================================
     (async function init() {
+        // Сначала подключаем переключатель вкладок, чтобы он работал даже без данных
+        setupViewSwitcher();
+
         try {
-            // Ждём Firebase бесконечно, без таймаута
             if (!window._fbReady) {
                 setTimeout(init, 100);
                 return;
             }
             const fb = await window._fbReady;
             
-            // Ждём пользователя
             const user = await new Promise((resolve) => {
                 const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
             });
@@ -370,16 +399,6 @@
 
             renderAll();
             
-            document.querySelectorAll('.view-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
-                    const pane = document.getElementById('pane-' + btn.dataset.view);
-                    if (pane) pane.classList.add('active');
-                });
-            });
-
         } catch (err) {
             console.error(err);
             document.getElementById('studentName').textContent = 'Ошибка загрузки.';
@@ -426,6 +445,7 @@
 
     function renderDiary() {
         const container = document.getElementById('diaryContent');
+        if (!CURRENT_STUDENT) { container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">Загрузка...</div>'; return; }
         const monday = CURRENT_WEEK_START;
         const saturday = new Date(monday); saturday.setDate(monday.getDate() + 5);
         const rangeText = `${formatDateShort(monday)} – ${formatDateRu(saturday)}`;
@@ -500,6 +520,7 @@
 
     function renderWarnings() {
         const container = document.getElementById('warningContainer');
+        if (!CURRENT_STUDENT) return;
         container.innerHTML = '';
         const all = collectAllStudentGrades();
         const fails = all.filter(g => g.kind === 'grade' && firstDigit(g.grade) === 2).sort((a, b) => (b.date || 0) - (a.date || 0));
@@ -527,6 +548,7 @@
 
     function renderPeriodTabs() {
         const container = document.getElementById('periodTabs');
+        if (!container) return;
         container.innerHTML = '';
         if (PERIODS.length === 0) {
             const tab = document.createElement('button');
@@ -552,8 +574,16 @@
         return Array.from(set).sort((a, b) => a.localeCompare(b, 'ru'));
     }
 
+    function getPeriodRange() {
+        if (PERIODS.length === 0) return null;
+        const p = PERIODS[ACTIVE_PERIOD_INDEX];
+        if (!p) return null;
+        return { start: p.start, end: p.end };
+    }
+
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
+        if (!CURRENT_STUDENT) { container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">Загрузка...</div>'; return; }
         const subjectsFromSchedule = getScheduleSubjects();
         if (subjectsFromSchedule.length === 0) {
             container.innerHTML = `<div style="text-align:center;padding:40px;color:#94a3b8;">Расписание ещё не составлено.</div>`;
@@ -569,6 +599,13 @@
         
         subjectsFromSchedule.forEach(subjectName => {
             let records = all.filter(g => g.subject === subjectName);
+            if (range) {
+                records = records.filter(r => {
+                    if (!r.date) return false;
+                    const d = isoDate(r.date);
+                    return d >= range.start && d <= range.end;
+                });
+            }
             records.sort((a, b) => a.key.localeCompare(b.key));
             
             const gradesMap = {};
@@ -663,7 +700,8 @@
 
     function renderRating() {
         const container = document.getElementById('ratingContent');
-        if (!CURRENT_CLASS) { container.innerHTML = '<div style="padding:40px;text-align:center;color:#fff;">Класс не найден.</div>'; return; }
+        if (!container) return;
+        if (!CURRENT_STUDENT || !CURRENT_CLASS) { container.innerHTML = '<div style="padding:40px;text-align:center;color:#fff;">Загрузка...</div>'; return; }
 
         const periodRange = getPeriodRange();
         const myId = CURRENT_STUDENT.id;
@@ -676,7 +714,6 @@
         })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
         const myClassEntry = classAvgs.find(x => x.id === myId);
         const myClassAvg = myClassEntry ? myClassEntry.avg : null;
-        const myClassPlace = myClassEntry ? (classAvgs.findIndex(x => x.id === myId) + 1) : null;
 
         const parallelStudents = ALL_STUDENTS.filter(s => {
             const cls = ALL_CLASSES.find(c => c.id === s.class_id);
@@ -687,7 +724,6 @@
         })).filter(x => x.avg != null).sort((a, b) => b.avg - a.avg);
         const myParallelEntry = parallelAvgs.find(x => x.id === myId);
         const myParallelAvg = myParallelEntry ? myParallelEntry.avg : null;
-        const myParallelPlace = myParallelEntry ? (parallelAvgs.findIndex(x => x.id === myId) + 1) : null;
 
         const classSubjects = getClassSubjects(myClassId);
         const subjectRows = [];
@@ -755,7 +791,7 @@
 
     function renderOverallRow(place, row, isMe, delta, cls) {
         let rankCls = 'other';
-        if (place === 1) rankCls = 'r1'; else if (place === 2) rankCls = 'r2'; else if (place === 3) rankCls = 'r3'; else if (place === 4) rankCls = 'r4'; else if (place === 5) rankCls = 'r5';
+        if (place === 1) rankCls = 'r1'; else if (place === 2) rankCls = 'r2'; else if (place === 3) rankCls = 'r3';
         const deltaCls = delta == null ? 'zero' : (delta < -0.005 ? 'neg' : (delta > 0.005 ? 'pos' : 'zero'));
         const deltaTxt = delta == null ? '·' : (delta >= 0 ? '+' : '') + delta.toFixed(2);
         const clsName = cls ? cls.name : '';
