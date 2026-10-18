@@ -13,21 +13,31 @@
             font-family: "Open Sans", Arial, sans-serif; 
             font-size: 15px; 
             color: #0f3159; 
-            min-width: 990px; /* Из body */
+            min-width: 990px; 
         }
-        .app-shell { max-width: 968px; margin: 0 auto; position: relative; /* Из page-header */ }
+        
+        /* Контейнеры 968px как в оригинале */
+        .app-shell { width: 968px; margin: 0 auto; position: relative; }
+        .header-inner-wrap { width: 940px; margin: 0 auto; position: relative; } /* Для меню */
 
-        /* ===================== ШАПКА ===================== */
+        /* ===================== ШАПКА (page-header) ===================== */
         .header { 
             background: #fff; 
             width: 100%; 
-            height: 180px; /* Из page-header (хотя реально она меньше, оставим авто) */
-            padding: 10px 0; 
-            border-bottom: 1px solid #e0e0e0; 
+            padding: 0;
+            border-bottom: 1px solid #e0e0e0;
             position: relative;
             z-index: 15;
         }
-        .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 14px; height: 60px; }
+        
+        /* Верхняя часть шапки */
+        .header-top { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 10px 14px; 
+            height: 60px;
+        }
         .logo { font-size: 22px; color: #0273b2; font-weight: 700; text-decoration: none; }
         .logo span { font-weight: 400; color: #777; }
         .user-zone { display: flex; align-items: center; gap: 20px; }
@@ -38,25 +48,28 @@
         .user-actions a { color: #0273b2; text-decoration: none; }
         .user-actions a.logout { color: #d9534f; }
 
-        /* ===================== СИНЕЕ МЕНЮ ===================== */
+        /* ===================== МЕНЮ (СИНЕЕ + ПОДМЕНЮ) ===================== */
+        /* Само синее меню */
         .header-menu { 
-            height: 45px; /* Из header-menu */
-            width: 940px; /* Из header-menu */
-            background-color: #0273b2; /* Из header-menu */
-            border-radius: 5px 5px 0 0; /* Из header-menu */
-            margin: 0 14px; /* Из header-menu */
-            display: flex; 
+            height: 45px; 
+            width: 940px; 
+            background-color: #0273b2; 
+            border-radius: 5px 5px 0 0; 
+            margin: 0 14px; 
+            display: block; 
             padding: 0; 
             list-style: none; 
             position: relative;
         }
-        .header-menu li { 
-            display: inline-block; /* Из header-menu__item */
-            height: 45px; /* Из header-menu__item */
-            line-height: 45px; /* Из header-menu__item */
+        
+        /* Элементы верхнего меню */
+        .header-menu > li { 
+            display: inline-block; 
+            height: 45px; 
+            line-height: 45px; 
             float: left; 
         }
-        .header-menu a { 
+        .header-menu > li > a { 
             display: block; 
             height: 100%; 
             padding: 0 20px; 
@@ -65,44 +78,64 @@
             font-size: 14px; 
             border-bottom: 3px solid transparent;
         }
-        .header-menu a.active { background: #015b8e; border-bottom-color: #fff; font-weight: 600; }
+        .header-menu > li > a.active { 
+            background: #015b8e; 
+            border-bottom-color: #fff; 
+            font-weight: 600; 
+        }
 
-        /* ===================== ПОДМЕНЮ (ТОЧНЫЕ СТИЛИ) ===================== */
-        .header-submenu {
-            position: absolute; /* Из header-submenu */
-            top: 45px; /* Из header-submenu */
-            left: 0; /* Из header-submenu */
-            width: 938px; /* Из header-submenu */
-            height: 42px; /* Из header-submenu */
-            background-color: #fff; /* Из header-submenu */
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.11); /* Из header-submenu */
-            display: flex; /* Из header-submenu */
-            font-size: 14px; /* Из header-submenu */
-            overflow: hidden; /* Из header-submenu */
-            padding-left: 0; /* Из header-submenu */
-            list-style: none; /* Убираем точки списка */
-            margin: 0 14px; /* Выравниваем по синему меню */
+        /* ===================== ВЫПАДАЮЩЕЕ ПОДМЕНЮ (БЕЛАЯ ПОЛОСКА) ===================== */
+        .header-submenu { 
+            position: absolute; /* Выпадает поверх контента */
+            top: 45px; /* Прямо под синей полосой */
+            left: 0; 
+            width: 938px; 
+            height: 42px; 
+            background-color: #fff; 
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.11); 
+            display: block; /* Всегда видимо */
+            font-size: 14px; 
+            overflow: hidden; 
+            padding-left: 0; 
+            list-style: none; 
+            margin: 0; 
             border-radius: 0 0 5px 5px;
         }
         
-        .header-submenu__item {
-            float: left; /* Из header-submenu__item */
-            margin: 0 0 0 18px; /* Из header-submenu__item */
-            line-height: 42px; /* Из header-submenu__item */
-            height: 42px; /* Из header-submenu__item */
-            list-style-type: none; /* Из header-submenu__item */
+        /* Элементы белой полоски */
+        .header-submenu__item { 
+            float: left; 
+            margin: 0 0 0 18px; 
+            line-height: 42px; 
+            height: 42px; 
+            list-style-type: none; 
         }
         
-        .header-submenu__link {
-            text-decoration: none; /* Из header-submenu__link */
-            color: #000; /* Из header-submenu__link */
-            padding: 11px 0; /* Из header-submenu__link */
+        /* Ссылки в белой полоске */
+        .header-submenu__link { 
+            text-decoration: none; 
+            color: #000; 
+            padding: 11px 0; 
             display: block;
             font-size: 14px;
         }
+        .header-submenu__link:hover {
+            color: #0273b2;
+        }
+        
+        /* Активная вкладка в подменю (Успеваемость) */
+        .header-submenu__item.active .header-submenu__link {
+            color: #0273b2;
+            font-weight: 600;
+        }
 
         /* ===================== КОНТЕНТ ===================== */
-        .content-wrap { padding: 60px 14px 60px; /* Отступ сверху, чтобы подменю не перекрывало контент */ }
+        /* Отступ сверху 85px, чтобы контент не залезал под выпадающее подменю */
+        .content-wrap { 
+            padding: 60px 14px 60px; 
+            width: 968px;
+            margin: 0 auto;
+        }
         
         .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 18px; font-weight: 700; flex-shrink: 0; }
@@ -118,48 +151,11 @@
 
         /* ===================== ПЕРЕКЛЮЧАТЕЛИ ПЕРИОДОВ ===================== */
         .period-tabs-wrapper { margin-bottom: 16px; }
-        
-        .period-tabs-group { 
-            display: flex; 
-            font-family: "Open Sans", sans-serif; 
-            border: 1px solid #e0e7ed; 
-            border-radius: 8px; 
-            font-weight: 400; 
-            font-size: 14px; 
-            line-height: 19px; 
-            background-color: #fff; 
-            align-items: center; 
-            margin-right: auto; 
-            width: fit-content; 
-        }
-        
-        .tab-pill { 
-            margin: 6px 0; 
-            padding: 0 8px; 
-            border-style: solid; 
-            border-color: #e0e7ed; 
-            border-width: 0 1px 0 0; 
-            color: #0f3159; 
-            font-weight: 400; 
-            cursor: pointer; 
-            background: transparent;
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-        }
-        
+        .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
+        .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
         .tab-pill:first-child { border-radius: 8px 0 0 8px; }
         .tab-pill:last-child { border-radius: 0 8px 8px 0; border-width: 0; }
-        
-        .tab-pill.active { 
-            padding: 6px 8px; 
-            margin: -1px; 
-            border: 1px solid #2f80ed; 
-            border-radius: 8px; 
-            color: #2f80ed; 
-            z-index: 1; 
-            background: #fff;
-        }
+        .tab-pill.active { padding: 6px 8px; margin: -1px; border: 1px solid #2f80ed; border-radius: 8px; color: #2f80ed; z-index: 1; background: #fff; }
 
         /* ===================== ТАБЛИЦА ОЦЕНОК ===================== */
         .dnevnik-marks-wrapper { background: #fff; border-radius: 12px; border: 1px solid #e5eaf0; overflow: hidden; margin-bottom: 20px; }
@@ -227,8 +223,10 @@
 <body>
 
 <div class="app-shell">
+    <!-- ШАПКА -->
     <header class="header">
-        <div class="header-inner">
+        <!-- Верхняя часть с логотипом -->
+        <div class="header-top">
             <a href="#" class="logo">Дневник<span>.ру</span></a>
             <div class="user-zone">
                 <div class="user-info">
@@ -242,51 +240,56 @@
             </div>
         </div>
         
-        <!-- СИНЕЕ МЕНЮ И ПОДМЕНЮ -->
-        <ul class="header-menu">
-            <li><a href="#" class="active" onclick="return false">ОБРАЗОВАНИЕ</a></li>
-            <li><a href="#" onclick="return false">ОБЩЕНИЕ</a></li>
-            <li><a href="#" onclick="return false">ПРИЛОЖЕНИЯ</a></li>
-            
-            <!-- ТО САМОЕ ПОДМЕНЮ -->
-            <ul class="header-submenu">
-                <li class="header-submenu__item"><a href="student.html" class="header-submenu__link">Сегодня</a></li>
-                <li class="header-submenu__item"><a href="student-performance.html" class="header-submenu__link">Успеваемость</a></li>
-                <li class="header-submenu__item"><a href="student-group.html" class="header-submenu__link">Моя группа</a></li>
-                <li class="header-submenu__item"><a href="student-schedule.html" class="header-submenu__link">Расписание</a></li>
+        <!-- Обертка для меню, чтобы выровнять по ширине 940px -->
+        <div class="header-inner-wrap">
+            <!-- СИНЕЕ МЕНЮ -->
+            <ul class="header-menu">
+                <li><a href="#" class="active" onclick="return false">ОБРАЗОВАНИЕ</a></li>
+                <li><a href="#" onclick="return false">ОБЩЕНИЕ</a></li>
+                <li><a href="#" onclick="return false">ПРИЛОЖЕНИЯ</a></li>
+                
+                <!-- БЕЛАЯ ВЫПАДАЮЩАЯ ПОЛОСКА (ПОДМЕНЮ) -->
+                <ul class="header-submenu">
+                    <li class="header-submenu__item"><a href="student.html" class="header-submenu__link">Сегодня</a></li>
+                    <!-- Вот наша активная вкладка -->
+                    <li class="header-submenu__item active"><a href="student-performance.html" class="header-submenu__link">Успеваемость</a></li>
+                    <li class="header-submenu__item"><a href="student-group.html" class="header-submenu__link">Моя группа</a></li>
+                    <li class="header-submenu__item"><a href="student-schedule.html" class="header-submenu__link">Расписание</a></li>
+                </ul>
             </ul>
-        </ul>
+        </div>
     </header>
+</div>
 
-    <div class="content-wrap">
-        <div class="top-toolbar">
-            <div class="student-name" id="studentName">Загрузка...</div>
-            <div class="toolbar-center">
-                <div class="view-switch" id="viewSwitch">
-                    <button class="view-btn active" data-view="current" type="button">Текущая</button>
-                    <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
-                    <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
-                </div>
+<!-- КОНТЕНТ (вынесен за пределы шапки, чтобы не ломался) -->
+<div class="content-wrap">
+    <div class="top-toolbar">
+        <div class="student-name" id="studentName">Загрузка...</div>
+        <div class="toolbar-center">
+            <div class="view-switch" id="viewSwitch">
+                <button class="view-btn active" data-view="current" type="button">Текущая</button>
+                <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
+                <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
             </div>
         </div>
+    </div>
 
-        <div class="view-pane active" id="pane-current">
-            <div id="diaryContent"></div>
-        </div>
+    <div class="view-pane active" id="pane-current">
+        <div id="diaryContent"></div>
+    </div>
 
-        <div class="view-pane" id="pane-semesters">
-            <div id="warningContainer"></div>
-            <div class="period-tabs-wrapper"><div class="period-tabs-group" id="periodTabs"></div></div>
-            <div id="gradesTableContainer"></div>
-        </div>
+    <div class="view-pane" id="pane-semesters">
+        <div id="warningContainer"></div>
+        <div class="period-tabs-wrapper"><div class="period-tabs-group" id="periodTabs"></div></div>
+        <div id="gradesTableContainer"></div>
+    </div>
 
-        <div class="view-pane" id="pane-rating">
-            <div id="ratingContent"></div>
-        </div>
+    <div class="view-pane" id="pane-rating">
+        <div id="ratingContent"></div>
     </div>
 </div>
 
-<!-- МОДАЛКИ -->
+<!-- МОДАЛКИ (без изменений) -->
 <div id="subjectModal">
     <div class="subj-modal-box">
         <button class="subj-modal-close" onclick="document.getElementById('subjectModal').classList.remove('show')">×</button>
