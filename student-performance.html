@@ -236,6 +236,9 @@
 
 <script src="supabase-config.js"></script>
 <script>
+    // ================================================================
+    // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+    // ================================================================
     const DAYS_KEYS   = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     const DAYS_RU     = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб' };
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
@@ -275,7 +278,6 @@
         window.location.replace('index.html');
     }
 
-    // ЕДИНАЯ ФОРМУЛА СРЕДНЕГО (ИДЕНТИЧНАЯ ОЦЕНКАМ)
     function calcAverageFromValues(values) {
         let sum = 0, cnt = 0;
         (values || []).forEach(raw => {
@@ -293,18 +295,25 @@
         return cnt === 0 ? null : sum / cnt;
     }
 
-    // ГЛАВНОЕ ИСПРАВЛЕНИЕ: УБИРАЕМ ЖЁСТКИЙ РЕДИРЕКТ. Ждём загрузки Firebase.
+    // ================================================================
+    // ИНИЦИАЛИЗАЦИЯ БЕЗ РЕДИРЕКТА
+    // ================================================================
     (async function init() {
         try {
-            // Ждём Firebase
+            // Ждём Firebase бесконечно, без таймаута
+            if (!window._fbReady) {
+                setTimeout(init, 100);
+                return;
+            }
             const fb = await window._fbReady;
+            
             // Ждём пользователя
             const user = await new Promise((resolve) => {
                 const unsub = fb.onAuthStateChanged(fb.auth, (u) => { unsub(); resolve(u); });
             });
             
             if (!user) { 
-                document.getElementById('studentName').textContent = 'Вы не авторизованы. Обновите страницу.';
+                document.getElementById('studentName').textContent = 'Нет пользователя. Войдите.';
                 return; 
             }
 
@@ -373,7 +382,7 @@
 
         } catch (err) {
             console.error(err);
-            document.getElementById('studentName').textContent = 'Ошибка загрузки. Проверьте консоль.';
+            document.getElementById('studentName').textContent = 'Ошибка загрузки.';
         }
     })();
 
@@ -415,7 +424,6 @@
         renderRating();
     }
 
-    // 1. ДНЕВНИК
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         const monday = CURRENT_WEEK_START;
@@ -490,7 +498,6 @@
         container.innerHTML = html;
     }
 
-    // 2. ПРЕДУПРЕЖДЕНИЯ
     function renderWarnings() {
         const container = document.getElementById('warningContainer');
         container.innerHTML = '';
@@ -518,7 +525,6 @@
         }
     }
 
-    // 3. ОЦЕНКИ
     function renderPeriodTabs() {
         const container = document.getElementById('periodTabs');
         container.innerHTML = '';
@@ -546,12 +552,6 @@
         return Array.from(set).sort((a, b) => a.localeCompare(b, 'ru'));
     }
 
-    // ИСПРАВЛЕННЫЙ ФИЛЬТР: если у оценки нет даты - она остаётся
-    function getPeriodRange() {
-        if (PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return null;
-        return { start: PERIODS[ACTIVE_PERIOD_INDEX].start, end: PERIODS[ACTIVE_PERIOD_INDEX].end };
-    }
-
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
         const subjectsFromSchedule = getScheduleSubjects();
@@ -569,18 +569,10 @@
         
         subjectsFromSchedule.forEach(subjectName => {
             let records = all.filter(g => g.subject === subjectName);
-            // !!! ГЛАВНОЕ: без фильтра по дате - оставляем ВСЕ оценки
-            // if (range) records = records.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
-            
-            // Но средний балл посчитаем только по тем, что попали в период
-            let periodRecords = records;
-            if (range) {
-                periodRecords = records.filter(g => !g.date || (g.date >= range.start && g.date <= range.end));
-            }
-            
             records.sort((a, b) => a.key.localeCompare(b.key));
+            
             const gradesMap = {};
-            periodRecords.forEach(r => { if (r.kind === 'grade') gradesMap[r.key] = r.grade; });
+            records.forEach(r => { if (r.kind === 'grade') gradesMap[r.key] = r.grade; });
             const avg = calcAverageFromValues(Object.values(gradesMap));
             
             const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
@@ -611,7 +603,6 @@
         container.innerHTML = html;
     }
 
-    // 4. РЕЙТИНГ
     function getParallelOfClass(cls) {
         if (!cls) return null;
         if (cls.parallel) return String(cls.parallel);
