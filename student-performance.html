@@ -11,7 +11,7 @@
         html, body { background: #f4f4f4; min-height: 100vh; }
         body { 
             font-family: "Open Sans", Arial, sans-serif; 
-            font-size: 15px; /* Из скриншота body */
+            font-size: 15px; 
             color: #0f3159; 
         }
         .app-shell { max-width: 940px; margin: 0 auto; position: relative; }
@@ -63,7 +63,7 @@
         .view-pane { display: none; }
         .view-pane.active { display: block; }
 
-        /* ===================== ТАБЛИЦА ОЦЕНОК ===================== */
+        /* ===================== ТАБЛИЦА ОЦЕНОК (ТОЧНЫЕ ДАННЫЕ ИЗ DEVTOOLS) ===================== */
         .period-tabs-wrapper { margin-bottom: 16px; }
         .period-tabs-group { display: inline-flex; align-items: center; padding: 4px; background: #fff; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .tab-pill { padding: 6px 16px; background: transparent; color: #555; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 3px; border: none; font-family: inherit; }
@@ -84,13 +84,17 @@
             padding: 12px 16px; 
             border-bottom: 1px solid #e5eaf0;
         }
+        
+        /* Главная таблица */
         .dnevnik-marks-table { 
             width: 100%; 
-            border-collapse: separate; /* Из скриншота table */
-            border-spacing: 0; 
-            font-size: 14px; /* Из LuDK3 */
+            border-collapse: separate; /* Из скриншота */
+            border-spacing: 0; /* Из Tamh1 */
+            font-size: 14px; 
             table-layout: fixed;
         }
+        
+        /* Шапка таблицы */
         .dnevnik-marks-table th { 
             background: #f9f9f9; 
             font-weight: 600; 
@@ -98,36 +102,62 @@
             color: #777; 
             text-transform: uppercase; 
             padding: 10px 12px; 
-            border-bottom: 1px solid #e5eaf0; 
+            border-bottom: 1px solid #e5eaf0; /* Из Tamh1 */
             text-align: left; 
         }
         .dnevnik-marks-table th.center { text-align: center; }
+        
+        /* Строки таблицы */
         .dnevnik-marks-table td { 
+            min-height: 28px; /* Из скриншота */
+            vertical-align: top; /* Из скриншота */
             padding: 10px 12px; 
-            border-bottom: 1px solid #eee; 
-            vertical-align: middle; 
-            font-size: 12px; /* Из .federal_report .grid th, td { font-size: 12px } */
+            border-bottom: 1px solid #e5eaf0; /* Из скриншота */
+            font-size: 12px; /* Из federal_report .grid th, td */
+            line-height: 1.4;
         }
-        .dnevnik-marks-table tr:last-child td { border-bottom: none; }
-        .dnevnik-marks-table td.subject-name { font-weight: 600; color: #333; font-size: 14px; }
-        .dnevnik-marks-table td.avg-cell { text-align: center; font-weight: 700; color: #4b9a25; font-size: 15px; }
-        .dnevnik-marks-table td.avg-cell.empty { color: #999; font-weight: 400; }
-        .dnevnik-marks-table td.qtr-cell { text-align: center; }
+        .dnevnik-marks-table tr:last-child td { 
+            border-bottom: none; 
+        }
+        
+        /* Ячейка с названием предмета */
+        .dnevnik-marks-table td.subject-name { 
+            font-weight: 600; 
+            color: #333; 
+            font-size: 14px; 
+        }
+        
+        /* Ячейка со средним баллом */
+        .dnevnik-marks-table td.avg-cell { 
+            text-align: center; 
+            font-weight: 700; 
+            color: #4b9a25; 
+            font-size: 15px; 
+        }
+        .dnevnik-marks-table td.avg-cell.empty { 
+            color: #999; 
+            font-weight: 400; 
+        }
+        
+        /* Ячейка с итоговой оценкой */
+        .dnevnik-marks-table td.qtr-cell { 
+            text-align: center; 
+        }
 
-        /* ===================== ПЛИТКИ ОЦЕНОК (ТОЧНЫЕ ЦИФРЫ) ===================== */
+        /* ===================== ПЛИТКИ ОЦЕНОК (ИЗ QoB5a) ===================== */
         .dnevnik-grade-tile { 
             display: inline-block; 
-            height: 17px; /* Из QoB5a */
-            box-sizing: border-box; /* Из QoB5a */
-            color: #fff; /* Из QoB5a */
-            padding: 4px; /* Из QoB5a */
-            font-weight: 400; /* Из QoB5a */
-            font-size: 14px; /* Из QoB5a */
-            line-height: 9px; /* Из QoB5a */
-            border-radius: 2px; /* Из QoB5a */
-            cursor: default; /* Из QoB5a */
-            margin-right: 4px; /* Из LuDK3 */
-            margin-bottom: 4px; /* Из LuDK3 */
+            height: 17px; 
+            box-sizing: border-box; 
+            color: #fff; 
+            padding: 4px; 
+            font-weight: 400; 
+            font-size: 14px; 
+            line-height: 9px; 
+            border-radius: 2px; 
+            cursor: default; 
+            margin-right: 4px; 
+            margin-bottom: 4px; 
             text-align: center;
             min-width: 17px;
             vertical-align: middle;
@@ -135,12 +165,10 @@
         }
         .dnevnik-grade-tile:hover { transform: scale(1.15); cursor: pointer; }
         
-        /* Цвета из вашего сообщения */
-        .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4 { background-color: #4b9a25; } /* Зеленый */
-        .dnevnik-grade-tile.g3 { background-color: #ff8f00; } /* Оранжевый */
-        .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1 { background-color: #cf3838; } /* Красный */
-        
-        .dnevnik-grade-tile.gn { background-color: #94acc8; } /* Серый для Н */
+        .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4 { background-color: #4b9a25; }
+        .dnevnik-grade-tile.g3 { background-color: #ff8f00; }
+        .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1 { background-color: #cf3838; }
+        .dnevnik-grade-tile.gn { background-color: #94acc8; }
         .dnevnik-grade-tile.no-grade { background-color: #eee; color: #999; }
 
         /* Итоговая оценка */
@@ -159,7 +187,7 @@
         .dnevnik-qtr-tile.gn { background-color: #94acc8; }
         .dnevnik-qtr-tile.no-grade { background: transparent; color: #999; }
 
-        /* Модалки и чат (без изменений, оставляем ваши) */
+        /* ===================== МОДАЛКИ И ЧАТ (БЕЗ ИЗМЕНЕНИЙ) ===================== */
         #subjectModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         #subjectModal.show { display: flex; }
         .subj-modal-box { background: #fff; width: 100%; max-width: 700px; border-radius: 8px; padding: 24px; color: #333; position: relative; }
@@ -195,7 +223,6 @@
 <body>
 
 <div class="app-shell">
-    <!-- ШАПКА -->
     <header class="header">
         <div class="header-inner">
             <a href="#" class="logo">Дневник<span>.ру</span></a>
@@ -212,14 +239,12 @@
         </div>
     </header>
 
-    <!-- СИНЕЕ МЕНЮ -->
     <ul class="header-menu">
         <li><a href="#" class="active" onclick="return false">ОБРАЗОВАНИЕ</a></li>
         <li><a href="#" onclick="return false">ОБЩЕНИЕ</a></li>
         <li><a href="#" onclick="return false">ПРИЛОЖЕНИЯ</a></li>
     </ul>
 
-    <!-- ПОДМЕНЮ -->
     <div class="sub-menu">
         <a href="student.html">Сегодня</a>
         <a href="student-performance.html" class="active">Успеваемость</a>
@@ -227,7 +252,6 @@
         <a href="student-schedule.html">Расписание</a>
     </div>
 
-    <!-- КОНТЕНТ -->
     <div class="content-wrap">
         <div class="top-toolbar">
             <div class="student-name" id="studentName">Загрузка...</div>
@@ -284,7 +308,6 @@
     </div>
 </div>
 
-<!-- ЧАТ -->
 <button id="chatFab" type="button" title="Чаты">
     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
     Чаты
