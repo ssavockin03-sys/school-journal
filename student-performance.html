@@ -8,27 +8,52 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { background: #f0f4f9; }
         body { min-height: 100vh; color: #1a2b4a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 14px; font-weight: 400; padding: 0; }
+        
+        /* ================= ШАПКА (как в оригинале Дневник.ру) ================= */
         .app-shell { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
         .header { background: #fff; border-bottom: 1px solid #e0e0e0; }
-        .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
-        .logo { font-size: 22px; color: #007baf; }
-        .logo-bold { font-weight: 700; } .logo-sub { color: #777; }
-        .d-user-profile-zone { display: flex; align-items: center; gap: 40px; }
-        .d-user-info { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
-        .d-user-name { font-size: 14px; font-weight: 700; color: #333; }
-        .d-user-role { font-size: 12px; color: #888; }
-        .d-user-actions { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
-        .d-action-link { font-size: 13px; color: #007baf; text-decoration: none; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
-        .d-action-link:hover { text-decoration: underline; } .d-action-link.logout { color: #d9534f; }
+        .header-inner { padding: 10px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; position: relative; }
+        
+        .logo { font-size: 22px; color: #007baf; text-decoration: none; display: flex; align-items: center; }
+        .logo-bold { font-weight: 700; } 
+        .logo-sub { color: #777; }
+
+        .header-right { display: flex; align-items: center; gap: 24px; }
+        
+        /* Профиль */
+        .user-profile { display: flex; align-items: center; gap: 12px; cursor: pointer; position: relative; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e3f2fd; color: #166a94; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
+        .user-info { display: flex; flex-direction: column; line-height: 1.3; }
+        .user-name { font-size: 14px; font-weight: 700; color: #333; }
+        .user-role { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        /* Выпадающее меню профиля */
+        .user-dropdown { display: none; position: absolute; top: 50px; right: 0; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 180px; z-index: 100; flex-direction: column; padding: 6px 0; }
+        .user-dropdown.show { display: flex; }
+        .user-dropdown a { padding: 10px 16px; color: #333; text-decoration: none; font-size: 13px; }
+        .user-dropdown a:hover { background: #f0f4f9; color: #007baf; }
+        .user-dropdown a.logout { color: #d9534f; border-top: 1px solid #eee; margin-top: 4px; padding-top: 12px; }
+
+        .header-links { display: flex; align-items: center; gap: 16px; font-size: 13px; }
+        .header-links a { color: #007baf; text-decoration: none; }
+        .header-links a:hover { text-decoration: underline; }
+        
+        /* Синяя полоса меню */
         .d-top-blue-bar { background: #166a94; }
-        .d-top-blue-inner { padding: 0; display: flex; }
+        .d-top-blue-inner { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; }
         .d-nav-item { display: inline-block; padding: 12px 20px; color: #fff; text-decoration: none; cursor: pointer; font: 400 14px/1 inherit; border-bottom: 3px solid transparent; }
-        .d-nav-item:hover { background: rgba(255,255,255,0.12); } .d-nav-item.active { background: #0f4f70; border-bottom-color: #fff; }
+        .d-nav-item:hover { background: rgba(255,255,255,0.12); } 
+        .d-nav-item.active { background: #0f4f70; border-bottom-color: #fff; }
+        
+        /* Подменю */
         .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; }
-        .d-sub-menu-inner { padding: 0; display: flex; flex-wrap: wrap; }
+        .d-sub-menu-inner { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; flex-wrap: wrap; }
         .d-sub-item { display: inline-block; padding: 10px 15px; color: #555; font: 400 13px/1 inherit; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; text-decoration: none; }
-        .d-sub-item:hover { color: #1d82b5; } .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
-        .container { padding: 16px 0 60px; }
+        .d-sub-item:hover { color: #1d82b5; } 
+        .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
+
+        /* ================= ОСНОВНОЙ КОНТЕНТ ================= */
+        .container { padding: 16px 0 60px; max-width: 1400px; margin: 0 auto; padding-left: 32px; padding-right: 32px; }
 
         .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 16px; font-weight: 700; color: #1a2b4a; }
@@ -37,8 +62,6 @@
         .view-btn { padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #64748b; background: transparent; border: none; cursor: pointer; font-family: inherit; transition: all 0.2s; }
         .view-btn:hover { color: #1e293b; }
         .view-btn.active { background: #fff; color: #1976d2; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .toolbar-right { display: flex; align-items: center; gap: 16px; }
-        .tool-icon { width: 24px; height: 24px; fill: #94a3b8; cursor: pointer; }
         
         .view-pane { display: none; }
         .view-pane.active { display: block; animation: fadeIn 0.3s ease; }
@@ -142,6 +165,8 @@
         .subject-row .fire { font-size: 12px; margin-left: 6px; }
         .subject-row .subject-arrow { color: #7dd3fc; font-size: 14px; }
         .subject-delta { font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 11px; }
+        
+        /* Модалки */
         #subjectModal { display: none; position: fixed; inset: 0; background: rgba(26,43,74,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
         #subjectModal.show { display: flex; }
         .subj-modal-box { background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%); width: 100%; max-width: 700px; border-radius: 16px; padding: 30px; color: #fff; box-shadow: 0 20px 60px rgba(0,0,0,0.4); position: relative; max-height: 90vh; overflow-y: auto; }
@@ -157,7 +182,6 @@
         .subj-rank-circle { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
         .subj-rank-circle.r1 { background: #fbbf24; color: #78350f; } .subj-rank-circle.r2 { background: #e5e7eb; color: #374151; } .subj-rank-circle.r3 { background: #fb923c; color: #7c2d12; } .subj-rank-circle.other { background: rgba(255,255,255,0.12); }
 
-        /* Модалка статистики оценки */
         #gradeStatModal { display: none; position: fixed; inset: 0; background: rgba(26,43,74,0.6); z-index: 1100; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
         #gradeStatModal.show { display: flex; }
         .stat-modal-box { background: #fff; width: 100%; max-width: 580px; border-radius: 16px; padding: 28px; color: #1a2b4a; box-shadow: 0 20px 60px rgba(0,0,0,0.35); position: relative; max-height: 92vh; overflow-y: auto; }
@@ -171,7 +195,7 @@
         .stat-kol-banner::before { content: ''; position: absolute; top: -25px; right: -25px; width: 130px; height: 130px; background: radial-gradient(circle, rgba(255,59,59,0.25) 0%, transparent 70%); border-radius: 50%; }
         .stat-kol-banner::after { content: ''; position: absolute; bottom: -35px; left: 10px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,59,59,0.18) 0%, transparent 70%); border-radius: 50%; }
         .stat-kol-circle { width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff5c5c 0%, #c81e1e 45%, #7a0a0a 100%); display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 900; color: #fff; flex-shrink: 0; z-index: 1; box-shadow: 0 4px 14px rgba(200,30,30,0.6), inset 0 -3px 6px rgba(0,0,0,0.35), inset 0 3px 6px rgba(255,255,255,0.25); font-family: 'Arial Black', Impact, sans-serif; line-height: 1; animation: kolPulse 1.6s ease-in-out infinite; }
-        @keyframes kolPulse { 0%,100% { transform: scale(1); box-shadow: 0 4px 14px rgba(200,30,30,0.6), inset 0 -3px 6px rgba(0,0,0,0.35), inset 0 3px 6px rgba(255,255,255,0.25); } 50% { transform: scale(1.08); box-shadow: 0 6px 22px rgba(255,59,59,0.85), inset 0 -3px 6px rgba(0,0,0,0.35), inset 0 3px 6px rgba(255,255,255,0.25); } }
+        @keyframes kolPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
         .stat-kol-text { z-index: 1; }
         .stat-kol-title { font-size: 17px; font-weight: 800; color: #ff4d4d; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         .stat-kol-sub { font-size: 12.5px; color: rgba(255,255,255,0.78); margin-top: 3px; font-weight: 500; }
@@ -238,30 +262,38 @@
         .chat-send-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #166a94, #1d82b5); border: none; cursor: pointer; color: #fff; }
         .chat-send-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
-        @media (max-width: 900px) { .rating-block, .subjects-grid, .subj-info-card { grid-template-columns: 1fr; } .toolbar-center { order: 3; flex: 100%; justify-content: flex-start; overflow-x: auto; } }
-        @media (max-width: 700px) { .app-shell { padding: 0 14px; } .subj-modal-box { padding: 20px; } .rating-page { padding: 20px; } .stat-modal-box { padding: 20px; } }
+        @media (max-width: 900px) { .rating-block, .subjects-grid, .subj-info-card { grid-template-columns: 1fr; } .toolbar-center { order: 3; flex: 100%; justify-content: flex-start; overflow-x: auto; } .app-shell, .d-top-blue-inner, .d-sub-menu-inner, .container { padding-left: 14px; padding-right: 14px; } }
         @media (max-width: 480px) { #chatPanel { right: 10px; left: 10px; width: auto; bottom: 78px; height: calc(100vh - 100px); } }
     </style>
 </head>
 <body>
 
 <div class="app-shell">
+    <!-- ШАПКА КАК В ДНЕВНИК.РУ -->
     <header class="header">
         <div class="header-inner">
-            <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
-            <div class="d-user-profile-zone">
-                <div class="d-user-info">
-                    <span class="d-user-name" id="userName">&nbsp;</span>
-                    <span class="d-user-role">Ученик</span>
+            <a href="#" class="logo"><span class="logo-bold">Дневник</span><span class="logo-sub">.ру</span></a>
+            <div class="header-right">
+                <div class="user-profile" id="profileToggle">
+                    <div class="user-avatar" id="avatarInitials">У</div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">&nbsp;</span>
+                        <span class="user-role">Ученик</span>
+                    </div>
+                    <div class="user-dropdown" id="profileDropdown">
+                        <a href="#">Мой профиль</a>
+                        <a href="#">Настройки</a>
+                        <a href="#" class="logout" onclick="logout()">Выйти</a>
+                    </div>
                 </div>
-                <div class="d-user-actions">
-                    <button class="d-action-link" onclick="return false">Помощь</button>
-                    <button class="d-action-link logout" onclick="logout()">Выход</button>
+                <div class="header-links">
+                    <a href="#">Помощь</a>
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- СИНЕЕ МЕНЮ -->
     <div class="d-top-blue-bar">
         <div class="d-top-blue-inner">
             <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
@@ -270,6 +302,7 @@
         </div>
     </div>
 
+    <!-- ПОДМЕНЮ -->
     <div class="d-sub-menu-bar">
         <div class="d-sub-menu-inner">
             <a href="student.html"             class="d-sub-item">Сегодня</a>
@@ -279,6 +312,7 @@
         </div>
     </div>
 
+    <!-- КОНТЕНТ -->
     <div class="container">
         <div class="top-toolbar">
             <div class="student-name" id="studentName">Загрузка...</div>
@@ -288,9 +322,6 @@
                     <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
                     <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
                 </div>
-            </div>
-            <div class="toolbar-right">
-                <svg class="tool-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
             </div>
         </div>
 
@@ -310,7 +341,7 @@
     </div>
 </div>
 
-<!-- Модалка по предмету / общему рейтингу -->
+<!-- МОДАЛКИ -->
 <div id="subjectModal">
     <div class="subj-modal-box">
         <button class="subj-modal-close" onclick="document.getElementById('subjectModal').classList.remove('show')">×</button>
@@ -320,7 +351,6 @@
     </div>
 </div>
 
-<!-- Модалка статистики оценки -->
 <div id="gradeStatModal">
     <div class="stat-modal-box">
         <button class="stat-modal-close" onclick="document.getElementById('gradeStatModal').classList.remove('show')">×</button>
@@ -412,6 +442,15 @@
         return cnt === 0 ? null : sum / cnt;
     }
 
+    // Выпадающее меню профиля
+    document.getElementById('profileToggle').addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('profileDropdown').classList.toggle('show');
+    });
+    document.addEventListener('click', function() {
+        document.getElementById('profileDropdown').classList.remove('show');
+    });
+
     // ================================================================
     // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
     // ================================================================
@@ -487,7 +526,10 @@
             ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
 
             CURRENT_WEEK_START = getMondayOfCurrentWeek();
+            
+            // Заполняем шапку
             document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
+            document.getElementById('avatarInitials').textContent = initials(student.full_name);
             document.getElementById('studentName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
 
             const semLabel = PERIOD_SYSTEM === 'Семестры' ? 'По семестрам' : 
@@ -918,9 +960,6 @@
         </div>`;
     }
 
-    // ================================================================
-    // МОДАЛКА ПРЕДМЕТА
-    // ================================================================
     window.openSubjectModal = function(subjectId) {
         const subject = ALL_SUBJECTS.find(s => s.id === subjectId);
         if (!subject) return;
@@ -967,9 +1006,6 @@
         document.getElementById('subjectModal').classList.add('show');
     };
 
-    // ================================================================
-    // МОДАЛКА ОБЩЕГО РЕЙТИНГА (Место в классе / параллели)
-    // ================================================================
     window.openOverallRatingModal = function(scope) {
         const periodRange = getPeriodRange();
         const myId = CURRENT_STUDENT.id;
@@ -1031,9 +1067,6 @@
         document.getElementById('subjectModal').classList.add('show');
     };
 
-    // ================================================================
-    // МОДАЛКА СТАТИСТИКИ ОЦЕНКИ (с плашкой КОЛ/1)
-    // ================================================================
     window.openGradeStat = function(subjectName, value, dateRu, kind) {
         if (!CURRENT_STUDENT) return;
         const periodRange = getPeriodRange();
@@ -1082,7 +1115,6 @@
         big.textContent = value;
         big.className = 'stat-big-grade ' + gradeClass(value);
 
-        // Плашка «КОЛ» — показываем только если это единица или кол
         const kolBanner = document.getElementById('statKolBanner');
         const isKol = kind !== 'presence' && firstDigit(value) === 1;
         kolBanner.style.display = isKol ? 'flex' : 'none';
@@ -1125,7 +1157,7 @@
     };
 
     // ================================================================
-    // ЧАТ ДЛЯ УЧЕНИКА (добавлен из файла расписания)
+    // ЧАТ ДЛЯ УЧЕНИКА
     // ================================================================
     function initChat() {
         if (!CURRENT_STUDENT) return;
