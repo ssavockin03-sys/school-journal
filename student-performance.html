@@ -10,7 +10,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { background: #ffffff; min-height: 100vh; }
         body { font-family: "Open Sans", Arial, sans-serif; font-size: 15px; color: #0f3159; min-width: 990px; }
-        .app-shell { width: 968px; margin: 0 auto; position: relative; }
+        .app-shell { width: 100%; max-width: 968px; margin: 0 auto; position: relative; }
         .header-inner-wrap { width: 940px; margin: 0 auto; position: relative; }
 
         /* ===================== ШАПКА ===================== */
@@ -40,7 +40,7 @@
         .header-submenu__item_active .header-submenu__link { color: #0273b2; border-bottom-color: #0273b2; }
 
         /* ===================== КОНТЕНТ ===================== */
-        .content-wrap { padding: 60px 14px 60px; width: 968px; margin: 0 auto; }
+        .content-wrap { padding: 60px 14px 60px; width: 100%; max-width: 968px; margin: 0 auto; }
         .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 18px; font-weight: 700; flex-shrink: 0; }
         .toolbar-center { flex: 1; display: flex; justify-content: center; min-width: 0; }
@@ -81,11 +81,18 @@
         .week-arrow:hover { background: #f0f7ff; border-color: #2f80ed; }
         .week-range-title { font-size: 16px; font-weight: 700; color: #0f3159; }
         
-        .week-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; }
+        /* Растягиваем сетку на всю ширину */
+        .week-grid { 
+            display: flex; 
+            gap: 12px; 
+            overflow-x: auto; 
+            padding-bottom: 12px; 
+            width: 100%; 
+        }
         
-        /* Колонка дня (растягиваем на всю ширину) */
+        /* Колонка дня — теперь растягивается (flex: 1 1 auto) */
         .day-column { 
-            flex: 1 1 0px; 
+            flex: 1 1 auto; 
             min-width: 140px; 
             background: #fff; 
             border-radius: 5px; 
@@ -461,14 +468,11 @@
         renderRating();
     }
 
-    // ================= ОБНОВЛЕННАЯ ФУНКЦИЯ ДНЕВНИКА С НАВИГАЦИЕЙ =================
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
         const monday = CURRENT_WEEK_START;
-        const saturday = addDays(monday, 5); // Суббота
-        
-        // Форматируем диапазон дат
+        const saturday = addDays(monday, 5);
         const rangeText = `${formatDateRu(monday)} – ${formatDateRu(saturday)}`;
         
         if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
@@ -478,14 +482,14 @@
         
         const today = new Date(); today.setHours(0, 0, 0, 0);
         
-        // Блок с навигацией
+        // Блок навигации
         let html = `<div class="week-nav-bar">
             <div class="week-nav-arrows">
                 <div class="week-arrow" id="prevWeekBtn">‹</div>
                 <div class="week-arrow" id="nextWeekBtn">›</div>
             </div>
             <div class="week-range-title">${rangeText}</div>
-            <div style="width:72px;"></div> <!-- Для симметрии -->
+            <div style="width:72px;"></div>
         </div>`;
 
         html += `<div class="week-grid">`;
@@ -548,7 +552,7 @@
         html += '</div>';
         container.innerHTML = html;
 
-        // Добавляем обработчики для стрелок
+        // Обработчики стрелок
         document.getElementById('prevWeekBtn').addEventListener('click', () => {
             CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, -7);
             renderDiary();
