@@ -10,7 +10,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { background: #ffffff; min-height: 100vh; }
         body { font-family: "Open Sans", Arial, sans-serif; font-size: 15px; color: #0f3159; min-width: 990px; }
-        .app-shell { width: 100%; max-width: 968px; margin: 0 auto; position: relative; }
+        .app-shell { width: 968px; margin: 0 auto; position: relative; }
         .header-inner-wrap { width: 940px; margin: 0 auto; position: relative; }
 
         /* ===================== ШАПКА ===================== */
@@ -40,7 +40,7 @@
         .header-submenu__item_active .header-submenu__link { color: #0273b2; border-bottom-color: #0273b2; }
 
         /* ===================== КОНТЕНТ ===================== */
-        .content-wrap { padding: 60px 14px 60px; width: 100%; max-width: 968px; margin: 0 auto; }
+        .content-wrap { padding: 60px 14px 60px; width: 968px; margin: 0 auto; }
         .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 18px; font-weight: 700; flex-shrink: 0; }
         .toolbar-center { flex: 1; display: flex; justify-content: center; min-width: 0; }
@@ -52,48 +52,14 @@
         .view-pane.active { display: block; }
 
         /* ===================== ТЕКУЩАЯ (ДНЕВНИК) ===================== */
-        .week-nav-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            background: #fff;
-            border: 1px solid #e5eaf0;
-            border-radius: 8px;
-            padding: 8px 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .week-nav-arrows { display: flex; gap: 8px; }
-        .week-arrow {
-            width: 32px;
-            height: 32px;
-            border: 1px solid #e0e7ed;
-            background: #fff;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #0273b2;
-            user-select: none;
-        }
-        .week-arrow:hover { background: #f0f7ff; border-color: #2f80ed; }
-        .week-range-title { font-size: 16px; font-weight: 700; color: #0f3159; }
+        .week-title-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .week-title { font-size: 18px; font-weight: 700; }
+        .week-range { font-size: 13px; color: #777; }
+        .week-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; }
         
-        /* Растягиваем сетку на всю ширину */
-        .week-grid { 
-            display: flex; 
-            gap: 12px; 
-            overflow-x: auto; 
-            padding-bottom: 12px; 
-            width: 100%; 
-        }
-        
-        /* Колонка дня — теперь растягивается (flex: 1 1 auto) */
+        /* Колонка дня (фиксированная ширина, как было) */
         .day-column { 
-            flex: 1 1 auto; 
-            min-width: 140px; 
+            flex: 0 0 240px; 
             background: #fff; 
             border-radius: 5px; 
             box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
@@ -103,7 +69,7 @@
             flex-direction: column; 
         }
         
-        /* ЗАГОЛОВОК ДАТЫ (СИНИЙ, КАК ВЫ ПРОСИЛИ) */
+        /* ЗАГОЛОВОК ДАТЫ (СИНИЙ #61a5e3) */
         .day-header { 
             padding: 10px 12px; 
             border-radius: 5px 5px 0 0; 
@@ -112,7 +78,7 @@
             font-size: 14px; 
             color: #fff; 
             background-color: #61a5e3; 
-            text-align: center;
+            text-align: left;
         }
         
         .day-body { padding: 8px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
@@ -328,7 +294,6 @@
     function firstDigit(v) { const s = String(v == null ? '' : v); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) return c - 48; } return null; }
     function getMondayOfCurrentWeek() { const t = new Date(); t.setHours(0,0,0,0); const dow = t.getDay(); const diff = (dow === 0 ? -6 : 1 - dow); const m = new Date(t); m.setDate(t.getDate() + diff); return m; }
     function initials(name) { return (name || '').split(' ').map(w => w[0] || '').slice(0, 2).join('').toUpperCase(); }
-    function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate() + days); return d; }
 
     async function logout() {
         if (!confirm('Выйти из кабинета?')) return;
@@ -468,12 +433,13 @@
         renderRating();
     }
 
+    // ИСХОДНАЯ ФУНКЦИЯ ДНЕВНИКА БЕЗ СТРЕЛОК
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
         const monday = CURRENT_WEEK_START;
-        const saturday = addDays(monday, 5);
-        const rangeText = `${formatDateRu(monday)} – ${formatDateRu(saturday)}`;
+        const saturday = new Date(monday); saturday.setDate(monday.getDate() + 5);
+        const rangeText = `${formatDateShort(monday)} – ${formatDateRu(saturday)}`;
         
         if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
             container.innerHTML = `<div style="text-align:center;padding:40px;color:#999;">Расписание ещё не составлено.</div>`;
@@ -482,17 +448,7 @@
         
         const today = new Date(); today.setHours(0, 0, 0, 0);
         
-        // Блок навигации
-        let html = `<div class="week-nav-bar">
-            <div class="week-nav-arrows">
-                <div class="week-arrow" id="prevWeekBtn">‹</div>
-                <div class="week-arrow" id="nextWeekBtn">›</div>
-            </div>
-            <div class="week-range-title">${rangeText}</div>
-            <div style="width:72px;"></div>
-        </div>`;
-
-        html += `<div class="week-grid">`;
+        let html = `<div class="week-title-bar"><div class="week-title">Текущая неделя</div><div class="week-range">${rangeText}</div></div><div class="week-grid">`;
         
         let maxLesson = 7;
         DAYS_KEYS.forEach(day => {
@@ -503,7 +459,7 @@
         const all = collectAllStudentGrades();
         
         DAYS_KEYS.forEach((dayKey, idx) => {
-            const date = addDays(monday, idx);
+            const date = new Date(monday); date.setDate(monday.getDate() + idx);
             const dayGrid = CURRENT_SCHEDULE.grid[dayKey] || {};
             let lessonsHtml = '';
             
@@ -551,16 +507,6 @@
         });
         html += '</div>';
         container.innerHTML = html;
-
-        // Обработчики стрелок
-        document.getElementById('prevWeekBtn').addEventListener('click', () => {
-            CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, -7);
-            renderDiary();
-        });
-        document.getElementById('nextWeekBtn').addEventListener('click', () => {
-            CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, 7);
-            renderDiary();
-        });
     }
 
     function renderWarnings() {
