@@ -8,40 +8,19 @@
     <style>
         /* ===================== БАЗА ===================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        /* БЕЛЫЙ ФОН СТРАНИЦЫ */
-        html, body { 
-            background: #ffffff; 
-            min-height: 100vh; 
-        }
-        
+        html, body { background: #ffffff; min-height: 100vh; }
         body { 
             font-family: "Open Sans", Arial, sans-serif; 
             font-size: 15px; 
             color: #0f3159; 
             min-width: 990px; 
         }
-        
         .app-shell { width: 968px; margin: 0 auto; position: relative; }
         .header-inner-wrap { width: 940px; margin: 0 auto; position: relative; }
 
         /* ===================== ШАПКА ===================== */
-        .header { 
-            background: #fff; 
-            width: 100%; 
-            padding: 0;
-            border-bottom: 1px solid #e0e0e0;
-            position: relative;
-            z-index: 15;
-        }
-        
-        .header-top { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 10px 14px; 
-            height: 60px;
-        }
+        .header { background: #fff; width: 100%; padding: 0; border-bottom: 1px solid #e0e0e0; position: relative; z-index: 15; }
+        .header-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; height: 60px; }
         .logo { font-size: 22px; color: #0273b2; font-weight: 700; text-decoration: none; }
         .logo span { font-weight: 400; color: #777; }
         .user-zone { display: flex; align-items: center; gap: 20px; }
@@ -52,96 +31,21 @@
         .user-actions a { color: #0273b2; text-decoration: none; }
         .user-actions a.logout { color: #d9534f; }
 
-        /* ===================== МЕНЮ (СИНЕЕ + ПОДМЕНЮ) ===================== */
-        .header-menu { 
-            height: 45px; 
-            width: 940px; 
-            background-color: #0273b2; 
-            border-radius: 5px 5px 0 0; 
-            margin: 0 14px; 
-            display: block; 
-            padding: 0; 
-            list-style: none; 
-            position: relative;
-        }
-        
-        .header-menu > li { 
-            display: inline-block; 
-            height: 45px; 
-            line-height: 45px; 
-            float: left; 
-        }
-        .header-menu > li > a { 
-            display: block; 
-            height: 100%; 
-            padding: 0 20px; 
-            color: #fff; 
-            text-decoration: none; 
-            font-size: 14px; 
-            border-bottom: 3px solid transparent;
-        }
-        .header-menu > li > a.active { 
-            background: #015b8e; 
-            border-bottom-color: #fff; 
-            font-weight: 600; 
-        }
+        /* ===================== МЕНЮ ===================== */
+        .header-menu { height: 45px; width: 940px; background-color: #0273b2; border-radius: 5px 5px 0 0; margin: 0 14px; display: block; padding: 0; list-style: none; position: relative; }
+        .header-menu > li { display: inline-block; height: 45px; line-height: 45px; float: left; }
+        .header-menu > li > a { display: block; height: 100%; padding: 0 20px; color: #fff; text-decoration: none; font-size: 14px; border-bottom: 3px solid transparent; }
+        .header-menu > li > a.active { background: #015b8e; border-bottom-color: #fff; font-weight: 600; }
 
-        /* ===================== ВЫПАДАЮЩЕЕ ПОДМЕНЮ ===================== */
-        .header-submenu { 
-            position: absolute; 
-            top: 45px; 
-            left: 0; 
-            width: 938px; 
-            height: 42px; 
-            background-color: #fff; 
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.11); 
-            
-            /* ВЫРАВНИВАЕМ ТОЛЬКО ПО ВЕРТИКАЛИ */
-            display: flex;
-            align-items: center; 
-            
-            font-size: 14px; 
-            overflow: hidden; 
-            padding-left: 0; 
-            list-style: none; 
-            margin: 0; 
-            border-radius: 0 0 5px 5px;
-        }
-        
-        .header-submenu__item { 
-            margin: 0 0 0 18px; 
-            height: 42px; 
-            list-style-type: none; 
-            display: flex;
-            align-items: center;
-        }
-        
-        .header-submenu__link { 
-            text-decoration: none; 
-            color: #000; 
-            padding: 11px 0; 
-            display: block;
-            font-size: 14px;
-            line-height: 20px;
-            border-bottom: 2px solid transparent; /* Для подчеркивания */
-        }
-        .header-submenu__link:hover {
-            color: #0273b2;
-        }
-        
-        /* ТОЧНЫЙ КЛАСС ДЛЯ АКТИВНОЙ ВКЛАДКИ С ПОДЧЕРКИВАНИЕМ */
-        .header-submenu__item_active .header-submenu__link {
-            color: #0273b2;
-            border-bottom-color: #0273b2; /* Подчеркивание */
-        }
+        /* ===================== ПОДМЕНЮ ===================== */
+        .header-submenu { position: absolute; top: 45px; left: 0; width: 938px; height: 42px; background-color: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.11); display: flex; align-items: center; font-size: 14px; overflow: hidden; padding-left: 0; list-style: none; margin: 0; border-radius: 0 0 5px 5px; }
+        .header-submenu__item { margin: 0 0 0 18px; height: 42px; list-style-type: none; display: flex; align-items: center; }
+        .header-submenu__link { text-decoration: none; color: #000; padding: 11px 0; display: block; font-size: 14px; line-height: 20px; border-bottom: 2px solid transparent; }
+        .header-submenu__link:hover { color: #0273b2; }
+        .header-submenu__item_active .header-submenu__link { color: #0273b2; border-bottom-color: #0273b2; }
 
         /* ===================== КОНТЕНТ ===================== */
-        .content-wrap { 
-            padding: 60px 14px 60px; 
-            width: 968px;
-            margin: 0 auto;
-        }
-        
+        .content-wrap { padding: 60px 14px 60px; width: 968px; margin: 0 auto; }
         .top-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
         .student-name { font-size: 18px; font-weight: 700; flex-shrink: 0; }
         .toolbar-center { flex: 1; display: flex; justify-content: center; min-width: 0; }
@@ -149,31 +53,43 @@
         .view-switch { display: flex; font-family: "Open Sans", sans-serif; border-radius: 8px; font-weight: 600; font-size: 14px; background-color: #fff; padding: 1px; box-shadow: 0 3.11111px 6.22222px rgba(0,0,0,0.06); border: 1px solid #e5eaf0; margin: 0 auto; }
         .view-btn { margin: 1px; padding: 5px 12px; border-radius: 8px; cursor: pointer; white-space: nowrap; text-decoration: none; color: #0f3159; background: transparent; border: none; font-family: inherit; font-size: inherit; font-weight: inherit; }
         .view-btn.active { background: #2f80ed; color: #fff; }
-
         .view-pane { display: none; }
         .view-pane.active { display: block; }
 
-        /* ===================== ПЕРЕКЛЮЧАТЕЛИ ПЕРИОДОВ ===================== */
-        .period-tabs-wrapper { margin-bottom: 16px; }
-        .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
-        .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
-        .tab-pill:first-child { border-radius: 8px 0 0 8px; }
-        .tab-pill:last-child { border-radius: 0 8px 8px 0; border-width: 0; }
-        .tab-pill.active { padding: 6px 8px; margin: -1px; border: 1px solid #2f80ed; border-radius: 8px; color: #2f80ed; z-index: 1; background: #fff; }
-
-        /* ===================== ТАБЛИЦА ОЦЕНОК ===================== */
-        .dnevnik-marks-wrapper { background: transparent; border-radius: 12px; border: 1px solid #e5eaf0; overflow: hidden; margin-bottom: 20px; }
-        .dnevnik-table-header { background: #f2f6fb; font-weight: 700; font-size: 15px; color: #0273b2; padding: 12px 16px; border-bottom: 1px solid #e5eaf0; }
+        /* ===================== ТЕКУЩАЯ (ДНЕВНИК) ===================== */
+        .week-title-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .week-title { font-size: 18px; font-weight: 700; }
+        .week-range { font-size: 13px; color: #777; }
+        .week-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; }
         
-        .dnevnik-marks-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; table-layout: fixed; }
-        .dnevnik-marks-table th { background: #f9f9f9; font-weight: 600; font-size: 11px; color: #777; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; text-align: left; }
-        .dnevnik-marks-table th.center { text-align: center; }
-        .dnevnik-marks-table td { min-height: 28px; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; font-size: 12px; line-height: 1.4; }
-        .dnevnik-marks-table tr:last-child td { border-bottom: none; }
-        .dnevnik-marks-table td.subject-name { font-weight: 600; color: #333; font-size: 14px; }
-        .dnevnik-marks-table td.avg-cell { text-align: center; font-weight: 700; color: #4b9a25; font-size: 15px; }
-        .dnevnik-marks-table td.avg-cell.empty { color: #999; font-weight: 400; }
-        .dnevnik-marks-table td.qtr-cell { text-align: center; }
+        /* Колонка дня */
+        .day-column { flex: 0 0 240px; background: #fff; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #eee; overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* ВОТ ТОТ САМЫЙ ЗАГОЛОВОК ДАТЫ (ИЗ СКРИНШОТА .f0r6R) */
+        .day-header { 
+            padding: 10px 12px; /* Из f0r6R */
+            border-radius: 5px 5px 0 0; /* Из f0r6R */
+            margin-bottom: 4px; /* Из f0r6R */
+            font-weight: 600; /* Из f0r6R */
+            font-size: 14px; /* Из f0r6R */
+            color: #fff; /* Из f0r6R */
+            background-color: #61a5e3; /* Из f0r6R */
+            text-align: left;
+        }
+        
+        .day-body { padding: 8px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        
+        /* Карточка урока */
+        .lesson-card { background: #f9f9f9; border-radius: 5px; padding: 8px 10px; border-left: 3px solid #0273b2; position: relative; }
+        .lesson-card.empty { padding: 6px 12px; color: #ccc; border-left: 3px dashed #eee; font-style: italic; font-size: 12px; }
+        
+        .lesson-num { font-size: 12px; font-weight: 700; color: #333; padding-right: 40px; }
+        .lesson-subject { font-size: 12px; font-weight: 700; color: #333; }
+        .lesson-meta { font-size: 11px; color: #777; margin-top: 2px; }
+        .lesson-topic { font-size: 12px; margin-top: 4px; color: #555; }
+        .lesson-hw { font-size: 12px; margin-top: 2px; color: #0273b2; }
+        
+        .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 3px; }
 
         /* Плитки оценок */
         .dnevnik-grade-tile { display: inline-block; height: 17px; box-sizing: border-box; color: #fff; padding: 4px; font-weight: 400; font-size: 14px; line-height: 9px; border-radius: 2px; cursor: default; margin-right: 4px; margin-bottom: 4px; text-align: center; min-width: 17px; vertical-align: middle; transition: transform 0.1s; }
@@ -184,6 +100,25 @@
         .dnevnik-grade-tile.gn { background-color: #94acc8; }
         .dnevnik-grade-tile.no-grade { background-color: #eee; color: #999; }
 
+        /* ===================== ТАБЛИЦА (ПО ПЕРИОДАМ) ===================== */
+        .period-tabs-wrapper { margin-bottom: 16px; }
+        .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
+        .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
+        .tab-pill:first-child { border-radius: 8px 0 0 8px; }
+        .tab-pill:last-child { border-radius: 0 8px 8px 0; border-width: 0; }
+        .tab-pill.active { padding: 6px 8px; margin: -1px; border: 1px solid #2f80ed; border-radius: 8px; color: #2f80ed; z-index: 1; background: #fff; }
+
+        .dnevnik-marks-wrapper { background: transparent; border-radius: 12px; border: 1px solid #e5eaf0; overflow: hidden; margin-bottom: 20px; }
+        .dnevnik-table-header { background: #f2f6fb; font-weight: 700; font-size: 15px; color: #0273b2; padding: 12px 16px; border-bottom: 1px solid #e5eaf0; }
+        .dnevnik-marks-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; table-layout: fixed; }
+        .dnevnik-marks-table th { background: #f9f9f9; font-weight: 600; font-size: 11px; color: #777; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; text-align: left; }
+        .dnevnik-marks-table th.center { text-align: center; }
+        .dnevnik-marks-table td { min-height: 28px; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; font-size: 12px; line-height: 1.4; }
+        .dnevnik-marks-table tr:last-child td { border-bottom: none; }
+        .dnevnik-marks-table td.subject-name { font-weight: 600; color: #333; font-size: 14px; }
+        .dnevnik-marks-table td.avg-cell { text-align: center; font-weight: 700; color: #4b9a25; font-size: 15px; }
+        .dnevnik-marks-table td.avg-cell.empty { color: #999; font-weight: 400; }
+        .dnevnik-marks-table td.qtr-cell { text-align: center; }
         .dnevnik-qtr-tile { display: inline-block; padding: 4px 8px; border-radius: 2px; font-weight: 600; font-size: 14px; color: #fff; line-height: 1; }
         .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
         .dnevnik-qtr-tile.g3 { background-color: #ff8f00; }
@@ -502,6 +437,7 @@
         renderRating();
     }
 
+    // ОБНОВЛЕННАЯ ФУНКЦИЯ ДЛЯ ВКЛАДКИ "ТЕКУЩАЯ"
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
@@ -515,7 +451,8 @@
         }
         
         const today = new Date(); today.setHours(0, 0, 0, 0);
-        let html = `<div style="display:flex;justify-content:space-between;margin-bottom:16px;"><div style="font-size:18px;font-weight:700;">Текущая неделя</div><div style="font-size:13px;color:#777;">${rangeText}</div></div><div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;">`;
+        
+        let html = `<div class="week-title-bar"><div class="week-title">Текущая неделя</div><div class="week-range">${rangeText}</div></div><div class="week-grid">`;
         
         let maxLesson = 7;
         DAYS_KEYS.forEach(day => {
@@ -533,7 +470,7 @@
             
             for (let n = 1; n <= maxLesson; n++) {
                 const lesson = dayGrid[n] || dayGrid[String(n)];
-                if (!lesson || !lesson.subject) { lessonsHtml += `<div style="padding:6px 12px;color:#ccc;border-left:3px dashed #eee;margin-bottom:6px;font-style:italic;">Урок ${n} —</div>`; continue; }
+                if (!lesson || !lesson.subject) { lessonsHtml += `<div class="lesson-card empty">Урок ${n} —</div>`; continue; }
                 let teacherName = lesson.teacherName || '';
                 if (!teacherName && lesson.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId); if (t) teacherName = t.full_name; }
                 let roomName = lesson.roomName || '';
@@ -558,19 +495,20 @@
                 const metaParts = [];
                 if (teacherName) metaParts.push(teacherName);
                 if (roomName) metaParts.push('каб. ' + roomName);
-                const metaHtml = metaParts.length ? `<div style="font-size:11px;color:#777;margin-top:2px;">${metaParts.join(' · ')}</div>` : '';
-                const topicHtml = topic ? `<div style="font-size:12px;margin-top:4px;color:#555;">Тема: ${topic}</div>` : '';
-                const hwHtml = homework ? `<div style="font-size:12px;margin-top:2px;color:#0273b2;">ДЗ: ${homework}</div>` : '';
+                const metaHtml = metaParts.length ? `<div class="lesson-meta">${metaParts.join(' · ')}</div>` : '';
+                const topicHtml = topic ? `<div class="lesson-topic">Тема: ${topic}</div>` : '';
+                const hwHtml = homework ? `<div class="lesson-hw">ДЗ: ${homework}</div>` : '';
                 
-                lessonsHtml += `<div style="background:#f9f9f9;border-radius:5px;padding:8px 10px;margin-bottom:6px;border-left:3px solid #0273b2;position:relative;">
-                    <div style="position:absolute;top:8px;right:8px;display:flex;gap:3px;">${gradesWrap}</div>
-                    <div style="font-size:12px;font-weight:700;color:#333;padding-right:40px;">${n}. ${lesson.subject}</div>
+                lessonsHtml += `<div class="lesson-card">
+                    <div class="lesson-grades-wrap">${gradesWrap}</div>
+                    <div class="lesson-num">${n}. ${lesson.subject}</div>
                     ${metaHtml}${topicHtml}${hwHtml}
                 </div>`;
             }
-            html += `<div style="flex:0 0 240px;background:#fff;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,0.1);border:1px solid #eee;overflow:hidden;display:flex;flex-direction:column;">
-                <div style="background:${isToday ? '#0273b2' : '#f2f6fb'};color:${isToday ? '#fff' : '#333'};padding:8px 12px;font-size:12px;font-weight:700;">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div>
-                <div style="padding:8px;flex:1;">${lessonsHtml}</div>
+            html += `<div class="day-column">
+                <!-- ВОТ ЭТОТ ЗАГОЛОВОК ИЗМЕНЕН -->
+                <div class="day-header">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div>
+                <div class="day-body">${lessonsHtml}</div>
             </div>`;
         });
         html += '</div>';
