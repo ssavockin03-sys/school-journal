@@ -112,6 +112,8 @@
             margin: 0 0 0 18px; 
             height: 42px; 
             list-style-type: none; 
+            display: flex;
+            align-items: center;
         }
         
         .header-submenu__link { 
@@ -121,14 +123,16 @@
             display: block;
             font-size: 14px;
             line-height: 20px;
+            border-bottom: 2px solid transparent; /* Для подчеркивания */
         }
         .header-submenu__link:hover {
             color: #0273b2;
         }
         
-        /* ТОЧНЫЙ КЛАСС ДЛЯ АКТИВНОЙ ВКЛАДКИ ИЗ СКРИНШОТА */
+        /* ТОЧНЫЙ КЛАСС ДЛЯ АКТИВНОЙ ВКЛАДКИ С ПОДЧЕРКИВАНИЕМ */
         .header-submenu__item_active .header-submenu__link {
             color: #0273b2;
+            border-bottom-color: #0273b2; /* Подчеркивание */
         }
 
         /* ===================== КОНТЕНТ ===================== */
@@ -246,7 +250,6 @@
                 
                 <ul class="header-submenu">
                     <li class="header-submenu__item"><a href="student.html" class="header-submenu__link">Сегодня</a></li>
-                    <!-- ВОТ ТУТ ТЕПЕРЬ ТОЧНЫЙ КЛАСС _active -->
                     <li class="header-submenu__item header-submenu__item_active"><a href="student-performance.html" class="header-submenu__link">Успеваемость</a></li>
                     <li class="header-submenu__item"><a href="student-group.html" class="header-submenu__link">Моя группа</a></li>
                     <li class="header-submenu__item"><a href="student-schedule.html" class="header-submenu__link">Расписание</a></li>
