@@ -51,39 +51,35 @@
         .view-pane { display: none; }
         .view-pane.active { display: block; }
 
-        /* ===================== ТЕКУЩАЯ (ДНЕВНИК) КАК НА СКРИНШОТЕ ===================== */
-        
-        /* Контейнер для синей подложки */
+        /* ===================== ТЕКУЩАЯ (ДНЕВНИК) ===================== */
         .diary-container {
-            background-color: #cbd9f3; /* Тот самый синий фон подложки */
+            background-color: #cbd9f3; /* Синяя подложка */
             border-radius: 8px;
             padding: 20px 0;
             position: relative;
             width: 100%;
-            overflow: hidden; /* Прячем вылезающие края */
+            overflow: hidden; 
         }
 
-        /* Сетка дней */
         .week-grid {
             display: flex;
-            gap: 10px;
+            gap: 0; /* Убрали gap, так как отступы теперь через margin */
             overflow-x: auto;
             padding: 0 20px 10px 20px;
             scroll-behavior: smooth;
-            scrollbar-width: none; /* Убираем скроллбар */
+            scrollbar-width: none; 
             position: relative;
             z-index: 1;
         }
         .week-grid::-webkit-scrollbar { display: none; }
 
-        /* Круглые стрелки по бокам */
         .scroll-arrow {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             width: 36px;
             height: 36px;
-            background-color: #7a9cc6; /* Цвет стрелок как на скрине */
+            background-color: #7a9cc6;
             color: #fff;
             border-radius: 50%;
             display: flex;
@@ -101,21 +97,20 @@
         .scroll-arrow.left { left: 5px; }
         .scroll-arrow.right { right: 5px; }
 
-        /* Карточка дня */
-        .day-column {
-            flex: 0 0 240px; /* Ширина карточки */
-            background: #fff;
-            border-radius: 8px;
+        /* ================= ТОЧНЫЕ СТИЛИ КОЛОНКИ ИЗ .wj5xj ================= */
+        .day-column { 
+            width: 200px; /* Из wj5xj */
+            min-width: 200px; /* Из wj5xj */
+            min-height: 500px; /* Из wj5xj */
+            background: #fff; /* Из wj5xj */
+            box-shadow: 0 3.11111px 6.22222px rgba(0, 0, 0, 0.06); /* Из wj5xj */
+            border-radius: 8px; /* Из wj5xj */
+            margin: 0 6px; /* Из wj5xj */
+            padding-bottom: 8px; /* Из wj5xj */
+            border: 1px solid #61a5e3; /* Из wj5xj */
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        /* Выходной день */
-        .day-column.weekend {
-            background: #e9eef6; /* Серый фон для ВС */
         }
 
         /* Заголовок дня */
@@ -125,12 +120,14 @@
             font-size: 14px;
             color: #fff;
             background-color: #61a5e3;
+            text-align: left;
         }
+        
         .day-column.weekend .day-header {
-            background-color: #c4d0e0; /* Серый заголовок для выходного */
+            background-color: #c4d0e0;
         }
         .day-header.today {
-            background-color: #2f80ed; /* Синий для сегодняшнего дня */
+            background-color: #2f80ed;
         }
 
         .day-body {
@@ -141,7 +138,6 @@
             gap: 10px;
         }
 
-        /* Урок внутри карточки */
         .lesson-card {
             display: flex;
             flex-direction: column;
@@ -179,7 +175,6 @@
             cursor: pointer;
         }
 
-        /* Плитки оценок */
         .dnevnik-grade-tile {
             display: inline-flex;
             align-items: center;
@@ -369,7 +364,7 @@
     // ================================================================
     // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
     // ================================================================
-    const DAYS_KEYS   = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']; // Добавили воскресенье!
+    const DAYS_KEYS   = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']; 
     const DAYS_RU     = { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб', sun: 'Вс' };
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 0: 'sun' };
     const MONTHS_GEN  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
@@ -540,13 +535,12 @@
         renderRating();
     }
 
-    // ================= ФУНКЦИЯ ДНЕВНИКА (ТОЧЬ-В-ТОЧЬ КАК НА СКРИНШОТЕ) =================
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
         const monday = CURRENT_WEEK_START;
-        const saturday = addDays(monday, 5); // Сб
-        const sunday = addDays(monday, 6); // Вс
+        const saturday = addDays(monday, 5); 
+        const sunday = addDays(monday, 6); 
         
         const today = new Date(); today.setHours(0, 0, 0, 0);
         
@@ -612,7 +606,6 @@
                     if (presVal)  gradesWrap += `<span class="dnevnik-grade-tile ${gradeClass(presVal)}">${presVal}</span>`;
                     if (gradeVal) gradesWrap += `<span class="dnevnik-grade-tile ${gradeClass(gradeVal)}">${gradeVal}</span>`;
 
-                    // Домашнее задание / Тема
                     let hwHtml = '';
                     if (homework) {
                         hwHtml = `<div class="lesson-hw"><input type="checkbox"> <span>${homework}</span></div>`;
@@ -641,7 +634,7 @@
         html += `</div></div>`;
         container.innerHTML = html;
 
-        // Добавляем логику для стрелок
+        // Логика стрелок
         const grid = document.getElementById('weekGrid');
         const scrollLeft = document.getElementById('scrollLeftBtn');
         const scrollRight = document.getElementById('scrollRightBtn');
@@ -650,7 +643,6 @@
             scrollLeft.addEventListener('click', () => { grid.scrollBy({ left: -250, behavior: 'smooth' }); });
             scrollRight.addEventListener('click', () => { grid.scrollBy({ left: 250, behavior: 'smooth' }); });
             
-            // Прячем стрелки, если всё влезает
             const checkScroll = () => {
                 if (grid.scrollWidth <= grid.clientWidth) {
                     scrollLeft.style.display = 'none';
