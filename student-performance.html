@@ -9,12 +9,7 @@
         /* ===================== БАЗА ===================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { background: #ffffff; min-height: 100vh; }
-        body { 
-            font-family: "Open Sans", Arial, sans-serif; 
-            font-size: 15px; 
-            color: #0f3159; 
-            min-width: 990px; 
-        }
+        body { font-family: "Open Sans", Arial, sans-serif; font-size: 15px; color: #0f3159; min-width: 990px; }
         .app-shell { width: 968px; margin: 0 auto; position: relative; }
         .header-inner-wrap { width: 940px; margin: 0 auto; position: relative; }
 
@@ -57,38 +52,71 @@
         .view-pane.active { display: block; }
 
         /* ===================== ТЕКУЩАЯ (ДНЕВНИК) ===================== */
-        .week-title-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .week-title { font-size: 18px; font-weight: 700; }
-        .week-range { font-size: 13px; color: #777; }
+        .week-nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            background: #fff;
+            border: 1px solid #e5eaf0;
+            border-radius: 8px;
+            padding: 8px 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .week-nav-arrows { display: flex; gap: 8px; }
+        .week-arrow {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #e0e7ed;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #0273b2;
+            user-select: none;
+        }
+        .week-arrow:hover { background: #f0f7ff; border-color: #2f80ed; }
+        .week-range-title { font-size: 16px; font-weight: 700; color: #0f3159; }
+        
         .week-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; }
         
-        /* Колонка дня */
-        .day-column { flex: 0 0 240px; background: #fff; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #eee; overflow: hidden; display: flex; flex-direction: column; }
+        /* Колонка дня (растягиваем на всю ширину) */
+        .day-column { 
+            flex: 1 1 0px; 
+            min-width: 140px; 
+            background: #fff; 
+            border-radius: 5px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            border: 1px solid #eee; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+        }
         
-        /* ВОТ ТОТ САМЫЙ ЗАГОЛОВОК ДАТЫ (ИЗ СКРИНШОТА .f0r6R) */
+        /* ЗАГОЛОВОК ДАТЫ (СИНИЙ, КАК ВЫ ПРОСИЛИ) */
         .day-header { 
-            padding: 10px 12px; /* Из f0r6R */
-            border-radius: 5px 5px 0 0; /* Из f0r6R */
-            margin-bottom: 4px; /* Из f0r6R */
-            font-weight: 600; /* Из f0r6R */
-            font-size: 14px; /* Из f0r6R */
-            color: #fff; /* Из f0r6R */
-            background-color: #61a5e3; /* Из f0r6R */
-            text-align: left;
+            padding: 10px 12px; 
+            border-radius: 5px 5px 0 0; 
+            margin-bottom: 4px; 
+            font-weight: 600; 
+            font-size: 14px; 
+            color: #fff; 
+            background-color: #61a5e3; 
+            text-align: center;
         }
         
         .day-body { padding: 8px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
         
-        /* Карточка урока */
         .lesson-card { background: #f9f9f9; border-radius: 5px; padding: 8px 10px; border-left: 3px solid #0273b2; position: relative; }
         .lesson-card.empty { padding: 6px 12px; color: #ccc; border-left: 3px dashed #eee; font-style: italic; font-size: 12px; }
         
         .lesson-num { font-size: 12px; font-weight: 700; color: #333; padding-right: 40px; }
-        .lesson-subject { font-size: 12px; font-weight: 700; color: #333; }
         .lesson-meta { font-size: 11px; color: #777; margin-top: 2px; }
         .lesson-topic { font-size: 12px; margin-top: 4px; color: #555; }
         .lesson-hw { font-size: 12px; margin-top: 2px; color: #0273b2; }
-        
         .lesson-grades-wrap { position: absolute; top: 8px; right: 8px; display: flex; gap: 3px; }
 
         /* Плитки оценок */
@@ -267,12 +295,7 @@
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat' };
     const MONTHS_GEN  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
     
-    const PERIOD_NAMES = { 
-        'Четверти': 'четверть', 
-        'Семестры': 'семестр', 
-        'Триместры': 'триместр', 
-        'Полугодия': 'полугодие' 
-    };
+    const PERIOD_NAMES = { 'Четверти': 'четверть', 'Семестры': 'семестр', 'Триместры': 'триместр', 'Полугодия': 'полугодие' };
 
     let CURRENT_STUDENT = null;
     let CURRENT_CLASS = null;
@@ -298,6 +321,7 @@
     function firstDigit(v) { const s = String(v == null ? '' : v); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) return c - 48; } return null; }
     function getMondayOfCurrentWeek() { const t = new Date(); t.setHours(0,0,0,0); const dow = t.getDay(); const diff = (dow === 0 ? -6 : 1 - dow); const m = new Date(t); m.setDate(t.getDate() + diff); return m; }
     function initials(name) { return (name || '').split(' ').map(w => w[0] || '').slice(0, 2).join('').toUpperCase(); }
+    function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate() + days); return d; }
 
     async function logout() {
         if (!confirm('Выйти из кабинета?')) return;
@@ -437,13 +461,15 @@
         renderRating();
     }
 
-    // ОБНОВЛЕННАЯ ФУНКЦИЯ ДЛЯ ВКЛАДКИ "ТЕКУЩАЯ"
+    // ================= ОБНОВЛЕННАЯ ФУНКЦИЯ ДНЕВНИКА С НАВИГАЦИЕЙ =================
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
         const monday = CURRENT_WEEK_START;
-        const saturday = new Date(monday); saturday.setDate(monday.getDate() + 5);
-        const rangeText = `${formatDateShort(monday)} – ${formatDateRu(saturday)}`;
+        const saturday = addDays(monday, 5); // Суббота
+        
+        // Форматируем диапазон дат
+        const rangeText = `${formatDateRu(monday)} – ${formatDateRu(saturday)}`;
         
         if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) {
             container.innerHTML = `<div style="text-align:center;padding:40px;color:#999;">Расписание ещё не составлено.</div>`;
@@ -452,7 +478,17 @@
         
         const today = new Date(); today.setHours(0, 0, 0, 0);
         
-        let html = `<div class="week-title-bar"><div class="week-title">Текущая неделя</div><div class="week-range">${rangeText}</div></div><div class="week-grid">`;
+        // Блок с навигацией
+        let html = `<div class="week-nav-bar">
+            <div class="week-nav-arrows">
+                <div class="week-arrow" id="prevWeekBtn">‹</div>
+                <div class="week-arrow" id="nextWeekBtn">›</div>
+            </div>
+            <div class="week-range-title">${rangeText}</div>
+            <div style="width:72px;"></div> <!-- Для симметрии -->
+        </div>`;
+
+        html += `<div class="week-grid">`;
         
         let maxLesson = 7;
         DAYS_KEYS.forEach(day => {
@@ -463,8 +499,7 @@
         const all = collectAllStudentGrades();
         
         DAYS_KEYS.forEach((dayKey, idx) => {
-            const date = new Date(monday); date.setDate(monday.getDate() + idx);
-            const isToday = date.getTime() === today.getTime();
+            const date = addDays(monday, idx);
             const dayGrid = CURRENT_SCHEDULE.grid[dayKey] || {};
             let lessonsHtml = '';
             
@@ -506,13 +541,22 @@
                 </div>`;
             }
             html += `<div class="day-column">
-                <!-- ВОТ ЭТОТ ЗАГОЛОВОК ИЗМЕНЕН -->
                 <div class="day-header">${DAYS_RU[dayKey]}, ${formatDateShort(date)}</div>
                 <div class="day-body">${lessonsHtml}</div>
             </div>`;
         });
         html += '</div>';
         container.innerHTML = html;
+
+        // Добавляем обработчики для стрелок
+        document.getElementById('prevWeekBtn').addEventListener('click', () => {
+            CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, -7);
+            renderDiary();
+        });
+        document.getElementById('nextWeekBtn').addEventListener('click', () => {
+            CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, 7);
+            renderDiary();
+        });
     }
 
     function renderWarnings() {
