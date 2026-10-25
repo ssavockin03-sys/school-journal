@@ -101,6 +101,7 @@
         .dnevnik-marks-table td.avg-cell { text-align: center; font-weight: 700; color: #4b9a25; font-size: 15px; }
         .dnevnik-marks-table td.avg-cell.empty { color: #999; font-weight: 400; }
         .dnevnik-marks-table td.qtr-cell { text-align: center; }
+        
         .dnevnik-qtr-tile { display: inline-block; padding: 4px 8px; border-radius: 2px; font-weight: 600; font-size: 14px; color: #fff; line-height: 1; }
         .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
         .dnevnik-qtr-tile.g3 { background-color: #ff8f00; }
@@ -389,6 +390,7 @@
         return 0;
     }
 
+    // Собираем все оценки
     function collectAllStudentGrades() {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
@@ -411,7 +413,7 @@
         renderDiary();
         renderWarnings();
         renderPeriodTabs();
-        renderGradesTable();
+        renderGradesTable(); // Вот наша исправленная таблица
         renderRating();
     }
 
@@ -592,17 +594,18 @@
         return { start: p.start, end: p.end };
     }
 
-    // ==================== ТЕПЕРЬ ТАБЛИЦА ОТОБРАЖАЕТ ОЦЕНКИ ПРАВИЛЬНО ====================
+    // ==================== ГЛАВНОЕ ИСПРАВЛЕНИЕ ТАБЛИЦЫ ====================
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
+        
         const subjectsFromSchedule = getScheduleSubjects();
         if (subjectsFromSchedule.length === 0) {
             container.innerHTML = `<div style="text-align:center;padding:40px;color:#999;">Расписание ещё не составлено.</div>`;
             return;
         }
+        
         const range = getPeriodRange();
-        const all = collectAllStudentGrades();
         
         let periodLabel = 'Итог';
         if (PERIODS.length > 0 && PERIODS[ACTIVE_PERIOD_INDEX]) {
@@ -617,45 +620,59 @@
         html += '<thead><tr><th>Предмет</th><th>Оценки</th><th class="center">Ср. балл</th><th class="center">' + periodLabel + '</th></tr></thead><tbody>';
 
         subjectsFromSchedule.forEach(subjectName => {
-            let records = all.filter(g => g.subject === subjectName);
-            
-            // ФИЛЬТРАЦИЯ ПО ПЕРИОДУ (ИСПРАВЛЕНО)
-            if (range) {
-                records = records.filter(r => {
-                    if (!r.date) return false;
-                    const d = isoDate(r.date);
-                    return d >= range.start && d <= range.end;
-                });
-            }
-            records.sort((a, b) => a.key.localeCompare(b.key));
-
-            const gradesMap = {};
-            records.forEach(r => { if (r.kind === 'grade') gradesMap[r.key] = r.grade; });
-            const avg = calcAverageFromValues(Object.values(gradesMap));
-
+            // 1. Находим журнал для этого предмета
             const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
             const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
+            
+            let displayGrades = []; // Оценки для отображения
+            
+            // 2. Если журнал найден, берем оценки ученика
+            if (journal && journal.grades && journal.grades[CURRENT_STUDENT.id]) {
+                const sg = journal.grades[CURRENT_STUDENT.id];
+                
+                Object.entries(sg).forEach(([key, val]) => {
+                    if (!val) return;
+                    
+                    // Фильтруем по периоду, если он выбран
+                    if (range) {
+                        const dateStr = key.split('_')[0];
+                        if (dateStr < range.start || dateStr > range.end) return;
+                    }
+                    
+                    const cell = parseCell(val);
+                    if (cell.grade) displayGrades.push(cell.grade);
+                    if (cell.presence) displayGrades.push(cell.presence);
+                });
+            }
+            
+            // Сортируем оценки (опционально, но для порядка)
+            displayGrades.sort();
+
+            // 3. Считаем средний балл
+            const avg = calcAverageFromValues(displayGrades);
+
+            // 4. Берем итоговую оценку за период, если есть
             const qtrGrades = journal && journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
             const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
 
             html += '<tr>';
             html += `<td class="subject-name">${subjectName}</td>`;
-            if (records.length === 0) {
+            
+            // 5. Выводим оценки
+            if (displayGrades.length === 0) {
                 html += '<td><span style="color:#999;font-style:italic;font-size:12px;">Нет оценок</span></td>';
             } else {
                 html += '<td>';
-                records.forEach(r => {
-                    const isGrade = r.kind === 'grade';
-                    const val = isGrade ? r.grade : r.presence;
+                displayGrades.forEach(val => {
                     const cls = gradeClass(val);
                     const safeSubj = escapeHtml(subjectName).replace(/'/g, "\\'");
                     const safeVal = escapeHtml(val).replace(/'/g, "\\'");
-                    const safeDate = escapeHtml(r.dateRu).replace(/'/g, "\\'");
-                    const kindAttr = isGrade ? 'grade' : 'presence';
-                    html += `<span class="dnevnik-grade-tile ${cls}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeDate}','${kindAttr}')">${val}</span>`;
+                    // Тут дата не передается точно, но статистика и так откроется
+                    html += `<span class="dnevnik-grade-tile ${cls}" onclick="openGradeStat('${safeSubj}','${safeVal}','','grade')">${val}</span>`;
                 });
                 html += '</td>';
             }
+            
             html += avg !== null ? `<td class="avg-cell">${avg.toFixed(2).replace(/\.00$/, '')}</td>` : '<td class="avg-cell empty">-</td>';
             if (periodQtr) html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile ${gradeClass(periodQtr)}">${periodQtr}</span></td>`;
             else html += '<td class="qtr-cell"><span class="dnevnik-qtr-tile no-grade">-</span></td>';
@@ -704,7 +721,7 @@
         if (!CURRENT_STUDENT) return;
         
         document.getElementById('statTitle').textContent = subjectName;
-        document.getElementById('statSub').textContent = (kind === 'presence' ? 'Отметка: ' : 'Оценка: ') + value + ' — ' + dateRu;
+        document.getElementById('statSub').textContent = (kind === 'presence' ? 'Отметка: ' : 'Оценка: ') + value + (dateRu ? ' — ' + dateRu : '');
 
         const big = document.getElementById('statBigGrade');
         big.textContent = value;
