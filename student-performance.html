@@ -53,16 +53,66 @@
 
         /* ===================== ТЕКУЩАЯ (ДНЕВНИК) ===================== */
         .diary-container { background-color: #cbd9f3; border-radius: 8px; padding: 20px 0; position: relative; width: 100%; overflow: hidden; }
-        .week-grid { display: flex; gap: 0; overflow-x: auto; padding: 0 20px 10px 20px; scroll-behavior: smooth; scrollbar-width: none; position: relative; z-index: 1; }
-        .week-grid::-webkit-scrollbar { display: none; }
+        
+        /* Панель управления неделями */
+        .week-nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            margin-bottom: 16px;
+        }
+        .week-nav-arrows { display: flex; gap: 8px; }
+        .week-arrow {
+            width: 36px;
+            height: 36px;
+            background-color: #7a9cc6;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            user-select: none;
+        }
+        .week-arrow:hover { background-color: #5a7da8; }
+        .week-range-title { font-size: 16px; font-weight: 700; color: #0f3159; }
 
-        .scroll-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; background-color: #7a9cc6; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; z-index: 10; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); user-select: none; }
-        .scroll-arrow:hover { background-color: #5a7da8; }
-        .scroll-arrow.left { left: 5px; }
-        .scroll-arrow.right { right: 5px; }
-
-        .day-column { width: 200px; min-width: 200px; min-height: 500px; background: #fff; box-shadow: 0 3.11111px 6.22222px rgba(0, 0, 0, 0.06); border-radius: 8px; margin: 0 6px; padding-bottom: 8px; border: 1px solid #61a5e3; overflow: hidden; display: flex; flex-direction: column; }
-        .day-header { padding: 10px 12px; font-weight: 600; font-size: 14px; color: #fff; background-color: #61a5e3; text-align: left; }
+        /* Сетка дней (растягиваем на всю ширину) */
+        .week-grid { 
+            display: flex; 
+            gap: 6px; 
+            padding: 0 20px 10px 20px; 
+            width: 100%;
+        }
+        
+        /* Карточка дня — растягивается */
+        .day-column { 
+            flex: 1 1 0; 
+            min-width: 100px;
+            background: #fff; 
+            box-shadow: 0 3.11111px 6.22222px rgba(0, 0, 0, 0.06); 
+            border-radius: 8px; 
+            padding-bottom: 8px; 
+            border: 1px solid #61a5e3; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        /* Заголовок дня */
+        .day-header { 
+            padding: 10px 12px; 
+            font-weight: 600; 
+            font-size: 14px; 
+            color: #fff; 
+            background-color: #61a5e3; 
+            text-align: left; 
+        }
         .day-column.weekend .day-header { background-color: #c4d0e0; }
         .day-header.today { background-color: #2f80ed; }
 
@@ -74,10 +124,9 @@
         .lesson-hw { font-size: 12px; color: #333; background: #f8f9fb; padding: 6px 8px; border-radius: 6px; margin-top: 4px; display: flex; align-items: flex-start; gap: 6px; }
         .lesson-hw input { margin-top: 2px; cursor: pointer; }
 
-        /* Плитки для дневника (абсолютные) */
+        /* Плитки оценок */
         .dnevnik-grade-tile { display: inline-flex; align-items: center; justify-content: center; height: 20px; min-width: 20px; padding: 0 6px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 600; position: absolute; top: 0; right: 0; cursor: pointer; }
         
-        /* Цвета плиток */
         .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4, .dnevnik-grade-tile-table.g5, .dnevnik-grade-tile-table.g4 { background-color: #4b9a25; }
         .dnevnik-grade-tile.g3, .dnevnik-grade-tile-table.g3 { background-color: #ff8f00; }
         .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1, .dnevnik-grade-tile-table.g2, .dnevnik-grade-tile-table.g1 { background-color: #cf3838; }
@@ -105,20 +154,19 @@
         .dnevnik-marks-table td.avg-cell.empty { color: #999; font-weight: 400; }
         .dnevnik-marks-table td.qtr-cell { text-align: center; }
 
-        /* ПЛИТКИ ДЛЯ ТАБЛИЦЫ (НЕ АБСОЛЮТНЫЕ, НО С ТОЧНЫМИ РАЗМЕРАМИ ИЗ CSS) */
         .dnevnik-grade-tile-table {
-            display: inline-block; /* Чтобы стояли в ряд */
-            height: 17px; /* Из QoB5a */
-            box-sizing: border-box; /* Из QoB5a */
-            color: #fff; /* Из QoB5a */
-            padding: 4px; /* Из QoB5a */
-            font-weight: 400; /* Из QoB5a */
-            font-size: 14px; /* Из QoB5a */
-            line-height: 9px; /* Из QoB5a */
-            border-radius: 2px; /* Из QoB5a */
-            cursor: pointer; /* Из QoB5a */
-            margin-right: 4px; /* Из LuDK3 */
-            margin-bottom: 4px; /* Из LuDK3 */
+            display: inline-block;
+            height: 17px;
+            box-sizing: border-box;
+            color: #fff;
+            padding: 4px;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 9px;
+            border-radius: 2px;
+            cursor: pointer;
+            margin-right: 4px;
+            margin-bottom: 4px;
             text-align: center;
             min-width: 17px;
             vertical-align: middle;
@@ -440,25 +488,25 @@
         renderRating();
     }
 
+    // ================= ФУНКЦИЯ ДНЕВНИКА С ЛИСТАНИЕМ НЕДЕЛЬ =================
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
+        
         const monday = CURRENT_WEEK_START;
-        const saturday = addDays(monday, 5); 
-        const sunday = addDays(monday, 6); 
+        const sunday = addDays(monday, 6);
         
         const today = new Date(); today.setHours(0, 0, 0, 0);
         
         let html = `
-        <div class="week-title-bar" style="display:flex; justify-content:space-between; margin-bottom:16px; align-items:center;">
-            <div class="week-title" style="font-size:18px; font-weight:700;">Текущая неделя</div>
-            <div class="week-range" style="font-size:13px; color:#777;">${formatDateRu(monday)} – ${formatDateRu(sunday)}</div>
-        </div>
-        
         <div class="diary-container">
-            <button class="scroll-arrow left" id="scrollLeftBtn">‹</button>
-            <button class="scroll-arrow right" id="scrollRightBtn">›</button>
-            
+            <!-- Панель навигации по неделям -->
+            <div class="week-nav-bar">
+                <button class="week-arrow" id="prevWeekBtn">‹</button>
+                <div class="week-range-title">${formatDateRu(monday)} – ${formatDateRu(sunday)}</div>
+                <button class="week-arrow" id="nextWeekBtn">›</button>
+            </div>
+
             <div class="week-grid" id="weekGrid">
         `;
         
@@ -539,26 +587,15 @@
         html += `</div></div>`;
         container.innerHTML = html;
 
-        const grid = document.getElementById('weekGrid');
-        const scrollLeft = document.getElementById('scrollLeftBtn');
-        const scrollRight = document.getElementById('scrollRightBtn');
-
-        if (scrollLeft && scrollRight) {
-            scrollLeft.addEventListener('click', () => { grid.scrollBy({ left: -250, behavior: 'smooth' }); });
-            scrollRight.addEventListener('click', () => { grid.scrollBy({ left: 250, behavior: 'smooth' }); });
-            
-            const checkScroll = () => {
-                if (grid.scrollWidth <= grid.clientWidth) {
-                    scrollLeft.style.display = 'none';
-                    scrollRight.style.display = 'none';
-                } else {
-                    scrollLeft.style.display = 'flex';
-                    scrollRight.style.display = 'flex';
-                }
-            };
-            checkScroll();
-            window.addEventListener('resize', checkScroll);
-        }
+        // Обработчики стрелок для листания недель
+        document.getElementById('prevWeekBtn').addEventListener('click', () => {
+            CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, -7);
+            renderDiary();
+        });
+        document.getElementById('nextWeekBtn').addEventListener('click', () => {
+            CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, 7);
+            renderDiary();
+        });
     }
 
     function renderWarnings() {
@@ -617,7 +654,6 @@
         return { start: p.start, end: p.end };
     }
 
-    // ==================== ИСПРАВЛЕННАЯ ТАБЛИЦА ====================
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
@@ -643,45 +679,34 @@
         html += '<thead><tr><th>Предмет</th><th>Оценки</th><th class="center">Ср. балл</th><th class="center">' + periodLabel + '</th></tr></thead><tbody>';
 
         subjectsFromSchedule.forEach(subjectName => {
-            // 1. Находим журнал для этого предмета
             const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
             const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
             
-            let displayGrades = []; // Оценки для отображения
+            let displayGrades = [];
             
-            // 2. Если журнал найден, берем оценки ученика
             if (journal && journal.grades && journal.grades[CURRENT_STUDENT.id]) {
                 const sg = journal.grades[CURRENT_STUDENT.id];
-                
                 Object.entries(sg).forEach(([key, val]) => {
                     if (!val) return;
-                    
-                    // Фильтруем по периоду, если он выбран
                     if (range) {
                         const dateStr = key.split('_')[0];
                         if (dateStr < range.start || dateStr > range.end) return;
                     }
-                    
                     const cell = parseCell(val);
                     if (cell.grade) displayGrades.push(cell.grade);
                     if (cell.presence) displayGrades.push(cell.presence);
                 });
             }
             
-            // Сортируем оценки (опционально, но для порядка)
             displayGrades.sort();
-
-            // 3. Считаем средний балл
             const avg = calcAverageFromValues(displayGrades);
 
-            // 4. Берем итоговую оценку за период, если есть
             const qtrGrades = journal && journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
             const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
 
             html += '<tr>';
             html += `<td class="subject-name">${subjectName}</td>`;
             
-            // 5. Выводим оценки (С ПРАВИЛЬНЫМ КЛАССОМ)
             if (displayGrades.length === 0) {
                 html += '<td><span style="color:#999;font-style:italic;font-size:12px;">Нет оценок</span></td>';
             } else {
