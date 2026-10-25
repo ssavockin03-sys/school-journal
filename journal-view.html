@@ -29,13 +29,60 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .dropdown-menu-item:hover { background: #EFF6FF; color: #2563EB; }
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; }
+
+/* ===================== ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ (КАК У УЧЕНИКА) ===================== */
 .period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; }
-.period-tabs-group { display: inline-flex; align-items: center; padding: 3px; border: 1px solid #CBD5E1; border-radius: 8px; flex-wrap: wrap; }
-.tab-pill { padding: 5px 12px; background: transparent; color: #64748B; font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 6px; border: 1px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.15s ease; }
-.tab-pill:hover { background: #F1F5F9; color: #334155; }
-.tab-pill.active { background: #FFFFFF; color: #2563EB; border-color: #2563EB; font-weight: 600; }
-.tab-pill.summary-tab { border-color: #CBD5E1; }
-.tab-pill.summary-tab.active { background: #FFFFFF; color: #2563EB; border-color: #2563EB; }
+
+/* Внешний контейнер */
+.period-tabs-group { 
+    display: flex; 
+    font-family: "Open Sans", sans-serif; /* Или Inter, но можно оставить как есть */
+    border: 1px solid #e0e7ed; 
+    border-radius: 8px; 
+    font-weight: 400; 
+    font-size: 14px; 
+    line-height: 19px; 
+    background-color: #fff; 
+    align-items: center; 
+    margin-right: auto; 
+    width: fit-content; 
+}
+
+/* Неактивная кнопка */
+.tab-pill { 
+    margin: 6px 0; 
+    padding: 0 8px; 
+    border-style: solid; 
+    border-color: #e0e7ed; 
+    border-width: 0 1px 0 0; 
+    color: #0f3159; 
+    font-weight: 400; 
+    cursor: pointer; 
+    background: transparent; 
+    font-family: inherit; 
+    font-size: inherit; 
+    line-height: inherit; 
+}
+
+.tab-pill:first-child { border-radius: 8px 0 0 8px; }
+.tab-pill:last-child { border-radius: 0 8px 8px 0; border-width: 0; }
+
+/* Активная кнопка */
+.tab-pill.active { 
+    padding: 6px 8px; 
+    margin: -1px; 
+    border: 1px solid #2f80ed; 
+    border-radius: 8px; 
+    color: #2f80ed; 
+    z-index: 1; 
+    background: #fff; 
+}
+
+/* Специально для итога, если нужно */
+.tab-pill.summary-tab {
+    border-color: #e0e7ed;
+}
+
 .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
 .btn-import { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFFFFF; color: #334155; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
 .btn-import:hover { background: #F8FAFC; border-color: #94A3B8; }
@@ -696,11 +743,12 @@ const DAYS_JS_INDEX = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
 
 const EDIT_DELAY_MS = 200;
 
-const PERIOD_LABELS = {
-    'Четверти':  ['I четверть', 'II четверть', 'III четверть', 'IV четверть'],
-    'Полугодия': ['I полугодие', 'II полугодие'],
-    'Триместры': ['I триместр', 'II триместр', 'III триместр'],
-    'Семестры':  ['I семестр', 'II семестр']
+// УБРАЛИ РИМСКИЕ ЦИФРЫ, ТЕПЕРЬ ТОЛЬКО НАЗВАНИЯ ПЕРИОДОВ
+const PERIOD_NAMES = { 
+    'Четверти': 'четверть', 
+    'Семестры': 'семестр', 
+    'Триместры': 'триместр', 
+    'Полугодия': 'полугодие' 
 };
 
 const LESSON_TYPES = [
@@ -883,8 +931,6 @@ function cancelActiveEditor() {
     try { ed.cancel(); } catch (e) { console.error(e); }
 }
 
-/* Синхронно коммитим активный редактор (без рендера его ячейки),
-   затем открепляем DOM. Рендер делает вызывающий. */
 function detachActiveEditorDom() {
     if (!activeEditor) return;
     const ed = activeEditor;
@@ -1127,9 +1173,11 @@ function closeAllDropdowns() {
 }
 document.addEventListener('click', closeAllDropdowns);
 
+// ==================== ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ (КАК У УЧЕНИКА) ====================
 function renderPeriodTabs() {
     const container = document.getElementById('periodTabs');
     container.innerHTML = '';
+    
     if (PERIODS.length === 0) {
         const tab = document.createElement('button');
         tab.type = 'button';
@@ -1139,13 +1187,22 @@ function renderPeriodTabs() {
         container.appendChild(tab);
         return;
     }
-    const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
+
     PERIODS.forEach((p, idx) => {
         const tab = document.createElement('button');
         tab.type = 'button';
-        tab.className = 'tab-pill' + (!SUMMARY_MODE && idx === ACTIVE_PERIOD_INDEX ? ' active' : '');
-        tab.textContent = labels[idx] || ('Период ' + (idx + 1));
+        const isActive = (!SUMMARY_MODE && idx === ACTIVE_PERIOD_INDEX);
+        tab.className = 'tab-pill' + (isActive ? ' active' : '');
+        
+        if (isActive) {
+            const periodName = PERIOD_NAMES[PERIOD_SYSTEM] || 'период';
+            tab.textContent = (idx + 1) + ' ' + periodName;
+        } else {
+            tab.textContent = (idx + 1);
+        }
+        
         tab.title = p.start + ' – ' + p.end;
+        
         tab.addEventListener('click', async () => {
             commitActiveEditor();
             SUMMARY_MODE = false;
@@ -1173,10 +1230,11 @@ function renderPeriodTabs() {
         });
         container.appendChild(tab);
     });
+
     const summaryTab = document.createElement('button');
     summaryTab.type = 'button';
     summaryTab.className = 'tab-pill summary-tab' + (SUMMARY_MODE ? ' active' : '');
-    summaryTab.textContent = 'Итог';
+    summaryTab.textContent = 'итог';
     summaryTab.title = 'Итоговые оценки по всем периодам';
     summaryTab.addEventListener('click', () => {
         commitActiveEditor();
@@ -1530,7 +1588,6 @@ function renderLessonPlanRows() {
     fillPlanFillers();
 }
 
-/* Переход на страницу урока */
 function openLessonPage(d) {
     const params = new URLSearchParams();
     params.set('class', CLASS_ID);
@@ -1646,9 +1703,6 @@ function createPlanFillerRow(height) {
     return tr;
 }
 
-/* ============================================================
-   КЛИКИ ПО pBody.
-   ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
 
