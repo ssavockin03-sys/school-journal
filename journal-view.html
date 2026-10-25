@@ -36,7 +36,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 /* Внешний контейнер */
 .period-tabs-group { 
     display: flex; 
-    font-family: "Open Sans", sans-serif; /* Или Inter, но можно оставить как есть */
+    font-family: "Open Sans", sans-serif; 
     border: 1px solid #e0e7ed; 
     border-radius: 8px; 
     font-weight: 400; 
@@ -743,7 +743,7 @@ const DAYS_JS_INDEX = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
 
 const EDIT_DELAY_MS = 200;
 
-// УБРАЛИ РИМСКИЕ ЦИФРЫ, ТЕПЕРЬ ТОЛЬКО НАЗВАНИЯ ПЕРИОДОВ
+// Используем новые имена периодов (арабские цифры)
 const PERIOD_NAMES = { 
     'Четверти': 'четверть', 
     'Семестры': 'семестр', 
@@ -1173,7 +1173,7 @@ function closeAllDropdowns() {
 }
 document.addEventListener('click', closeAllDropdowns);
 
-// ==================== ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ (КАК У УЧЕНИКА) ====================
+// ==================== ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ ====================
 function renderPeriodTabs() {
     const container = document.getElementById('periodTabs');
     container.innerHTML = '';
@@ -1257,6 +1257,7 @@ function renderPeriodTabs() {
     container.appendChild(summaryTab);
 }
 
+// ==================== РЕНДЕР ТАБЛИЦЫ "ИТОГ" ====================
 function renderSummaryTable() {
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
@@ -1269,13 +1270,13 @@ function renderSummaryTable() {
 
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
 
-    const labels = PERIOD_LABELS[PERIOD_SYSTEM] || [];
-
     PERIODS.forEach((p, idx) => {
         const th = document.createElement('th');
         th.className = 'col-period col-period-header';
         th.setAttribute('rowspan', '2');
-        const name = labels[idx] || ('Период ' + (idx + 1));
+        
+        // Используем PERIOD_NAMES вместо удалённого PERIOD_LABELS
+        const name = (idx + 1) + ' ' + (PERIOD_NAMES[PERIOD_SYSTEM] || 'период');
         const sp = name.indexOf(' ');
         if (sp > 0) {
             th.innerHTML = escapeHtml(name.slice(0, sp)) + '<br>' + escapeHtml(name.slice(sp + 1));
