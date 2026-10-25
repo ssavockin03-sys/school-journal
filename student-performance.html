@@ -105,22 +105,26 @@
         .dnevnik-marks-table td.avg-cell.empty { color: #999; font-weight: 400; }
         .dnevnik-marks-table td.qtr-cell { text-align: center; }
 
-        /* ПЛИТКИ ДЛЯ ТАБЛИЦЫ (НЕ АБСОЛЮТНЫЕ) */
+        /* ПЛИТКИ ДЛЯ ТАБЛИЦЫ (НЕ АБСОЛЮТНЫЕ, НО С ТОЧНЫМИ РАЗМЕРАМИ ИЗ CSS) */
         .dnevnik-grade-tile-table {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 20px;
-            min-width: 20px;
-            padding: 0 6px;
-            border-radius: 4px;
-            color: #fff;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 0 4px 4px 0;
+            display: inline-block; /* Чтобы стояли в ряд */
+            height: 17px; /* Из QoB5a */
+            box-sizing: border-box; /* Из QoB5a */
+            color: #fff; /* Из QoB5a */
+            padding: 4px; /* Из QoB5a */
+            font-weight: 400; /* Из QoB5a */
+            font-size: 14px; /* Из QoB5a */
+            line-height: 9px; /* Из QoB5a */
+            border-radius: 2px; /* Из QoB5a */
+            cursor: pointer; /* Из QoB5a */
+            margin-right: 4px; /* Из LuDK3 */
+            margin-bottom: 4px; /* Из LuDK3 */
+            text-align: center;
+            min-width: 17px;
             vertical-align: middle;
+            transition: transform 0.1s;
         }
+        .dnevnik-grade-tile-table:hover { transform: scale(1.15); }
 
         .dnevnik-qtr-tile { display: inline-block; padding: 4px 8px; border-radius: 2px; font-weight: 600; font-size: 14px; color: #fff; line-height: 1; }
         .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
@@ -613,7 +617,7 @@
         return { start: p.start, end: p.end };
     }
 
-    // ==================== ГЛАВНОЕ ИСПРАВЛЕНИЕ ТАБЛИЦЫ ====================
+    // ==================== ИСПРАВЛЕННАЯ ТАБЛИЦА ====================
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
@@ -677,7 +681,7 @@
             html += '<tr>';
             html += `<td class="subject-name">${subjectName}</td>`;
             
-            // 5. Выводим оценки
+            // 5. Выводим оценки (С ПРАВИЛЬНЫМ КЛАССОМ)
             if (displayGrades.length === 0) {
                 html += '<td><span style="color:#999;font-style:italic;font-size:12px;">Нет оценок</span></td>';
             } else {
@@ -686,7 +690,6 @@
                     const cls = gradeClass(val);
                     const safeSubj = escapeHtml(subjectName).replace(/'/g, "\\'");
                     const safeVal = escapeHtml(val).replace(/'/g, "\\'");
-                    // Тут дата не передается точно, но статистика и так откроется
                     html += `<span class="dnevnik-grade-tile-table ${cls}" onclick="openGradeStat('${safeSubj}','${safeVal}','','grade')">${val}</span>`;
                 });
                 html += '</td>';
