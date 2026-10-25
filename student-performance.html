@@ -52,155 +52,35 @@
         .view-pane.active { display: block; }
 
         /* ===================== ТЕКУЩАЯ (ДНЕВНИК) ===================== */
-        .diary-container {
-            background-color: #cbd9f3; /* Синяя подложка */
-            border-radius: 8px;
-            padding: 20px 0;
-            position: relative;
-            width: 100%;
-            overflow: hidden; 
-        }
-
-        .week-grid {
-            display: flex;
-            gap: 0; /* Убрали gap, так как отступы теперь через margin */
-            overflow-x: auto;
-            padding: 0 20px 10px 20px;
-            scroll-behavior: smooth;
-            scrollbar-width: none; 
-            position: relative;
-            z-index: 1;
-        }
+        .diary-container { background-color: #cbd9f3; border-radius: 8px; padding: 20px 0; position: relative; width: 100%; overflow: hidden; }
+        .week-grid { display: flex; gap: 0; overflow-x: auto; padding: 0 20px 10px 20px; scroll-behavior: smooth; scrollbar-width: none; position: relative; z-index: 1; }
         .week-grid::-webkit-scrollbar { display: none; }
 
-        .scroll-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 36px;
-            height: 36px;
-            background-color: #7a9cc6;
-            color: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 10;
-            border: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            user-select: none;
-        }
+        .scroll-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; background-color: #7a9cc6; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; z-index: 10; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); user-select: none; }
         .scroll-arrow:hover { background-color: #5a7da8; }
         .scroll-arrow.left { left: 5px; }
         .scroll-arrow.right { right: 5px; }
 
-        /* ================= ТОЧНЫЕ СТИЛИ КОЛОНКИ ИЗ .wj5xj ================= */
-        .day-column { 
-            width: 200px; /* Из wj5xj */
-            min-width: 200px; /* Из wj5xj */
-            min-height: 500px; /* Из wj5xj */
-            background: #fff; /* Из wj5xj */
-            box-shadow: 0 3.11111px 6.22222px rgba(0, 0, 0, 0.06); /* Из wj5xj */
-            border-radius: 8px; /* Из wj5xj */
-            margin: 0 6px; /* Из wj5xj */
-            padding-bottom: 8px; /* Из wj5xj */
-            border: 1px solid #61a5e3; /* Из wj5xj */
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+        .day-column { width: 200px; min-width: 200px; min-height: 500px; background: #fff; box-shadow: 0 3.11111px 6.22222px rgba(0, 0, 0, 0.06); border-radius: 8px; margin: 0 6px; padding-bottom: 8px; border: 1px solid #61a5e3; overflow: hidden; display: flex; flex-direction: column; }
+        .day-header { padding: 10px 12px; font-weight: 600; font-size: 14px; color: #fff; background-color: #61a5e3; text-align: left; }
+        .day-column.weekend .day-header { background-color: #c4d0e0; }
+        .day-header.today { background-color: #2f80ed; }
 
-        /* Заголовок дня */
-        .day-header {
-            padding: 10px 12px;
-            font-weight: 600;
-            font-size: 14px;
-            color: #fff;
-            background-color: #61a5e3;
-            text-align: left;
-        }
-        
-        .day-column.weekend .day-header {
-            background-color: #c4d0e0;
-        }
-        .day-header.today {
-            background-color: #2f80ed;
-        }
+        .day-body { padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .lesson-card { display: flex; flex-direction: column; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; position: relative; }
+        .lesson-card:last-child { border-bottom: none; }
+        .lesson-title { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 2px; }
+        .lesson-meta { font-size: 11px; color: #777; margin-bottom: 4px; }
+        .lesson-hw { font-size: 12px; color: #333; background: #f8f9fb; padding: 6px 8px; border-radius: 6px; margin-top: 4px; display: flex; align-items: flex-start; gap: 6px; }
+        .lesson-hw input { margin-top: 2px; cursor: pointer; }
 
-        .day-body {
-            padding: 10px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .lesson-card {
-            display: flex;
-            flex-direction: column;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 8px;
-            position: relative;
-        }
-        .lesson-card:last-child {
-            border-bottom: none;
-        }
-        .lesson-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 2px;
-        }
-        .lesson-meta {
-            font-size: 11px;
-            color: #777;
-            margin-bottom: 4px;
-        }
-        .lesson-hw {
-            font-size: 12px;
-            color: #333;
-            background: #f8f9fb;
-            padding: 6px 8px;
-            border-radius: 6px;
-            margin-top: 4px;
-            display: flex;
-            align-items: flex-start;
-            gap: 6px;
-        }
-        .lesson-hw input {
-            margin-top: 2px;
-            cursor: pointer;
-        }
-
-        .dnevnik-grade-tile {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 20px;
-            min-width: 20px;
-            padding: 0 6px;
-            border-radius: 4px;
-            color: #fff;
-            font-size: 12px;
-            font-weight: 600;
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
+        .dnevnik-grade-tile { display: inline-flex; align-items: center; justify-content: center; height: 20px; min-width: 20px; padding: 0 6px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 600; position: absolute; top: 0; right: 0; cursor: pointer; }
         .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4 { background-color: #4b9a25; }
         .dnevnik-grade-tile.g3 { background-color: #ff8f00; }
         .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1 { background-color: #cf3838; }
         .dnevnik-grade-tile.gn { background-color: #94acc8; }
 
-        .weekend-text {
-            text-align: center;
-            color: #999;
-            font-size: 13px;
-            margin-top: 20px;
-        }
+        .weekend-text { text-align: center; color: #999; font-size: 13px; margin-top: 20px; }
 
         /* ===================== ТАБЛИЦА (ПО ПЕРИОДАМ) ===================== */
         .period-tabs-wrapper { margin-bottom: 16px; }
@@ -634,7 +514,6 @@
         html += `</div></div>`;
         container.innerHTML = html;
 
-        // Логика стрелок
         const grid = document.getElementById('weekGrid');
         const scrollLeft = document.getElementById('scrollLeftBtn');
         const scrollRight = document.getElementById('scrollRightBtn');
@@ -713,6 +592,7 @@
         return { start: p.start, end: p.end };
     }
 
+    // ==================== ТЕПЕРЬ ТАБЛИЦА ОТОБРАЖАЕТ ОЦЕНКИ ПРАВИЛЬНО ====================
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
@@ -738,6 +618,8 @@
 
         subjectsFromSchedule.forEach(subjectName => {
             let records = all.filter(g => g.subject === subjectName);
+            
+            // ФИЛЬТРАЦИЯ ПО ПЕРИОДУ (ИСПРАВЛЕНО)
             if (range) {
                 records = records.filter(r => {
                     if (!r.date) return false;
