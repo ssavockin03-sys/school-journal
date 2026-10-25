@@ -74,11 +74,14 @@
         .lesson-hw { font-size: 12px; color: #333; background: #f8f9fb; padding: 6px 8px; border-radius: 6px; margin-top: 4px; display: flex; align-items: flex-start; gap: 6px; }
         .lesson-hw input { margin-top: 2px; cursor: pointer; }
 
+        /* Плитки для дневника (абсолютные) */
         .dnevnik-grade-tile { display: inline-flex; align-items: center; justify-content: center; height: 20px; min-width: 20px; padding: 0 6px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 600; position: absolute; top: 0; right: 0; cursor: pointer; }
-        .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4 { background-color: #4b9a25; }
-        .dnevnik-grade-tile.g3 { background-color: #ff8f00; }
-        .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1 { background-color: #cf3838; }
-        .dnevnik-grade-tile.gn { background-color: #94acc8; }
+        
+        /* Цвета плиток */
+        .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4, .dnevnik-grade-tile-table.g5, .dnevnik-grade-tile-table.g4 { background-color: #4b9a25; }
+        .dnevnik-grade-tile.g3, .dnevnik-grade-tile-table.g3 { background-color: #ff8f00; }
+        .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1, .dnevnik-grade-tile-table.g2, .dnevnik-grade-tile-table.g1 { background-color: #cf3838; }
+        .dnevnik-grade-tile.gn, .dnevnik-grade-tile-table.gn { background-color: #94acc8; }
 
         .weekend-text { text-align: center; color: #999; font-size: 13px; margin-top: 20px; }
 
@@ -95,13 +98,30 @@
         .dnevnik-marks-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; table-layout: fixed; }
         .dnevnik-marks-table th { background: #f9f9f9; font-weight: 600; font-size: 11px; color: #777; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; text-align: left; }
         .dnevnik-marks-table th.center { text-align: center; }
-        .dnevnik-marks-table td { min-height: 28px; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; font-size: 12px; line-height: 1.4; }
+        .dnevnik-marks-table td { min-height: 28px; vertical-align: middle; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; font-size: 12px; line-height: 1.4; }
         .dnevnik-marks-table tr:last-child td { border-bottom: none; }
         .dnevnik-marks-table td.subject-name { font-weight: 600; color: #333; font-size: 14px; }
         .dnevnik-marks-table td.avg-cell { text-align: center; font-weight: 700; color: #4b9a25; font-size: 15px; }
         .dnevnik-marks-table td.avg-cell.empty { color: #999; font-weight: 400; }
         .dnevnik-marks-table td.qtr-cell { text-align: center; }
-        
+
+        /* ПЛИТКИ ДЛЯ ТАБЛИЦЫ (НЕ АБСОЛЮТНЫЕ) */
+        .dnevnik-grade-tile-table {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 20px;
+            min-width: 20px;
+            padding: 0 6px;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 4px 4px 0;
+            vertical-align: middle;
+        }
+
         .dnevnik-qtr-tile { display: inline-block; padding: 4px 8px; border-radius: 2px; font-weight: 600; font-size: 14px; color: #fff; line-height: 1; }
         .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
         .dnevnik-qtr-tile.g3 { background-color: #ff8f00; }
@@ -390,7 +410,6 @@
         return 0;
     }
 
-    // Собираем все оценки
     function collectAllStudentGrades() {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
@@ -413,7 +432,7 @@
         renderDiary();
         renderWarnings();
         renderPeriodTabs();
-        renderGradesTable(); // Вот наша исправленная таблица
+        renderGradesTable();
         renderRating();
     }
 
@@ -668,7 +687,7 @@
                     const safeSubj = escapeHtml(subjectName).replace(/'/g, "\\'");
                     const safeVal = escapeHtml(val).replace(/'/g, "\\'");
                     // Тут дата не передается точно, но статистика и так откроется
-                    html += `<span class="dnevnik-grade-tile ${cls}" onclick="openGradeStat('${safeSubj}','${safeVal}','','grade')">${val}</span>`;
+                    html += `<span class="dnevnik-grade-tile-table ${cls}" onclick="openGradeStat('${safeSubj}','${safeVal}','','grade')">${val}</span>`;
                 });
                 html += '</td>';
             }
