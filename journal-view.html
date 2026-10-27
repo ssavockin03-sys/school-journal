@@ -378,6 +378,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     border-top: 1px solid #1E40AF !important;
     border-bottom: 1px solid #1E40AF !important;
 }
+/* Вертикальные тёмно-синие разделители между всеми ячейками строки «сегодня» */
+.panel-right tbody tr.lesson-row.lesson-today > td:not(:last-child) {
+    border-right: 1px solid #1E40AF !important;
+}
+/* Внешняя левая граница строки */
 .panel-right tbody tr.lesson-row.lesson-today > td:first-child::before {
     content: '';
     position: absolute;
@@ -389,6 +394,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     pointer-events: none;
     z-index: 8;
 }
+/* Внешняя правая граница строки */
 .panel-right tbody tr.lesson-row.lesson-today > td:last-child::after {
     content: '';
     position: absolute;
@@ -400,7 +406,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     pointer-events: none;
     z-index: 8;
 }
-
 .panel-right tbody td.lesson-date-cell .today-date {
     display: block;
     font-size: 12px;
