@@ -58,7 +58,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panels-container { display: flex; padding: 0 30px; height: calc(100vh - 185px); min-height: 300px; align-items: stretch; }
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
-.panel-right { flex: 1; min-width: 0; height: 100%; overflow: auto; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; margin: 0 0 12px 0; }
+/* ПОУРОЧНЫЙ ПЛАН: никаких полос прокрутки никогда */
+.panel-right { flex: 1; min-width: 0; height: 100%; overflow: hidden; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; margin: 0 0 12px 0; }
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
 .panels-container.left-collapsed .panel-right { border-radius: 8px; border-left: 1px solid #CFD8E3; }
@@ -151,11 +152,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table tbody tr:nth-child(5n) td.col-filler-body { border-bottom: 1px solid #000000 !important; }
 .marks-table thead th.col-filler-head.col-filler-last, .marks-table tbody td.col-filler-body.col-filler-last { border-right: none; }
 
-.journal-scroll::-webkit-scrollbar, .panel-right::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
-.journal-scroll::-webkit-scrollbar-thumb, .panel-right::-webkit-scrollbar-thumb { background: #CFD8E3; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
-.journal-scroll::-webkit-scrollbar-thumb:hover, .panel-right::-webkit-scrollbar-thumb:hover { background: #B8C4D4; background-clip: padding-box; }
-.journal-scroll::-webkit-scrollbar-corner, .panel-right::-webkit-scrollbar-corner { background: transparent; }
+.journal-scroll::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
+.journal-scroll::-webkit-scrollbar-thumb { background: #CFD8E3; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
+.journal-scroll::-webkit-scrollbar-thumb:hover { background: #B8C4D4; background-clip: padding-box; }
+.journal-scroll::-webkit-scrollbar-corner { background: transparent; }
 
+/* Таблица в поурочном плане — фиксированная ширина 100%, без горизонтального переполнения */
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th { background: #EBF0F6 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600; height: 76px; line-height: 18px; padding: 0 8px; text-align: center; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
@@ -170,7 +172,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right tbody td.lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle; color: #0EA5E9; font-size: 12px; text-align: center; padding: 0 !important; cursor: pointer; transition: background 0.15s ease; }
 .panel-right tbody td.lesson-date-cell:hover { background: #EFF6FF !important; color: #1D4ED8; }
 
-/* ===== ФИЛЛЕРНЫЕ (МЕРТВЫЕ) СТРОКИ — строго 38px, без растяжения ===== */
+/* ===== ФИЛЛЕРНЫЕ (МЕРТВЫЕ) СТРОКИ — строго 38px ===== */
 .panel-right tbody tr.plan-filler-row td {
     padding: 0 !important;
     line-height: 0 !important;
@@ -248,7 +250,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .panels-container.summary-mode .panel-left-wrapper { display: flex !important; }
     .panels-container.summary-mode .panel-right-wrapper { display: none !important; }
     .panels-container.summary-mode .mobile-view-tabs { display: none; }
-    .panel-left, .panel-right { max-height: none; height: auto; border-radius: 8px; border: 1px solid #CFD8E3; margin: 0; width: 100%; }
+    .panel-left, .panel-right { max-height: none; height: auto; border-radius: 8px; border: 1px solid #CFD8E3; margin: 0; width: 100%; overflow: visible; }
     .journal-scroll { width: 100%; height: auto; overflow: auto; }
     .fio-table thead th { position: static; }
     .marks-table thead th { position: static; }
@@ -693,8 +695,6 @@ let planObserver = null;
 let journalObserver = null;
 function setupObservers() {
     if (typeof ResizeObserver === 'undefined') return;
-    // Наблюдаем за внешним контейнером панели (wrapper), а НЕ за panelRight —
-    // это предотвращает цикл: наш собственный overflow не триггерит перерасчёт.
     const panelRightWrapper = document.getElementById('panelRightWrapper');
     if (panelRightWrapper) {
         if (planObserver) planObserver.disconnect();
@@ -1301,52 +1301,39 @@ function centerOnToday() {
         }
     }
 
-    const panelRight = document.getElementById('panelRight');
-    if (panelRight) {
-        const pBody = document.getElementById('pBody');
-        const rows = pBody ? pBody.querySelectorAll('tr.lesson-row:not(.plan-filler-row)') : [];
-        const row = rows[idx];
-        if (row) {
-            const panelRect = panelRight.getBoundingClientRect();
-            const rowRect = row.getBoundingClientRect();
-            const contentTop = rowRect.top - panelRect.top + panelRight.scrollTop;
-            const targetScrollTop = contentTop + rowRect.height / 2 - panelRight.clientHeight / 2;
-            panelRight.scrollTop = Math.max(0, targetScrollTop);
-        }
-    }
+    // Панель поурочного плана НЕ скроллится — центрирование отключено.
 }
 
 /* ============================================================
    ФИЛЛЕРНЫЕ СТРОКИ В ПОУРОЧНОМ ПЛАНЕ.
-   Ничего не трогаем с overflow — панель остаётся overflow:auto,
-   но филлеров ровно столько, чтобы переполнения не было.
+   Панель overflow: hidden — прокрутки нет никогда.
+   Рисуем ровно столько строк, сколько влезает с запасом 2px,
+   чтобы не упираться в границу и не провоцировать скролл.
    ============================================================ */
 function fillPlanFillers() {
     const pBody = document.getElementById('pBody');
     if (!pBody) return;
-    if (document.getElementById('panelsContainer').classList.contains('summary-mode')) {
-        pBody.querySelectorAll('.plan-filler-row').forEach(r => r.remove());
-        return;
-    }
-
-    // Удаляем старые филлеры
     pBody.querySelectorAll('.plan-filler-row').forEach(r => r.remove());
+
+    if (document.getElementById('panelsContainer').classList.contains('summary-mode')) return;
 
     const panelRight = document.getElementById('panelRight');
     const table = document.getElementById('lessonPlanTable');
     if (!panelRight || !table) return;
 
-    // Синхронно измеряем свободное место (без филлеров).
-    const panelRect = panelRight.getBoundingClientRect();
+    // Используем scrollHeight/clientHeight — они дают фактическое содержимое и видимую высоту.
+    const freeSpace = panelRight.clientHeight - table.getBoundingClientRect().height - (panelRight.getBoundingClientRect().top - table.getBoundingClientRect().top);
+    // Проще: сколько пикселей от нижней границы таблицы до нижней границы панели (внутренней).
     const tableRect = table.getBoundingClientRect();
-    const freeSpace = panelRect.bottom - tableRect.bottom;
-    if (freeSpace <= 0) return;
+    const panelRect = panelRight.getBoundingClientRect();
+    const available = panelRect.bottom - tableRect.bottom - 2; // запас 2px
+
+    if (available <= 0) return;
 
     const rowH = getPlanFillerRowHeight();
-    const fullRows = Math.floor(freeSpace / rowH);
+    const fullRows = Math.floor(available / rowH);
     if (fullRows <= 0) return;
 
-    // Вставляем филлеры фрагментом — минимум перерисовок.
     const frag = document.createDocumentFragment();
     for (let i = 0; i < fullRows; i++) {
         frag.appendChild(createPlanFillerRow());
