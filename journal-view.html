@@ -59,6 +59,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
 .panel-right { flex: 1; min-width: 0; height: 100%; overflow: auto; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; margin: 0 0 12px 0; }
+.panel-right.no-scroll { overflow: hidden; }
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
 .panels-container.left-collapsed .panel-right { border-radius: 8px; border-left: 1px solid #CFD8E3; }
@@ -465,7 +466,6 @@ function getFillerColWidth() {
     if (w <= 1100) return 38;
     return 46;
 }
-/* Высота "мёртвой" строки = высоте строки ученика в журнале оценок */
 function getPlanFillerRowHeight() {
     return 38;
 }
@@ -584,9 +584,6 @@ function normalizeHwList(h) {
     return [];
 }
 
-/* ============================================================
-   ЕДИНЫЙ РЕДАКТОР С ЗАДЕРЖКОЙ 200 МС.
-   ============================================================ */
 let activeEditor = null;
 
 function commitActiveEditor() {
@@ -1320,6 +1317,12 @@ function centerOnToday() {
     }
 }
 
+/* ============================================================
+   ЗАПОЛНЕНИЕ «МЁРТВЫХ» СТРОК В ПОУРОЧНОМ ПЛАНЕ.
+   Правило: если реальные данные помещаются в панель,
+   филлерные строки рисуем и СКРОЛЛ ОТКЛЮЧАЕМ.
+   Если реальные данные НЕ помещаются — скролл нужен, филлеры не рисуем.
+   ============================================================ */
 function fillPlanFillers() {
     const pBody = document.getElementById('pBody');
     if (!pBody) return;
@@ -1327,24 +1330,42 @@ function fillPlanFillers() {
 
     const panelRight = document.getElementById('panelRight');
     if (!panelRight) return;
+
+    // Временно снимаем блокировку скролла, чтобы честно измерить контент.
+    panelRight.classList.remove('no-scroll');
+
     if (document.getElementById('panelsContainer').classList.contains('summary-mode')) return;
 
     const table = document.getElementById('lessonPlanTable');
     if (!table) return;
 
-    const panelRect = panelRight.getBoundingClientRect();
-    const tableRect = table.getBoundingClientRect();
-    const freeSpace = panelRect.bottom - tableRect.bottom;
+    // Ждём следующего кадра, чтобы измерения были после удаления старых строк.
+    requestAnimationFrame(() => {
+        // Есть ли реальное переполнение (без филлеров)?
+        const realOverflow = panelRight.scrollHeight > panelRight.clientHeight + 1;
+        if (realOverflow) {
+            // Реальный контент не влезает — оставляем overflow:auto, филлеры не нужны.
+            return;
+        }
 
-    if (freeSpace <= 0) return;
+        const panelRect = panelRight.getBoundingClientRect();
+        const tableRect = table.getBoundingClientRect();
+        const freeSpace = panelRect.bottom - tableRect.bottom;
+        if (freeSpace <= 0) {
+            panelRight.classList.add('no-scroll');
+            return;
+        }
 
-    const rowH = getPlanFillerRowHeight();
-    // Сколько целых строк влезает — столько и рисуем. Остаток не заполняем.
-    const fullRows = Math.floor(freeSpace / rowH);
+        const rowH = getPlanFillerRowHeight();
+        const fullRows = Math.floor(freeSpace / rowH);
 
-    for (let i = 0; i < fullRows; i++) {
-        pBody.appendChild(createPlanFillerRow());
-    }
+        for (let i = 0; i < fullRows; i++) {
+            pBody.appendChild(createPlanFillerRow());
+        }
+
+        // После добавления филлеров содержимое точно не должно скроллиться.
+        panelRight.classList.add('no-scroll');
+    });
 }
 
 function createPlanFillerRow() {
