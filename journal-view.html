@@ -406,6 +406,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     pointer-events: none;
     z-index: 8;
 }
+
 .panel-right tbody td.lesson-date-cell .today-date {
     display: block;
     font-size: 12px;
@@ -796,8 +797,9 @@ function getFillerColWidth() {
     if (w <= 1100) return 38;
     return 46;
 }
+/* ВЫСОТА "МЕРТВЫХ" СТРОК — В 2 РАЗА МЕНЬШЕ (было 56, стало 28) */
 function getPlanFillerRowHeight() {
-    return 56;
+    return 28;
 }
 
 function escapeHtml(text) {
@@ -916,8 +918,6 @@ function normalizeHwList(h) {
 
 /* ============================================================
    ЕДИНЫЙ РЕДАКТОР С ЗАДЕРЖКОЙ 200 МС.
-   ВАЖНО: commit() всегда делает ПОЛНЫЙ коммит с перерисовкой,
-   чтобы ячейка никогда не оставалась в "невидимом" состоянии.
    ============================================================ */
 let activeEditor = null;
 
@@ -1666,20 +1666,58 @@ function fillPlanFillers() {
 
     const panelRect = panelRight.getBoundingClientRect();
     const tableRect = table.getBoundingClientRect();
-    const freeSpace = panelRect.bottom - tableRect.bottom;
+    let freeSpace = panelRect.bottom - tableRect.bottom;
 
     if (freeSpace <= 0) return;
 
     const rowH = getPlanFillerRowHeight();
     const fullRows = Math.floor(freeSpace / rowH);
-    const remainder = Math.round(freeSpace - fullRows * rowH);
+    let remainder = Math.round(freeSpace - fullRows * rowH);
+
+    // Если остаток меньше половины строки — растягиваем последнюю филлерную строку,
+    // иначе добавляем ещё одну строку и растягиваем её.
+    let extraRow = false;
+    if (remainder >= rowH / 2) {
+        extraRow = true;
+        remainder = Math.round(freeSpace - (fullRows + 1) * rowH);
+    }
 
     for (let i = 0; i < fullRows; i++) {
         pBody.appendChild(createPlanFillerRow(null));
     }
-    if (remainder >= 4) {
-        pBody.appendChild(createPlanFillerRow(remainder + 'px'));
+    if (extraRow) {
+        pBody.appendChild(createPlanFillerRow(remainder > 0 ? remainder + 'px' : null));
+    } else if (remainder > 0) {
+        // Растягиваем последнюю строку на остаток, чтобы не было щели
+        const lastRow = pBody.querySelector('.plan-filler-row:last-child');
+        if (lastRow) {
+            lastRow.querySelectorAll('td').forEach(td => {
+                td.style.height = (rowH + remainder) + 'px';
+            });
+        } else {
+            // Если fullRows === 0, создаём одну строку на весь остаток
+            pBody.appendChild(createPlanFillerRow(freeSpace + 'px'));
+        }
     }
+
+    // Контрольная проверка: если после вставки всё ещё есть заметная щель —
+    // растягиваем последнюю строку на остаток.
+    requestAnimationFrame(() => {
+        const newTableRect = table.getBoundingClientRect();
+        const newPanelRect = panelRight.getBoundingClientRect();
+        const gap = newPanelRect.bottom - newTableRect.bottom;
+        if (gap > 1) {
+            const last = pBody.querySelector('.plan-filler-row:last-child');
+            if (last) {
+                const curH = last.getBoundingClientRect().height;
+                last.querySelectorAll('td').forEach(td => {
+                    td.style.height = (curH + gap) + 'px';
+                });
+            } else {
+                pBody.appendChild(createPlanFillerRow(gap + 'px'));
+            }
+        }
+    });
 }
 
 function createPlanFillerRow(height) {
@@ -1784,7 +1822,6 @@ function renderThemeContent(cell, gradeKey, value) {
 }
 
 function openThemeEditInline(cell, gradeKey, value) {
-    // Завершаем предыдущий редактор ПЕРЕД тем, как заменить содержимое ячейки.
     commitActiveEditor();
 
     cell.innerHTML = '';
@@ -1805,7 +1842,6 @@ function openThemeEditInline(cell, gradeKey, value) {
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
-    // Единственный способ коммита — полный, с перерисовкой ячейки.
     const commit = () => {
         const txt = ta.value.trim();
         if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
@@ -1886,7 +1922,6 @@ function findHwItemByIndex(listWrap, idx) {
 }
 
 function openHwItemEdit(cell, gradeKey, idx, value) {
-    // Завершаем предыдущий редактор ПЕРЕД тем, как заменить содержимое ячейки.
     commitActiveEditor();
 
     const listWrap = cell.querySelector('.hw-list');
@@ -1953,7 +1988,6 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
 }
 
 function openNewHwItem(cell, gradeKey) {
-    // Завершаем предыдущий редактор ПЕРЕД тем, как заменить содержимое ячейки.
     commitActiveEditor();
 
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
