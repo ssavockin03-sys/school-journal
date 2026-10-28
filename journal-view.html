@@ -170,13 +170,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right tbody td.lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle; color: #0EA5E9; font-size: 12px; text-align: center; padding: 0 !important; cursor: pointer; transition: background 0.15s ease; }
 .panel-right tbody td.lesson-date-cell:hover { background: #EFF6FF !important; color: #1D4ED8; }
 
-/* ===== ФИЛЛЕРНЫЕ (МЕРТВЫЕ) СТРОКИ ===== */
-/* Жёстко фиксируем высоту, убираем padding и line-height, чтобы height работал точно и был равен строке ученика (38px) */
+/* ===== ФИЛЛЕРНЫЕ (МЕРТВЫЕ) СТРОКИ — строго 38px, без растяжения ===== */
 .panel-right tbody tr.plan-filler-row td {
     padding: 0 !important;
     line-height: 0 !important;
     font-size: 0 !important;
-    height: 38px;
+    height: 38px !important;
     box-sizing: border-box;
 }
 
@@ -1335,55 +1334,37 @@ function fillPlanFillers() {
 
     const panelRect = panelRight.getBoundingClientRect();
     const tableRect = table.getBoundingClientRect();
-    let freeSpace = panelRect.bottom - tableRect.bottom;
+    const freeSpace = panelRect.bottom - tableRect.bottom;
 
     if (freeSpace <= 0) return;
 
     const rowH = getPlanFillerRowHeight();
+    // Сколько целых строк влезает — столько и рисуем. Остаток не заполняем.
     const fullRows = Math.floor(freeSpace / rowH);
-    const remainder = Math.round(freeSpace - fullRows * rowH);
 
-    // Добавляем ровно столько строк, сколько влезает целиком, без лишней
     for (let i = 0; i < fullRows; i++) {
-        pBody.appendChild(createPlanFillerRow(null));
-    }
-
-    // Остаток растягиваем на последнюю филлерную строку, чтобы не было щели.
-    // Если ни одной строки не влезло (fullRows === 0) — создаём одну на весь остаток.
-    if (remainder > 0) {
-        const lastRow = pBody.querySelector('.plan-filler-row:last-child');
-        if (lastRow) {
-            lastRow.querySelectorAll('td').forEach(td => {
-                td.style.height = (rowH + remainder) + 'px';
-            });
-        } else if (freeSpace >= 2) {
-            pBody.appendChild(createPlanFillerRow(freeSpace + 'px'));
-        }
+        pBody.appendChild(createPlanFillerRow());
     }
 }
 
-function createPlanFillerRow(height) {
+function createPlanFillerRow() {
     const tr = document.createElement('tr');
     tr.className = 'lesson-row plan-filler-row';
 
     const td1 = document.createElement('td');
     td1.className = 'lesson-num-cell plan-filler-cell';
-    if (height) td1.style.height = height;
     tr.appendChild(td1);
 
     const td2 = document.createElement('td');
     td2.className = 'lesson-date-cell plan-filler-cell';
-    if (height) td2.style.height = height;
     tr.appendChild(td2);
 
     const td3 = document.createElement('td');
     td3.className = 'theme-cell plan-filler-cell';
-    if (height) td3.style.height = height;
     tr.appendChild(td3);
 
     const td4 = document.createElement('td');
     td4.className = 'homework-cell plan-filler-cell';
-    if (height) td4.style.height = height;
     tr.appendChild(td4);
 
     return tr;
