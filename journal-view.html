@@ -81,13 +81,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; }
 .side-toggle-tab svg { width: 9.8px; height: 9.8px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
+/* === ФИКС «пляски» шапки при горизонтальном скролле === */
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
-.journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
-.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 20; }
+/* transform на обёртке отключает пересчёт sticky-позиций на каждом кадре скролла */
+.journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; transform: translateZ(0); }
+.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 20; transform: translateZ(0); }
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 30; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
 .fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
-.fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 25; }
+/* Шапка ФИО: sticky top внутри sticky left; убираем border-bottom в пользу inset box-shadow,
+   чтобы высота th не зависела от бордера при пересчёте sticky */
+.fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 25; border-bottom: none; box-shadow: inset 0 -1px 0 #CFD8E3; transform: translateZ(0); }
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
 .fio-table .student-name-text { display: inline-block; font-size: 13.65px; }
@@ -97,8 +101,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; position: relative; }
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
-.marks-table thead { position: sticky; top: 0; z-index: 10; }
-.marks-table thead th { background: #EBF0F6 !important; }
+/* Шапка marks-table: sticky top; translateZ(0) — чтобы не дрожала при горизонтальном скролле.
+   border-bottom у th заменяем на inset box-shadow (внешне то же самое, но не влияет на пересчёт). */
+.marks-table thead { position: sticky; top: 0; z-index: 10; transform: translateZ(0); }
+.marks-table thead th { background: #EBF0F6 !important; border-bottom: none; box-shadow: inset 0 -1px 0 #CFD8E3; }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .col-period { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; font-size: 12px !important; font-weight: 400 !important; position: relative; }
@@ -144,14 +150,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* === ИСПРАВЛЕНИЕ 1: ровная синяя обводка фокуса ===
-   Раньше ::after имел bottom: -1px; right: -1px — из-за этого нижняя линия съезжала
-   на соседнюю строку и выглядела неровной. Ставим bottom: 0; right: 0 — обводка
-   рисуется внутри ячейки, ровно по всем четырём сторонам, не задевая соседей. */
+/* Обводка фокуса: ровно по всем сторонам (bottom/right = 0, не -1px) */
 .marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { position: relative; z-index: 9; }
 .marks-table td.col-date:focus-within::after, .marks-table td.col-qtr:focus-within::after, .marks-table td.col-period:focus-within::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 10; box-sizing: border-box; }
-/* У col-today был дополнительный outline — он конфликтовал и давал двойную/сдвинутую линию.
-   Убираем outline, оставляем тот же ::after. */
 .marks-table td.col-date.col-today:focus-within, .marks-table td.col-qtr.col-today:focus-within, .marks-table td.col-period.col-today:focus-within { outline: none; }
 .marks-table td.col-date.col-today:focus-within::after, .marks-table td.col-qtr.col-today:focus-within::after, .marks-table td.col-period.col-today:focus-within::after { content: ''; border: 1.5px solid #60A5FA; }
 
