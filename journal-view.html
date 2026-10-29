@@ -81,23 +81,22 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; }
 .side-toggle-tab svg { width: 9.8px; height: 9.8px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
-/* --- ФИКС «пляски» строк: scrollbar-gutter + contain --- */
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
-.journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; align-items: flex-start; }
-.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 20; contain: layout paint; }
+.journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
+.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 20; }
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 30; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
-.fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 38px; vertical-align: middle; border: none; box-sizing: border-box; background: #FFFFFF; box-shadow: inset 0 -1px 0 #CFD8E3; }
-.fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 76px; padding: 0 10px; position: sticky; top: 0; z-index: 25; box-shadow: inset 0 -1px 0 #CFD8E3; }
+.fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
+.fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 25; }
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
 .fio-table .student-name-text { display: inline-block; font-size: 13.65px; }
-.fio-table tbody tr:nth-child(5n) td { box-shadow: inset 0 -1px 0 #000000 !important; }
+.fio-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
-.marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; contain: layout paint; }
+.marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
-.marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 38px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; box-sizing: border-box; position: relative; background: #FFFFFF; box-shadow: inset 0 -1px 0 #CFD8E3; }
-.marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; box-shadow: inset 0 -1px 0 #CFD8E3; }
+.marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; position: relative; }
+.marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
 .marks-table thead { position: sticky; top: 0; z-index: 10; }
 .marks-table thead th { background: #EBF0F6 !important; }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
@@ -107,19 +106,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead tr:first-child .col-date.clickable-date:hover { background: #DBEAFE !important; color: #1D4ED8 !important; text-decoration: underline; }
 .marks-table thead tr:nth-child(2) .col-date { font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; cursor: pointer !important; user-select: none; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #DFE7F0 !important; }
-.marks-table tbody tr:nth-child(5n) td { box-shadow: inset 0 -1px 0 #000000 !important; }
+.marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
 .marks-table thead tr:first-child th.col-date.col-today { padding: 4px 2px; line-height: 1.15; vertical-align: middle; }
 .marks-table thead tr:first-child th.col-date .today-date { display: block; font-size: 12px; color: #0EA5E9; font-weight: 500; line-height: 1.1; }
 .marks-table thead tr:first-child th.col-date.col-today.clickable-date:hover .today-date { color: #1D4ED8; }
 .marks-table thead tr:first-child th.col-date .today-label { display: block; font-size: 9px; color: #475569; font-weight: 400; line-height: 1.1; margin-top: 2px; text-transform: lowercase; letter-spacing: 0.1px; }
 
-/* Границы «сегодня» — через box-shadow, не меняют геометрию */
-.marks-table th.col-today, .marks-table td.col-today { box-shadow: inset 1px 0 0 #1E40AF, inset -1px 0 0 #1E40AF, inset 0 -1px 0 #CFD8E3; }
-.marks-table thead tr:first-child th.col-today { box-shadow: inset 1px 0 0 #1E40AF, inset -1px 0 0 #1E40AF, inset 0 1px 0 #1E40AF, inset 0 -1px 0 #CFD8E3; }
-.marks-table tbody tr:last-child td.col-today { box-shadow: inset 1px 0 0 #1E40AF, inset -1px 0 0 #1E40AF, inset 0 -1px 0 #1E40AF; }
-.marks-table th.col-today::before, .marks-table td.col-today::before,
-.marks-table th.col-today::after, .marks-table td.col-today::after { content: none; }
+.marks-table th.col-today::before, .marks-table td.col-today::before { content: ''; position: absolute; top: 0; bottom: -1px; left: 0; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
+.marks-table th.col-today::after, .marks-table td.col-today::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
+.marks-table thead tr:first-child th.col-today { border-top: 1px solid #1E40AF !important; }
+.marks-table tbody tr:last-child td.col-today { border-bottom: 1px solid #1E40AF !important; }
 
 .marks-table.period-mode thead th.col-period-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px; color: #334155; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
 .marks-table.period-mode thead th.col-final-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px; color: #1E293B; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; }
@@ -147,39 +144,20 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* === ФИКС СИНЕЙ ОБВОДКИ ФОКУСА: ровная по всем сторонам === */
-/* Рисуем обводку через inset box-shadow на самой ячейке, а не через ::after с border,
-   чтобы она не зависела от border-bottom/соседних строк и не съезжала снизу. */
-.marks-table td.col-date:focus-within,
-.marks-table td.col-qtr:focus-within,
-.marks-table td.col-period:focus-within {
-    z-index: 9;
-    box-shadow:
-        inset 1.5px 0 0 #60A5FA,
-        inset -1.5px 0 0 #60A5FA,
-        inset 0 1.5px 0 #60A5FA,
-        inset 0 -1.5px 0 #60A5FA !important;
-}
-/* Убираем старый ::after-обводку фокуса */
-.marks-table td.col-date:focus-within::after,
-.marks-table td.col-qtr:focus-within::after,
-.marks-table td.col-period:focus-within::after { content: none !important; border: none !important; }
+/* === ИСПРАВЛЕНИЕ 1: ровная синяя обводка фокуса ===
+   Раньше ::after имел bottom: -1px; right: -1px — из-за этого нижняя линия съезжала
+   на соседнюю строку и выглядела неровной. Ставим bottom: 0; right: 0 — обводка
+   рисуется внутри ячейки, ровно по всем четырём сторонам, не задевая соседей. */
+.marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { position: relative; z-index: 9; }
+.marks-table td.col-date:focus-within::after, .marks-table td.col-qtr:focus-within::after, .marks-table td.col-period:focus-within::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 10; box-sizing: border-box; }
+/* У col-today был дополнительный outline — он конфликтовал и давал двойную/сдвинутую линию.
+   Убираем outline, оставляем тот же ::after. */
+.marks-table td.col-date.col-today:focus-within, .marks-table td.col-qtr.col-today:focus-within, .marks-table td.col-period.col-today:focus-within { outline: none; }
+.marks-table td.col-date.col-today:focus-within::after, .marks-table td.col-qtr.col-today:focus-within::after, .marks-table td.col-period.col-today:focus-within::after { content: ''; border: 1.5px solid #60A5FA; }
 
-/* Для колонки «сегодня» совмещаем синюю обводку фокуса с синими границами колонки */
-.marks-table td.col-date.col-today:focus-within,
-.marks-table td.col-qtr.col-today:focus-within,
-.marks-table td.col-period.col-today:focus-within {
-    outline: none !important;
-    box-shadow:
-        inset 1.5px 0 0 #60A5FA,
-        inset -1.5px 0 0 #60A5FA,
-        inset 0 1.5px 0 #60A5FA,
-        inset 0 -1.5px 0 #60A5FA !important;
-}
-
-.marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; box-shadow: inset 0 -1px 0 #CFD8E3; }
-.marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CFD8E3; box-shadow: inset 0 -1px 0 #CFD8E3; pointer-events: none; }
-.marks-table tbody tr:nth-child(5n) td.col-filler-body { box-shadow: inset 0 -1px 0 #000000 !important; }
+.marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
+.marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; pointer-events: none; }
+.marks-table tbody tr:nth-child(5n) td.col-filler-body { border-bottom: 1px solid #000000 !important; }
 .marks-table thead th.col-filler-head.col-filler-last, .marks-table tbody td.col-filler-body.col-filler-last { border-right: none; }
 
 .journal-scroll::-webkit-scrollbar, .panel-right::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
@@ -301,9 +279,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .fio-table .student-name-text { font-size: 11px; }
     .marks-table thead th.col-filler-head, .marks-table tbody td.col-filler-body { min-width: 34px !important; }
 }
-
-/* Стабилизация высоты строк при скролле */
-.panel-left, .panel-right { contain: layout paint; }
 </style>
 </head>
 <body>
