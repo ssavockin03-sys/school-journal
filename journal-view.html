@@ -58,7 +58,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panels-container { display: flex; padding: 0 30px; height: calc(100vh - 185px); min-height: 300px; align-items: stretch; }
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
-/* ПОУРОЧНЫЙ ПЛАН: без скролла */
 .panel-right { flex: 1; min-width: 0; height: 100%; overflow: hidden; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; margin: 0 0 12px 0; }
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
@@ -157,7 +156,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-scroll::-webkit-scrollbar-thumb:hover { background: #B8C4D4; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-corner { background: transparent; }
 
-/* Таблица поурочного плана: фиксированная раскладка, без горизонтального переполнения */
+/* Таблица поурочного плана */
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th { background: #EBF0F6 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600; height: 76px; line-height: 18px; padding: 0 8px; text-align: center; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
@@ -172,13 +171,19 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right tbody td.lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle; color: #0EA5E9; font-size: 12px; text-align: center; padding: 0 !important; cursor: pointer; transition: background 0.15s ease; }
 .panel-right tbody td.lesson-date-cell:hover { background: #EFF6FF !important; color: #1D4ED8; }
 
-/* Филлерные строки: обычные — 38px; последняя может быть меньше через inline-style */
+/* ===== ФИЛЛЕРНЫЕ СТРОКИ ===== */
 .panel-right tbody tr.plan-filler-row td {
     padding: 0 !important;
     line-height: 0 !important;
     font-size: 0 !important;
     height: 38px;
     box-sizing: border-box;
+}
+/* Добивающая (последняя) строка: убираем нижнюю границу, чтобы не было "жирной" линии снизу */
+.panel-right tbody tr.plan-filler-row.plan-filler-last td {
+    border-bottom: none !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 .panel-right tbody tr.lesson-row.lesson-today > td { border-top: 1px solid #1E40AF !important; border-bottom: 1px solid #1E40AF !important; }
@@ -1304,16 +1309,15 @@ function centerOnToday() {
 
 /* ============================================================
    ФИЛЛЕРНЫЕ СТРОКИ В ПОУРОЧНОМ ПЛАНЕ.
-   Панель overflow: hidden — прокрутки нет никогда.
-   Покрываем свободное место полностью:
-   - N целых строк по 38px,
-   - + 1 «добивающая» строка на остаток (0..37px), если он > 0.
+   Панель overflow: hidden — прокрутки нет.
+   Покрываем свободное место полностью, а у последней
+   добивающей строки убираем нижнюю границу — чтобы не было
+   визуально «жирной» серой линии в самом низу.
    ============================================================ */
 function fillPlanFillers() {
     const pBody = document.getElementById('pBody');
     if (!pBody) return;
 
-    // Удаляем старые филлеры
     pBody.querySelectorAll('.plan-filler-row').forEach(r => r.remove());
 
     if (document.getElementById('panelsContainer').classList.contains('summary-mode')) return;
@@ -1322,7 +1326,6 @@ function fillPlanFillers() {
     const table = document.getElementById('lessonPlanTable');
     if (!panelRight || !table) return;
 
-    // Используем фактическую внутреннюю область панели (без учёта border).
     const panelRect = panelRight.getBoundingClientRect();
     const tableRect = table.getBoundingClientRect();
 
@@ -1339,10 +1342,16 @@ function fillPlanFillers() {
     for (let i = 0; i < fullRows; i++) {
         frag.appendChild(createPlanFillerRow());
     }
-    // Добивающая строка на остаток, чтобы не было щели
     if (remainder >= 1) {
-        frag.appendChild(createPlanFillerRow(remainder + 'px'));
+        const lastRow = createPlanFillerRow(remainder + 'px');
+        lastRow.classList.add('plan-filler-last');
+        frag.appendChild(lastRow);
+    } else if (fullRows > 0) {
+        // Если остатка нет, всё равно помечаем последнюю строку, чтобы убрать её нижнюю границу
+        const rows = frag.querySelectorAll('.plan-filler-row');
+        if (rows.length) rows[rows.length - 1].classList.add('plan-filler-last');
     }
+
     pBody.appendChild(frag);
 }
 
