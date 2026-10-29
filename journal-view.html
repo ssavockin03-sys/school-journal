@@ -10,20 +10,7 @@
 <style>
 * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
 html { -webkit-font-smoothing: antialiased; }
-body { background: #F1F3F5; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
-
-/* ===== «Карточка» страницы на сером фоне ===== */
-.app-shell {
-    margin: 12px;
-    background: #FFFFFF;
-    border-radius: 16px;
-    height: calc(100vh - 24px);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-/* ===== Верх ===== */
+body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
@@ -67,12 +54,10 @@ body { background: #F1F3F5; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .mobile-view-tabs { display: none; }
 
-/* ===== Основная область ===== */
-#mainContent { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
-.panels-container { display: flex; padding: 0 30px 12px 30px; flex: 1 1 auto; min-height: 0; align-items: stretch; }
+.panels-container { display: flex; padding: 0 30px; height: calc(100vh - 185px); min-height: 300px; align-items: stretch; }
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
-.panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; }
-.panel-right { flex: 1; min-width: 0; height: 100%; overflow-y: auto; overflow-x: hidden; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; }
+.panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
+.panel-right { flex: 1; min-width: 0; height: 100%; overflow-y: auto; overflow-x: hidden; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; margin: 0 0 12px 0; }
 .panel-right.no-scroll { overflow-y: hidden; }
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
@@ -85,7 +70,7 @@ body { background: #F1F3F5; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panels-container.summary-mode .panel-left { border-radius: 8px; border-right: 1px solid #CFD8E3; }
 .panels-container.summary-mode .side-toggle-tabs { display: none; }
 
-.side-toggle-tabs { width: 0; flex-shrink: 0; position: relative; align-self: stretch; }
+.side-toggle-tabs { width: 0; flex-shrink: 0; position: relative; margin: 0 0 12px 0; align-self: stretch; }
 .side-toggle-tab { position: absolute; display: inline-flex; align-items: center; justify-content: center; gap: 5px; height: 130px; width: 27px; padding: 0; background: #3B82F6; color: #FFFFFF; border: 1px solid #3B82F6; font-size: 8.8px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; user-select: none; line-height: 1; letter-spacing: 0.2px; box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25); z-index: 6; }
 .side-toggle-tab.tab-left { left: 100%; top: calc(47% - 130px); border-radius: 8px 0 0 8px; border-right: none; transform: rotate(180deg); }
 .side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; }
@@ -93,12 +78,14 @@ body { background: #F1F3F5; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; }
 .side-toggle-tab svg { width: 9.8px; height: 9.8px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
-/* Журнал: фиксированная высота строк, всегда зарезервирован вертикальный скролл, чтобы не «плясало» при рефлоу */
-.journal-scroll { width: 100%; height: 100%; overflow-y: scroll; overflow-x: auto; position: relative; }
-.journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
+/* === Журнал: фиксированные высоты строк, убираем sticky с thead, шапку делаем sticky на th === */
+.journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; }
+.journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; align-items: flex-start; }
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 20; }
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 30; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
+.fio-table thead tr { height: 76px; }
+.fio-table tbody tr { height: 38px; }
 .fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
 .fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 25; }
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -108,10 +95,14 @@ body { background: #F1F3F5; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
+.marks-table thead tr { height: 38px; }
+.marks-table thead tr:first-child { height: 38px; }
+.marks-table thead tr:nth-child(2) { height: 38px; }
+.marks-table tbody tr { height: 38px; }
 .marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; position: relative; }
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
-.marks-table thead { position: sticky; top: 0; z-index: 10; }
-.marks-table thead th { background: #EBF0F6 !important; }
+.marks-table thead th { background: #EBF0F6 !important; position: sticky; top: 0; z-index: 10; }
+.marks-table thead th:nth-child(-n+1) { /* шапка ФИО отсутствует в marksTable */ }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .col-period { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; font-size: 12px !important; font-weight: 400 !important; position: relative; }
@@ -172,9 +163,8 @@ body { background: #F1F3F5; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-scroll::-webkit-scrollbar-thumb:hover, .panel-right::-webkit-scrollbar-thumb:hover { background: #B8C4D4; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-corner, .panel-right::-webkit-scrollbar-corner { background: transparent; }
 
-/* ===== Поурочный план ===== */
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-.panel-right table thead { position: sticky; top: 0; z-index: 30; }
+.panel-right table thead th { position: sticky; top: 0; z-index: 30; }
 .panel-right table th { background: #EBF0F6 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600; height: 76px; line-height: 18px; padding: 0 8px; text-align: center; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
 .panel-right table th:last-child { border-right: none; }
 .panel-right table th:nth-child(1) { width: 40px; }
@@ -244,8 +234,6 @@ body { background: #F1F3F5; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 @media (max-width: 1100px) {
     body { overflow: auto; }
-    .app-shell { margin: 8px; height: calc(100vh - 16px); border-radius: 12px; overflow: visible; }
-    #mainContent { flex: none; }
     .mobile-view-tabs { display: flex; gap: 6px; padding: 8px 10px 0 10px; margin-bottom: 4px; flex-wrap: wrap; }
     .mobile-view-tab { flex: 1 1 0; min-width: 0; padding: 7px 8px; font-size: 12px; font-weight: 600; color: #64748B; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; cursor: pointer; font-family: inherit; transition: all 0.15s ease; text-align: center; white-space: nowrap; }
     .mobile-view-tab:hover { background: #F1F5F9; }
@@ -256,14 +244,14 @@ body { background: #F1F3F5; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .dropdown-trigger { font-size: 15px; }
     .header-grid { column-gap: 12px; row-gap: 4px; }
     .side-toggle-tabs { display: none; }
-    .panels-container { flex-direction: column; padding: 0 8px 8px 8px; flex: none; min-height: 0; gap: 0; }
+    .panels-container { flex-direction: column; padding: 0 8px 8px 8px; height: auto; min-height: 0; gap: 0; }
     .panels-container .panel-left-wrapper, .panels-container .panel-right-wrapper { max-width: 100% !important; flex: 1 1 auto !important; height: auto; display: none; width: 100%; }
     .panels-container.mobile-show-journal .panel-left-wrapper { display: flex; width: 100%; }
     .panels-container.mobile-show-plan .panel-right-wrapper { display: flex; width: 100%; }
     .panels-container.summary-mode .panel-left-wrapper { display: flex !important; }
     .panels-container.summary-mode .panel-right-wrapper { display: none !important; }
     .panels-container.summary-mode .mobile-view-tabs { display: none; }
-    .panel-left, .panel-right { max-height: none; height: auto; border-radius: 8px; border: 1px solid #CFD8E3; width: 100%; overflow: visible; }
+    .panel-left, .panel-right { max-height: none; height: auto; border-radius: 8px; border: 1px solid #CFD8E3; margin: 0; width: 100%; overflow: visible; }
     .journal-scroll { width: 100%; height: auto; overflow: auto; }
     .fio-table thead th { position: static; }
     .marks-table thead th { position: static; }
@@ -293,129 +281,127 @@ body { background: #F1F3F5; color: #1E293B; min-height: 100vh; font-size: 13px; 
 </head>
 <body>
 
-<div class="app-shell">
-    <div class="top-nav">
-        <a onclick="showToast('Стартовая учителя — в разработке')">Стартовая учителя</a>
-        <span class="sep">›</span>
-        <a onclick="goBack()">Журналы</a>
-        <span class="sep">›</span>
-        <span class="current" id="navChain">Класс, предмет</span>
-    </div>
+<div class="top-nav">
+    <a onclick="showToast('Стартовая учителя — в разработке')">Стартовая учителя</a>
+    <span class="sep">›</span>
+    <a onclick="goBack()">Журналы</a>
+    <span class="sep">›</span>
+    <span class="current" id="navChain">Класс, предмет</span>
+</div>
 
-    <div class="header-bar">
-        <div class="header-grid">
-            <div class="cell">
-                <div class="dropdown" id="classDropdown">
-                    <button type="button" class="dropdown-trigger" onclick="toggleClassDropdown(event)">
-                        <span id="classDropdownName">—</span>
-                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </button>
-                    <div class="dropdown-menu" id="classDropdownMenu"></div>
-                </div>
+<div class="header-bar">
+    <div class="header-grid">
+        <div class="cell">
+            <div class="dropdown" id="classDropdown">
+                <button type="button" class="dropdown-trigger" onclick="toggleClassDropdown(event)">
+                    <span id="classDropdownName">—</span>
+                    <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                </button>
+                <div class="dropdown-menu" id="classDropdownMenu"></div>
             </div>
-            <div class="cell">
-                <div class="dropdown" id="subjectDropdown">
-                    <button type="button" class="dropdown-trigger" onclick="toggleSubjectDropdown(event)">
-                        <span id="subjectDropdownName">—</span>
-                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </button>
-                    <div class="dropdown-menu" id="subjectDropdownMenu"></div>
-                </div>
-            </div>
-            <div class="cell"><span class="header-meta-item" id="yearLabel">2026/2027 учебный год</span></div>
-            <div class="cell"><span class="header-meta-item" id="teacherLabel">Учитель: —</span></div>
         </div>
+        <div class="cell">
+            <div class="dropdown" id="subjectDropdown">
+                <button type="button" class="dropdown-trigger" onclick="toggleSubjectDropdown(event)">
+                    <span id="subjectDropdownName">—</span>
+                    <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                </button>
+                <div class="dropdown-menu" id="subjectDropdownMenu"></div>
+            </div>
+        </div>
+        <div class="cell"><span class="header-meta-item" id="yearLabel">2026/2027 учебный год</span></div>
+        <div class="cell"><span class="header-meta-item" id="teacherLabel">Учитель: —</span></div>
     </div>
+</div>
 
-    <div class="period-tabs-wrapper">
-        <div class="period-tabs-group" id="periodTabs"></div>
-        <div class="header-actions">
-            <button type="button" class="btn-import" onclick="showToast('Импорт из Excel — в разработке')">
-                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                Импорт
+<div class="period-tabs-wrapper">
+    <div class="period-tabs-group" id="periodTabs"></div>
+    <div class="header-actions">
+        <button type="button" class="btn-import" onclick="showToast('Импорт из Excel — в разработке')">
+            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            Импорт
+        </button>
+        <button type="button" class="btn-text-action" onclick="showToast('Замечание — в разработке')">Замечание</button>
+        <button type="button" class="btn-outlined-blue" onclick="showToast('Запись класса — в разработке')">Запись класса</button>
+        <div class="icon-actions">
+            <button type="button" class="icon-action-btn" onclick="window.print()" title="Печать">
+                <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
             </button>
-            <button type="button" class="btn-text-action" onclick="showToast('Замечание — в разработке')">Замечание</button>
-            <button type="button" class="btn-outlined-blue" onclick="showToast('Запись класса — в разработке')">Запись класса</button>
-            <div class="icon-actions">
-                <button type="button" class="icon-action-btn" onclick="window.print()" title="Печать">
-                    <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
-                </button>
-                <button type="button" class="icon-action-btn" onclick="showToast('Экспорт в Excel — в разработке')" title="Экспорт в Excel">
-                    <svg class="excel-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8.5 17l2.5-3-2.5-3h1.5l1.75 2.1L13.5 11H15l-2.5 3 2.5 3h-1.5l-1.75-2.1L10 17H8.5z"/></svg>
-                </button>
-                <button type="button" class="icon-action-btn" onclick="showToast('Настройки — в разработке')" title="Настройки">
-                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                </button>
-            </div>
+            <button type="button" class="icon-action-btn" onclick="showToast('Экспорт в Excel — в разработке')" title="Экспорт в Excel">
+                <svg class="excel-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8.5 17l2.5-3-2.5-3h1.5l1.75 2.1L13.5 11H15l-2.5 3 2.5 3h-1.5l-1.75-2.1L10 17H8.5z"/></svg>
+            </button>
+            <button type="button" class="icon-action-btn" onclick="showToast('Настройки — в разработке')" title="Настройки">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            </button>
         </div>
     </div>
+</div>
 
-    <div class="mobile-view-tabs" id="mobileViewTabs">
-        <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
-        <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
-    </div>
+<div class="mobile-view-tabs" id="mobileViewTabs">
+    <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
+    <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
+</div>
 
-    <div id="mainContent">
-        <div class="panels-container" id="panelsContainer">
-            <div class="panel-left-wrapper" id="panelLeftWrapper">
-                <div class="panel-left" id="panelLeft">
-                    <div class="journal-scroll" id="journalScroll">
-                        <div class="journal-tables-wrapper">
-                            <div class="fio-table-wrapper">
-                                <table class="fio-table">
-                                    <thead><tr><th>ФИО</th></tr></thead>
-                                    <tbody id="fioBody"></tbody>
-                                </table>
-                            </div>
-                            <div class="marks-table-wrapper">
-                                <table class="marks-table" id="marksTable">
-                                    <thead>
-                                        <tr id="mRow"></tr>
-                                        <tr id="sRow"></tr>
-                                    </thead>
-                                    <tbody id="jBody"></tbody>
-                                </table>
-                            </div>
+<div id="mainContent">
+    <div class="panels-container" id="panelsContainer">
+        <div class="panel-left-wrapper" id="panelLeftWrapper">
+            <div class="panel-left" id="panelLeft">
+                <div class="journal-scroll" id="journalScroll">
+                    <div class="journal-tables-wrapper">
+                        <div class="fio-table-wrapper">
+                            <table class="fio-table">
+                                <thead><tr><th>ФИО</th></tr></thead>
+                                <tbody id="fioBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="marks-table-wrapper">
+                            <table class="marks-table" id="marksTable">
+                                <thead>
+                                    <tr id="mRow"></tr>
+                                    <tr id="sRow"></tr>
+                                </thead>
+                                <tbody id="jBody"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="side-toggle-tabs" id="sideToggleTabs">
-                <button type="button" class="side-toggle-tab tab-left" id="tabLeft" onclick="toggleRightPanel()">
-                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    Раскрыть журнал
-                </button>
-                <button type="button" class="side-toggle-tab tab-right" id="tabRight" onclick="toggleLeftPanel()">
-                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    Раскрыть поуроч. план
-                </button>
-            </div>
+        <div class="side-toggle-tabs" id="sideToggleTabs">
+            <button type="button" class="side-toggle-tab tab-left" id="tabLeft" onclick="toggleRightPanel()">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                Раскрыть журнал
+            </button>
+            <button type="button" class="side-toggle-tab tab-right" id="tabRight" onclick="toggleLeftPanel()">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                Раскрыть поуроч. план
+            </button>
+        </div>
 
-            <div class="panel-right-wrapper" id="panelRightWrapper">
-                <div class="panel-right" id="panelRight">
-                    <table id="lessonPlanTable">
-                        <thead>
-                            <tr>
-                                <th>№</th>
-                                <th>Дата</th>
-                                <th>Тема урока</th>
-                                <th>Домашнее задание к следующему уроку</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pBody"></tbody>
-                    </table>
-                </div>
+        <div class="panel-right-wrapper" id="panelRightWrapper">
+            <div class="panel-right" id="panelRight">
+                <table id="lessonPlanTable">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Дата</th>
+                            <th>Тема урока</th>
+                            <th>Домашнее задание к следующему уроку</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pBody"></tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="empty-state" id="emptyState" style="display:none;">
-        <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-        <h2 id="emptyTitle">Журнал пуст</h2>
-        <p id="emptyText">Для выбранного класса и предмета нет данных.</p>
-        <button type="button" class="btn-outlined-blue" onclick="goBack()">Вернуться в админку</button>
-    </div>
+<div class="empty-state" id="emptyState" style="display:none;">
+    <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+    <h2 id="emptyTitle">Журнал пуст</h2>
+    <p id="emptyText">Для выбранного класса и предмета нет данных.</p>
+    <button type="button" class="btn-outlined-blue" onclick="goBack()">Вернуться в админку</button>
 </div>
 
 <div class="lesson-type-popup" id="lessonTypePopup">
