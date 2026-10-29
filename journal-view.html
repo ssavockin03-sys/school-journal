@@ -147,10 +147,35 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-.marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { position: relative; z-index: 9; }
-.marks-table td.col-date:focus-within::after, .marks-table td.col-qtr:focus-within::after, .marks-table td.col-period:focus-within::after { content: ''; position: absolute; top: 0; left: 0; right: -1px; bottom: -1px; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 10; box-sizing: border-box; }
-.marks-table td.col-date.col-today:focus-within, .marks-table td.col-qtr.col-today:focus-within, .marks-table td.col-period.col-today:focus-within { outline: 1.5px solid #60A5FA; outline-offset: -1.5px; }
-.marks-table td.col-date.col-today:focus-within::after, .marks-table td.col-qtr.col-today:focus-within::after, .marks-table td.col-period.col-today:focus-within::after { content: none; border: none; }
+/* === ФИКС СИНЕЙ ОБВОДКИ ФОКУСА: ровная по всем сторонам === */
+/* Рисуем обводку через inset box-shadow на самой ячейке, а не через ::after с border,
+   чтобы она не зависела от border-bottom/соседних строк и не съезжала снизу. */
+.marks-table td.col-date:focus-within,
+.marks-table td.col-qtr:focus-within,
+.marks-table td.col-period:focus-within {
+    z-index: 9;
+    box-shadow:
+        inset 1.5px 0 0 #60A5FA,
+        inset -1.5px 0 0 #60A5FA,
+        inset 0 1.5px 0 #60A5FA,
+        inset 0 -1.5px 0 #60A5FA !important;
+}
+/* Убираем старый ::after-обводку фокуса */
+.marks-table td.col-date:focus-within::after,
+.marks-table td.col-qtr:focus-within::after,
+.marks-table td.col-period:focus-within::after { content: none !important; border: none !important; }
+
+/* Для колонки «сегодня» совмещаем синюю обводку фокуса с синими границами колонки */
+.marks-table td.col-date.col-today:focus-within,
+.marks-table td.col-qtr.col-today:focus-within,
+.marks-table td.col-period.col-today:focus-within {
+    outline: none !important;
+    box-shadow:
+        inset 1.5px 0 0 #60A5FA,
+        inset -1.5px 0 0 #60A5FA,
+        inset 0 1.5px 0 #60A5FA,
+        inset 0 -1.5px 0 #60A5FA !important;
+}
 
 .marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; box-shadow: inset 0 -1px 0 #CFD8E3; }
 .marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CFD8E3; box-shadow: inset 0 -1px 0 #CFD8E3; pointer-events: none; }
