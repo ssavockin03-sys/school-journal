@@ -10,7 +10,19 @@
 <style>
 * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
 html { -webkit-font-smoothing: antialiased; }
-body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
+body { background: #F1F3F5; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
+
+/* «Карточка» страницы */
+.page-shell {
+    background: #FFFFFF;
+    border-radius: 16px;
+    margin: 12px;
+    height: calc(100vh - 24px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
@@ -30,7 +42,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; }
 
-/* ===================== ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ ===================== */
 .period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; }
 .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
 .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
@@ -55,7 +66,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .mobile-view-tabs { display: none; }
 
-.panels-container { display: flex; padding: 0 30px; height: calc(100vh - 185px); min-height: 300px; align-items: stretch; }
+.panels-container { display: flex; padding: 0 30px; flex: 1 1 auto; min-height: 0; align-items: stretch; }
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
 .panel-right { flex: 1; min-width: 0; height: 100%; overflow-y: auto; overflow-x: hidden; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; margin: 0 0 12px 0; }
@@ -168,25 +179,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right tbody td { background: #FFFFFF !important; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; vertical-align: top; text-align: left; padding: 4px 8px; box-sizing: border-box; word-wrap: break-word; height: 56px; position: relative; }
 .panel-right tbody td:last-child { border-right: none; }
 
-/* === Главное: убираем нижнюю границу у ПОСЛЕДНЕЙ строки в tbody ВСЕГДА ===
-   Это гарантирует, что независимо от того, добивающая это строка или нет,
-   внизу таблицы не будет серой "жирной" полоски. */
-.panel-right tbody tr:last-child td {
-    border-bottom: 0 !important;
-}
+.panel-right tbody tr:last-child td { border-bottom: 0 !important; }
 
 .panel-right tbody td.lesson-num-cell { font-weight: 600; background: #F4F7FB !important; vertical-align: middle; color: #475569; font-size: 12px; text-align: center; padding: 0 !important; }
 .panel-right tbody td.lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle; color: #0EA5E9; font-size: 12px; text-align: center; padding: 0 !important; cursor: pointer; transition: background 0.15s ease; }
 .panel-right tbody td.lesson-date-cell:hover { background: #EFF6FF !important; color: #1D4ED8; }
 
-/* ===== ФИЛЛЕРНЫЕ СТРОКИ ===== */
-.panel-right tbody tr.plan-filler-row td {
-    padding: 0 !important;
-    line-height: 0 !important;
-    font-size: 0 !important;
-    height: 38px;
-    box-sizing: border-box;
-}
+.panel-right tbody tr.plan-filler-row td { padding: 0 !important; line-height: 0 !important; font-size: 0 !important; height: 38px; box-sizing: border-box; }
 
 .panel-right tbody tr.lesson-row.lesson-today > td { border-top: 1px solid #1E40AF !important; border-bottom: 1px solid #1E40AF !important; }
 .panel-right tbody tr.lesson-row.lesson-today > td:not(:last-child) { border-right: 1px solid #1E40AF !important; }
@@ -240,6 +239,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 @media (max-width: 1100px) {
     body { overflow: auto; }
+    .page-shell { margin: 8px; height: calc(100vh - 16px); border-radius: 12px; }
     .mobile-view-tabs { display: flex; gap: 6px; padding: 8px 10px 0 10px; margin-bottom: 4px; flex-wrap: wrap; }
     .mobile-view-tab { flex: 1 1 0; min-width: 0; padding: 7px 8px; font-size: 12px; font-weight: 600; color: #64748B; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; cursor: pointer; font-family: inherit; transition: all 0.15s ease; text-align: center; white-space: nowrap; }
     .mobile-view-tab:hover { background: #F1F5F9; }
@@ -250,7 +250,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .dropdown-trigger { font-size: 15px; }
     .header-grid { column-gap: 12px; row-gap: 4px; }
     .side-toggle-tabs { display: none; }
-    .panels-container { flex-direction: column; padding: 0 8px 8px 8px; height: auto; min-height: 0; gap: 0; }
+    .panels-container { flex-direction: column; padding: 0 8px 8px 8px; flex: 1 1 auto; min-height: 0; gap: 0; }
     .panels-container .panel-left-wrapper, .panels-container .panel-right-wrapper { max-width: 100% !important; flex: 1 1 auto !important; height: auto; display: none; width: 100%; }
     .panels-container.mobile-show-journal .panel-left-wrapper { display: flex; width: 100%; }
     .panels-container.mobile-show-plan .panel-right-wrapper { display: flex; width: 100%; }
@@ -287,127 +287,129 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 </head>
 <body>
 
-<div class="top-nav">
-    <a onclick="showToast('Стартовая учителя — в разработке')">Стартовая учителя</a>
-    <span class="sep">›</span>
-    <a onclick="goBack()">Журналы</a>
-    <span class="sep">›</span>
-    <span class="current" id="navChain">Класс, предмет</span>
-</div>
-
-<div class="header-bar">
-    <div class="header-grid">
-        <div class="cell">
-            <div class="dropdown" id="classDropdown">
-                <button type="button" class="dropdown-trigger" onclick="toggleClassDropdown(event)">
-                    <span id="classDropdownName">—</span>
-                    <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                </button>
-                <div class="dropdown-menu" id="classDropdownMenu"></div>
-            </div>
-        </div>
-        <div class="cell">
-            <div class="dropdown" id="subjectDropdown">
-                <button type="button" class="dropdown-trigger" onclick="toggleSubjectDropdown(event)">
-                    <span id="subjectDropdownName">—</span>
-                    <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                </button>
-                <div class="dropdown-menu" id="subjectDropdownMenu"></div>
-            </div>
-        </div>
-        <div class="cell"><span class="header-meta-item" id="yearLabel">2026/2027 учебный год</span></div>
-        <div class="cell"><span class="header-meta-item" id="teacherLabel">Учитель: —</span></div>
+<div class="page-shell">
+    <div class="top-nav">
+        <a onclick="showToast('Стартовая учителя — в разработке')">Стартовая учителя</a>
+        <span class="sep">›</span>
+        <a onclick="goBack()">Журналы</a>
+        <span class="sep">›</span>
+        <span class="current" id="navChain">Класс, предмет</span>
     </div>
-</div>
 
-<div class="period-tabs-wrapper">
-    <div class="period-tabs-group" id="periodTabs"></div>
-    <div class="header-actions">
-        <button type="button" class="btn-import" onclick="showToast('Импорт из Excel — в разработке')">
-            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Импорт
-        </button>
-        <button type="button" class="btn-text-action" onclick="showToast('Замечание — в разработке')">Замечание</button>
-        <button type="button" class="btn-outlined-blue" onclick="showToast('Запись класса — в разработке')">Запись класса</button>
-        <div class="icon-actions">
-            <button type="button" class="icon-action-btn" onclick="window.print()" title="Печать">
-                <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
-            </button>
-            <button type="button" class="icon-action-btn" onclick="showToast('Экспорт в Excel — в разработке')" title="Экспорт в Excel">
-                <svg class="excel-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8.5 17l2.5-3-2.5-3h1.5l1.75 2.1L13.5 11H15l-2.5 3 2.5 3h-1.5l-1.75-2.1L10 17H8.5z"/></svg>
-            </button>
-            <button type="button" class="icon-action-btn" onclick="showToast('Настройки — в разработке')" title="Настройки">
-                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-            </button>
+    <div class="header-bar">
+        <div class="header-grid">
+            <div class="cell">
+                <div class="dropdown" id="classDropdown">
+                    <button type="button" class="dropdown-trigger" onclick="toggleClassDropdown(event)">
+                        <span id="classDropdownName">—</span>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </button>
+                    <div class="dropdown-menu" id="classDropdownMenu"></div>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="dropdown" id="subjectDropdown">
+                    <button type="button" class="dropdown-trigger" onclick="toggleSubjectDropdown(event)">
+                        <span id="subjectDropdownName">—</span>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </button>
+                    <div class="dropdown-menu" id="subjectDropdownMenu"></div>
+                </div>
+            </div>
+            <div class="cell"><span class="header-meta-item" id="yearLabel">2026/2027 учебный год</span></div>
+            <div class="cell"><span class="header-meta-item" id="teacherLabel">Учитель: —</span></div>
         </div>
     </div>
-</div>
 
-<div class="mobile-view-tabs" id="mobileViewTabs">
-    <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
-    <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
-</div>
+    <div class="period-tabs-wrapper">
+        <div class="period-tabs-group" id="periodTabs"></div>
+        <div class="header-actions">
+            <button type="button" class="btn-import" onclick="showToast('Импорт из Excel — в разработке')">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Импорт
+            </button>
+            <button type="button" class="btn-text-action" onclick="showToast('Замечание — в разработке')">Замечание</button>
+            <button type="button" class="btn-outlined-blue" onclick="showToast('Запись класса — в разработке')">Запись класса</button>
+            <div class="icon-actions">
+                <button type="button" class="icon-action-btn" onclick="window.print()" title="Печать">
+                    <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+                </button>
+                <button type="button" class="icon-action-btn" onclick="showToast('Экспорт в Excel — в разработке')" title="Экспорт в Excel">
+                    <svg class="excel-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8.5 17l2.5-3-2.5-3h1.5l1.75 2.1L13.5 11H15l-2.5 3 2.5 3h-1.5l-1.75-2.1L10 17H8.5z"/></svg>
+                </button>
+                <button type="button" class="icon-action-btn" onclick="showToast('Настройки — в разработке')" title="Настройки">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
 
-<div id="mainContent">
-    <div class="panels-container" id="panelsContainer">
-        <div class="panel-left-wrapper" id="panelLeftWrapper">
-            <div class="panel-left" id="panelLeft">
-                <div class="journal-scroll" id="journalScroll">
-                    <div class="journal-tables-wrapper">
-                        <div class="fio-table-wrapper">
-                            <table class="fio-table">
-                                <thead><tr><th>ФИО</th></tr></thead>
-                                <tbody id="fioBody"></tbody>
-                            </table>
-                        </div>
-                        <div class="marks-table-wrapper">
-                            <table class="marks-table" id="marksTable">
-                                <thead>
-                                    <tr id="mRow"></tr>
-                                    <tr id="sRow"></tr>
-                                </thead>
-                                <tbody id="jBody"></tbody>
-                            </table>
+    <div class="mobile-view-tabs" id="mobileViewTabs">
+        <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
+        <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
+    </div>
+
+    <div id="mainContent">
+        <div class="panels-container" id="panelsContainer">
+            <div class="panel-left-wrapper" id="panelLeftWrapper">
+                <div class="panel-left" id="panelLeft">
+                    <div class="journal-scroll" id="journalScroll">
+                        <div class="journal-tables-wrapper">
+                            <div class="fio-table-wrapper">
+                                <table class="fio-table">
+                                    <thead><tr><th>ФИО</th></tr></thead>
+                                    <tbody id="fioBody"></tbody>
+                                </table>
+                            </div>
+                            <div class="marks-table-wrapper">
+                                <table class="marks-table" id="marksTable">
+                                    <thead>
+                                        <tr id="mRow"></tr>
+                                        <tr id="sRow"></tr>
+                                    </thead>
+                                    <tbody id="jBody"></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="side-toggle-tabs" id="sideToggleTabs">
-            <button type="button" class="side-toggle-tab tab-left" id="tabLeft" onclick="toggleRightPanel()">
-                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                Раскрыть журнал
-            </button>
-            <button type="button" class="side-toggle-tab tab-right" id="tabRight" onclick="toggleLeftPanel()">
-                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                Раскрыть поуроч. план
-            </button>
-        </div>
+            <div class="side-toggle-tabs" id="sideToggleTabs">
+                <button type="button" class="side-toggle-tab tab-left" id="tabLeft" onclick="toggleRightPanel()">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    Раскрыть журнал
+                </button>
+                <button type="button" class="side-toggle-tab tab-right" id="tabRight" onclick="toggleLeftPanel()">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    Раскрыть поуроч. план
+                </button>
+            </div>
 
-        <div class="panel-right-wrapper" id="panelRightWrapper">
-            <div class="panel-right" id="panelRight">
-                <table id="lessonPlanTable">
-                    <thead>
-                        <tr>
-                            <th>№</th>
-                            <th>Дата</th>
-                            <th>Тема урока</th>
-                            <th>Домашнее задание к следующему уроку</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pBody"></tbody>
-                </table>
+            <div class="panel-right-wrapper" id="panelRightWrapper">
+                <div class="panel-right" id="panelRight">
+                    <table id="lessonPlanTable">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Дата</th>
+                                <th>Тема урока</th>
+                                <th>Домашнее задание к следующему уроку</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="empty-state" id="emptyState" style="display:none;">
-    <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-    <h2 id="emptyTitle">Журнал пуст</h2>
-    <p id="emptyText">Для выбранного класса и предмета нет данных.</p>
-    <button type="button" class="btn-outlined-blue" onclick="goBack()">Вернуться в админку</button>
+    <div class="empty-state" id="emptyState" style="display:none;">
+        <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        <h2 id="emptyTitle">Журнал пуст</h2>
+        <p id="emptyText">Для выбранного класса и предмета нет данных.</p>
+        <button type="button" class="btn-outlined-blue" onclick="goBack()">Вернуться в админку</button>
+    </div>
 </div>
 
 <div class="lesson-type-popup" id="lessonTypePopup">
@@ -850,7 +852,6 @@ function closeAllDropdowns() {
 }
 document.addEventListener('click', closeAllDropdowns);
 
-// ==================== ПЕРЕКЛЮЧАТЕЛЬ ПЕРИОДОВ ====================
 function renderPeriodTabs() {
     const container = document.getElementById('periodTabs');
     container.innerHTML = '';
@@ -934,7 +935,6 @@ function renderPeriodTabs() {
     container.appendChild(summaryTab);
 }
 
-// ==================== РЕНДЕР ТАБЛИЦЫ "ИТОГ" ====================
 function renderSummaryTable() {
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
@@ -1323,16 +1323,6 @@ function centerOnToday() {
     }
 }
 
-/* ============================================================
-   ФИЛЛЕРНЫЕ СТРОКИ В ПОУРОЧНОМ ПЛАНЕ.
-   - Если контента больше, чем влезает — скролл включён, филлеров нет.
-   - Если контента меньше — скролл отключён (.no-scroll), филлеры
-     закрывают свободное место: N×38px + добивающая на остаток.
-   - Класс .no-scroll переключается только при изменении состояния,
-     чтобы не мигать.
-   - Последняя филлерная строка (или просто последняя строка в tbody)
-     НЕ имеет border-bottom (см. CSS `.panel-right tbody tr:last-child td`).
-   ============================================================ */
 let lastNoScrollState = null;
 
 function fillPlanFillers() {
@@ -1352,7 +1342,6 @@ function fillPlanFillers() {
         return;
     }
 
-    // Временно снимаем no-scroll, чтобы честно измерить scrollHeight.
     if (panelRight.classList.contains('no-scroll')) {
         panelRight.classList.remove('no-scroll');
     }
