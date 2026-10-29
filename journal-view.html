@@ -11,12 +11,14 @@
 * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
 html { -webkit-font-smoothing: antialiased; }
 body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
-.top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+/* Серая зона сверху — от начала страницы до конца .header-bar (над вкладками периодов) */
+.top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #F4F6F8; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
 .top-nav .sep { color: #CBD5E1; font-size: 12px; }
 .top-nav .current { color: #2563EB; font-weight: 500; }
-.header-bar { padding: 4px 30px 10px 30px; }
+.header-bar { padding: 4px 30px 16px 30px; background: #F4F6F8; }
 .header-grid { display: inline-grid; grid-template-columns: max-content max-content; column-gap: 40px; row-gap: 8px; align-items: center; }
 .dropdown { position: relative; display: inline-block; }
 .dropdown-trigger { display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: transparent; border: none; font-size: 17.85px; font-weight: 700; color: #3B82F6; cursor: pointer; font-family: inherit; white-space: nowrap; letter-spacing: -0.4px; }
@@ -30,7 +32,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; }
 
-.period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; }
+/* Белая зона начинается здесь */
+.period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; background: #FFFFFF; }
 .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
 .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
 .tab-pill:first-child { border-radius: 8px 0 0 8px; }
@@ -54,7 +57,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .mobile-view-tabs { display: none; }
 
-.panels-container { display: flex; padding: 0 30px; height: calc(100vh - 185px); min-height: 300px; align-items: stretch; }
+.panels-container { display: flex; padding: 0 30px; height: calc(100vh - 185px); min-height: 300px; align-items: stretch; background: #FFFFFF; }
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
 .panel-right { flex: 1; min-width: 0; height: 100%; overflow-y: auto; overflow-x: hidden; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; margin: 0 0 12px 0; }
@@ -78,14 +81,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; }
 .side-toggle-tab svg { width: 9.8px; height: 9.8px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
-/* === Журнал: фиксированные высоты строк, убираем sticky с thead, шапку делаем sticky на th === */
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; }
-.journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; align-items: flex-start; }
+.journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 20; }
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 30; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
-.fio-table thead tr { height: 76px; }
-.fio-table tbody tr { height: 38px; }
 .fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
 .fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 25; }
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -95,14 +95,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
-.marks-table thead tr { height: 38px; }
-.marks-table thead tr:first-child { height: 38px; }
-.marks-table thead tr:nth-child(2) { height: 38px; }
-.marks-table tbody tr { height: 38px; }
 .marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; position: relative; }
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
-.marks-table thead th { background: #EBF0F6 !important; position: sticky; top: 0; z-index: 10; }
-.marks-table thead th:nth-child(-n+1) { /* шапка ФИО отсутствует в marksTable */ }
+.marks-table thead { position: sticky; top: 0; z-index: 10; }
+.marks-table thead th { background: #EBF0F6 !important; }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .col-period { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; font-size: 12px !important; font-weight: 400 !important; position: relative; }
@@ -164,7 +160,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-scroll::-webkit-scrollbar-corner, .panel-right::-webkit-scrollbar-corner { background: transparent; }
 
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-.panel-right table thead th { position: sticky; top: 0; z-index: 30; }
+.panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th { background: #EBF0F6 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600; height: 76px; line-height: 18px; padding: 0 8px; text-align: center; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
 .panel-right table th:last-child { border-right: none; }
 .panel-right table th:nth-child(1) { width: 40px; }
