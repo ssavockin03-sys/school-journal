@@ -58,7 +58,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panels-container { display: flex; padding: 0 30px; height: calc(100vh - 185px); min-height: 300px; align-items: stretch; }
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
-/* Поурочный план: вертикальный скролл есть по умолчанию; отключается классом .no-scroll */
 .panel-right { flex: 1; min-width: 0; height: 100%; overflow-y: auto; overflow-x: hidden; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; margin: 0 0 12px 0; }
 .panel-right.no-scroll { overflow-y: hidden; }
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
@@ -168,6 +167,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right table th:nth-child(4) { width: 55%; }
 .panel-right tbody td { background: #FFFFFF !important; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; vertical-align: top; text-align: left; padding: 4px 8px; box-sizing: border-box; word-wrap: break-word; height: 56px; position: relative; }
 .panel-right tbody td:last-child { border-right: none; }
+
+/* === Главное: убираем нижнюю границу у ПОСЛЕДНЕЙ строки в tbody ВСЕГДА ===
+   Это гарантирует, что независимо от того, добивающая это строка или нет,
+   внизу таблицы не будет серой "жирной" полоски. */
+.panel-right tbody tr:last-child td {
+    border-bottom: 0 !important;
+}
+
 .panel-right tbody td.lesson-num-cell { font-weight: 600; background: #F4F7FB !important; vertical-align: middle; color: #475569; font-size: 12px; text-align: center; padding: 0 !important; }
 .panel-right tbody td.lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle; color: #0EA5E9; font-size: 12px; text-align: center; padding: 0 !important; cursor: pointer; transition: background 0.15s ease; }
 .panel-right tbody td.lesson-date-cell:hover { background: #EFF6FF !important; color: #1D4ED8; }
@@ -179,11 +186,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     font-size: 0 !important;
     height: 38px;
     box-sizing: border-box;
-}
-.panel-right tbody tr.plan-filler-row.plan-filler-last td {
-    border-bottom: none !important;
-    box-shadow: none !important;
-    outline: none !important;
 }
 
 .panel-right tbody tr.lesson-row.lesson-today > td { border-top: 1px solid #1E40AF !important; border-bottom: 1px solid #1E40AF !important; }
@@ -1328,6 +1330,8 @@ function centerOnToday() {
      закрывают свободное место: N×38px + добивающая на остаток.
    - Класс .no-scroll переключается только при изменении состояния,
      чтобы не мигать.
+   - Последняя филлерная строка (или просто последняя строка в tbody)
+     НЕ имеет border-bottom (см. CSS `.panel-right tbody tr:last-child td`).
    ============================================================ */
 let lastNoScrollState = null;
 
@@ -1349,16 +1353,13 @@ function fillPlanFillers() {
     }
 
     // Временно снимаем no-scroll, чтобы честно измерить scrollHeight.
-    // (Если класс и так не стоял — лишней перерисовки не будет.)
     if (panelRight.classList.contains('no-scroll')) {
         panelRight.classList.remove('no-scroll');
     }
 
-    // Теперь честно измеряем.
     const overflows = panelRight.scrollHeight > panelRight.clientHeight + 1;
 
     if (overflows) {
-        // Реального контента больше, чем влезает — скролл нужен, филлеров нет.
         if (lastNoScrollState !== false) {
             panelRight.classList.remove('no-scroll');
             lastNoScrollState = false;
@@ -1366,7 +1367,6 @@ function fillPlanFillers() {
         return;
     }
 
-    // Контент помещается — рисуем филлеры.
     const panelRect = panelRight.getBoundingClientRect();
     const tableRect = table.getBoundingClientRect();
     const panelBottom = panelRect.top + panelRight.clientTop + panelRight.clientHeight;
@@ -1392,7 +1392,6 @@ function fillPlanFillers() {
         pBody.appendChild(frag);
     }
 
-    // Филлеры вставлены, переполнения нет — включаем no-scroll (если ещё не включён).
     if (lastNoScrollState !== true) {
         panelRight.classList.add('no-scroll');
         lastNoScrollState = true;
