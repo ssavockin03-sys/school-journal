@@ -58,7 +58,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panels-container { display: flex; padding: 0 30px; height: calc(100vh - 185px); min-height: 300px; align-items: stretch; }
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
-/* ПОУРОЧНЫЙ ПЛАН: никаких полос прокрутки никогда */
+/* ПОУРОЧНЫЙ ПЛАН: без скролла */
 .panel-right { flex: 1; min-width: 0; height: 100%; overflow: hidden; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; margin: 0 0 12px 0; }
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
@@ -157,7 +157,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-scroll::-webkit-scrollbar-thumb:hover { background: #B8C4D4; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-corner { background: transparent; }
 
-/* Таблица в поурочном плане — фиксированная ширина 100%, без горизонтального переполнения */
+/* Таблица поурочного плана: фиксированная раскладка, без горизонтального переполнения */
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th { background: #EBF0F6 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600; height: 76px; line-height: 18px; padding: 0 8px; text-align: center; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
@@ -172,12 +172,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right tbody td.lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle; color: #0EA5E9; font-size: 12px; text-align: center; padding: 0 !important; cursor: pointer; transition: background 0.15s ease; }
 .panel-right tbody td.lesson-date-cell:hover { background: #EFF6FF !important; color: #1D4ED8; }
 
-/* ===== ФИЛЛЕРНЫЕ (МЕРТВЫЕ) СТРОКИ — строго 38px ===== */
+/* Филлерные строки: обычные — 38px; последняя может быть меньше через inline-style */
 .panel-right tbody tr.plan-filler-row td {
     padding: 0 !important;
     line-height: 0 !important;
     font-size: 0 !important;
-    height: 38px !important;
+    height: 38px;
     box-sizing: border-box;
 }
 
@@ -1300,19 +1300,20 @@ function centerOnToday() {
             journalScroll.scrollLeft = Math.max(0, targetScrollLeft);
         }
     }
-
-    // Панель поурочного плана НЕ скроллится — центрирование отключено.
 }
 
 /* ============================================================
    ФИЛЛЕРНЫЕ СТРОКИ В ПОУРОЧНОМ ПЛАНЕ.
    Панель overflow: hidden — прокрутки нет никогда.
-   Рисуем ровно столько строк, сколько влезает с запасом 2px,
-   чтобы не упираться в границу и не провоцировать скролл.
+   Покрываем свободное место полностью:
+   - N целых строк по 38px,
+   - + 1 «добивающая» строка на остаток (0..37px), если он > 0.
    ============================================================ */
 function fillPlanFillers() {
     const pBody = document.getElementById('pBody');
     if (!pBody) return;
+
+    // Удаляем старые филлеры
     pBody.querySelectorAll('.plan-filler-row').forEach(r => r.remove());
 
     if (document.getElementById('panelsContainer').classList.contains('summary-mode')) return;
@@ -1321,44 +1322,52 @@ function fillPlanFillers() {
     const table = document.getElementById('lessonPlanTable');
     if (!panelRight || !table) return;
 
-    // Используем scrollHeight/clientHeight — они дают фактическое содержимое и видимую высоту.
-    const freeSpace = panelRight.clientHeight - table.getBoundingClientRect().height - (panelRight.getBoundingClientRect().top - table.getBoundingClientRect().top);
-    // Проще: сколько пикселей от нижней границы таблицы до нижней границы панели (внутренней).
-    const tableRect = table.getBoundingClientRect();
+    // Используем фактическую внутреннюю область панели (без учёта border).
     const panelRect = panelRight.getBoundingClientRect();
-    const available = panelRect.bottom - tableRect.bottom - 2; // запас 2px
+    const tableRect = table.getBoundingClientRect();
 
-    if (available <= 0) return;
+    const panelBottom = panelRect.top + panelRight.clientTop + panelRight.clientHeight;
+    const freeSpace = panelBottom - tableRect.bottom;
+
+    if (freeSpace <= 0) return;
 
     const rowH = getPlanFillerRowHeight();
-    const fullRows = Math.floor(available / rowH);
-    if (fullRows <= 0) return;
+    const fullRows = Math.floor(freeSpace / rowH);
+    const remainder = Math.round(freeSpace - fullRows * rowH);
 
     const frag = document.createDocumentFragment();
     for (let i = 0; i < fullRows; i++) {
         frag.appendChild(createPlanFillerRow());
     }
+    // Добивающая строка на остаток, чтобы не было щели
+    if (remainder >= 1) {
+        frag.appendChild(createPlanFillerRow(remainder + 'px'));
+    }
     pBody.appendChild(frag);
 }
 
-function createPlanFillerRow() {
+function createPlanFillerRow(height) {
     const tr = document.createElement('tr');
     tr.className = 'lesson-row plan-filler-row';
 
     const td1 = document.createElement('td');
     td1.className = 'lesson-num-cell plan-filler-cell';
+    if (height) td1.style.height = height;
     tr.appendChild(td1);
 
     const td2 = document.createElement('td');
     td2.className = 'lesson-date-cell plan-filler-cell';
+    if (height) td2.style.height = height;
     tr.appendChild(td2);
 
     const td3 = document.createElement('td');
     td3.className = 'theme-cell plan-filler-cell';
+    if (height) td3.style.height = height;
     tr.appendChild(td3);
 
     const td4 = document.createElement('td');
     td4.className = 'homework-cell plan-filler-cell';
+    if (height) td4.style.height = height;
     tr.appendChild(td4);
 
     return tr;
