@@ -12,7 +12,18 @@
 html { -webkit-font-smoothing: antialiased; }
 body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
 
-/* Серая зона сверху — от начала страницы до конца .header-bar (над вкладками периодов) */
+/* ===== Анимация поэтапной загрузки ===== */
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeScaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes shimmer { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
+.reveal { opacity: 0; }
+.reveal.revealed { animation: fadeSlideIn 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+.reveal-scale { opacity: 0; }
+.reveal-scale.revealed { animation: fadeScaleIn 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+.skeleton { background: linear-gradient(90deg, #EEF2F6 0px, #F8FAFC 40px, #EEF2F6 80px); background-size: 200px 100%; animation: shimmer 1.1s linear infinite; border-radius: 6px; color: transparent !important; pointer-events: none; user-select: none; }
+.skeleton * { visibility: hidden; }
+
+/* Серая зона сверху */
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #F4F6F8; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
@@ -32,7 +43,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; }
 
-/* Белая зона начинается здесь */
+/* Белая зона */
 .period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; background: #FFFFFF; }
 .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
 .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
@@ -40,7 +51,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .tab-pill:last-child { border-radius: 0 8px 8px 0; border-width: 0; }
 .tab-pill.active { padding: 6px 8px; margin: -1px; border: 1px solid #2f80ed; border-radius: 8px; color: #2f80ed; z-index: 1; background: #fff; }
 .tab-pill.summary-tab { border-color: #e0e7ed; }
-
 .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
 .btn-import { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFFFFF; color: #334155; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
 .btn-import:hover { background: #F8FAFC; border-color: #94A3B8; }
@@ -80,17 +90,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .side-toggle-tab.tab-right { right: 100%; top: 47%; border-radius: 0 8px 8px 0; border-left: none; transform: rotate(180deg); }
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; }
 .side-toggle-tab svg { width: 9.8px; height: 9.8px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
-
 /* === ФИКС «пляски» шапки при горизонтальном скролле === */
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
-/* transform на обёртке отключает пересчёт sticky-позиций на каждом кадре скролла */
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; transform: translateZ(0); }
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 20; transform: translateZ(0); }
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 30; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
 .fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
-/* Шапка ФИО: sticky top внутри sticky left; убираем border-bottom в пользу inset box-shadow,
-   чтобы высота th не зависела от бордера при пересчёте sticky */
 .fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 25; border-bottom: none; box-shadow: inset 0 -1px 0 #CFD8E3; transform: translateZ(0); }
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
@@ -101,8 +107,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; position: relative; }
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
-/* Шапка marks-table: sticky top; translateZ(0) — чтобы не дрожала при горизонтальном скролле.
-   border-bottom у th заменяем на inset box-shadow (внешне то же самое, но не влияет на пересчёт). */
 .marks-table thead { position: sticky; top: 0; z-index: 10; transform: translateZ(0); }
 .marks-table thead th { background: #EBF0F6 !important; border-bottom: none; box-shadow: inset 0 -1px 0 #CFD8E3; }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
@@ -133,7 +137,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead .col-avg { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
 .col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-qtr { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
-
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
 .grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 13.5px; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; }
 .grade-cell input:focus { background: #FFFFFF; cursor: text; color: #1E293B !important; }
@@ -150,7 +153,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* Обводка фокуса: ровно по всем сторонам (bottom/right = 0, не -1px) */
 .marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { position: relative; z-index: 9; }
 .marks-table td.col-date:focus-within::after, .marks-table td.col-qtr:focus-within::after, .marks-table td.col-period:focus-within::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 10; box-sizing: border-box; }
 .marks-table td.col-date.col-today:focus-within, .marks-table td.col-qtr.col-today:focus-within, .marks-table td.col-period.col-today:focus-within { outline: none; }
@@ -165,7 +167,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-scroll::-webkit-scrollbar-thumb, .panel-right::-webkit-scrollbar-thumb { background: #CFD8E3; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-thumb:hover, .panel-right::-webkit-scrollbar-thumb:hover { background: #B8C4D4; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-corner, .panel-right::-webkit-scrollbar-corner { background: transparent; }
-
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th { background: #EBF0F6 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600; height: 76px; line-height: 18px; padding: 0 8px; text-align: center; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
@@ -176,7 +177,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-right table th:nth-child(4) { width: 55%; }
 .panel-right tbody td { background: #FFFFFF !important; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; vertical-align: top; text-align: left; padding: 4px 8px; box-sizing: border-box; word-wrap: break-word; height: 56px; position: relative; }
 .panel-right tbody td:last-child { border-right: none; }
-
 .panel-right tbody tr:last-child td { border-bottom: 0 !important; }
 
 .panel-right tbody td.lesson-num-cell { font-weight: 600; background: #F4F7FB !important; vertical-align: middle; color: #475569; font-size: 12px; text-align: center; padding: 0 !important; }
@@ -294,7 +294,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 <div class="header-bar">
     <div class="header-grid">
-        <div class="cell">
+        <div class="cell reveal" data-stage="1">
             <div class="dropdown" id="classDropdown">
                 <button type="button" class="dropdown-trigger" onclick="toggleClassDropdown(event)">
                     <span id="classDropdownName">—</span>
@@ -303,7 +303,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
                 <div class="dropdown-menu" id="classDropdownMenu"></div>
             </div>
         </div>
-        <div class="cell">
+        <div class="cell reveal" data-stage="1">
             <div class="dropdown" id="subjectDropdown">
                 <button type="button" class="dropdown-trigger" onclick="toggleSubjectDropdown(event)">
                     <span id="subjectDropdownName">—</span>
@@ -312,21 +312,21 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
                 <div class="dropdown-menu" id="subjectDropdownMenu"></div>
             </div>
         </div>
-        <div class="cell"><span class="header-meta-item" id="yearLabel">2026/2027 учебный год</span></div>
-        <div class="cell"><span class="header-meta-item" id="teacherLabel">Учитель: —</span></div>
+        <div class="cell reveal" data-stage="1"><span class="header-meta-item" id="yearLabel">2026/2027 учебный год</span></div>
+        <div class="cell reveal" data-stage="1"><span class="header-meta-item" id="teacherLabel">Учитель: —</span></div>
     </div>
 </div>
 
 <div class="period-tabs-wrapper">
-    <div class="period-tabs-group" id="periodTabs"></div>
+    <div class="period-tabs-group reveal" data-stage="2" id="periodTabs"></div>
     <div class="header-actions">
-        <button type="button" class="btn-import" onclick="showToast('Импорт из Excel — в разработке')">
+        <button type="button" class="btn-import reveal" data-stage="3" onclick="showToast('Импорт из Excel — в разработке')">
             <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
             Импорт
         </button>
-        <button type="button" class="btn-text-action" onclick="showToast('Замечание — в разработке')">Замечание</button>
-        <button type="button" class="btn-outlined-blue" onclick="showToast('Запись класса — в разработке')">Запись класса</button>
-        <div class="icon-actions">
+        <button type="button" class="btn-text-action reveal" data-stage="3" onclick="showToast('Замечание — в разработке')">Замечание</button>
+        <button type="button" class="btn-outlined-blue reveal" data-stage="3" onclick="showToast('Запись класса — в разработке')">Запись класса</button>
+        <div class="icon-actions reveal" data-stage="3">
             <button type="button" class="icon-action-btn" onclick="window.print()" title="Печать">
                 <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
             </button>
@@ -347,7 +347,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 <div id="mainContent">
     <div class="panels-container" id="panelsContainer">
-        <div class="panel-left-wrapper" id="panelLeftWrapper">
+        <div class="panel-left-wrapper reveal" data-stage="4" id="panelLeftWrapper">
             <div class="panel-left" id="panelLeft">
                 <div class="journal-scroll" id="journalScroll">
                     <div class="journal-tables-wrapper">
@@ -371,7 +371,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
             </div>
         </div>
 
-        <div class="side-toggle-tabs" id="sideToggleTabs">
+        <div class="side-toggle-tabs reveal" data-stage="4" id="sideToggleTabs">
             <button type="button" class="side-toggle-tab tab-left" id="tabLeft" onclick="toggleRightPanel()">
                 <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                 Раскрыть журнал
@@ -382,7 +382,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
             </button>
         </div>
 
-        <div class="panel-right-wrapper" id="panelRightWrapper">
+        <div class="panel-right-wrapper reveal" data-stage="2" id="panelRightWrapper">
             <div class="panel-right" id="panelRight">
                 <table id="lessonPlanTable">
                     <thead>
@@ -420,14 +420,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 <script>
 const DAYS_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const DAYS_JS_INDEX = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
-
 const EDIT_DELAY_MS = 200;
 
-const PERIOD_NAMES = { 
-    'Четверти': 'четверть', 
-    'Семестры': 'семестр', 
-    'Триместры': 'триместр', 
-    'Полугодия': 'полугодие' 
+const PERIOD_NAMES = {
+    'Четверти': 'четверть',
+    'Семестры': 'семестр',
+    'Триместры': 'триместр',
+    'Полугодия': 'полугодие'
 };
 
 const LESSON_TYPES = [
@@ -471,9 +470,7 @@ function getFillerColWidth() {
     if (w <= 1100) return 38;
     return 46;
 }
-function getPlanFillerRowHeight() {
-    return 38;
-}
+function getPlanFillerRowHeight() { return 38; }
 
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
@@ -490,6 +487,15 @@ function formatShortName(fullName) {
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
     return { classId: params.get('class'), subjectId: params.get('subject') };
+}
+function todayIso() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function normalizeHwList(h) {
+    if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== '');
+    if (typeof h === 'string' && h.trim() !== '') return [h];
+    return [];
 }
 
 let CLASS_ID = null;
@@ -577,18 +583,6 @@ function collectSubjectsFromSchedule(schedules, classId) {
         });
     return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 }
-
-function todayIso() {
-    const d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-}
-
-function normalizeHwList(h) {
-    if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== '');
-    if (typeof h === 'string' && h.trim() !== '') return [h];
-    return [];
-}
-
 let activeEditor = null;
 
 function commitActiveEditor() {
@@ -598,7 +592,6 @@ function commitActiveEditor() {
     if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; }
     try { ed.commit(); } catch (e) { console.error(e); }
 }
-
 function cancelActiveEditor() {
     if (!activeEditor) return;
     const ed = activeEditor;
@@ -606,16 +599,41 @@ function cancelActiveEditor() {
     if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; }
     try { ed.cancel(); } catch (e) { console.error(e); }
 }
-
 function detachActiveEditorDom() {
     if (!activeEditor) return;
     const ed = activeEditor;
     activeEditor = null;
     if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; }
     try { ed.commit(); } catch (e) { console.error(e); }
-    if (ed.dom && ed.dom.parentNode) {
-        ed.dom.parentNode.removeChild(ed.dom);
-    }
+    if (ed.dom && ed.dom.parentNode) ed.dom.parentNode.removeChild(ed.dom);
+}
+
+/* ===== Поэтапная анимация загрузки ===== */
+function revealStage(stage) {
+    const els = document.querySelectorAll('.reveal[data-stage="' + stage + '"], .reveal-scale[data-stage="' + stage + '"]');
+    els.forEach((el, i) => {
+        el.style.animationDelay = (i * 40) + 'ms';
+        el.classList.add('revealed');
+    });
+}
+
+function runLoadingSequence() {
+    // Этап 1 — шапка (крошки, дропдауны, год, учитель)
+    revealStage(1);
+    // Этап 2 — переключалка периодов + поурочное планирование
+    setTimeout(() => { revealStage(2); }, 180);
+    // Этап 3 — кнопки (Импорт, Замечание, Запись класса, принтер, excel, шестерёнка)
+    setTimeout(() => { revealStage(3); }, 320);
+    // Этап 4 — панели журнала
+    setTimeout(() => {
+        revealStage(4);
+        requestAnimationFrame(() => {
+            fillFillers();
+            fillPlanFillers();
+            centerOnToday();
+        });
+        setTimeout(() => { fillFillers(); fillPlanFillers(); centerOnToday(); }, 120);
+    }, 460);
 }
 
 async function init() {
@@ -678,7 +696,10 @@ async function init() {
     renderHeader();
     renderPeriodTabs();
 
-    if (STUDENTS.length === 0) { showEmpty('В классе нет учеников', 'Добавьте учеников в этот класс через панель администратора.'); return; }
+    if (STUDENTS.length === 0) {
+        showEmpty('В классе нет учеников', 'Добавьте учеников в этот класс через панель администратора.');
+        return;
+    }
 
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
 
@@ -693,6 +714,9 @@ async function init() {
     setupObservers();
 
     document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
+
+    // Запускаем поэтапную анимацию после того, как данные отрисованы
+    runLoadingSequence();
 }
 
 let planObserver = null;
@@ -702,9 +726,7 @@ function setupObservers() {
     const panelRightWrapper = document.getElementById('panelRightWrapper');
     if (panelRightWrapper) {
         if (planObserver) planObserver.disconnect();
-        planObserver = new ResizeObserver(() => {
-            fillPlanFillers();
-        });
+        planObserver = new ResizeObserver(() => { fillPlanFillers(); });
         planObserver.observe(panelRightWrapper);
     }
     const journalScroll = document.getElementById('journalScroll');
@@ -777,7 +799,6 @@ async function buildDatesForPeriod(periodIndex) {
 function formatIso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function formatDateNoYear(d) { return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0'); }
 function formatDateFull(d) { return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear(); }
-
 function renderHeader() {
     document.getElementById('classDropdownName').textContent = CLASS_OBJ.name;
     document.getElementById('subjectDropdownName').textContent = SUBJECT_NAME;
@@ -850,7 +871,7 @@ document.addEventListener('click', closeAllDropdowns);
 function renderPeriodTabs() {
     const container = document.getElementById('periodTabs');
     container.innerHTML = '';
-    
+
     if (PERIODS.length === 0) {
         const tab = document.createElement('button');
         tab.type = 'button';
@@ -866,16 +887,16 @@ function renderPeriodTabs() {
         tab.type = 'button';
         const isActive = (!SUMMARY_MODE && idx === ACTIVE_PERIOD_INDEX);
         tab.className = 'tab-pill' + (isActive ? ' active' : '');
-        
+
         if (isActive) {
             const periodName = PERIOD_NAMES[PERIOD_SYSTEM] || 'период';
             tab.textContent = (idx + 1) + ' ' + periodName;
         } else {
             tab.textContent = (idx + 1);
         }
-        
+
         tab.title = p.start + ' – ' + p.end;
-        
+
         tab.addEventListener('click', async () => {
             commitActiveEditor();
             SUMMARY_MODE = false;
@@ -946,7 +967,7 @@ function renderSummaryTable() {
         const th = document.createElement('th');
         th.className = 'col-period col-period-header';
         th.setAttribute('rowspan', '2');
-        
+
         const name = (idx + 1) + ' ' + (PERIOD_NAMES[PERIOD_SYSTEM] || 'период');
         const sp = name.indexOf(' ');
         if (sp > 0) {
@@ -1066,7 +1087,6 @@ async function upFinal(studentId, inputElement) {
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     }, EDIT_DELAY_MS);
 }
-
 function renderMainTable() {
     const marksTable = document.getElementById('marksTable');
     marksTable.classList.remove('period-mode');
@@ -1408,7 +1428,6 @@ function createPlanFillerRow(height) {
 
     return tr;
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
 
@@ -1727,7 +1746,6 @@ function autoGrow(el) {
     el.style.height = 'auto';
     el.style.height = Math.max(28, el.scrollHeight) + 'px';
 }
-
 function fillFillers() {
     document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
     document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
@@ -1929,7 +1947,6 @@ function hlQtr(input, active) {
     document.querySelectorAll('#jBody td.col-qtr').forEach(td => td.classList.toggle('highlight-cross', active));
     setTimeout(fillFillers, 0);
 }
-
 function getEditableCellsInRow(tr) {
     return Array.from(tr.querySelectorAll('td')).filter(td => td.dataset.col !== undefined || td.classList.contains('col-qtr') || td.classList.contains('col-period'));
 }
