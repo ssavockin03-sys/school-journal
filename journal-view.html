@@ -12,9 +12,13 @@
 html { -webkit-font-smoothing: antialiased; }
 body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
 
-/* === АНИМАЦИЯ ЗАГРУЗКИ === */
-.loading-hidden { opacity: 0 !important; transform: translateY(4px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
-.loading-fade-in { opacity: 1 !important; transform: translateY(0); pointer-events: auto; }
+/* === АНИМАЦИЯ ЗАГРУЗКИ (без transform, чтобы не ломать layout-расчёты) === */
+.loading-hidden { opacity: 0 !important; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; pointer-events: none; }
+.loading-fade-in { opacity: 1 !important; visibility: visible; pointer-events: auto; }
+/* Для основной области используем только прозрачность, без visibility, чтобы размеры читались сразу */
+.loading-fade-only { opacity: 0; transition: opacity 0.4s ease; }
+.loading-fade-only.loading-fade-in { opacity: 1; }
+/* === КОНЕЦ БЛОКА АНИМАЦИИ === */
 
 /* Серая зона сверху — от начала страницы до конца .header-bar (над вкладками периодов) */
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #F4F6F8; }
@@ -87,14 +91,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 /* === ФИКС «пляски» шапки при горизонтальном скролле === */
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
-/* transform на обёртке отключает пересчёт sticky-позиций на каждом кадре скролла */
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; transform: translateZ(0); }
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 20; transform: translateZ(0); }
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 30; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
 .fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
-/* Шапка ФИО: sticky top внутри sticky left; убираем border-bottom в пользу inset box-shadow,
-   чтобы высота th не зависела от бордера при пересчёте sticky */
 .fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 74px; padding: 0 10px; position: sticky; top: 0; z-index: 25; border-bottom: none; box-shadow: inset 0 -1px 0 #CFD8E3; transform: translateZ(0); }
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
@@ -105,8 +106,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; position: relative; }
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
-/* Шапка marks-table: sticky top; translateZ(0) — чтобы не дрожала при горизонтальном скролле.
-   border-bottom у th заменяем на inset box-shadow (внешне то же самое, но не влияет на пересчёт). */
 .marks-table thead { position: sticky; top: 0; z-index: 10; transform: translateZ(0); }
 .marks-table thead th { background: #EBF0F6 !important; border-bottom: none; box-shadow: inset 0 -1px 0 #CFD8E3; }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
@@ -154,7 +153,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* Обводка фокуса: ровно по всем сторонам (bottom/right = 0, не -1px) */
 .marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { position: relative; z-index: 9; }
 .marks-table td.col-date:focus-within::after, .marks-table td.col-qtr:focus-within::after, .marks-table td.col-period:focus-within::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 10; box-sizing: border-box; }
 .marks-table td.col-date.col-today:focus-within, .marks-table td.col-qtr.col-today:focus-within, .marks-table td.col-period.col-today:focus-within { outline: none; }
@@ -344,12 +342,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     </div>
 </div>
 
-<div class="mobile-view-tabs loading-hidden" id="mobileViewTabs">
+<div class="mobile-view-tabs" id="mobileViewTabs">
     <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
     <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
 </div>
 
-<div id="mainContent" class="loading-hidden" id="loadMainContent">
+<div id="mainContent">
     <div class="panels-container" id="panelsContainer">
         <div class="panel-left-wrapper" id="panelLeftWrapper">
             <div class="panel-left" id="panelLeft">
@@ -469,34 +467,34 @@ const LESSON_TYPES = [
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
-/* === АНИМАЦИЯ ЗАГРУЗКИ: последовательное проявление элементов === */
+/* === АНИМАЦИЯ ЗАГРУЗКИ === */
 function revealElement(el) {
     if (!el) return;
     el.classList.remove('loading-hidden');
     el.classList.add('loading-fade-in');
 }
 function runLoadingSequence() {
-    // Этап 1: шапка (класс, предмет, год, учитель) + хлебные крошки
-    const stage1 = [
-        document.getElementById('loadTopNav'),
-        document.getElementById('loadHeaderBar')
-    ];
-    stage1.forEach(revealElement);
+    // Этап 1: шапка + хлебные крошки
+    revealElement(document.getElementById('loadTopNav'));
+    revealElement(document.getElementById('loadHeaderBar'));
 
-    // Этап 2: переключалка периодов + кнопки действий (Импорт, Замечание, Запись класса, иконки)
+    // Этап 2: периоды + кнопки
     setTimeout(() => {
         revealElement(document.getElementById('loadPeriodTabsWrapper'));
         revealElement(document.getElementById('loadBtnImport'));
         revealElement(document.getElementById('loadBtnRemark'));
         revealElement(document.getElementById('loadBtnClassRecord'));
         revealElement(document.getElementById('loadIconActions'));
-    }, 450);
+        // после проявления шапки пересчитываем филлеры — контейнер уже в нормальном layout
+        requestAnimationFrame(() => {
+            if (typeof fillFillers === 'function') fillFillers();
+            if (typeof fillPlanFillers === 'function') fillPlanFillers();
+        });
+    }, 350);
 
-    // Этап 3: основная область (журнал + поурочное планирование) и мобильные табы
-    setTimeout(() => {
-        revealElement(document.getElementById('mobileViewTabs'));
-        revealElement(document.getElementById('loadMainContent'));
-    }, 950);
+    // Этап 3: основная область. Важно: НЕ прячем #mainContent / #panelsContainer,
+    // чтобы fillFillers/centerOnToday считали корректно с самого начала.
+    // (Они рендерятся сразу, анимация — только у шапки.)
 }
 /* === КОНЕЦ БЛОКА АНИМАЦИИ === */
 
@@ -729,7 +727,8 @@ async function init() {
 
     document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
 
-    // Запускаем анимацию загрузки после первого рендера
+    // Запускаем анимацию загрузки ПОСЛЕ того, как всё отрисовано.
+    // Основная область не скрывается — анимируется только шапка.
     runLoadingSequence();
 }
 
