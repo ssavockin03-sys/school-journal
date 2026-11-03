@@ -150,8 +150,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table td.col-date.col-today:focus-within, .marks-table td.col-qtr.col-today:focus-within, .marks-table td.col-period.col-today:focus-within { outline: none; }
 .marks-table td.col-date.col-today:focus-within::after, .marks-table td.col-qtr.col-today:focus-within::after, .marks-table td.col-period.col-today:focus-within::after { content: ''; border: 1.5px solid #60A5FA; }
 
-/* === ФИКС ЖИРНЫХ ГРАНИЦ У «МЕРТВЫХ» КОЛОНОК (col-filler) ===
-   Убираем box-shadow от thead th, оставляем только border, чтобы не было двойной линии */
 .marks-table thead th.col-filler-head {
     background: #EBF0F6 !important;
     border-right: 1px solid #CFD8E3;
@@ -172,7 +170,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table tbody td.col-filler-body.col-filler-last {
     border-right: none;
 }
-/* === КОНЕЦ === */
 
 .journal-scroll::-webkit-scrollbar, .panel-right::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
 .journal-scroll::-webkit-scrollbar-thumb, .panel-right::-webkit-scrollbar-thumb { background: #CFD8E3; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
@@ -208,7 +205,19 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .plan-filler-cell { background: #FFFFFF !important; pointer-events: none; }
 
-.theme-cell, .homework-cell { font-size: 13.65px; line-height: 1.3; color: #334155; white-space: pre-wrap; word-wrap: break-word; vertical-align: top; }
+/* === ЕДИНЫЙ ШРИФТ И РАЗМЕР ДЛЯ ВСЕХ ТЕКСТОВ ТЕМЫ И ДЗ === */
+/* И в просмотре, и в редактировании — 14px, line-height 1.4, Inter */
+.theme-cell, .homework-cell, .hw-list-item, .theme-text {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #334155;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+.theme-cell, .homework-cell {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    vertical-align: top;
+}
 .homework-cell { padding-right: 84px !important; }
 
 .cell-online-btn { position: absolute; top: 4px; right: 6px; display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; background: #FFFFFF; border: 1px solid #93C5FD; border-radius: 6px; color: #2563EB; font-size: 10px; font-weight: 500; cursor: pointer; font-family: inherit; white-space: nowrap; line-height: 1.3; transition: all 0.15s ease; z-index: 2; }
@@ -216,33 +225,36 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .cell-online-btn svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
 
 .hw-list { display: block; }
-.hw-list-item { display: block; padding: 1px 4px; margin: 0; border-radius: 6px; cursor: pointer; white-space: pre-wrap; word-wrap: break-word; transition: background 0.12s ease; }
-.hw-divider { display: block; height: 1px; background: #CFD8E3; margin: 3px 0 3px 0; border: none; }
-.placeholder-text { display: inline-block; color: #0EA5E9; font-style: italic; font-size: 13.65px; cursor: pointer; padding: 8px 12px; margin: -8px -12px; line-height: 1.3; }
-.add-hw-btn { display: inline-block; padding: 2px 4px; margin: 0; border: none; background: transparent; color: #0EA5E9; font-style: italic; font-size: 13.65px; font-weight: 400; cursor: pointer; font-family: inherit; text-align: left; line-height: 1.3; }
+.hw-list-item { display: block; padding: 2px 6px; margin: 0; border-radius: 6px; cursor: pointer; white-space: pre-wrap; word-wrap: break-word; transition: background 0.12s ease; }
+.hw-divider { display: block; height: 1px; background: #CFD8E3; margin: 4px 0 4px 0; border: none; }
+.placeholder-text { display: inline-block; color: #0EA5E9; font-style: italic; font-size: 14px; cursor: pointer; padding: 8px 12px; margin: -8px -12px; line-height: 1.4; }
+.add-hw-btn { display: inline-block; padding: 2px 6px; margin: 0; border: none; background: transparent; color: #0EA5E9; font-style: italic; font-size: 14px; font-weight: 400; cursor: pointer; font-family: inherit; text-align: left; line-height: 1.4; }
 
+/* === Поля ввода тем и ДЗ: крупнее, светлее, шрифт совпадает с просмотром === */
 .edit-bubble { display: flex; align-items: flex-start; gap: 6px; width: 100%; }
 .edit-bubble textarea {
     flex: 1 1 auto;
     min-width: 0;
-    min-height: 24px;
-    padding: 4px 8px;
-    border: 1px solid #CFD8E3;
-    border-radius: 4px;
-    background: #FFFFFF;
-    font-size: 13px;
-    font-family: inherit;
+    min-height: 32px;
+    padding: 6px 10px;
+    border: 1px solid #DCE3EB;
+    border-radius: 6px;
+    background: #F8FAFC;
+    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #1E293B;
     outline: none;
     resize: none;
-    line-height: 1.3;
+    line-height: 1.4;
     box-shadow: none;
     overflow: hidden;
     white-space: pre-wrap;
     word-wrap: break-word;
     box-sizing: border-box;
+    transition: background 0.15s ease, border-color 0.15s ease;
 }
 .edit-bubble textarea:focus {
+    background: #FFFFFF;
     border-color: #94A3B8;
     box-shadow: none;
 }
@@ -251,17 +263,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     background: #2563EB;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     color: #FFFFFF;
     cursor: pointer;
-    margin-top: 1px;
+    margin-top: 3px;
 }
 .edit-bubble .confirm-btn:hover { background: #1D4ED8; }
-.edit-bubble .confirm-btn svg { width: 12px; height: 12px; fill: #FFFFFF; }
+.edit-bubble .confirm-btn svg { width: 13px; height: 13px; fill: #FFFFFF; }
 
 .empty-state { padding: 60px 30px; text-align: center; border-radius: 10px; border: 1px solid #CFD8E3; margin: 24px 30px; }
 .empty-state svg { width: 56px; height: 56px; fill: #CBD5E1; margin-bottom: 14px; }
@@ -1601,7 +1613,7 @@ function renderThemeContent(cell, gradeKey, value) {
         div.textContent = value;
         div.dataset.value = value;
         div.style.cursor = 'pointer';
-        div.style.padding = '1px 4px';
+        div.style.padding = '2px 6px';
         div.style.borderRadius = '6px';
         cell.appendChild(div);
     }
@@ -1866,7 +1878,7 @@ function openNewHwItem(cell, gradeKey) {
 
 function autoGrow(el) {
     el.style.height = 'auto';
-    el.style.height = Math.max(24, el.scrollHeight) + 'px';
+    el.style.height = Math.max(32, el.scrollHeight) + 'px';
 }
 
 function fillFillers() {
