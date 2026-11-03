@@ -12,15 +12,13 @@
 html { -webkit-font-smoothing: antialiased; }
 body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
 
-/* === АНИМАЦИЯ ЗАГРУЗКИ (без transform, чтобы не ломать layout-расчёты) === */
-.loading-hidden { opacity: 0 !important; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; pointer-events: none; }
-.loading-fade-in { opacity: 1 !important; visibility: visible; pointer-events: auto; }
-/* Для основной области используем только прозрачность, без visibility, чтобы размеры читались сразу */
-.loading-fade-only { opacity: 0; transition: opacity 0.4s ease; }
-.loading-fade-only.loading-fade-in { opacity: 1; }
+/* === АНИМАЦИЯ ЗАГРУЗКИ === */
+/* Только opacity — без transform/visibility, чтобы не ломать getBoundingClientRect и sticky */
+.loading-hidden { opacity: 0 !important; transition: opacity 0.3s ease; pointer-events: none; }
+.loading-fade-in { opacity: 1 !important; pointer-events: auto; }
 /* === КОНЕЦ БЛОКА АНИМАЦИИ === */
 
-/* Серая зона сверху — от начала страницы до конца .header-bar (над вкладками периодов) */
+/* Серая зона сверху */
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #F4F6F8; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
@@ -40,7 +38,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; }
 
-/* Белая зона начинается здесь */
+/* Белая зона */
 .period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; background: #FFFFFF; }
 .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
 .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
@@ -286,6 +284,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 </head>
 <body>
 
+<!-- ЭТАП 1: хлебные крошки + шапка (класс, предмет, год, учитель) -->
 <div class="top-nav loading-hidden" id="loadTopNav">
     <a onclick="showToast('Стартовая учителя — в разработке')">Стартовая учителя</a>
     <span class="sep">›</span>
@@ -319,8 +318,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     </div>
 </div>
 
+<!-- ЭТАП 2: переключалка периодов + кнопки действий -->
 <div class="period-tabs-wrapper loading-hidden" id="loadPeriodTabsWrapper">
-    <div class="period-tabs-group" id="periodTabs"></div>
+    <div class="period-tabs-group loading-hidden" id="loadPeriodTabsGroup"></div>
     <div class="header-actions" id="loadHeaderActions">
         <button type="button" class="btn-import loading-hidden" id="loadBtnImport" onclick="showToast('Импорт из Excel — в разработке')">
             <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
@@ -342,12 +342,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     </div>
 </div>
 
-<div class="mobile-view-tabs" id="mobileViewTabs">
+<!-- ЭТАП 3: всё остальное — основная область -->
+<div class="mobile-view-tabs loading-hidden" id="loadMobileTabs">
     <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
     <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
 </div>
 
-<div id="mainContent">
+<div id="mainContent" class="loading-hidden">
     <div class="panels-container" id="panelsContainer">
         <div class="panel-left-wrapper" id="panelLeftWrapper">
             <div class="panel-left" id="panelLeft">
@@ -467,34 +468,46 @@ const LESSON_TYPES = [
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
-/* === АНИМАЦИЯ ЗАГРУЗКИ === */
-function revealElement(el) {
+/* === АНИМАЦИЯ ЗАГРУЗКИ: последовательное проявление (только opacity) === */
+function reveal(el) {
     if (!el) return;
     el.classList.remove('loading-hidden');
     el.classList.add('loading-fade-in');
 }
 function runLoadingSequence() {
-    // Этап 1: шапка + хлебные крошки
-    revealElement(document.getElementById('loadTopNav'));
-    revealElement(document.getElementById('loadHeaderBar'));
+    // Этап 1: шапка + крошки (уже видны? нет — они стартуют с loading-hidden, проявляем)
+    reveal(document.getElementById('loadTopNav'));
+    reveal(document.getElementById('loadHeaderBar'));
 
-    // Этап 2: периоды + кнопки
+    // Этап 2: переключалка периодов + кнопки
     setTimeout(() => {
-        revealElement(document.getElementById('loadPeriodTabsWrapper'));
-        revealElement(document.getElementById('loadBtnImport'));
-        revealElement(document.getElementById('loadBtnRemark'));
-        revealElement(document.getElementById('loadBtnClassRecord'));
-        revealElement(document.getElementById('loadIconActions'));
-        // после проявления шапки пересчитываем филлеры — контейнер уже в нормальном layout
+        reveal(document.getElementById('loadPeriodTabsWrapper'));
+        reveal(document.getElementById('loadPeriodTabsGroup'));
+        reveal(document.getElementById('loadBtnImport'));
+        reveal(document.getElementById('loadBtnRemark'));
+        reveal(document.getElementById('loadBtnClassRecord'));
+        reveal(document.getElementById('loadIconActions'));
+    }, 400);
+
+    // Этап 3: основная область — журнал и поурочное планирование
+    setTimeout(() => {
+        reveal(document.getElementById('loadMobileTabs'));
+        reveal(document.getElementById('mainContent'));
+        // После проявления основной области — пересчитываем филлеры и центруем на «сегодня»
         requestAnimationFrame(() => {
             if (typeof fillFillers === 'function') fillFillers();
             if (typeof fillPlanFillers === 'function') fillPlanFillers();
+            if (typeof centerOnToday === 'function') centerOnToday();
         });
-    }, 350);
-
-    // Этап 3: основная область. Важно: НЕ прячем #mainContent / #panelsContainer,
-    // чтобы fillFillers/centerOnToday считали корректно с самого начала.
-    // (Они рендерятся сразу, анимация — только у шапки.)
+        setTimeout(() => {
+            if (typeof fillFillers === 'function') fillFillers();
+            if (typeof fillPlanFillers === 'function') fillPlanFillers();
+        }, 100);
+        setTimeout(() => {
+            if (typeof fillFillers === 'function') fillFillers();
+            if (typeof fillPlanFillers === 'function') fillPlanFillers();
+        }, 350);
+    }, 850);
 }
 /* === КОНЕЦ БЛОКА АНИМАЦИИ === */
 
@@ -727,8 +740,7 @@ async function init() {
 
     document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
 
-    // Запускаем анимацию загрузки ПОСЛЕ того, как всё отрисовано.
-    // Основная область не скрывается — анимируется только шапка.
+    // Запускаем анимацию после того, как всё отрисовано и размеры корректны
     runLoadingSequence();
 }
 
