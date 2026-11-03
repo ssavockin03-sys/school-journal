@@ -12,13 +12,11 @@
 html { -webkit-font-smoothing: antialiased; }
 body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
 
-/* === АНИМАЦИЯ ЗАГРУЗКИ === */
-/* Только opacity — без transform/visibility, чтобы не ломать getBoundingClientRect и sticky */
+/* === АНИМАЦИЯ ЗАГРУЗКИ (только opacity) === */
 .loading-hidden { opacity: 0 !important; transition: opacity 0.3s ease; pointer-events: none; }
 .loading-fade-in { opacity: 1 !important; pointer-events: auto; }
-/* === КОНЕЦ БЛОКА АНИМАЦИИ === */
+/* === КОНЕЦ === */
 
-/* Серая зона сверху */
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #F4F6F8; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
@@ -38,7 +36,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; }
 
-/* Белая зона */
 .period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; background: #FFFFFF; }
 .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
 .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
@@ -87,7 +84,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; }
 .side-toggle-tab svg { width: 9.8px; height: 9.8px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
-/* === ФИКС «пляски» шапки при горизонтальном скролле === */
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; transform: translateZ(0); }
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 20; transform: translateZ(0); }
@@ -284,7 +280,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 </head>
 <body>
 
-<!-- ЭТАП 1: хлебные крошки + шапка (класс, предмет, год, учитель) -->
+<!-- ЭТАП 1: крошки + шапка -->
 <div class="top-nav loading-hidden" id="loadTopNav">
     <a onclick="showToast('Стартовая учителя — в разработке')">Стартовая учителя</a>
     <span class="sep">›</span>
@@ -318,9 +314,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     </div>
 </div>
 
-<!-- ЭТАП 2: переключалка периодов + кнопки действий -->
+<!-- ЭТАП 2: периоды + кнопки -->
 <div class="period-tabs-wrapper loading-hidden" id="loadPeriodTabsWrapper">
-    <div class="period-tabs-group loading-hidden" id="loadPeriodTabsGroup"></div>
+    <div class="period-tabs-group loading-hidden" id="periodTabs"></div>
     <div class="header-actions" id="loadHeaderActions">
         <button type="button" class="btn-import loading-hidden" id="loadBtnImport" onclick="showToast('Импорт из Excel — в разработке')">
             <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
@@ -342,7 +338,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     </div>
 </div>
 
-<!-- ЭТАП 3: всё остальное — основная область -->
+<!-- ЭТАП 3: всё остальное -->
 <div class="mobile-view-tabs loading-hidden" id="loadMobileTabs">
     <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
     <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
@@ -468,32 +464,31 @@ const LESSON_TYPES = [
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
-/* === АНИМАЦИЯ ЗАГРУЗКИ: последовательное проявление (только opacity) === */
+/* === АНИМАЦИЯ ЗАГРУЗКИ === */
 function reveal(el) {
     if (!el) return;
     el.classList.remove('loading-hidden');
     el.classList.add('loading-fade-in');
 }
 function runLoadingSequence() {
-    // Этап 1: шапка + крошки (уже видны? нет — они стартуют с loading-hidden, проявляем)
+    // Этап 1: шапка + крошки
     reveal(document.getElementById('loadTopNav'));
     reveal(document.getElementById('loadHeaderBar'));
 
-    // Этап 2: переключалка периодов + кнопки
+    // Этап 2: периоды + кнопки
     setTimeout(() => {
         reveal(document.getElementById('loadPeriodTabsWrapper'));
-        reveal(document.getElementById('loadPeriodTabsGroup'));
+        reveal(document.getElementById('periodTabs'));
         reveal(document.getElementById('loadBtnImport'));
         reveal(document.getElementById('loadBtnRemark'));
         reveal(document.getElementById('loadBtnClassRecord'));
         reveal(document.getElementById('loadIconActions'));
     }, 400);
 
-    // Этап 3: основная область — журнал и поурочное планирование
+    // Этап 3: основная область
     setTimeout(() => {
         reveal(document.getElementById('loadMobileTabs'));
         reveal(document.getElementById('mainContent'));
-        // После проявления основной области — пересчитываем филлеры и центруем на «сегодня»
         requestAnimationFrame(() => {
             if (typeof fillFillers === 'function') fillFillers();
             if (typeof fillPlanFillers === 'function') fillPlanFillers();
@@ -509,7 +504,7 @@ function runLoadingSequence() {
         }, 350);
     }, 850);
 }
-/* === КОНЕЦ БЛОКА АНИМАЦИИ === */
+/* === КОНЕЦ === */
 
 function getFillerColWidth() {
     const w = window.innerWidth;
@@ -740,7 +735,6 @@ async function init() {
 
     document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
 
-    // Запускаем анимацию после того, как всё отрисовано и размеры корректны
     runLoadingSequence();
 }
 
