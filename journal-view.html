@@ -150,10 +150,29 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table td.col-date.col-today:focus-within, .marks-table td.col-qtr.col-today:focus-within, .marks-table td.col-period.col-today:focus-within { outline: none; }
 .marks-table td.col-date.col-today:focus-within::after, .marks-table td.col-qtr.col-today:focus-within::after, .marks-table td.col-period.col-today:focus-within::after { content: ''; border: 1.5px solid #60A5FA; }
 
-.marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
-.marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; pointer-events: none; }
-.marks-table tbody tr:nth-child(5n) td.col-filler-body { border-bottom: 1px solid #000000 !important; }
-.marks-table thead th.col-filler-head.col-filler-last, .marks-table tbody td.col-filler-body.col-filler-last { border-right: none; }
+/* === ФИКС ЖИРНЫХ ГРАНИЦ У «МЕРТВЫХ» КОЛОНОК (col-filler) ===
+   Убираем box-shadow от thead th, оставляем только border, чтобы не было двойной линии */
+.marks-table thead th.col-filler-head {
+    background: #EBF0F6 !important;
+    border-right: 1px solid #CFD8E3;
+    border-bottom: 1px solid #CFD8E3;
+    box-shadow: none;
+}
+.marks-table tbody td.col-filler-body {
+    background: #FFFFFF !important;
+    border-right: 1px solid #CFD8E3;
+    border-bottom: 1px solid #CFD8E3;
+    pointer-events: none;
+    box-shadow: none;
+}
+.marks-table tbody tr:nth-child(5n) td.col-filler-body {
+    border-bottom: 1px solid #000000 !important;
+}
+.marks-table thead th.col-filler-head.col-filler-last,
+.marks-table tbody td.col-filler-body.col-filler-last {
+    border-right: none;
+}
+/* === КОНЕЦ === */
 
 .journal-scroll::-webkit-scrollbar, .panel-right::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
 .journal-scroll::-webkit-scrollbar-thumb, .panel-right::-webkit-scrollbar-thumb { background: #CFD8E3; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
@@ -202,7 +221,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .placeholder-text { display: inline-block; color: #0EA5E9; font-style: italic; font-size: 13.65px; cursor: pointer; padding: 8px 12px; margin: -8px -12px; line-height: 1.3; }
 .add-hw-btn { display: inline-block; padding: 2px 4px; margin: 0; border: none; background: transparent; color: #0EA5E9; font-style: italic; font-size: 13.65px; font-weight: 400; cursor: pointer; font-family: inherit; text-align: left; line-height: 1.3; }
 
-/* edit-bubble: рамка как у границ между уроками (#CFD8E3, 1px), без жирной тени */
 .edit-bubble { display: flex; align-items: flex-start; gap: 6px; width: 100%; }
 .edit-bubble textarea {
     flex: 1 1 auto;
@@ -1713,7 +1731,6 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
 
     target.replaceWith(bubble);
 
-    /* Авторасширение textarea — на весь текст (в т.ч. для больших ДЗ) */
     autoGrow(ta);
     requestAnimationFrame(() => autoGrow(ta));
 
