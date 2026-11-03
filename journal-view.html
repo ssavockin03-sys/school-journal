@@ -13,7 +13,7 @@ html { -webkit-font-smoothing: antialiased; }
 body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
 
 /* === АНИМАЦИЯ ЗАГРУЗКИ (только opacity) === */
-.loading-hidden { opacity: 0 !important; transition: opacity 0.3s ease; pointer-events: none; }
+.loading-hidden { opacity: 0 !important; transition: opacity 0.25s ease; pointer-events: none; }
 .loading-fade-in { opacity: 1 !important; pointer-events: auto; }
 /* === КОНЕЦ === */
 
@@ -280,7 +280,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 </head>
 <body>
 
-<!-- ЭТАП 1: крошки + шапка -->
 <div class="top-nav loading-hidden" id="loadTopNav">
     <a onclick="showToast('Стартовая учителя — в разработке')">Стартовая учителя</a>
     <span class="sep">›</span>
@@ -314,7 +313,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     </div>
 </div>
 
-<!-- ЭТАП 2: периоды + кнопки -->
 <div class="period-tabs-wrapper loading-hidden" id="loadPeriodTabsWrapper">
     <div class="period-tabs-group loading-hidden" id="periodTabs"></div>
     <div class="header-actions" id="loadHeaderActions">
@@ -338,7 +336,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     </div>
 </div>
 
-<!-- ЭТАП 3: всё остальное -->
 <div class="mobile-view-tabs loading-hidden" id="loadMobileTabs">
     <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
     <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
@@ -470,39 +467,41 @@ function reveal(el) {
     el.classList.remove('loading-hidden');
     el.classList.add('loading-fade-in');
 }
+function safeCall(fn) {
+    try { fn(); } catch (e) { console.warn('[loading]', e); }
+}
 function runLoadingSequence() {
-    // Этап 1: шапка + крошки
-    reveal(document.getElementById('loadTopNav'));
-    reveal(document.getElementById('loadHeaderBar'));
+    safeCall(() => {
+        reveal(document.getElementById('loadTopNav'));
+        reveal(document.getElementById('loadHeaderBar'));
+    });
 
-    // Этап 2: периоды + кнопки
-    setTimeout(() => {
+    setTimeout(() => safeCall(() => {
         reveal(document.getElementById('loadPeriodTabsWrapper'));
         reveal(document.getElementById('periodTabs'));
         reveal(document.getElementById('loadBtnImport'));
         reveal(document.getElementById('loadBtnRemark'));
         reveal(document.getElementById('loadBtnClassRecord'));
         reveal(document.getElementById('loadIconActions'));
-    }, 400);
+    }), 150);
 
-    // Этап 3: основная область
-    setTimeout(() => {
+    setTimeout(() => safeCall(() => {
         reveal(document.getElementById('loadMobileTabs'));
         reveal(document.getElementById('mainContent'));
-        requestAnimationFrame(() => {
+        requestAnimationFrame(() => safeCall(() => {
             if (typeof fillFillers === 'function') fillFillers();
             if (typeof fillPlanFillers === 'function') fillPlanFillers();
             if (typeof centerOnToday === 'function') centerOnToday();
-        });
-        setTimeout(() => {
+        }));
+        setTimeout(() => safeCall(() => {
             if (typeof fillFillers === 'function') fillFillers();
             if (typeof fillPlanFillers === 'function') fillPlanFillers();
-        }, 100);
-        setTimeout(() => {
+        }), 80);
+        setTimeout(() => safeCall(() => {
             if (typeof fillFillers === 'function') fillFillers();
             if (typeof fillPlanFillers === 'function') fillPlanFillers();
-        }, 350);
-    }, 850);
+        }), 250);
+    }), 350);
 }
 /* === КОНЕЦ === */
 
@@ -557,6 +556,7 @@ let MOBILE_VIEW = 'journal';
 let toastTimer = null;
 function showToast(message) {
     const toast = document.getElementById('toast');
+    if (!toast) return;
     toast.textContent = message;
     toast.style.opacity = '1';
     toast.style.transform = 'translateY(0)';
@@ -574,30 +574,25 @@ function isMobileView() {
 function switchMobileView(view) {
     MOBILE_VIEW = view;
     const container = document.getElementById('panelsContainer');
+    if (!container) return;
     container.classList.toggle('mobile-show-journal', view === 'journal');
     container.classList.toggle('mobile-show-plan', view === 'plan');
-    document.getElementById('mobileTabJournal').classList.toggle('active', view === 'journal');
-    document.getElementById('mobileTabPlan').classList.toggle('active', view === 'plan');
+    const tJ = document.getElementById('mobileTabJournal');
+    const tP = document.getElementById('mobileTabPlan');
+    if (tJ) tJ.classList.toggle('active', view === 'journal');
+    if (tP) tP.classList.toggle('active', view === 'plan');
     requestAnimationFrame(() => {
-        if (SUMMARY_MODE) fillFillersSummary();
-        else { fillFillers(); fillPlanFillers(); }
-        centerOnToday();
+        safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else { fillFillers(); fillPlanFillers(); } });
+        safeCall(centerOnToday);
     });
     setTimeout(() => {
-        if (SUMMARY_MODE) fillFillersSummary();
-        else { fillFillers(); fillPlanFillers(); }
-        centerOnToday();
-    }, 50);
+        safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else { fillFillers(); fillPlanFillers(); } });
+        safeCall(centerOnToday);
+    }, 80);
     setTimeout(() => {
-        if (SUMMARY_MODE) fillFillersSummary();
-        else { fillFillers(); fillPlanFillers(); }
-        centerOnToday();
-    }, 200);
-    setTimeout(() => {
-        if (SUMMARY_MODE) fillFillersSummary();
-        else { fillFillers(); fillPlanFillers(); }
-        centerOnToday();
-    }, 400);
+        safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else { fillFillers(); fillPlanFillers(); } });
+        safeCall(centerOnToday);
+    }, 250);
 }
 
 function collectSubjectsFromSchedule(schedules, classId) {
@@ -713,8 +708,9 @@ async function init() {
 
     MOBILE_VIEW = 'journal';
     const container = document.getElementById('panelsContainer');
-    container.classList.add('mobile-show-journal');
-    document.getElementById('mobileTabJournal').classList.add('active');
+    if (container) container.classList.add('mobile-show-journal');
+    const tJ = document.getElementById('mobileTabJournal');
+    if (tJ) tJ.classList.add('active');
 
     renderHeader();
     renderPeriodTabs();
@@ -724,18 +720,22 @@ async function init() {
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
 
     renderMainTable();
-    fillFillers();
+    safeCall(fillFillers);
     requestAnimationFrame(() => {
-        fillFillers();
-        fillPlanFillers();
-        centerOnToday();
+        safeCall(fillFillers);
+        safeCall(fillPlanFillers);
+        safeCall(centerOnToday);
     });
 
     setupObservers();
 
     document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
 
-    runLoadingSequence();
+    // Запускаем анимацию через setTimeout(0), чтобы даже если внутри что-то упадёт —
+    // это не попало в .catch от init()
+    setTimeout(() => {
+        try { runLoadingSequence(); } catch (e) { console.warn('[loading]', e); }
+    }, 0);
 }
 
 let planObserver = null;
@@ -746,7 +746,7 @@ function setupObservers() {
     if (panelRightWrapper) {
         if (planObserver) planObserver.disconnect();
         planObserver = new ResizeObserver(() => {
-            fillPlanFillers();
+            safeCall(fillPlanFillers);
         });
         planObserver.observe(panelRightWrapper);
     }
@@ -754,8 +754,10 @@ function setupObservers() {
     if (journalScroll) {
         if (journalObserver) journalObserver.disconnect();
         journalObserver = new ResizeObserver(() => {
-            if (SUMMARY_MODE) fillFillersSummary();
-            else fillFillers();
+            safeCall(() => {
+                if (SUMMARY_MODE) fillFillersSummary();
+                else fillFillers();
+            });
         });
         journalObserver.observe(journalScroll);
     }
@@ -822,17 +824,23 @@ function formatDateNoYear(d) { return String(d.getDate()).padStart(2, '0') + '.'
 function formatDateFull(d) { return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear(); }
 
 function renderHeader() {
-    document.getElementById('classDropdownName').textContent = CLASS_OBJ.name;
-    document.getElementById('subjectDropdownName').textContent = SUBJECT_NAME;
-    document.getElementById('teacherLabel').textContent = 'Учитель: ' + (TEACHER_NAME || '—');
-    document.getElementById('navChain').textContent = CLASS_OBJ.name + ', ' + SUBJECT_NAME;
-    document.getElementById('yearLabel').textContent = '2026/2027 учебный год';
+    const elClass = document.getElementById('classDropdownName');
+    const elSubj = document.getElementById('subjectDropdownName');
+    const elTeach = document.getElementById('teacherLabel');
+    const elNav = document.getElementById('navChain');
+    const elYear = document.getElementById('yearLabel');
+    if (elClass) elClass.textContent = CLASS_OBJ.name;
+    if (elSubj) elSubj.textContent = SUBJECT_NAME;
+    if (elTeach) elTeach.textContent = 'Учитель: ' + (TEACHER_NAME || '—');
+    if (elNav) elNav.textContent = CLASS_OBJ.name + ', ' + SUBJECT_NAME;
+    if (elYear) elYear.textContent = '2026/2027 учебный год';
     renderClassDropdownMenu();
     renderSubjectDropdownMenu();
 }
 
 function renderClassDropdownMenu() {
     const menu = document.getElementById('classDropdownMenu');
+    if (!menu) return;
     menu.innerHTML = '';
     ALL_CLASSES.forEach(c => {
         const btn = document.createElement('button');
@@ -856,6 +864,7 @@ function renderClassDropdownMenu() {
 
 function renderSubjectDropdownMenu() {
     const menu = document.getElementById('subjectDropdownMenu');
+    if (!menu) return;
     menu.innerHTML = '';
     ALL_CLASS_SUBJECTS.forEach(s => {
         const btn = document.createElement('button');
@@ -874,6 +883,7 @@ function renderSubjectDropdownMenu() {
 function toggleClassDropdown(e) {
     e.stopPropagation();
     const dd = document.getElementById('classDropdown');
+    if (!dd) return;
     const isOpen = dd.classList.contains('open');
     closeAllDropdowns();
     if (!isOpen) dd.classList.add('open');
@@ -881,6 +891,7 @@ function toggleClassDropdown(e) {
 function toggleSubjectDropdown(e) {
     e.stopPropagation();
     const dd = document.getElementById('subjectDropdown');
+    if (!dd) return;
     const isOpen = dd.classList.contains('open');
     closeAllDropdowns();
     if (!isOpen) dd.classList.add('open');
@@ -892,6 +903,7 @@ document.addEventListener('click', closeAllDropdowns);
 
 function renderPeriodTabs() {
     const container = document.getElementById('periodTabs');
+    if (!container) return;
     container.innerHTML = '';
     
     if (PERIODS.length === 0) {
@@ -925,23 +937,31 @@ function renderPeriodTabs() {
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
             DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-            document.getElementById('panelsContainer').classList.remove('summary-mode');
-            document.getElementById('mainContent').style.display = '';
-            document.getElementById('emptyState').style.display = 'none';
+            const pc = document.getElementById('panelsContainer');
+            if (pc) pc.classList.remove('summary-mode');
+            const mc = document.getElementById('mainContent');
+            if (mc) mc.style.display = '';
+            const es = document.getElementById('emptyState');
+            if (es) es.style.display = 'none';
             if (isMobileView()) {
-                document.querySelector('.mobile-view-tabs').style.display = '';
-                document.getElementById('panelsContainer').classList.add('mobile-show-journal');
-                document.getElementById('panelsContainer').classList.remove('mobile-show-plan');
-                document.getElementById('mobileTabJournal').classList.add('active');
-                document.getElementById('mobileTabPlan').classList.remove('active');
+                const mvt = document.querySelector('.mobile-view-tabs');
+                if (mvt) mvt.style.display = '';
+                if (pc) {
+                    pc.classList.add('mobile-show-journal');
+                    pc.classList.remove('mobile-show-plan');
+                }
+                const mj = document.getElementById('mobileTabJournal');
+                const mp = document.getElementById('mobileTabPlan');
+                if (mj) mj.classList.add('active');
+                if (mp) mp.classList.remove('active');
                 MOBILE_VIEW = 'journal';
             }
             renderMainTable();
-            fillFillers();
+            safeCall(fillFillers);
             requestAnimationFrame(() => {
-                fillFillers();
-                fillPlanFillers();
-                centerOnToday();
+                safeCall(fillFillers);
+                safeCall(fillPlanFillers);
+                safeCall(centerOnToday);
             });
         });
         container.appendChild(tab);
@@ -956,19 +976,23 @@ function renderPeriodTabs() {
         commitActiveEditor();
         SUMMARY_MODE = true;
         renderPeriodTabs();
-        document.getElementById('mainContent').style.display = '';
-        document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('panelsContainer').classList.add('summary-mode');
+        const mc = document.getElementById('mainContent');
+        if (mc) mc.style.display = '';
+        const es = document.getElementById('emptyState');
+        if (es) es.style.display = 'none';
+        const pc = document.getElementById('panelsContainer');
+        if (pc) pc.classList.add('summary-mode');
         if (isMobileView()) {
-            document.querySelector('.mobile-view-tabs').style.display = 'none';
+            const mvt = document.querySelector('.mobile-view-tabs');
+            if (mvt) mvt.style.display = 'none';
         }
         renderSummaryTable();
         requestAnimationFrame(() => {
-            fillFillersSummary();
-            requestAnimationFrame(fillFillersSummary);
+            safeCall(fillFillersSummary);
+            requestAnimationFrame(() => safeCall(fillFillersSummary));
         });
-        setTimeout(fillFillersSummary, 50);
-        setTimeout(fillFillersSummary, 200);
+        setTimeout(() => safeCall(fillFillersSummary), 50);
+        setTimeout(() => safeCall(fillFillersSummary), 200);
     });
     container.appendChild(summaryTab);
 }
@@ -980,6 +1004,7 @@ function renderSummaryTable() {
     const fioBody = document.getElementById('fioBody');
     const pBody = document.getElementById('pBody');
     const marksTable = document.getElementById('marksTable');
+    if (!mRow || !sRow || !jBody || !fioBody || !pBody || !marksTable) return;
 
     marksTable.classList.add('period-mode');
 
@@ -1112,13 +1137,14 @@ async function upFinal(studentId, inputElement) {
 
 function renderMainTable() {
     const marksTable = document.getElementById('marksTable');
-    marksTable.classList.remove('period-mode');
+    if (marksTable) marksTable.classList.remove('period-mode');
 
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
     const jBody = document.getElementById('jBody');
     const fioBody = document.getElementById('fioBody');
     const pBody = document.getElementById('pBody');
+    if (!mRow || !sRow || !jBody || !fioBody || !pBody) return;
 
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
 
@@ -1243,6 +1269,7 @@ function renderMainTable() {
 
 function renderLessonPlanRows() {
     const pBody = document.getElementById('pBody');
+    if (!pBody) return;
     pBody.innerHTML = '';
 
     const todayIsoStr = todayIso();
@@ -1300,7 +1327,7 @@ function renderLessonPlanRows() {
         pBody.appendChild(tr);
     });
 
-    fillPlanFillers();
+    safeCall(fillPlanFillers);
 }
 
 function openLessonPage(d) {
@@ -1372,7 +1399,8 @@ function fillPlanFillers() {
     const table = document.getElementById('lessonPlanTable');
     if (!panelRight || !table) return;
 
-    if (document.getElementById('panelsContainer').classList.contains('summary-mode')) {
+    const pc = document.getElementById('panelsContainer');
+    if (pc && pc.classList.contains('summary-mode')) {
         if (lastNoScrollState !== false) {
             panelRight.classList.remove('no-scroll');
             lastNoScrollState = false;
@@ -1454,6 +1482,7 @@ function createPlanFillerRow(height) {
 
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
+    if (!pBody) return;
 
     pBody.addEventListener('click', (e) => {
         const onlineBtn = e.target.closest('.cell-online-btn');
@@ -1796,6 +1825,7 @@ function fillFillers() {
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
     const jBody = document.getElementById('jBody');
+    if (!mRow || !sRow || !jBody) return;
 
     for (let i = 0; i < fullCols; i++) {
         [mRow, sRow].forEach(row => {
@@ -1862,6 +1892,7 @@ function fillFillersSummary() {
 
     const mRow = document.getElementById('mRow');
     const jBody = document.getElementById('jBody');
+    if (!mRow || !jBody) return;
 
     for (let i = 0; i < fullCols; i++) {
         const th = document.createElement('th');
@@ -1907,14 +1938,14 @@ let resizeTimer = null;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-        if (SUMMARY_MODE) { fillFillersSummary(); }
+        if (SUMMARY_MODE) { safeCall(fillFillersSummary); }
         else {
             if (isMobileView()) {
-                if (MOBILE_VIEW === 'journal') fillFillers();
-                else fillPlanFillers();
+                if (MOBILE_VIEW === 'journal') safeCall(fillFillers);
+                else safeCall(fillPlanFillers);
             } else {
-                fillFillers();
-                fillPlanFillers();
+                safeCall(fillFillers);
+                safeCall(fillPlanFillers);
             }
         }
     }, 100);
@@ -2074,6 +2105,7 @@ function openLessonTypePopup(anchorEl, gradeKey) {
     commitActiveEditor();
     const popup = document.getElementById('lessonTypePopup');
     const search = document.getElementById('lessonTypePopupSearch');
+    if (!popup || !search) return;
     currentLessonTypeContext = { gradeKey };
     popupJustOpened = true;
     search.value = '';
@@ -2094,7 +2126,9 @@ function openLessonTypePopup(anchorEl, gradeKey) {
 
 function renderLessonTypePopupList() {
     const list = document.getElementById('lessonTypePopupList');
-    const search = (document.getElementById('lessonTypePopupSearch').value || '').toLowerCase().trim();
+    const searchEl = document.getElementById('lessonTypePopupSearch');
+    if (!list || !searchEl) return;
+    const search = (searchEl.value || '').toLowerCase().trim();
     const currentAbbr = (JOURNAL.lessonTypes || {})[currentLessonTypeContext.gradeKey] || 'ОТВ';
     list.innerHTML = '';
     const filtered = LESSON_TYPES.filter(t => !search || t.abbr.toLowerCase().includes(search) || t.full.toLowerCase().includes(search));
@@ -2119,16 +2153,19 @@ async function selectLessonType(abbr) {
     closeLessonTypePopup();
 }
 
-function closeLessonTypePopup() { document.getElementById('lessonTypePopup').classList.remove('show'); }
+function closeLessonTypePopup() { 
+    const popup = document.getElementById('lessonTypePopup');
+    if (popup) popup.classList.remove('show');
+}
 
 document.addEventListener('click', (e) => {
     const popup = document.getElementById('lessonTypePopup');
-    if (!popup.classList.contains('show') || popupJustOpened) return;
+    if (!popup || !popup.classList.contains('show') || popupJustOpened) return;
     if (!popup.contains(e.target)) closeLessonTypePopup();
 });
 document.addEventListener('mousedown', (e) => {
     const popup = document.getElementById('lessonTypePopup');
-    if (!popup.classList.contains('show') || popupJustOpened) return;
+    if (!popup || !popup.classList.contains('show') || popupJustOpened) return;
     if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup();
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
@@ -2138,19 +2175,21 @@ function toggleLeftPanel() {
     if (isMobileView()) { switchMobileView('plan'); return; }
     const container = document.getElementById('panelsContainer');
     const tabLeft = document.getElementById('tabLeft');
+    if (!container || !tabLeft) return;
     leftCollapsed = !leftCollapsed;
     container.classList.toggle('left-collapsed', leftCollapsed);
     tabLeft.classList.toggle('active', leftCollapsed);
     if (leftCollapsed) {
         rightCollapsed = false;
         container.classList.remove('right-collapsed');
-        document.getElementById('tabRight').classList.remove('active');
+        const tr = document.getElementById('tabRight');
+        if (tr) tr.classList.remove('active');
     }
     updateTabIcons();
     lastNoScrollState = null;
-    requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
-    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 100);
-    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 350);
+    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); });
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 100);
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 350);
 }
 
 function toggleRightPanel() {
@@ -2158,24 +2197,27 @@ function toggleRightPanel() {
     if (isMobileView()) { switchMobileView('journal'); return; }
     const container = document.getElementById('panelsContainer');
     const tabRight = document.getElementById('tabRight');
+    if (!container || !tabRight) return;
     rightCollapsed = !rightCollapsed;
     container.classList.toggle('right-collapsed', rightCollapsed);
     tabRight.classList.toggle('active', rightCollapsed);
     if (rightCollapsed) {
         leftCollapsed = false;
         container.classList.remove('left-collapsed');
-        document.getElementById('tabLeft').classList.remove('active');
+        const tl = document.getElementById('tabLeft');
+        if (tl) tl.classList.remove('active');
     }
     updateTabIcons();
     lastNoScrollState = null;
-    requestAnimationFrame(() => { fillFillers(); fillPlanFillers(); });
-    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 100);
-    setTimeout(() => { fillFillers(); fillPlanFillers(); }, 350);
+    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); });
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 100);
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 350);
 }
 
 function updateTabIcons() {
     const tabLeft = document.getElementById('tabLeft');
     const tabRight = document.getElementById('tabRight');
+    if (!tabLeft || !tabRight) return;
     const iconLeft = leftCollapsed
         ? '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>'
         : '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>';
@@ -2187,11 +2229,15 @@ function updateTabIcons() {
 }
 
 function showEmpty(title, text) {
-    document.getElementById('mainContent').style.display = 'none';
+    const mc = document.getElementById('mainContent');
+    if (mc) mc.style.display = 'none';
     const empty = document.getElementById('emptyState');
+    if (!empty) return;
     empty.style.display = 'block';
-    document.getElementById('emptyTitle').textContent = title;
-    document.getElementById('emptyText').textContent = text;
+    const t = document.getElementById('emptyTitle');
+    const p = document.getElementById('emptyText');
+    if (t) t.textContent = title;
+    if (p) p.textContent = text;
 }
 
 function goBack() { window.location.href = 'admin.html'; }
