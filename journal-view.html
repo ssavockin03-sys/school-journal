@@ -12,10 +12,8 @@
 html { -webkit-font-smoothing: antialiased; }
 body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
 
-/* === АНИМАЦИЯ ЗАГРУЗКИ (только opacity) === */
 .loading-hidden { opacity: 0 !important; transition: opacity 0.25s ease; pointer-events: none; }
 .loading-fade-in { opacity: 1 !important; pointer-events: auto; }
-/* === КОНЕЦ === */
 
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #F4F6F8; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
@@ -204,7 +202,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .placeholder-text { display: inline-block; color: #0EA5E9; font-style: italic; font-size: 13.65px; cursor: pointer; padding: 8px 12px; margin: -8px -12px; line-height: 1.3; }
 .add-hw-btn { display: inline-block; padding: 2px 4px; margin: 0; border: none; background: transparent; color: #0EA5E9; font-style: italic; font-size: 13.65px; font-weight: 400; cursor: pointer; font-family: inherit; text-align: left; line-height: 1.3; }
 
-/* edit-bubble — прежний вид, в потоке, как было */
+/* edit-bubble — прежний вид */
 .edit-bubble { display: flex; align-items: flex-start; gap: 6px; width: 100%; }
 .edit-bubble textarea { flex: 1 1 auto; min-width: 0; min-height: 28px; padding: 5px 10px; border: 1.5px solid #CBD5E1; border-radius: 10px; background: #FFFFFF; font-size: 13px; font-family: inherit; color: #1E293B; outline: none; resize: none; line-height: 1.3; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06); overflow: hidden; white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; }
 .edit-bubble textarea:focus { border-color: #94A3B8; box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1); }
@@ -232,21 +230,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .lesson-type-popup-item.active .full { font-weight: 600; color: #1D4ED8; }
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
 
-/* === ЗАМОРОЗКА СТРОКИ НА ВРЕМЯ РЕДАКТИРОВАНИЯ === */
-.panel-right tbody tr.hw-row-frozen > td {
+/* === НОВОЕ: на время редактирования ДЗ у таблицы плана фиксируем высоту строки === */
+.panel-right tbody tr.hw-lock > td {
+    height: 56px;
     overflow: hidden;
-    height: 0;            /* перебиваем height:56px — истинную высоту задаёт tr */
-    padding-top: 4px;
-    padding-bottom: 4px;
 }
-/* textarea в замороженной строке не должна выталкивать высоту */
-.panel-right tbody tr.hw-row-frozen .edit-bubble textarea {
-    max-height: calc(100vh); /* просто ограничение сверху, реальную высоту задаёт flex + tr */
-    height: 40px;            /* фикс, чтобы textarea не пыталась растянуть td */
-    min-height: 40px;
+.panel-right tbody tr.hw-lock .edit-bubble textarea {
+    height: 36px;
+    min-height: 36px;
+    max-height: 36px;
     overflow-y: auto;
 }
-/* === КОНЕЦ === */
 
 @media (max-width: 1100px) {
     body { overflow: auto; }
@@ -281,9 +275,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .fio-table .student-number-text { width: 16px; margin-right: 4px; font-size: 11.5px; }
     .fio-table .student-name-text { font-size: 11.5px; }
     .marks-table thead th.col-filler-head, .marks-table tbody td.col-filler-body { min-width: 38px !important; }
-    /* На мобилке заморозка не нужна, но не мешает */
-    .panel-right tbody tr.hw-row-frozen > td { height: auto; }
-    .panel-right tbody tr.hw-row-frozen .edit-bubble textarea { height: auto; min-height: 28px; }
+    /* На мобилке не замораживаем и textarea обычная */
+    .panel-right tbody tr.hw-lock > td { height: auto; }
+    .panel-right tbody tr.hw-lock .edit-bubble textarea { height: auto; min-height: 28px; max-height: none; overflow: hidden; }
 }
 @media (max-width: 480px) {
     .fio-table-wrapper { width: 180px; }
@@ -481,7 +475,6 @@ const LESSON_TYPES = [
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
-/* === АНИМАЦИЯ ЗАГРУЗКИ === */
 function reveal(el) {
     if (!el) return;
     el.classList.remove('loading-hidden');
@@ -523,33 +516,8 @@ function runLoadingSequence() {
         }), 250);
     }), 350);
 }
-/* === КОНЕЦ === */
 
-/* === ФЛАГ РЕДАКТИРОВАНИЯ ДЗ + ЗАМОРОЗКА СТРОКИ === */
 let hwEditing = false;
-let hwFrozenRow = null;
-let hwFrozenHeight = 0;
-let hwFrozenPrevInlineHeight = '';
-
-function freezeHwRow(tr) {
-    if (!tr) return;
-    hwFrozenRow = tr;
-    hwFrozenHeight = tr.offsetHeight;
-    hwFrozenPrevInlineHeight = tr.style.height || '';
-    tr.style.height = hwFrozenHeight + 'px';
-    tr.classList.add('hw-row-frozen');
-}
-
-function unfreezeHwRow() {
-    if (hwFrozenRow) {
-        hwFrozenRow.style.height = hwFrozenPrevInlineHeight;
-        hwFrozenRow.classList.remove('hw-row-frozen');
-    }
-    hwFrozenRow = null;
-    hwFrozenHeight = 0;
-    hwFrozenPrevInlineHeight = '';
-}
-/* === КОНЕЦ === */
 
 function getFillerColWidth() {
     const w = window.innerWidth;
@@ -1701,6 +1669,8 @@ function findHwItemByIndex(listWrap, idx) {
     return items[idx] || null;
 }
 
+/* === ГЛАВНОЕ ИСПРАВЛЕНИЕ: минимум DOM-операций, не пересобираем весь список === */
+
 function openHwItemEdit(cell, gradeKey, idx, value) {
     commitActiveEditor();
     hwEditing = true;
@@ -1708,17 +1678,12 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     const listWrap = cell.querySelector('.hw-list');
     if (!listWrap) { hwEditing = false; return; }
     const target = findHwItemByIndex(listWrap, idx);
-    if (!target) {
-        hwEditing = false;
-        const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
-        renderHwContent(cell, gradeKey, arr);
-        return;
-    }
+    if (!target) { hwEditing = false; return; }
 
-    /* ЗАМОРАЖИВАЕМ ВЫСОТУ СТРОКИ до вставки редактора */
     const tr = cell.closest('tr');
-    freezeHwRow(tr);
+    if (tr) tr.classList.add('hw-lock');
 
+    /* Сразу строим bubble, но НЕ трогаем остальной DOM */
     const bubble = document.createElement('div');
     bubble.className = 'edit-bubble';
     const ta = document.createElement('textarea');
@@ -1731,11 +1696,16 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
     bubble.appendChild(ta);
     bubble.appendChild(ok);
+
+    /* Одна атомарная замена — только у конкретного hw-list-item */
     target.replaceWith(bubble);
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
     const finalize = (commitChanges) => {
+        /* Сначала снимаем блокировку с tr, чтобы высота могла свободно стать нормальной */
+        if (tr) tr.classList.remove('hw-lock');
+
         if (commitChanges) {
             const txt = ta.value.trim();
             if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
@@ -1748,7 +1718,6 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
             const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
             renderHwContent(cell, gradeKey, arr);
         }
-        unfreezeHwRow();
         hwEditing = false;
         requestAnimationFrame(() => safeCall(fillPlanFillers));
     };
@@ -1784,20 +1753,23 @@ function openNewHwItem(cell, gradeKey) {
 
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
     const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-    const newIdx = arr.length;
-    arr.push('');
-    JOURNAL.lessons[gradeKey].h = arr;
-    renderHwContent(cell, gradeKey, arr);
 
+    /* Находим, что именно заменить: placeholder (если ДЗ пустое) или add-hw-btn (если уже есть) */
     const listWrap = cell.querySelector('.hw-list');
     if (!listWrap) { hwEditing = false; return; }
-    const target = findHwItemByIndex(listWrap, newIdx);
+
+    let target = null;
+    if (arr.length === 0) {
+        target = listWrap.querySelector('.placeholder-text');
+    } else {
+        target = listWrap.querySelector('.add-hw-btn');
+    }
     if (!target) { hwEditing = false; return; }
 
-    /* ЗАМОРАЖИВАЕМ ВЫСОТУ СТРОКИ до вставки редактора */
     const tr = cell.closest('tr');
-    freezeHwRow(tr);
+    if (tr) tr.classList.add('hw-lock');
 
+    /* Строим bubble, но НЕ пересобираем список — только заменяем кнопку/плейсхолдер */
     const bubble = document.createElement('div');
     bubble.className = 'edit-bubble';
     const ta = document.createElement('textarea');
@@ -1810,29 +1782,29 @@ function openNewHwItem(cell, gradeKey) {
     ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
     bubble.appendChild(ta);
     bubble.appendChild(ok);
+
     target.replaceWith(bubble);
     ta.focus();
     ta.setSelectionRange(0, 0);
 
     const finalize = (commitChanges) => {
+        if (tr) tr.classList.remove('hw-lock');
+
+        const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
         if (commitChanges) {
             const txt = ta.value.trim();
-            const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
             if (txt === '') {
-                current.splice(newIdx, 1);
+                /* ничего не добавилось — вернуть как было */
+                renderHwContent(cell, gradeKey, current);
             } else {
-                current[newIdx] = txt;
+                current.push(txt);
+                JOURNAL.lessons[gradeKey].h = current;
+                renderHwContent(cell, gradeKey, current);
+                saveJournal();
             }
-            JOURNAL.lessons[gradeKey].h = current;
-            renderHwContent(cell, gradeKey, current);
-            saveJournal();
         } else {
-            const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-            current.splice(newIdx, 1);
-            JOURNAL.lessons[gradeKey].h = current;
             renderHwContent(cell, gradeKey, current);
         }
-        unfreezeHwRow();
         hwEditing = false;
         requestAnimationFrame(() => safeCall(fillPlanFillers));
     };
