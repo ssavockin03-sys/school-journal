@@ -12,6 +12,10 @@
 html { -webkit-font-smoothing: antialiased; }
 body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
 
+/* === АНИМАЦИЯ ЗАГРУЗКИ === */
+.loading-hidden { opacity: 0 !important; transform: translateY(4px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
+.loading-fade-in { opacity: 1 !important; transform: translateY(0); pointer-events: auto; }
+
 /* Серая зона сверху — от начала страницы до конца .header-bar (над вкладками периодов) */
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #F4F6F8; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
@@ -284,7 +288,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 </head>
 <body>
 
-<div class="top-nav">
+<div class="top-nav loading-hidden" id="loadTopNav">
     <a onclick="showToast('Стартовая учителя — в разработке')">Стартовая учителя</a>
     <span class="sep">›</span>
     <a onclick="goBack()">Журналы</a>
@@ -292,7 +296,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     <span class="current" id="navChain">Класс, предмет</span>
 </div>
 
-<div class="header-bar">
+<div class="header-bar loading-hidden" id="loadHeaderBar">
     <div class="header-grid">
         <div class="cell">
             <div class="dropdown" id="classDropdown">
@@ -317,16 +321,16 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     </div>
 </div>
 
-<div class="period-tabs-wrapper">
+<div class="period-tabs-wrapper loading-hidden" id="loadPeriodTabsWrapper">
     <div class="period-tabs-group" id="periodTabs"></div>
-    <div class="header-actions">
-        <button type="button" class="btn-import" onclick="showToast('Импорт из Excel — в разработке')">
+    <div class="header-actions" id="loadHeaderActions">
+        <button type="button" class="btn-import loading-hidden" id="loadBtnImport" onclick="showToast('Импорт из Excel — в разработке')">
             <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
             Импорт
         </button>
-        <button type="button" class="btn-text-action" onclick="showToast('Замечание — в разработке')">Замечание</button>
-        <button type="button" class="btn-outlined-blue" onclick="showToast('Запись класса — в разработке')">Запись класса</button>
-        <div class="icon-actions">
+        <button type="button" class="btn-text-action loading-hidden" id="loadBtnRemark" onclick="showToast('Замечание — в разработке')">Замечание</button>
+        <button type="button" class="btn-outlined-blue loading-hidden" id="loadBtnClassRecord" onclick="showToast('Запись класса — в разработке')">Запись класса</button>
+        <div class="icon-actions loading-hidden" id="loadIconActions">
             <button type="button" class="icon-action-btn" onclick="window.print()" title="Печать">
                 <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
             </button>
@@ -340,12 +344,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     </div>
 </div>
 
-<div class="mobile-view-tabs" id="mobileViewTabs">
+<div class="mobile-view-tabs loading-hidden" id="mobileViewTabs">
     <button type="button" class="mobile-view-tab active" id="mobileTabJournal" onclick="switchMobileView('journal')">Журнал</button>
     <button type="button" class="mobile-view-tab" id="mobileTabPlan" onclick="switchMobileView('plan')">Поурочное планирование</button>
 </div>
 
-<div id="mainContent">
+<div id="mainContent" class="loading-hidden" id="loadMainContent">
     <div class="panels-container" id="panelsContainer">
         <div class="panel-left-wrapper" id="panelLeftWrapper">
             <div class="panel-left" id="panelLeft">
@@ -464,6 +468,37 @@ const LESSON_TYPES = [
     { abbr: 'ЧТ/М', full: 'Чтение молча' }, { abbr: 'ЭКС', full: 'Экскурсия' }, { abbr: 'Я/Т', full: 'Языковая тема' }
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
+
+/* === АНИМАЦИЯ ЗАГРУЗКИ: последовательное проявление элементов === */
+function revealElement(el) {
+    if (!el) return;
+    el.classList.remove('loading-hidden');
+    el.classList.add('loading-fade-in');
+}
+function runLoadingSequence() {
+    // Этап 1: шапка (класс, предмет, год, учитель) + хлебные крошки
+    const stage1 = [
+        document.getElementById('loadTopNav'),
+        document.getElementById('loadHeaderBar')
+    ];
+    stage1.forEach(revealElement);
+
+    // Этап 2: переключалка периодов + кнопки действий (Импорт, Замечание, Запись класса, иконки)
+    setTimeout(() => {
+        revealElement(document.getElementById('loadPeriodTabsWrapper'));
+        revealElement(document.getElementById('loadBtnImport'));
+        revealElement(document.getElementById('loadBtnRemark'));
+        revealElement(document.getElementById('loadBtnClassRecord'));
+        revealElement(document.getElementById('loadIconActions'));
+    }, 450);
+
+    // Этап 3: основная область (журнал + поурочное планирование) и мобильные табы
+    setTimeout(() => {
+        revealElement(document.getElementById('mobileViewTabs'));
+        revealElement(document.getElementById('loadMainContent'));
+    }, 950);
+}
+/* === КОНЕЦ БЛОКА АНИМАЦИИ === */
 
 function getFillerColWidth() {
     const w = window.innerWidth;
@@ -693,6 +728,9 @@ async function init() {
     setupObservers();
 
     document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
+
+    // Запускаем анимацию загрузки после первого рендера
+    runLoadingSequence();
 }
 
 let planObserver = null;
