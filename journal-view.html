@@ -505,6 +505,11 @@ function runLoadingSequence() {
 }
 /* === КОНЕЦ === */
 
+/* === ФЛАГ РЕДАКТИРОВАНИЯ ДЗ === */
+/* Пока он true — fillPlanFillers не трогает филлеры и не двигает таблицу */
+let hwEditing = false;
+/* === КОНЕЦ === */
+
 function getFillerColWidth() {
     const w = window.innerWidth;
     if (w <= 480) return 34;
@@ -731,8 +736,6 @@ async function init() {
 
     document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
 
-    // Запускаем анимацию через setTimeout(0), чтобы даже если внутри что-то упадёт —
-    // это не попало в .catch от init()
     setTimeout(() => {
         try { runLoadingSequence(); } catch (e) { console.warn('[loading]', e); }
     }, 0);
@@ -1391,6 +1394,9 @@ function centerOnToday() {
 let lastNoScrollState = null;
 
 function fillPlanFillers() {
+    /* Если пользователь редактирует ДЗ — не трогаем таблицу вообще, чтобы ничего не дёргалось */
+    if (hwEditing) return;
+
     const pBody = document.getElementById('pBody');
     if (!pBody) return;
     pBody.querySelectorAll('.plan-filler-row').forEach(r => r.remove());
@@ -1658,10 +1664,14 @@ function findHwItemByIndex(listWrap, idx) {
 function openHwItemEdit(cell, gradeKey, idx, value) {
     commitActiveEditor();
 
+    /* Включаем «заморозку» филлеров на время редактирования */
+    hwEditing = true;
+
     const listWrap = cell.querySelector('.hw-list');
-    if (!listWrap) return;
+    if (!listWrap) { hwEditing = false; return; }
     const target = findHwItemByIndex(listWrap, idx);
     if (!target) {
+        hwEditing = false;
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
         renderHwContent(cell, gradeKey, arr);
         return;
@@ -1680,7 +1690,6 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     bubble.appendChild(ta);
     bubble.appendChild(ok);
     target.replaceWith(bubble);
-    autoGrow(ta);
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
 
@@ -1692,10 +1701,15 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         JOURNAL.lessons[gradeKey].h = arr;
         renderHwContent(cell, gradeKey, arr);
         saveJournal();
+        hwEditing = false;
+        /* Пересчитываем филлеры после завершения редактирования — один раз, спокойно */
+        requestAnimationFrame(() => safeCall(fillPlanFillers));
     };
     const cancel = () => {
         const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
         renderHwContent(cell, gradeKey, arr);
+        hwEditing = false;
+        requestAnimationFrame(() => safeCall(fillPlanFillers));
     };
 
     const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
@@ -1724,6 +1738,9 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
 function openNewHwItem(cell, gradeKey) {
     commitActiveEditor();
 
+    /* Включаем «заморозку» филлеров до завершения редактирования */
+    hwEditing = true;
+
     if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
     const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
     const newIdx = arr.length;
@@ -1732,9 +1749,9 @@ function openNewHwItem(cell, gradeKey) {
     renderHwContent(cell, gradeKey, arr);
 
     const listWrap = cell.querySelector('.hw-list');
-    if (!listWrap) return;
+    if (!listWrap) { hwEditing = false; return; }
     const target = findHwItemByIndex(listWrap, newIdx);
-    if (!target) return;
+    if (!target) { hwEditing = false; return; }
 
     const bubble = document.createElement('div');
     bubble.className = 'edit-bubble';
@@ -1749,7 +1766,6 @@ function openNewHwItem(cell, gradeKey) {
     bubble.appendChild(ta);
     bubble.appendChild(ok);
     target.replaceWith(bubble);
-    autoGrow(ta);
     ta.focus();
     ta.setSelectionRange(0, 0);
 
@@ -1764,12 +1780,16 @@ function openNewHwItem(cell, gradeKey) {
         JOURNAL.lessons[gradeKey].h = current;
         renderHwContent(cell, gradeKey, current);
         saveJournal();
+        hwEditing = false;
+        requestAnimationFrame(() => safeCall(fillPlanFillers));
     };
     const cancel = () => {
         const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
         current.splice(newIdx, 1);
         JOURNAL.lessons[gradeKey].h = current;
         renderHwContent(cell, gradeKey, current);
+        hwEditing = false;
+        requestAnimationFrame(() => safeCall(fillPlanFillers));
     };
 
     const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
@@ -1938,6 +1958,7 @@ let resizeTimer = null;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
+        if (hwEditing) return;
         if (SUMMARY_MODE) { safeCall(fillFillersSummary); }
         else {
             if (isMobileView()) {
