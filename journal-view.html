@@ -168,8 +168,29 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { position: relative; z-index: 9; }
 .marks-table td.col-date:focus-within::after, .marks-table td.col-qtr:focus-within::after, .marks-table td.col-period:focus-within::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 10; box-sizing: border-box; }
-.marks-table td.col-date.col-today:focus-within, .marks-table td.col-qtr.col-today:focus-within, .marks-table td.col-period.col-today:focus-within { outline: none; }
-.marks-table td.col-date.col-today:focus-within::after, .marks-table td.col-qtr.col-today:focus-within::after, .marks-table td.col-period.col-today:focus-within::after { content: ''; border: 1.5px solid #60A5FA; }
+
+/* === ИСПРАВЛЕНИЕ: обводка при фокусе в колонке «сегодня» === */
+.marks-table td.col-date.col-today:focus-within,
+.marks-table td.col-qtr.col-today:focus-within,
+.marks-table td.col-period.col-today:focus-within {
+    outline: none;
+    z-index: 9;
+}
+.marks-table td.col-date.col-today:focus-within::after,
+.marks-table td.col-qtr.col-today:focus-within::after,
+.marks-table td.col-period.col-today:focus-within::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1.5px solid #60A5FA;
+    pointer-events: none;
+    z-index: 11;
+    box-sizing: border-box;
+}
+/* === */
 
 .marks-table thead th.col-filler-head {
     background: #EBF0F6 !important;
