@@ -62,7 +62,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
 
-/* === panel-right: скролл ВСЕГДА включён, стиль как у журнала === */
+/* === panel-right: скролл ВСЕГДА включён, скроллбар скрыт === */
 .panel-right {
     flex: 1;
     min-width: 0;
@@ -74,11 +74,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     border-radius: 0 8px 8px 0;
     border-left: none;
     margin: 0 0 12px 0;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
 }
-.panel-right::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
-.panel-right::-webkit-scrollbar-thumb { background: #CFD8E3; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
-.panel-right::-webkit-scrollbar-thumb:hover { background: #B8C4D4; background-clip: padding-box; }
-.panel-right::-webkit-scrollbar-corner { background: transparent; }
+.panel-right::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+    width: 0;
+    height: 0;
+}
 /* === */
 
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
