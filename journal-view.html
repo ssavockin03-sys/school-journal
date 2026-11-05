@@ -100,6 +100,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; transform: translateZ(0); }
 
+/* Поднимаем колонку ФИО выше, чтобы она не перекрывалась шапкой таблицы оценок при прокрутке */
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 60; transform: translateZ(0); }
 
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 30; }
@@ -109,11 +110,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
 .fio-table .student-name-text { display: inline-block; font-size: 13.65px; }
+.fio-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; position: relative; }
 
+/* ПОДНИМАЕМ ШАПКУ ВЫШЕ ВСЕГО, ЧТОБЫ ОНА ПЕРЕКРЫВАЛА ЯЧЕЙКИ ПРИ ФОКУСЕ */
 .marks-table thead { position: sticky; top: 0; z-index: 50; transform: translateZ(0); }
 
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
@@ -125,15 +128,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead tr:first-child .col-date.clickable-date:hover { background: #DBEAFE !important; color: #1D4ED8 !important; text-decoration: underline; }
 .marks-table thead tr:nth-child(2) .col-date { font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; cursor: pointer !important; user-select: none; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #DFE7F0 !important; }
+.marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
 .marks-table thead tr:first-child th.col-date.col-today { padding: 4px 2px; line-height: 1.15; vertical-align: middle; }
 .marks-table thead tr:first-child th.col-date .today-date { display: block; font-size: 12px; color: #0EA5E9; font-weight: 500; line-height: 1.1; }
 .marks-table thead tr:first-child th.col-date.col-today.clickable-date:hover .today-date { color: #1D4ED8; }
 .marks-table thead tr:first-child th.col-date .today-label { display: block; font-size: 9px; color: #475569; font-weight: 400; line-height: 1.1; margin-top: 2px; text-transform: lowercase; letter-spacing: 0.1px; }
 
-/* Только тонкие синие линии по бокам "сегодня" — без жирных горизонтальных */
 .marks-table th.col-today::before, .marks-table td.col-today::before { content: ''; position: absolute; top: 0; bottom: -1px; left: 0; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .marks-table th.col-today::after, .marks-table td.col-today::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
+.marks-table thead tr:first-child th.col-today { border-top: 1px solid #1E40AF !important; }
+.marks-table tbody tr:last-child td.col-today { border-bottom: 1px solid #1E40AF !important; }
 
 .marks-table.period-mode thead th.col-period-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px; color: #334155; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
 .marks-table.period-mode thead th.col-final-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px; color: #1E293B; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; }
@@ -170,8 +175,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .grade-cell input::selection { background: #BFDBFE; }
 
+/* === ИДЕАЛЬНАЯ ОБВОДКА ЧЕРЕЗ ВЛОЖЕННЫЙ ЭЛЕМЕНТ === */
 .marks-table td:focus-within {
-    z-index: 20 !important;
+    z-index: 20 !important; /* Поднимаем всю ячейку поверх колонки "сегодня" */
 }
 
 .focus-outline {
@@ -187,10 +193,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     display: block;
 }
 
+/* В колонке "сегодня" оставляем только верхнюю и нижнюю границы */
 .marks-table td.col-today:focus-within .focus-outline {
     border-left: none;
     border-right: none;
 }
+/* ===================================================== */
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
@@ -216,6 +224,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     border-bottom: 1px solid #CFD8E3;
     pointer-events: none;
     box-shadow: none;
+}
+.marks-table tbody tr:nth-child(5n) td.col-filler-body {
+    border-bottom: 1px solid #000000 !important;
 }
 .marks-table thead th.col-filler-head.col-filler-last,
 .marks-table tbody td.col-filler-body.col-filler-last {
@@ -246,7 +257,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .panel-right tbody tr.plan-filler-row td { padding: 0 !important; line-height: 0 !important; font-size: 0 !important; height: 38px; box-sizing: border-box; }
 
-/* Сегодня в поурочке — только тонкие синие боковые линии, без жирных горизонтальных */
+.panel-right tbody tr.lesson-row.lesson-today > td { border-top: 1px solid #1E40AF !important; border-bottom: 1px solid #1E40AF !important; }
+.panel-right tbody tr.lesson-row.lesson-today > td:not(:last-child) { border-right: 1px solid #1E40AF !important; }
 .panel-right tbody tr.lesson-row.lesson-today > td:first-child::before { content: ''; position: absolute; top: 0; bottom: -1px; left: 0; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .panel-right tbody tr.lesson-row.lesson-today > td:last-child::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 
@@ -342,6 +354,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .lesson-type-popup-item.active .full { font-weight: 600; color: #1D4ED8; }
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
 
+/* Стили для кнопок добавления/удаления */
 .lesson-type-popup-actions {
     display: flex;
     gap: 4px;
@@ -979,6 +992,7 @@ async function buildDatesForPeriod(periodIndex) {
     const end = new Date(subPeriod.end + 'T23:59:59');
     const cursor = new Date(start);
 
+    // Сначала собираем базовые уроки из расписания
     const baseLessons = [];
     while (cursor <= end) {
         const jsDay = cursor.getDay();
@@ -999,13 +1013,16 @@ async function buildDatesForPeriod(periodIndex) {
         cursor.setDate(cursor.getDate() + 1);
     }
 
+    // Теперь применяем добавленные уроки (с суффиксами _1, _2 и т.д.)
     const finalDates = [];
     baseLessons.forEach(base => {
+        // Всегда добавляем базовый (0-й) урок
         finalDates.push({
             ...base,
             gradeKey: base.baseGradeKey + '_0'
         });
 
+        // Ищем, есть ли добавленные уроки для этого дня
         let counter = 1;
         while (JOURNAL.lessons[base.baseGradeKey + '_' + counter]) {
             finalDates.push({
@@ -2316,8 +2333,9 @@ function openLessonTypePopup(anchorEl, gradeKey) {
     const search = document.getElementById('lessonTypePopupSearch');
     if (!popup || !search) return;
     
+    // Находим базовый ключ и дату для этого столбца
     const dateObj = DATES.find(d => d.gradeKey === gradeKey);
-    const baseGradeKey = dateObj ? dateObj.baseGradeKey : gradeKey.replace(/_\d+$/, '');
+    const baseGradeKey = dateObj ? dateObj.baseGradeKey : gradeKey.replace(/_\\d+$/, '');
     
     currentLessonTypeContext = { gradeKey, baseGradeKey, date: dateObj ? dateObj.iso : null };
     
@@ -2371,7 +2389,8 @@ async function addLessonColumn() {
     const { baseGradeKey } = currentLessonTypeContext;
     if (!baseGradeKey) return;
 
-    let count = 1;
+    // Проверяем, сколько уже уроков в этот день
+    let count = 1; // Базовый урок всегда есть
     while (JOURNAL.lessons[baseGradeKey + '_' + count]) {
         count++;
     }
@@ -2383,17 +2402,20 @@ async function addLessonColumn() {
 
     const newKey = baseGradeKey + '_' + count;
     
+    // Инициализируем новый урок
     if (!JOURNAL.lessons[newKey]) {
         JOURNAL.lessons[newKey] = { t: '', h: [] };
     }
     if (!JOURNAL.lessonTypes) JOURNAL.lessonTypes = {};
-    JOURNAL.lessonTypes[newKey] = 'ОТВ';
+    JOURNAL.lessonTypes[newKey] = 'ОТВ'; // По умолчанию
 
+    // Обновляем DATES
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
 
     await saveJournal();
     closeLessonTypePopup();
     
+    // Перерисовываем таблицу
     renderMainTable();
     safeCall(fillFillers);
     requestAnimationFrame(() => {
@@ -2407,25 +2429,30 @@ async function deleteLessonColumn() {
     const { gradeKey } = currentLessonTypeContext;
     if (!gradeKey) return;
 
+    // Нельзя удалить базовый урок
     if (gradeKey.endsWith('_0')) {
         showToast('Базовый урок удалить нельзя');
         return;
     }
 
+    // Удаляем данные
     delete JOURNAL.lessons[gradeKey];
     delete JOURNAL.lessonTypes[gradeKey];
     
+    // Удаляем оценки всех учеников за этот урок
     Object.keys(JOURNAL.grades).forEach(studentId => {
         if (JOURNAL.grades[studentId]) {
             delete JOURNAL.grades[studentId][gradeKey];
         }
     });
 
+    // Обновляем DATES
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
 
     await saveJournal();
     closeLessonTypePopup();
     
+    // Перерисовываем таблицу
     renderMainTable();
     safeCall(fillFillers);
     requestAnimationFrame(() => {
