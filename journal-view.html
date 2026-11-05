@@ -135,7 +135,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead tr:first-child th.col-date.col-today.clickable-date:hover .today-date { color: #1D4ED8; }
 .marks-table thead tr:first-child th.col-date .today-label { display: block; font-size: 9px; color: #475569; font-weight: 400; line-height: 1.1; margin-top: 2px; text-transform: lowercase; letter-spacing: 0.1px; }
 
-/* Синие линии колонки "сегодня" */
 .marks-table th.col-today::before, .marks-table td.col-today::before { content: ''; position: absolute; top: 0; bottom: -1px; left: 0; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .marks-table th.col-today::after, .marks-table td.col-today::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .marks-table thead tr:first-child th.col-today { border-top: 1px solid #1E40AF !important; }
@@ -167,20 +166,23 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* === НОВАЯ ЛОГИКА ОБВОДКИ ФОКУСА === */
-/* Убираем псевдоэлементы фокуса, которые конфликтовали */
-.marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { z-index: 9; }
-.marks-table td.col-date:focus-within::after, .marks-table td.col-qtr:focus-within::after, .marks-table td.col-period:focus-within::after { content: none; }
+/* === ОБВОДКА ФОКУСА === */
+.marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { position: relative; z-index: 9; }
+.marks-table td.col-date:focus-within::after, .marks-table td.col-qtr:focus-within::after, .marks-table td.col-period:focus-within::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 10; box-sizing: border-box; }
 
-/* Переносим обводку в сам input при фокусе */
-.grade-cell input:focus { 
-    box-shadow: inset 0 0 0 1.5px #60A5FA; 
-    z-index: 12; 
+/* ИСПРАВЛЕНИЕ: Обводка для ячейки "Сегодня" теперь рисуется через ::before, чтобы не конфликтовать с линиями колонки (::after) */
+.marks-table td.col-today:focus-within::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 1.5px solid #60A5FA;
+    pointer-events: none;
+    z-index: 11; /* Выше, чем линии колонки (z-index: 8) */
+    box-sizing: border-box;
 }
-/* Для ячеек "сегодня", чтобы инпут перекрыл синие линии (z-index: 8) */
-.marks-table td.col-today:focus-within .grade-cell input:focus {
-    box-shadow: inset 0 0 0 1.5px #60A5FA;
-    z-index: 12;
+.marks-table td.col-today:focus-within::after {
+    /* Оставляем синюю линию колонки нетронутой */
+    content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8;
 }
 /* === */
 
@@ -1251,8 +1253,8 @@ async function upFinal(studentId, inputElement) {
     const displayLayer = inputElement.previousElementSibling;
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
-        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
-        JOURNAL.qtrGrades[studentId]['final'] = up;
+        if (!JOURNAL.qtrGrades[student.id]) JOURNAL.qtrGrades[student.id] = {};
+        JOURNAL.qtrGrades[student.id]['final'] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     }, EDIT_DELAY_MS);
