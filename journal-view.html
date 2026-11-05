@@ -339,7 +339,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .empty-state h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
 .empty-state p { font-size: 13px; color: #64748B; max-width: 480px; margin: 0 auto 18px; line-height: 1.6; }
 
-.lesson-type-popup { position: fixed; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18); z-index: 9999; display: none; flex-direction: column; width: 260px; max-height: 340px; overflow: hidden; }
+.lesson-type-popup { position: fixed; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18); z-index: 9999; display: none; flex-direction: column; width: 280px; max-height: 400px; overflow: hidden; }
 .lesson-type-popup.show { display: flex; }
 .lesson-type-popup-search { padding: 6px; border-bottom: 1px solid #E2E8F0; flex-shrink: 0; }
 .lesson-type-popup-search input { width: 100%; height: 30px; padding: 0 10px; font-size: 12.5px; border: 1px solid #CBD5E1; border-radius: 6px; outline: none; font-family: inherit; }
@@ -353,6 +353,49 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .lesson-type-popup-item .full { font-size: 12px; color: #1E293B; font-weight: 500; line-height: 1.25; }
 .lesson-type-popup-item.active .full { font-weight: 600; color: #1D4ED8; }
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
+
+/* Стили для кнопок добавления/удаления */
+.lesson-type-popup-actions {
+    display: flex;
+    gap: 4px;
+    padding: 8px;
+    border-top: 1px solid #E2E8F0;
+    background: #F8FAFC;
+}
+.lesson-action-btn {
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    border: 1px solid #CBD5E1;
+    background: #FFFFFF;
+    color: #334155;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+.lesson-action-btn:hover {
+    background: #F1F5F9;
+}
+.lesson-action-btn.add-btn {
+    color: #2563EB;
+    border-color: #93C5FD;
+}
+.lesson-action-btn.add-btn:hover {
+    background: #EFF6FF;
+}
+.lesson-action-btn.delete-btn {
+    color: #DC2626;
+    border-color: #FCA5A5;
+}
+.lesson-action-btn.delete-btn:hover {
+    background: #FEF2F2;
+}
 
 @media (max-width: 1100px) {
     body { overflow: auto; }
@@ -532,6 +575,16 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
         <input type="text" id="lessonTypePopupSearch" placeholder="Поиск..." oninput="renderLessonTypePopupList()">
     </div>
     <div class="lesson-type-popup-list" id="lessonTypePopupList"></div>
+    <div class="lesson-type-popup-actions">
+        <button type="button" class="lesson-action-btn add-btn" onclick="addLessonColumn()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            Добавить
+        </button>
+        <button type="button" class="lesson-action-btn delete-btn" onclick="deleteLessonColumn()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            Удалить
+        </button>
+    </div>
 </div>
 
 <div id="toast" style="position:fixed;bottom:24px;right:24px;background:#1E293B;color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(15,23,42,0.2);opacity:0;transform:translateY(20px);transition:all 0.3s ease;z-index:10000;pointer-events:none;font-family:'Inter',sans-serif;"></div>
@@ -935,11 +988,12 @@ async function buildDatesForPeriod(periodIndex) {
 
     const grid = classSchedule.grid;
     const result = [];
-    const seen = new Set();
     const start = new Date(subPeriod.start + 'T00:00:00');
     const end = new Date(subPeriod.end + 'T23:59:59');
     const cursor = new Date(start);
 
+    // Сначала собираем базовые уроки из расписания
+    const baseLessons = [];
     while (cursor <= end) {
         const jsDay = cursor.getDay();
         const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
@@ -949,21 +1003,38 @@ async function buildDatesForPeriod(periodIndex) {
                 const lesson = dayGrid[lessonNumStr];
                 if (lesson && lesson.subject === SUBJECT_NAME) {
                     const iso = formatIso(cursor);
-                    const key = iso + '_' + lessonNumStr;
-                    if (!seen.has(key)) {
-                        seen.add(key);
-                        result.push({
-                            iso, dateNoYear: formatDateNoYear(cursor), dateFull: formatDateFull(cursor),
-                            dayKey, lessonNum: parseInt(lessonNumStr, 10), gradeKey: key
-                        });
-                    }
+                    baseLessons.push({
+                        iso, dateNoYear: formatDateNoYear(cursor), dateFull: formatDateFull(cursor),
+                        dayKey, lessonNum: parseInt(lessonNumStr, 10), baseGradeKey: iso + '_' + lessonNumStr
+                    });
                 }
             }
         }
         cursor.setDate(cursor.getDate() + 1);
     }
-    result.sort((a, b) => a.iso !== b.iso ? a.iso.localeCompare(b.iso) : a.lessonNum - b.lessonNum);
-    return result;
+
+    // Теперь применяем добавленные уроки (с суффиксами _1, _2 и т.д.)
+    const finalDates = [];
+    baseLessons.forEach(base => {
+        // Всегда добавляем базовый (0-й) урок
+        finalDates.push({
+            ...base,
+            gradeKey: base.baseGradeKey + '_0'
+        });
+
+        // Ищем, есть ли добавленные уроки для этого дня
+        let counter = 1;
+        while (JOURNAL.lessons[base.baseGradeKey + '_' + counter]) {
+            finalDates.push({
+                ...base,
+                gradeKey: base.baseGradeKey + '_' + counter
+            });
+            counter++;
+        }
+    });
+
+    finalDates.sort((a, b) => a.iso !== b.iso ? a.iso.localeCompare(b.iso) : a.lessonNum - b.lessonNum);
+    return finalDates;
 }
 
 function formatIso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -1275,8 +1346,8 @@ async function upFinal(studentId, inputElement) {
     const displayLayer = inputElement.previousElementSibling;
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
-        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
-        JOURNAL.qtrGrades[studentId]['final'] = up;
+        if (!JOURNAL.qtrGrades[student.id]) JOURNAL.qtrGrades[student.id] = {};
+        JOURNAL.qtrGrades[student.id]['final'] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     }, EDIT_DELAY_MS);
@@ -2253,7 +2324,7 @@ async function saveJournal() {
     });
 }
 
-let currentLessonTypeContext = { gradeKey: null };
+let currentLessonTypeContext = { gradeKey: null, baseGradeKey: null, date: null };
 let popupJustOpened = false;
 
 function openLessonTypePopup(anchorEl, gradeKey) {
@@ -2261,13 +2332,19 @@ function openLessonTypePopup(anchorEl, gradeKey) {
     const popup = document.getElementById('lessonTypePopup');
     const search = document.getElementById('lessonTypePopupSearch');
     if (!popup || !search) return;
-    currentLessonTypeContext = { gradeKey };
+    
+    // Находим базовый ключ и дату для этого столбца
+    const dateObj = DATES.find(d => d.gradeKey === gradeKey);
+    const baseGradeKey = dateObj ? dateObj.baseGradeKey : gradeKey.replace(/_\\d+$/, '');
+    
+    currentLessonTypeContext = { gradeKey, baseGradeKey, date: dateObj ? dateObj.iso : null };
+    
     popupJustOpened = true;
     search.value = '';
     renderLessonTypePopupList();
     popup.classList.add('show');
     const rect = anchorEl.getBoundingClientRect();
-    const popupWidth = 260, popupMaxHeight = 340;
+    const popupWidth = 280, popupMaxHeight = 400;
     let left = rect.left + rect.width / 2 - popupWidth / 2;
     if (left < 8) left = 8;
     if (left + popupWidth > window.innerWidth - 8) left = window.innerWidth - popupWidth - 8;
@@ -2306,6 +2383,83 @@ async function selectLessonType(abbr) {
     const th = document.querySelector('th.type-lesson-col[data-grade-key="' + gradeKey + '"]');
     if (th) th.textContent = abbr;
     closeLessonTypePopup();
+}
+
+async function addLessonColumn() {
+    const { baseGradeKey } = currentLessonTypeContext;
+    if (!baseGradeKey) return;
+
+    // Проверяем, сколько уже уроков в этот день
+    let count = 1; // Базовый урок всегда есть
+    while (JOURNAL.lessons[baseGradeKey + '_' + count]) {
+        count++;
+    }
+
+    if (count >= 5) {
+        showToast('Нельзя добавить больше 5 уроков на один день');
+        return;
+    }
+
+    const newKey = baseGradeKey + '_' + count;
+    
+    // Инициализируем новый урок
+    if (!JOURNAL.lessons[newKey]) {
+        JOURNAL.lessons[newKey] = { t: '', h: [] };
+    }
+    if (!JOURNAL.lessonTypes) JOURNAL.lessonTypes = {};
+    JOURNAL.lessonTypes[newKey] = 'ОТВ'; // По умолчанию
+
+    // Обновляем DATES
+    DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
+
+    await saveJournal();
+    closeLessonTypePopup();
+    
+    // Перерисовываем таблицу
+    renderMainTable();
+    safeCall(fillFillers);
+    requestAnimationFrame(() => {
+        safeCall(fillFillers);
+        safeCall(fillPlanFillers);
+        safeCall(centerOnToday);
+    });
+}
+
+async function deleteLessonColumn() {
+    const { gradeKey } = currentLessonTypeContext;
+    if (!gradeKey) return;
+
+    // Нельзя удалить базовый урок
+    if (gradeKey.endsWith('_0')) {
+        showToast('Базовый урок удалить нельзя');
+        return;
+    }
+
+    // Удаляем данные
+    delete JOURNAL.lessons[gradeKey];
+    delete JOURNAL.lessonTypes[gradeKey];
+    
+    // Удаляем оценки всех учеников за этот урок
+    Object.keys(JOURNAL.grades).forEach(studentId => {
+        if (JOURNAL.grades[studentId]) {
+            delete JOURNAL.grades[studentId][gradeKey];
+        }
+    });
+
+    // Обновляем DATES
+    DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
+
+    await saveJournal();
+    closeLessonTypePopup();
+    
+    // Перерисовываем таблицу
+    renderMainTable();
+    safeCall(fillFillers);
+    requestAnimationFrame(() => {
+        safeCall(fillFillers);
+        safeCall(fillPlanFillers);
+        safeCall(centerOnToday);
+    });
 }
 
 function closeLessonTypePopup() { 
