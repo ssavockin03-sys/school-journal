@@ -169,19 +169,26 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .grade-cell input::selection { background: #BFDBFE; }
 
-/* === ИДЕАЛЬНАЯ ОБВОДКА ФОКУСА === */
-/* Обводка рисуется на контейнере (без inset, не жирнит, ложится точно по краям) */
-.marks-table td:focus-within {
-    z-index: 20 !important; /* Поднимаем всю ячейку поверх колонки "сегодня" */
-}
-.marks-table td:focus-within .grade-cell {
-    box-shadow: 0 0 0 1.5px #60A5FA; 
-}
-/* Убираем левую линию "сегодня" при фокусе, чтобы она не перекрывала обводку */
+/* === ИДЕАЛЬНАЯ ТОНКАЯ ОБВОДКА === */
+/* Убираем конфликтующие ::before/::after у колонки "сегодня" при фокусе */
 .marks-table td.col-today:focus-within::before {
     content: none !important;
 }
-/* ========================= */
+.marks-table td.col-today:focus-within::after {
+    content: none !important;
+}
+
+/* Поднимаем ячейку и поле ввода, чтобы они были выше линий */
+.marks-table td:focus-within {
+    z-index: 20 !important;
+}
+
+/* Рисуем обводку на самом поле ввода (без inset, точно по краям) */
+.grade-cell input:focus {
+    box-shadow: 0 0 0 1.5px #60A5FA !important;
+    z-index: 21 !important;
+}
+/* ============================== */
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
