@@ -233,6 +233,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     border-right: none;
 }
 
+/* Убираем двойные границы для добавленных уроков */
+.marks-table td.no-right-border, .marks-table th.no-right-border { border-right: none !important; }
+
 .journal-scroll::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
 .journal-scroll::-webkit-scrollbar-thumb { background: #CFD8E3; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-thumb:hover { background: #B8C4D4; background-clip: padding-box; }
@@ -1419,6 +1422,15 @@ function renderMainTable() {
         th2.textContent = abbr;
         th2.title = 'Нажмите, чтобы выбрать тип урока';
         if (d.iso === todayIsoStr) th2.classList.add('col-today');
+        
+        // Убираем правую границу, если следующий столбец - это тот же день и тот же номер урока
+        if (dIdx < DATES.length - 1) {
+            const nextD = DATES[dIdx + 1];
+            if (nextD.iso === d.iso && nextD.lessonNum === d.lessonNum) {
+                th2.classList.add('no-right-border');
+            }
+        }
+
         th2.addEventListener('click', (e) => { e.stopPropagation(); openLessonTypePopup(e.currentTarget, d.gradeKey); });
         sRow.appendChild(th2);
     });
@@ -1430,6 +1442,15 @@ function renderMainTable() {
             td.className = 'col-date';
             td.dataset.col = dIdx;
             if (d.iso === todayIsoStr) td.classList.add('col-today');
+            
+            // Убираем правую границу
+            if (dIdx < DATES.length - 1) {
+                const nextD = DATES[dIdx + 1];
+                if (nextD.iso === d.iso && nextD.lessonNum === d.lessonNum) {
+                    td.classList.add('no-right-border');
+                }
+            }
+
             const value = (JOURNAL.grades[student.id] || {})[d.gradeKey] || '';
             td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                     '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(value) + '</div>' +
