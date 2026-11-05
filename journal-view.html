@@ -74,14 +74,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     border-radius: 0 8px 8px 0;
     border-left: none;
     margin: 0 0 12px 0;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
-.panel-right::-webkit-scrollbar {
-    display: none; /* Chrome/Safari/Opera */
-    width: 0;
-    height: 0;
-}
+.panel-right::-webkit-scrollbar { display: none; width: 0; height: 0; }
 /* === */
 
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
@@ -166,23 +162,46 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* === ОБВОДКА ФОКУСА === */
-.marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { position: relative; z-index: 9; }
-.marks-table td.col-date:focus-within::after, .marks-table td.col-qtr:focus-within::after, .marks-table td.col-period:focus-within::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 1.5px solid #60A5FA; pointer-events: none; z-index: 10; box-sizing: border-box; }
+/* === НОВАЯ ЛОГИКА ОБВОДКИ ФОКУСА === */
+/* Мы используем ::after для самой обводки и поднимаем z-index выше линий колонки */
+.marks-table td.col-date:focus-within, 
+.marks-table td.col-qtr:focus-within, 
+.marks-table td.col-period:focus-within { 
+    position: relative; 
+    z-index: 15; /* Поднимаем ячейку выше линий колонки "сегодня" (у них z-index 8) */
+}
 
-/* ИСПРАВЛЕНИЕ: Обводка для ячейки "Сегодня" теперь рисуется через ::before, чтобы не конфликтовать с линиями колонки (::after) */
+.marks-table td.col-date:focus-within::after, 
+.marks-table td.col-qtr:focus-within::after, 
+.marks-table td.col-period:focus-within::after { 
+    content: ''; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
+    border: 1.5px solid #60A5FA; 
+    pointer-events: none; 
+    z-index: 16; /* Обводка должна быть поверх самой ячейки */
+    box-sizing: border-box; 
+}
+
+/* Для ячеек "сегодня" мы переопределяем псевдоэлементы, чтобы они не мешали обводке */
 .marks-table td.col-today:focus-within::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    border: 1.5px solid #60A5FA;
-    pointer-events: none;
-    z-index: 11; /* Выше, чем линии колонки (z-index: 8) */
-    box-sizing: border-box;
+    z-index: 14; /* Линии остаются под обводкой */
 }
 .marks-table td.col-today:focus-within::after {
-    /* Оставляем синюю линию колонки нетронутой */
-    content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8;
+    /* Это правило перебивает линии колонки и рисует обводку */
+    content: ''; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
+    border: 1.5px solid #60A5FA; 
+    pointer-events: none; 
+    z-index: 16; 
+    box-sizing: border-box; 
 }
 /* === */
 
@@ -603,15 +622,11 @@ function runLoadingSequence() {
 
 let hwEditing = false;
 
-/* Форсирует reflow — после этого scrollHeight читается по НОВОМУ layout,
-   а не по старому (кэшированному до удаления textarea). */
 function forceReflow(el) {
     if (!el) return 0;
     return el.offsetHeight;
 }
 
-/* Пересчитывает филлеры с форсом reflow перед каждым вызовом.
-   Гарантирует, что «мёртвые» строки не пропадают после удаления длинного текста. */
 function refillPlan() {
     const panelRight = document.getElementById('panelRight');
     forceReflow(panelRight);
