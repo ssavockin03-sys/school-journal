@@ -144,7 +144,16 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-qtr { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
 
-.grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
+.grade-cell { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    width: 100%; 
+    height: 36px; 
+    position: relative; 
+    transition: box-shadow 0.1s ease;
+}
+
 .grade-cell input { 
     width: 100%; 
     height: 26px; 
@@ -161,18 +170,25 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     color: transparent; 
     font-family: inherit; 
     outline: none; 
-    transition: box-shadow 0.1s ease;
 }
-
-/* Идеальная обводка для ВСЕХ ячеек (включая "сегодня"), без конфликтов с линиями */
 .grade-cell input:focus { 
     background: #FFFFFF; 
     cursor: text; 
     color: #1E293B !important; 
-    box-shadow: inset 0 0 0 1.5px #60A5FA !important; 
-    z-index: 10; 
 }
 .grade-cell input::selection { background: #BFDBFE; }
+
+/* === ИДЕАЛЬНАЯ ОБВОДКА === */
+/* Рисуем обводку на контейнере ячейки при фокусе внутри неё. 
+   Это не конфликтует с псевдоэлементами таблицы и смотрится точно как на 1-м скрине */
+.marks-table td:focus-within {
+    z-index: 20 !important;
+}
+.marks-table td:focus-within .grade-cell {
+    box-shadow: 0 0 0 1.5px #60A5FA;
+    z-index: 21;
+}
+/* ========================= */
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
@@ -185,9 +201,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; font-weight: 400 !important; pointer-events: none; z-index: 4; background: transparent !important; border: none !important; padding: 0 !important; line-height: 1; }
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
-
-/* УДАЛЕНЫ ВСЕ ПСЕВДОЭЛЕМЕНТЫ ОБВОДКИ ФОКУСА */
-.marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { z-index: 9; }
 
 .marks-table thead th.col-filler-head {
     background: #EBF0F6 !important;
@@ -1252,8 +1265,8 @@ async function upFinal(studentId, inputElement) {
     const displayLayer = inputElement.previousElementSibling;
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
-        if (!JOURNAL.qtrGrades[student.id]) JOURNAL.qtrGrades[student.id] = {};
-        JOURNAL.qtrGrades[student.id]['final'] = up;
+        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
+        JOURNAL.qtrGrades[studentId]['final'] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     }, EDIT_DELAY_MS);
