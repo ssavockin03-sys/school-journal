@@ -172,19 +172,31 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 .grade-cell input::selection { background: #BFDBFE; }
 
-/* === ИДЕАЛЬНАЯ ОБВОДКА ФОКУСА === */
-/* Поднимаем ячейку поверх линий колонки "сегодня" (у линий z-index 8) */
+/* === ИДЕАЛЬНАЯ ОБВОДКА ЧЕРЕЗ ВЛОЖЕННЫЙ ЭЛЕМЕНТ === */
+/* Мы перекрываем все синие линии таблицы и рисуем ровную тонкую рамку */
 .marks-table td:focus-within {
-    z-index: 20 !important; 
+    z-index: 20 !important; /* Поднимаем всю ячейку поверх колонки "сегодня" */
 }
-.marks-table td:focus-within .grade-cell {
-    box-shadow: 0 0 0 1.5px #60A5FA;
+
+.focus-outline {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 1.5px solid #60A5FA;
+    pointer-events: none;
+    z-index: 100;
+    display: none;
+    box-sizing: border-box;
 }
-/* Скрываем левую и правую грани обводки в колонке "сегодня", чтобы использовать её родные линии */
-.marks-table td.col-today:focus-within .grade-cell {
-    box-shadow: inset 0 1.5px 0 0 #60A5FA, inset 0 -1.5px 0 0 #60A5FA !important;
+.marks-table td:focus-within .focus-outline {
+    display: block;
 }
-/* ============================== */
+
+/* В колонке "сегодня" оставляем только верхнюю и нижнюю границы */
+.marks-table td.col-today:focus-within .focus-outline {
+    border-left: none;
+    border-right: none;
+}
+/* ===================================================== */
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
@@ -1181,7 +1193,7 @@ function renderSummaryTable() {
             const td = document.createElement('td');
             td.className = 'col-period';
             td.dataset.periodIdx = idx;
-            td.innerHTML = '<div class="grade-cell">' +
+            td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                 '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(val) + '</div>' +
                 '<input type="text" value="' + escapeHtml(val) + '"' +
                     ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
@@ -1195,7 +1207,7 @@ function renderSummaryTable() {
         const finalVal = qtrs['final'] || '';
         const tdFinal = document.createElement('td');
         tdFinal.className = 'col-period col-final';
-        tdFinal.innerHTML = '<div class="grade-cell">' +
+        tdFinal.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
             '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(finalVal) + '</div>' +
             '<input type="text" value="' + escapeHtml(finalVal) + '"' +
                 ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
@@ -1346,7 +1358,7 @@ function renderMainTable() {
             td.dataset.col = dIdx;
             if (d.iso === todayIsoStr) td.classList.add('col-today');
             const value = (JOURNAL.grades[student.id] || {})[d.gradeKey] || '';
-            td.innerHTML = '<div class="grade-cell">' +
+            td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                     '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(value) + '</div>' +
                     '<input type="text" value="' + escapeHtml(value) + '"' +
                         ' onfocus="hl(this, ' + dIdx + ', true); this.style.color=\'#1E293B\';"' +
@@ -1364,7 +1376,7 @@ function renderMainTable() {
         const qtrValue = (JOURNAL.qtrGrades[student.id] || {})[ACTIVE_PERIOD_INDEX] || '';
         const tdQtr = document.createElement('td');
         tdQtr.className = 'col-qtr qtr-cell';
-        tdQtr.innerHTML = '<div class="grade-cell">' +
+        tdQtr.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                 '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(qtrValue) + '</div>' +
                 '<input type="text" value="' + escapeHtml(qtrValue) + '"' +
                     ' onfocus="hlQtr(this, true); this.style.color=\'#1E293B\';"' +
