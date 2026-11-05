@@ -62,7 +62,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
 
-/* === panel-right: скролл ВСЕГДА включён, скроллбар скрыт === */
 .panel-right {
     flex: 1;
     min-width: 0;
@@ -78,7 +77,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     -ms-overflow-style: none;
 }
 .panel-right::-webkit-scrollbar { display: none; width: 0; height: 0; }
-/* === */
 
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
@@ -147,9 +145,35 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead .col-qtr { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 13.5px; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; }
-.grade-cell input:focus { background: #FFFFFF; cursor: text; color: #1E293B !important; }
+.grade-cell input { 
+    width: 100%; 
+    height: 26px; 
+    text-align: center; 
+    border: none; 
+    background: transparent; 
+    font-size: 13.5px; 
+    cursor: pointer; 
+    position: absolute; 
+    top: 5px; 
+    left: 0; 
+    z-index: 5; 
+    padding: 0; 
+    color: transparent; 
+    font-family: inherit; 
+    outline: none; 
+    transition: box-shadow 0.1s ease;
+}
+
+/* Идеальная обводка для ВСЕХ ячеек (включая "сегодня"), без конфликтов с линиями */
+.grade-cell input:focus { 
+    background: #FFFFFF; 
+    cursor: text; 
+    color: #1E293B !important; 
+    box-shadow: inset 0 0 0 1.5px #60A5FA !important; 
+    z-index: 10; 
+}
 .grade-cell input::selection { background: #BFDBFE; }
+
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; line-height: 1; }
@@ -162,48 +186,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* === НОВАЯ ЛОГИКА ОБВОДКИ ФОКУСА === */
-/* Мы используем ::after для самой обводки и поднимаем z-index выше линий колонки */
-.marks-table td.col-date:focus-within, 
-.marks-table td.col-qtr:focus-within, 
-.marks-table td.col-period:focus-within { 
-    position: relative; 
-    z-index: 15; /* Поднимаем ячейку выше линий колонки "сегодня" (у них z-index 8) */
-}
-
-.marks-table td.col-date:focus-within::after, 
-.marks-table td.col-qtr:focus-within::after, 
-.marks-table td.col-period:focus-within::after { 
-    content: ''; 
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    right: 0; 
-    bottom: 0; 
-    border: 1.5px solid #60A5FA; 
-    pointer-events: none; 
-    z-index: 16; /* Обводка должна быть поверх самой ячейки */
-    box-sizing: border-box; 
-}
-
-/* Для ячеек "сегодня" мы переопределяем псевдоэлементы, чтобы они не мешали обводке */
-.marks-table td.col-today:focus-within::before {
-    z-index: 14; /* Линии остаются под обводкой */
-}
-.marks-table td.col-today:focus-within::after {
-    /* Это правило перебивает линии колонки и рисует обводку */
-    content: ''; 
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    right: 0; 
-    bottom: 0; 
-    border: 1.5px solid #60A5FA; 
-    pointer-events: none; 
-    z-index: 16; 
-    box-sizing: border-box; 
-}
-/* === */
+/* УДАЛЕНЫ ВСЕ ПСЕВДОЭЛЕМЕНТЫ ОБВОДКИ ФОКУСА */
+.marks-table td.col-date:focus-within, .marks-table td.col-qtr:focus-within, .marks-table td.col-period:focus-within { z-index: 9; }
 
 .marks-table thead th.col-filler-head {
     background: #EBF0F6 !important;
