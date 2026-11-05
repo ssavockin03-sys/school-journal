@@ -135,6 +135,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead tr:first-child th.col-date.col-today.clickable-date:hover .today-date { color: #1D4ED8; }
 .marks-table thead tr:first-child th.col-date .today-label { display: block; font-size: 9px; color: #475569; font-weight: 400; line-height: 1.1; margin-top: 2px; text-transform: lowercase; letter-spacing: 0.1px; }
 
+/* === ЖИРНЫЕ ЛИНИИ "СЕГОДНЯ" ТОЛЬКО ПО ВНЕШНЕМУ КОНТУРУ === */
 .marks-table th.col-today::before, .marks-table td.col-today::before { content: ''; position: absolute; top: 0; bottom: -1px; left: 0; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .marks-table th.col-today::after, .marks-table td.col-today::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .marks-table thead tr:first-child th.col-today { border-top: 1px solid #1E40AF !important; }
@@ -193,12 +194,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     display: block;
 }
 
-/* В колонке "сегодня" оставляем только верхнюю и нижнюю границы */
 .marks-table td.col-today:focus-within .focus-outline {
     border-left: none;
     border-right: none;
 }
-/* ===================================================== */
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
@@ -233,26 +232,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     border-right: none;
 }
 
-/* === УБИРАЕМ ДВОЙНЫЕ ГРАНИЦЫ МЕЖДУ УРОКАМИ ОДНОГО ДНЯ === */
-/* Если ячейка имеет класс no-right-border, убираем правую границу */
-.marks-table th.no-right-border, 
-.marks-table td.no-right-border {
-    border-right: none !important;
-}
-
-/* Если ячейка "сегодня" и у неё есть сосед справа - убираем синюю линию справа */
-.marks-table th.col-today.no-right-border::after,
-.marks-table td.col-today.no-right-border::after {
-    content: none !important;
-}
-
-/* Если ячейка "сегодня" и у неё есть сосед слева - убираем синюю линию слева */
-.marks-table th.col-today.has-left-sibling::before,
-.marks-table td.col-today.has-left-sibling::before {
-    content: none !important;
-}
-/* ===================================================== */
-
 .journal-scroll::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
 .journal-scroll::-webkit-scrollbar-thumb { background: #CFD8E3; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-thumb:hover { background: #B8C4D4; background-clip: padding-box; }
@@ -277,10 +256,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .panel-right tbody tr.plan-filler-row td { padding: 0 !important; line-height: 0 !important; font-size: 0 !important; height: 38px; box-sizing: border-box; }
 
-.panel-right tbody tr.lesson-row.lesson-today > td { border-top: 1px solid #1E40AF !important; border-bottom: 1px solid #1E40AF !important; }
+/* === ЖИРНЫЕ ЛИНИИ "СЕГОДНЯ" В ПОУРОЧКЕ ТОЛЬКО ПО ВНЕШНЕМУ КОНТУРУ БЛОКА === */
+.panel-right tbody tr.lesson-row.lesson-today.lesson-today-first > td { border-top: 1px solid #1E40AF !important; }
+.panel-right tbody tr.lesson-row.lesson-today.lesson-today-last > td { border-bottom: 1px solid #1E40AF !important; }
 .panel-right tbody tr.lesson-row.lesson-today > td:not(:last-child) { border-right: 1px solid #1E40AF !important; }
-.panel-right tbody tr.lesson-row.lesson-today > td:first-child::before { content: ''; position: absolute; top: 0; bottom: -1px; left: 0; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
-.panel-right tbody tr.lesson-row.lesson-today > td:last-child::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
+.panel-right tbody tr.lesson-row.lesson-today.lesson-today-first > td:first-child::before { content: ''; position: absolute; top: 0; bottom: -1px; left: 0; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
+.panel-right tbody tr.lesson-row.lesson-today.lesson-today-last > td:last-child::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 
 .panel-right tbody td.lesson-date-cell .today-date { display: block; font-size: 12px; color: #0EA5E9; font-weight: 500; line-height: 1.1; }
 .panel-right tbody td.lesson-date-cell .today-label { display: block; font-size: 9px; color: #475569; font-weight: 400; line-height: 1.1; margin-top: 2px; text-transform: lowercase; letter-spacing: 0.1px; }
@@ -374,7 +355,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .lesson-type-popup-item.active .full { font-weight: 600; color: #1D4ED8; }
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
 
-/* Стили для кнопок добавления/удаления */
 .lesson-type-popup-actions {
     display: flex;
     gap: 4px;
@@ -1012,7 +992,6 @@ async function buildDatesForPeriod(periodIndex) {
     const end = new Date(subPeriod.end + 'T23:59:59');
     const cursor = new Date(start);
 
-    // Сначала собираем базовые уроки из расписания
     const baseLessons = [];
     while (cursor <= end) {
         const jsDay = cursor.getDay();
@@ -1033,16 +1012,13 @@ async function buildDatesForPeriod(periodIndex) {
         cursor.setDate(cursor.getDate() + 1);
     }
 
-    // Теперь применяем добавленные уроки (с суффиксами _1, _2 и т.д.)
     const finalDates = [];
     baseLessons.forEach(base => {
-        // Всегда добавляем базовый (0-й) урок
         finalDates.push({
             ...base,
             gradeKey: base.baseGradeKey + '_0'
         });
 
-        // Ищем, есть ли добавленные уроки для этого дня
         let counter = 1;
         while (JOURNAL.lessons[base.baseGradeKey + '_' + counter]) {
             finalDates.push({
@@ -1439,19 +1415,6 @@ function renderMainTable() {
         th2.textContent = abbr;
         th2.title = 'Нажмите, чтобы выбрать тип урока';
         if (d.iso === todayIsoStr) th2.classList.add('col-today');
-        
-        // Определяем, есть ли сосед справа того же дня
-        const hasRightSibling = dIdx < DATES.length - 1 && DATES[dIdx + 1].iso === d.iso && DATES[dIdx + 1].lessonNum === d.lessonNum;
-        // Определяем, есть ли сосед слева того же дня
-        const hasLeftSibling = dIdx > 0 && DATES[dIdx - 1].iso === d.iso && DATES[dIdx - 1].lessonNum === d.lessonNum;
-
-        if (hasRightSibling) {
-            th2.classList.add('no-right-border');
-        }
-        if (hasLeftSibling) {
-            th2.classList.add('has-left-sibling');
-        }
-
         th2.addEventListener('click', (e) => { e.stopPropagation(); openLessonTypePopup(e.currentTarget, d.gradeKey); });
         sRow.appendChild(th2);
     });
@@ -1463,17 +1426,6 @@ function renderMainTable() {
             td.className = 'col-date';
             td.dataset.col = dIdx;
             if (d.iso === todayIsoStr) td.classList.add('col-today');
-            
-            const hasRightSibling = dIdx < DATES.length - 1 && DATES[dIdx + 1].iso === d.iso && DATES[dIdx + 1].lessonNum === d.lessonNum;
-            const hasLeftSibling = dIdx > 0 && DATES[dIdx - 1].iso === d.iso && DATES[dIdx - 1].lessonNum === d.lessonNum;
-
-            if (hasRightSibling) {
-                td.classList.add('no-right-border');
-            }
-            if (hasLeftSibling) {
-                td.classList.add('has-left-sibling');
-            }
-
             const value = (JOURNAL.grades[student.id] || {})[d.gradeKey] || '';
             td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                     '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(value) + '</div>' +
@@ -1536,12 +1488,26 @@ function renderLessonPlanRows() {
 
     const todayIsoStr = todayIso();
 
+    // Группируем уроки по дате, чтобы пометить first/last для "сегодня"
+    const lessonsByDate = {};
+    DATES.forEach((d, dIdx) => {
+        if (!lessonsByDate[d.iso]) lessonsByDate[d.iso] = [];
+        lessonsByDate[d.iso].push({ d, dIdx });
+    });
+
     DATES.forEach((d, dIdx) => {
         const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: [] };
         const isToday = d.iso === todayIsoStr;
 
+        const group = lessonsByDate[d.iso] || [];
+        const posInGroup = group.findIndex(x => x.dIdx === dIdx);
+        const isFirstToday = isToday && posInGroup === 0;
+        const isLastToday = isToday && posInGroup === group.length - 1;
+
         const tr = document.createElement('tr');
         tr.className = 'lesson-row' + (isToday ? ' lesson-today' : '');
+        if (isFirstToday) tr.classList.add('lesson-today-first');
+        if (isLastToday) tr.classList.add('lesson-today-last');
         tr.dataset.gradeKey = d.gradeKey;
         tr.dataset.iso = d.iso;
         tr.dataset.lessonNum = d.lessonNum;
@@ -2377,9 +2343,8 @@ function openLessonTypePopup(anchorEl, gradeKey) {
     const search = document.getElementById('lessonTypePopupSearch');
     if (!popup || !search) return;
     
-    // Находим базовый ключ и дату для этого столбца
     const dateObj = DATES.find(d => d.gradeKey === gradeKey);
-    const baseGradeKey = dateObj ? dateObj.baseGradeKey : gradeKey.replace(/_\\d+$/, '');
+    const baseGradeKey = dateObj ? dateObj.baseGradeKey : gradeKey.replace(/_\d+$/, '');
     
     currentLessonTypeContext = { gradeKey, baseGradeKey, date: dateObj ? dateObj.iso : null };
     
@@ -2433,8 +2398,7 @@ async function addLessonColumn() {
     const { baseGradeKey } = currentLessonTypeContext;
     if (!baseGradeKey) return;
 
-    // Проверяем, сколько уже уроков в этот день
-    let count = 1; // Базовый урок всегда есть
+    let count = 1;
     while (JOURNAL.lessons[baseGradeKey + '_' + count]) {
         count++;
     }
@@ -2446,20 +2410,17 @@ async function addLessonColumn() {
 
     const newKey = baseGradeKey + '_' + count;
     
-    // Инициализируем новый урок
     if (!JOURNAL.lessons[newKey]) {
         JOURNAL.lessons[newKey] = { t: '', h: [] };
     }
     if (!JOURNAL.lessonTypes) JOURNAL.lessonTypes = {};
-    JOURNAL.lessonTypes[newKey] = 'ОТВ'; // По умолчанию
+    JOURNAL.lessonTypes[newKey] = 'ОТВ';
 
-    // Обновляем DATES
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
 
     await saveJournal();
     closeLessonTypePopup();
     
-    // Перерисовываем таблицу
     renderMainTable();
     safeCall(fillFillers);
     requestAnimationFrame(() => {
@@ -2473,30 +2434,25 @@ async function deleteLessonColumn() {
     const { gradeKey } = currentLessonTypeContext;
     if (!gradeKey) return;
 
-    // Нельзя удалить базовый урок
     if (gradeKey.endsWith('_0')) {
         showToast('Базовый урок удалить нельзя');
         return;
     }
 
-    // Удаляем данные
     delete JOURNAL.lessons[gradeKey];
     delete JOURNAL.lessonTypes[gradeKey];
     
-    // Удаляем оценки всех учеников за этот урок
     Object.keys(JOURNAL.grades).forEach(studentId => {
         if (JOURNAL.grades[studentId]) {
             delete JOURNAL.grades[studentId][gradeKey];
         }
     });
 
-    // Обновляем DATES
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
 
     await saveJournal();
     closeLessonTypePopup();
     
-    // Перерисовываем таблицу
     renderMainTable();
     safeCall(fillFillers);
     requestAnimationFrame(() => {
