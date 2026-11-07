@@ -857,14 +857,15 @@
         }
         const avg = count > 0 ? (sum / count).toFixed(2).replace('.', ',') : '—';
 
-        const classCounts = { 5: 0, 4: 0, 3: 0, 2: 0 };
+        // Статистика по классу (добавили единицу)
+        const classCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
         if (journal && journal.grades && CURRENT_CLASS) {
             const classStudentIds = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id);
             classStudentIds.forEach(sid => {
                 const sg = journal.grades[sid];
                 if (!sg || !sg[lessonKey]) return;
                 const digit = firstDigit(parseCell(sg[lessonKey]).grade);
-                if (digit >= 2 && digit <= 5) classCounts[digit]++;
+                if (digit >= 1 && digit <= 5) classCounts[digit]++;
             });
         }
 
@@ -877,6 +878,9 @@
             ringGradient = `conic-gradient(#DC2626 0deg 45deg, #FB923C 45deg 120deg, #65A30D 120deg 216deg, #e2e8f0 216deg 360deg)`;
         } else if (myDigit === 2) {
             ringGradient = `conic-gradient(#DC2626 0deg 144deg, #e2e8f0 144deg 360deg)`;
+        } else if (myDigit === 1) {
+            // Единица — почти всё красное
+            ringGradient = `conic-gradient(#DC2626 0deg 280deg, #e2e8f0 280deg 360deg)`;
         } else {
             ringGradient = `conic-gradient(#e2e8f0 0deg 360deg)`;
         }
@@ -901,7 +905,7 @@
                 </div>
                 <div class="stat-right">
                     <div class="stat-right-title">Одноклассники</div>
-                    ${[5, 4, 3, 2].map(g => {
+                    ${[5, 4, 3, 2, 1].map(g => {
                         const cnt = classCounts[g];
                         const cls = g >= 4 ? 'g5' : (g === 3 ? 'g3' : 'g2');
                         const word = cnt % 10 === 1 && cnt % 100 !== 11 ? 'ученик' : (cnt % 10 >= 2 && cnt % 10 <= 4 && (cnt % 100 < 10 || cnt % 100 >= 20) ? 'ученика' : 'учеников');
