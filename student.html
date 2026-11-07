@@ -494,6 +494,7 @@
     let ALL_TEACHERS = [];
     let ALL_JOURNALS = [];
     let ALL_STUDENTS = [];
+    let ALL_WORKLOADS = [];
     let CURRENT_SCHEDULE = null;
     let ALL_ROOMS = [];
     let TODAY_DATE = new Date(); TODAY_DATE.setHours(0, 0, 0, 0);
@@ -541,13 +542,15 @@
     })();
 
     async function loadAll() {
-        const [classes, subjects, teachers, journals, students, schedules, rooms] = await Promise.all([
+        const [classes, subjects, teachers, journals, students, schedules, rooms, workloads] = await Promise.all([
             DB.getAll('classes'), DB.getAll('subjects'), DB.getAll('teachers'),
             DB.getAll('journals'), DB.getAll('students'),
-            DB.getAll('class_schedules'), DB.getAll('rooms')
+            DB.getAll('class_schedules'), DB.getAll('rooms'),
+            DB.getAll('workloads').catch(() => [])
         ]);
         ALL_STUDENTS = students;
         ALL_ROOMS = rooms;
+        ALL_WORKLOADS = workloads;
         CURRENT_CLASS = classes.find(c => c.id === CURRENT_STUDENT.class_id) || null;
         ALL_SUBJECTS = subjects;
         ALL_TEACHERS = teachers;
@@ -566,6 +569,33 @@
             });
         });
         CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
+    }
+
+    // Надежный поиск учителя по предмету и классу
+    function getTeacherForSubject(subjectObj) {
+        if (!subjectObj) return '—';
+        const myClassId = CURRENT_CLASS ? CURRENT_CLASS.id : null;
+        if (!myClassId) return '—';
+
+        // 1. Ищем в нагрузках (workloads) для этого класса
+        const wl = ALL_WORKLOADS.find(w => w.class_id === myClassId && w.subject_id === subjectObj.id && w.teacher_id);
+        if (wl) {
+            const t = ALL_TEACHERS.find(x => x.id === wl.teacher_id);
+            if (t) return t.full_name;
+        }
+
+        // 2. Ищем в нагрузках этого класса по названию предмета (если нет subject_id)
+        const wlName = ALL_WORKLOADS.find(w => w.class_id === myClassId && w.subject_name === subjectObj.name && w.teacher_id);
+        if (wlName) {
+            const t = ALL_TEACHERS.find(x => x.id === wlName.teacher_id);
+            if (t) return t.full_name;
+        }
+
+        // 3. Ищем любого учителя, который ведет этот предмет (по совпадению предмета)
+        const tAny = ALL_TEACHERS.find(x => x.subject === subjectObj.name);
+        if (tAny) return tAny.full_name;
+
+        return '—';
     }
 
     function collectAllStudentGrades() {
@@ -695,13 +725,17 @@
         for (let n = 1; n <= maxNum; n++) {
             const lesson = dayGrid[n] || dayGrid[String(n)];
             if (!lesson || !lesson.subject) continue;
+            const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
+            
+            // Берем учителя в первую очередь из расписания, если есть. Если нет — по предмету.
             let teacherName = lesson.teacherName || '';
             if (!teacherName && lesson.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId); if (t) teacherName = t.full_name; }
+            if (!teacherName && subjObj) { teacherName = getTeacherForSubject(subjObj); }
+            
             let roomName = lesson.roomName || '';
             if (!roomName && lesson.roomId) { const r = ALL_ROOMS.find(x => x.id === lesson.roomId); if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : ''); }
             const key = isoDate(date) + '_' + n;
             let topic = '', homework = '';
-            const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
             if (subjObj) {
                 const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
                 if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
@@ -733,6 +767,7 @@
         const parsedCell = parseCell(rawCell);
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
 
+        // Ищем учителя сначала в расписании на этот день, если пусто - по предмету
         let teacherName = '—', roomName = '';
         if (CURRENT_SCHEDULE && parsed.date) {
             const dowKey = JS_DAY_MAP[parsed.date.getDay()];
@@ -747,6 +782,11 @@
                 }
             }
         }
+        // Если учитель не найден в расписании - берем закрепленного за предметом
+        if (teacherName === '—' && subjObj) {
+            teacherName = getTeacherForSubject(subjObj);
+        }
+
         const topic = lessonData ? (lessonData.t || '') : '';
         const homework = lessonData ? (lessonData.h || '') : '';
         let detailRows = '';
@@ -793,19 +833,8 @@
         const myGrade = parsedCell.grade;
         const myDigit = firstDigit(myGrade) || 0;
 
-        // Поиск учителя
-        let teacherName = '—';
-        if (CURRENT_SCHEDULE && parsed.date) {
-            const dowKey = JS_DAY_MAP[parsed.date.getDay()];
-            if (dowKey) {
-                const dayGrid = CURRENT_SCHEDULE.grid[dowKey] || {};
-                const lessonInGrid = dayGrid[parsed.lesson] || dayGrid[String(parsed.lesson)];
-                if (lessonInGrid) {
-                    if (lessonInGrid.teacherName) teacherName = lessonInGrid.teacherName;
-                    else if (lessonInGrid.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lessonInGrid.teacherId); if (t) teacherName = t.full_name; }
-                }
-            }
-        }
+        // Поиск учителя (надежный, по предмету)
+        const teacherName = getTeacherForSubject(subjObj);
 
         // Средний балл ученика по предмету
         let sum = 0, count = 0;
@@ -833,34 +862,17 @@
         }
 
         // Кольцо (conic-gradient)
-        // Оценка 5 = 360deg, 4 = 288deg, 3 = 216deg, 2 = 144deg
-        let degrees = 0;
-        let color = '#94A3B8';
-        if (myDigit === 5) { degrees = 360; color = '#65A30D'; }
-        else if (myDigit === 4) { degrees = 288; color = '#65A30D'; }
-        else if (myDigit === 3) { degrees = 216; color = '#FB923C'; }
-        else if (myDigit === 2) { degrees = 144; color = '#DC2626'; }
-        
-        // В макете цвет кольца: зеленая часть, красная и оранжевая (имитация прогресса)
-        // Сделаем красивую заливку от красного к зеленому
         let ringGradient = '';
-        if (myDigit >= 2) {
-            // Разбиваем на 3 цвета: красный (0-25%), оранжевый (25-50%), зеленый (50-100%) для визуала
-            // Но проще сделать прогресс-бар от красного к зеленому по длине
-            ringGradient = `conic-gradient(#DC2626 0deg, #FB923C ${degrees * 0.3}deg, #65A30D ${degrees * 0.7}deg, #65A30D ${degrees}deg, #e2e8f0 ${degrees}deg)`;
-        } else {
-            ringGradient = `conic-gradient(#e2e8f0 0deg 360deg)`;
-        }
-        
-        // Если оценка 4, то в макете кольцо почти полностью зеленое с красным хвостиком
-        if (myDigit === 4) {
-            ringGradient = `conic-gradient(#DC2626 0deg 30deg, #65A30D 30deg 288deg, #e2e8f0 288deg 360deg)`;
-        } else if (myDigit === 5) {
+        if (myDigit === 5) {
             ringGradient = `conic-gradient(#65A30D 0deg 360deg)`;
+        } else if (myDigit === 4) {
+            ringGradient = `conic-gradient(#DC2626 0deg 30deg, #65A30D 30deg 288deg, #e2e8f0 288deg 360deg)`;
         } else if (myDigit === 3) {
             ringGradient = `conic-gradient(#DC2626 0deg 45deg, #FB923C 45deg 120deg, #65A30D 120deg 216deg, #e2e8f0 216deg 360deg)`;
         } else if (myDigit === 2) {
             ringGradient = `conic-gradient(#DC2626 0deg 144deg, #e2e8f0 144deg 360deg)`;
+        } else {
+            ringGradient = `conic-gradient(#e2e8f0 0deg 360deg)`;
         }
 
         const modalContent = document.getElementById('statModalContent');
