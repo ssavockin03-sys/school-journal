@@ -300,7 +300,6 @@
     </div>
 </div>
 
-<!-- МОДАЛКИ -->
 <div id="subjectModal">
     <div class="subj-modal-box">
         <button class="subj-modal-close" onclick="document.getElementById('subjectModal').classList.remove('show')">×</button>
@@ -310,7 +309,6 @@
     </div>
 </div>
 
-<!-- Модалка рейтинга (как в student.html) -->
 <div id="gradeStatModal" onclick="if(event.target===this)this.classList.remove('show')">
     <div class="stat-modal-box" onclick="event.stopPropagation()" id="statModalContent"></div>
 </div>
@@ -442,10 +440,11 @@
             ALL_SUBJECTS = subjects;
             ALL_TEACHERS = teachers;
             ALL_ROOMS = rooms;
+            
+            // ЖУРНАЛЫ СТРОГО ДЛЯ НАШЕГО КЛАССА
             ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
-            const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
-            if (withData.length > 0) ALL_JOURNALS = withData;
 
+            // Расписания для нашего класса
             CURRENT_SCHEDULES = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
 
             const pd = periodDocs[0] || null;
@@ -507,7 +506,6 @@
         renderRating();
     }
 
-    // ================= ФУНКЦИЯ ДНЕВНИКА =================
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
@@ -685,7 +683,9 @@
         return { start: p.start, end: p.end };
     }
 
-    // ИСПРАВЛЕННАЯ ФУНКЦИЯ ТАБЛИЦЫ
+    // ============================================================
+    // ГЛАВНОЕ ИСПРАВЛЕНИЕ: БЕРЁМ ОЦЕНКИ ТОЛЬКО ИЗ ЖУРНАЛА ЭТОГО ПРЕДМЕТА
+    // ============================================================
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
@@ -712,29 +712,39 @@
 
         subjectsFromSchedule.forEach(subjectName => {
             const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
-            const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
+            if (!subjObj) {
+                html += `<tr><td class="subject-name">${escapeHtml(subjectName)}</td><td colspan="3" style="color:#999;font-style:italic;">Журнал не найден</td></tr>`;
+                return;
+            }
+
+            // ЖЁСТКО: журнал только для этого предмета и нашего класса
+            const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id && j.class_id === CURRENT_STUDENT.class_id);
             
+            if (!journal) {
+                html += `<tr><td class="subject-name">${escapeHtml(subjectName)}</td><td colspan="3" style="color:#999;font-style:italic;">Журнал не найден</td></tr>`;
+                return;
+            }
+
             let displayGrades = [];
             
-            // БЕРЁМ ОЦЕНКИ ТОЛЬКО ИЗ ЖУРНАЛА ЭТОГО ПРЕДМЕТА, И ТОЛЬКО ЗА НУЖНЫЙ ПЕРИОД
-            if (journal && journal.grades && journal.grades[CURRENT_STUDENT.id]) {
-                const sg = journal.grades[CURRENT_STUDENT.id];
-                Object.entries(sg).forEach(([key, val]) => {
-                    if (!val) return;
-                    if (range) {
-                        const dateStr = key.split('_')[0];
-                        if (dateStr < range.start || dateStr > range.end) return;
-                    }
-                    const cell = parseCell(val);
-                    if (cell.grade) displayGrades.push({ val: cell.grade, key, kind: 'grade' });
-                    if (cell.presence) displayGrades.push({ val: cell.presence, key, kind: 'presence' });
-                });
-            }
+            // БЕРЁМ ТОЛЬКО grades[CURRENT_STUDENT.id] ИЗ ЭТОГО ЖУРНАЛА
+            const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
+            Object.entries(sg).forEach(([key, val]) => {
+                if (!val) return;
+                // Фильтр по дате периода
+                if (range) {
+                    const dateStr = key.split('_')[0];
+                    if (dateStr < range.start || dateStr > range.end) return;
+                }
+                const cell = parseCell(val);
+                if (cell.grade) displayGrades.push({ val: cell.grade, key, kind: 'grade' });
+                if (cell.presence) displayGrades.push({ val: cell.presence, key, kind: 'presence' });
+            });
             
             displayGrades.sort((a, b) => a.key.localeCompare(b.key));
             const avg = calcAverageFromValues(displayGrades.map(x => x.val));
 
-            const qtrGrades = journal && journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
+            const qtrGrades = journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
             const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
 
             html += '<tr>';
@@ -816,13 +826,13 @@
     }
 
     // ============================================================
-    // НОВАЯ МОДАЛКА РЕЙТИНГА (как в student.html)
+    // МОДАЛКА РЕЙТИНГА
     // ============================================================
     window.openGradeStat = function(subjectName, value, lessonKey, kind) {
         if (!CURRENT_STUDENT) return;
 
         const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
-        const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
+        const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id && j.class_id === CURRENT_STUDENT.class_id) : null;
         const parsed = parseKey(lessonKey);
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
         const typeFullName = getLessonTypeFullName(lessonType);
@@ -831,7 +841,6 @@
         const myGrade = parsedCell.grade;
         const myDigit = firstDigit(myGrade) || 0;
 
-        // Учитель из правильного расписания
         let teacherName = '—';
         const grid = getGridForDate(parsed.date);
         if (grid) {
@@ -849,7 +858,6 @@
             }
         }
 
-        // Средний балл за текущий период
         let currentPeriod = null;
         if (parsed.date) {
             const dStr = isoDate(parsed.date);
@@ -869,7 +877,6 @@
         }
         const avg = count > 0 ? (sum / count).toFixed(2).replace('.', ',') : '—';
 
-        // Статистика по классу
         const classCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
         if (journal && journal.grades && CURRENT_CLASS) {
             const classStudentIds = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id);
@@ -881,7 +888,6 @@
             });
         }
 
-        // Кольцо
         let ringGradient = '';
         if (myDigit === 5) {
             ringGradient = `conic-gradient(#65A30D 0deg 360deg)`;
