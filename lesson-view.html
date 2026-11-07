@@ -586,15 +586,10 @@ async function init() {
         JOURNAL = { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
     }
 
-    // ============================================================
-    // ГЛАВНОЕ ИСПРАВЛЕНИЕ: используем точный ключ урока из URL
-    // (журнал передаёт его в параметре "key").
-    // Формат ключа: YYYY-MM-DD_N_0 для базового урока,
-    // YYYY-MM-DD_N_k (k>=1) для добавленных уроков.
-    // ============================================================
+    // Точный ключ урока из URL (журнал передаёт его в параметре "key").
+    // Формат: YYYY-MM-DD_N_0 для базового, YYYY-MM-DD_N_k (k>=1) для добавленных.
     GRADE_KEY = p.lessonKey || (DATE_ISO + '_' + LESSON_NUM + '_0');
 
-    // Гарантируем наличие записи урока в lessons
     if (!JOURNAL.lessons[GRADE_KEY]) {
         JOURNAL.lessons[GRADE_KEY] = { t: '', h: [] };
     }
@@ -940,8 +935,14 @@ function editPresence(studentId, boxEl) {
         const combined = buildCellValue(cur.grade, newPres);
         if (combined) JOURNAL.grades[studentId][GRADE_KEY] = combined;
         else delete JOURNAL.grades[studentId][GRADE_KEY];
-        saveJournal();
+
+        // Сначала перерисовываем локально — данные уже в JOURNAL
         renderJournal();
+        // Затем сохраняем (асинхронно)
+        saveJournal().catch(err => {
+            console.error('saveJournal failed:', err);
+            showToast('Не удалось сохранить. Проверьте соединение.');
+        });
     };
     const cancel = () => {
         if (committed) return;
@@ -1008,8 +1009,12 @@ function editGrade(studentId, gradeKey, boxEl) {
                 JOURNAL.grades[studentId][gradeKey] = v;
             }
         }
-        saveJournal();
+
         renderJournal();
+        saveJournal().catch(err => {
+            console.error('saveJournal failed:', err);
+            showToast('Не удалось сохранить. Проверьте соединение.');
+        });
     };
     const cancel = () => {
         if (committed) return;
@@ -1027,48 +1032,78 @@ function editGrade(studentId, gradeKey, boxEl) {
 }
 
 /* ============================================================
-   ИСПРАВЛЕНО: сохраняем только СВОЙ урок, а не перезаписываем
-   весь журнал. Сначала перечитываем актуальный журнал из БД,
-   затем мержим изменения по GRADE_KEY. Это гарантирует, что
-   оценки, выставленные в журнале (journal-view.html), не
-   будут потеряны, и что наши оценки попадут в правильный ключ.
+   ИСПРАВЛЕНО: сначала читаем актуальные данные из БД,
+   СЛИВАЕМ наш урок в прочитанные данные и СОХРАНЯЕМ результат.
+   Локальный JOURNAL синхронизируется с сохранёнными данными
+   ПОСЛЕ формирования payload — так наши изменения не теряются.
    ============================================================ */
 async function saveJournal() {
-    const fresh = await DB.getJournal(CLASS_ID, SUBJECT_ID);
-    if (fresh) {
-        const freshGrades = fresh.grades || {};
-        const freshLessons = fresh.lessons || {};
-        const freshQtr = fresh.qtr_grades || {};
-        const freshTypes = fresh.lesson_types || {};
-
-        // Переносим только наш ключ урока — остальное оставляем как в БД
-        Object.keys(JOURNAL.grades).forEach(sid => {
-            if (!freshGrades[sid]) freshGrades[sid] = {};
-            if (JOURNAL.grades[sid][GRADE_KEY] !== undefined) {
-                freshGrades[sid][GRADE_KEY] = JOURNAL.grades[sid][GRADE_KEY];
-            } else if (freshGrades[sid][GRADE_KEY] !== undefined) {
-                delete freshGrades[sid][GRADE_KEY];
-            }
-        });
-        if (JOURNAL.lessons[GRADE_KEY] !== undefined) {
-            freshLessons[GRADE_KEY] = JOURNAL.lessons[GRADE_KEY];
-        }
-        if (JOURNAL.lessonTypes[GRADE_KEY] !== undefined) {
-            freshTypes[GRADE_KEY] = JOURNAL.lessonTypes[GRADE_KEY];
-        }
-
-        JOURNAL.grades = freshGrades;
-        JOURNAL.lessons = freshLessons;
-        JOURNAL.qtrGrades = freshQtr;
-        JOURNAL.lessonTypes = freshTypes;
+    let fresh = null;
+    try {
+        fresh = await DB.getJournal(CLASS_ID, SUBJECT_ID);
+    } catch (e) {
+        console.warn('getJournal failed, saving local snapshot', e);
     }
 
-    await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
-        grades: JOURNAL.grades,
-        lessons: JOURNAL.lessons,
-        qtr_grades: JOURNAL.qtrGrades,
-        lesson_types: JOURNAL.lessonTypes
-    });
+    let payload;
+
+    // Проверяем, что fresh — валидный объект с нужной структурой
+    const hasFresh =
+        fresh &&
+        typeof fresh === 'object' &&
+        fresh.grades !== null &&
+        fresh.grades !== undefined &&
+        typeof fresh.grades === 'object';
+
+    if (hasFresh) {
+        const mergedGrades = Object.assign({}, fresh.grades || {});
+
+        // Переносим ТОЛЬКО наш урок из локального JOURNAL
+        Object.keys(JOURNAL.grades).forEach(sid => {
+            const local = JOURNAL.grades[sid] || {};
+            const hasLocal = Object.prototype.hasOwnProperty.call(local, GRADE_KEY);
+            if (hasLocal) {
+                if (!mergedGrades[sid]) mergedGrades[sid] = {};
+                mergedGrades[sid][GRADE_KEY] = local[GRADE_KEY];
+            } else if (mergedGrades[sid] && Object.prototype.hasOwnProperty.call(mergedGrades[sid], GRADE_KEY)) {
+                delete mergedGrades[sid][GRADE_KEY];
+            }
+        });
+
+        const mergedLessons = Object.assign({}, fresh.lessons || {});
+        if (JOURNAL.lessons[GRADE_KEY] !== undefined) {
+            mergedLessons[GRADE_KEY] = JOURNAL.lessons[GRADE_KEY];
+        }
+
+        const mergedTypes = Object.assign({}, fresh.lesson_types || {});
+        if (JOURNAL.lessonTypes[GRADE_KEY] !== undefined) {
+            mergedTypes[GRADE_KEY] = JOURNAL.lessonTypes[GRADE_KEY];
+        }
+
+        payload = {
+            grades: mergedGrades,
+            lessons: mergedLessons,
+            qtr_grades: fresh.qtr_grades || {},
+            lesson_types: mergedTypes
+        };
+
+        // Синхронизируем локальный JOURNAL с тем, что сейчас сохраним,
+        // чтобы дальнейшие render'ы показывали актуальные данные
+        JOURNAL.grades = mergedGrades;
+        JOURNAL.lessons = mergedLessons;
+        JOURNAL.qtrGrades = payload.qtr_grades;
+        JOURNAL.lessonTypes = mergedTypes;
+    } else {
+        // Записи в БД нет или она повреждена — сохраняем локальный снимок
+        payload = {
+            grades: JOURNAL.grades,
+            lessons: JOURNAL.lessons,
+            qtr_grades: JOURNAL.qtrGrades,
+            lesson_types: JOURNAL.lessonTypes
+        };
+    }
+
+    await DB.upsertJournal(CLASS_ID, SUBJECT_ID, payload);
 }
 
 function onFileChosen() {
