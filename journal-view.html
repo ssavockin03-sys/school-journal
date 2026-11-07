@@ -58,7 +58,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .mobile-view-tabs { display: none; }
 
-/* ===== Контейнер на всю оставшуюся высоту ===== */
 #mainContent { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
 
 .panels-container {
@@ -71,7 +70,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 }
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
 
-/* Убираем нижний отступ у панелей — тянем до самого низа */
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0; }
 
 .panel-right {
@@ -1644,12 +1642,26 @@ function centerOnToday() {
     }
 }
 
+/* ====== ФИЛЛЕРЫ ПОУРОЧКИ ====== */
+let _planRefillRaf = null;
+
+function schedulePlanRefillDuringEdit() {
+    if (_planRefillRaf !== null) return;
+    _planRefillRaf = requestAnimationFrame(() => {
+        _planRefillRaf = null;
+        safeCall(() => fillPlanFillersInternal(true));
+    });
+}
+
 function fillPlanFillers() {
-    if (hwEditing) return;
+    fillPlanFillersInternal(false);
+}
+
+function fillPlanFillersInternal(ignoreEditFlag) {
+    if (hwEditing && !ignoreEditFlag) return;
 
     const pBody = document.getElementById('pBody');
     if (!pBody) return;
-    pBody.querySelectorAll('.plan-filler-row').forEach(r => r.remove());
 
     const panelRight = document.getElementById('panelRight');
     const table = document.getElementById('lessonPlanTable');
@@ -1658,33 +1670,39 @@ function fillPlanFillers() {
     const pc = document.getElementById('panelsContainer');
     if (pc && pc.classList.contains('summary-mode')) return;
 
+    // Удаляем существующие филлеры, чтобы измерить «реальную» высоту таблицы без них
+    const existingFillers = Array.from(pBody.querySelectorAll('.plan-filler-row'));
+    existingFillers.forEach(r => r.remove());
+
     const overflows = panelRight.scrollHeight > panelRight.clientHeight + 1;
-    if (overflows) return;
 
     const panelRect = panelRight.getBoundingClientRect();
     const tableRect = table.getBoundingClientRect();
     const panelBottom = panelRect.top + panelRight.clientTop + panelRight.clientHeight;
     const freeSpace = panelBottom - tableRect.bottom;
 
-    if (freeSpace > 0) {
-        const rowH = getPlanFillerRowHeight();
-        const fullRows = Math.floor(freeSpace / rowH);
-        const remainder = Math.round(freeSpace - fullRows * rowH);
-
-        const frag = document.createDocumentFragment();
-        for (let i = 0; i < fullRows; i++) {
-            frag.appendChild(createPlanFillerRow());
-        }
-        if (remainder >= 1) {
-            const lastRow = createPlanFillerRow(remainder + 'px');
-            lastRow.classList.add('plan-filler-last');
-            frag.appendChild(lastRow);
-        } else if (fullRows > 0) {
-            const rows = frag.querySelectorAll('.plan-filler-row');
-            if (rows.length) rows[rows.length - 1].classList.add('plan-filler-last');
-        }
-        pBody.appendChild(frag);
+    if (overflows || freeSpace <= 0) {
+        // Филлеры не нужны — они уже удалены
+        return;
     }
+
+    const rowH = getPlanFillerRowHeight();
+    const fullRows = Math.floor(freeSpace / rowH);
+    const remainder = Math.round(freeSpace - fullRows * rowH);
+
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < fullRows; i++) {
+        frag.appendChild(createPlanFillerRow());
+    }
+    if (remainder >= 1) {
+        const lastRow = createPlanFillerRow(remainder + 'px');
+        lastRow.classList.add('plan-filler-last');
+        frag.appendChild(lastRow);
+    } else if (fullRows > 0) {
+        const rows = frag.querySelectorAll('.plan-filler-row');
+        if (rows.length) rows[rows.length - 1].classList.add('plan-filler-last');
+    }
+    pBody.appendChild(frag);
 }
 
 function createPlanFillerRow(height) {
@@ -1713,6 +1731,7 @@ function createPlanFillerRow(height) {
 
     return tr;
 }
+/* ====== /ФИЛЛЕРЫ ПОУРОЧКИ ====== */
 
 document.addEventListener('DOMContentLoaded', () => {
     const pBody = document.getElementById('pBody');
@@ -1841,7 +1860,7 @@ function openThemeEditInline(cell, gradeKey, value) {
         }, EDIT_DELAY_MS);
     };
 
-    ta.addEventListener('input', () => autoGrow(ta));
+    ta.addEventListener('input', () => { autoGrow(ta); schedulePlanRefillDuringEdit(); });
     ta.addEventListener('blur', () => { scheduleCommit(); });
     ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); }
@@ -1961,7 +1980,7 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
         }, EDIT_DELAY_MS);
     };
 
-    ta.addEventListener('input', () => autoGrow(ta));
+    ta.addEventListener('input', () => { autoGrow(ta); schedulePlanRefillDuringEdit(); });
     ta.addEventListener('blur', () => { scheduleCommit(); });
     ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); }
@@ -2048,7 +2067,7 @@ function openNewHwItem(cell, gradeKey) {
         }, EDIT_DELAY_MS);
     };
 
-    ta.addEventListener('input', () => autoGrow(ta));
+    ta.addEventListener('input', () => { autoGrow(ta); schedulePlanRefillDuringEdit(); });
     ta.addEventListener('blur', () => { scheduleCommit(); });
     ta.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); }
