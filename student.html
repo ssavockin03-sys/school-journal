@@ -150,9 +150,6 @@
         .back-link:hover { text-decoration: underline; }
         .back-link svg { width: 14px; height: 14px; fill: currentColor; }
 
-        /* =====================================================
-           МОДАЛКА СТАТИСТИКИ
-           ===================================================== */
         .stat-modal-backdrop {
             position: fixed; inset: 0;
             background: rgba(26, 43, 74, 0.45);
@@ -240,9 +237,6 @@
         .stat-row-badge.g2, .stat-row-badge.g1 { background: #DC2626; }
         .stat-row-text { font-size: 14px; color: #1e293b; white-space: nowrap; }
 
-        /* =====================================================
-           ЧАТ
-           ===================================================== */
         #chatFab {
             position: fixed;
             right: 20px; bottom: 20px;
@@ -454,7 +448,6 @@
     </div>
 </div>
 
-<!-- Модалка статистики -->
 <div class="stat-modal-backdrop" id="statModalBackdrop" onclick="closeStatModal(event)">
     <div class="stat-modal" id="statModalContent" onclick="event.stopPropagation()"></div>
 </div>
@@ -538,6 +531,7 @@
                 <div class="info-banner-item"><div class="info-banner-label">Класс</div><div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>
                 <div class="info-banner-item"><div class="info-banner-label">Логин</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.login)}</div></div>`;
             renderToday();
+            setTimeout(debugWorkloads, 2000);
         } catch (err) { console.error(err); }
     })();
 
@@ -575,6 +569,61 @@
     }
 
     /* ============================================================
+       ДИАГНОСТИКА — покажет в консоли, что реально лежит в базе
+       ============================================================ */
+    function debugWorkloads() {
+        console.log('%c=== ДИАГНОСТИКА УЧИТЕЛЕЙ ===', 'color:#1976d2;font-weight:bold;font-size:14px');
+        console.log('Класс:', CURRENT_CLASS);
+        console.log('Периоды (educational_periods):', ALL_PERIODS);
+        console.log('Все нагрузки (workloads):', ALL_WORKLOADS);
+        console.log('Все учителя (teachers):', ALL_TEACHERS);
+
+        const myClassId = CURRENT_CLASS ? CURRENT_CLASS.id : null;
+        const myWorkloads = ALL_WORKLOADS.filter(w => w.class_id === myClassId);
+        console.log('%cНагрузки для моего класса:', 'color:#65A30D;font-weight:bold', myWorkloads);
+
+        if (myWorkloads.length) {
+            console.log('Ключи первой нагрузки:', Object.keys(myWorkloads[0]));
+            console.log('Пример нагрузки:', myWorkloads[0]);
+        }
+
+        if (ALL_PERIODS.length) {
+            console.log('Ключи первого периода:', Object.keys(ALL_PERIODS[0]));
+            console.log('Пример периода:', ALL_PERIODS[0]);
+        }
+
+        console.log('%c--- По каждому предмету из журнала ---', 'color:#1976d2;font-weight:bold');
+        const seenSubj = new Set();
+        ALL_JOURNALS.forEach(j => {
+            const subj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
+            if (!subj || seenSubj.has(subj.id)) return;
+            seenSubj.add(subj.id);
+
+            // берём первый ключ оценок как пример даты
+            const sg = j.grades && j.grades[CURRENT_STUDENT.id] ? j.grades[CURRENT_STUDENT.id] : {};
+            const firstKey = Object.keys(sg)[0] || null;
+            const dateForPeriod = firstKey ? parseKey(firstKey).date : new Date();
+            const period = getPeriodForDate(dateForPeriod);
+
+            const candidates = ALL_WORKLOADS.filter(w =>
+                w.class_id === myClassId &&
+                (w.subject_id === subj.id || w.subject_name === subj.name)
+            );
+
+            console.log(`\n📚 ${subj.name} (id=${subj.id})`);
+            console.log('  первый ключ оценок:', firstKey, '→ дата:', dateForPeriod ? isoDate(dateForPeriod) : '—');
+            console.log('  период для этой даты:', period);
+            console.log('  все нагрузки по этому предмету:', candidates);
+            candidates.forEach((w, i) => {
+                const t = ALL_TEACHERS.find(x => x.id === w.teacher_id);
+                console.log(`    [${i}] workload:`, w, '→ учитель:', t ? t.full_name : '(не найден)');
+            });
+            const chosen = getTeacherForSubject(subj, j, firstKey);
+            console.log('  ✅ ВЫБРАННЫЙ УЧИТЕЛЬ:', chosen);
+        });
+    }
+
+    /* ============================================================
        ПОИСК УЧИТЕЛЯ С УЧЁТОМ ПЕРИОДА
        ============================================================ */
 
@@ -586,12 +635,9 @@
 
     function workloadMatchesPeriod(w, period) {
         if (!period) return true;
-        // вариант 1: workload хранит period_id / period
         if (w.period_id && period.id) return w.period_id === period.id;
         if (w.period && (period.id || period.name)) return w.period === period.id || w.period === period.name;
-        // вариант 2: workload хранит даты начала/конца
         if (w.start_date && w.end_date) return w.start_date <= period.end && w.end_date >= period.start;
-        // если у нагрузки нет привязки к периоду — считаем, что она подходит как fallback
         return true;
     }
 
@@ -601,8 +647,8 @@
         if (!myClassId) return null;
 
         const period = getPeriodForDate(date);
+        console.log(`[findTeacher] ${subjectObj.name}, дата=${date ? isoDate(date) : '—'}, период=`, period);
 
-        // 1) нагрузка для нашего класса + предмета + конкретного периода
         if (period) {
             const wl = ALL_WORKLOADS.find(w =>
                 w.class_id === myClassId &&
@@ -612,11 +658,13 @@
             );
             if (wl) {
                 const t = ALL_TEACHERS.find(x => x.id === wl.teacher_id);
+                console.log(`[findTeacher] → найдено по периоду:`, wl, '→', t ? t.full_name : '?');
                 if (t) return t.full_name;
+            } else {
+                console.log(`[findTeacher] → по периоду нагрузка НЕ найдена`);
             }
         }
 
-        // 2) нагрузка без привязки к периоду
         const wlAny = ALL_WORKLOADS.find(w =>
             w.class_id === myClassId &&
             (w.subject_id === subjectObj.id || w.subject_name === subjectObj.name) &&
@@ -624,30 +672,26 @@
         );
         if (wlAny) {
             const t = ALL_TEACHERS.find(x => x.id === wlAny.teacher_id);
+            console.log(`[findTeacher] → fallback нагрузка без периода:`, wlAny, '→', t ? t.full_name : '?');
             if (t) return t.full_name;
         }
 
-        // 3) журнал (прямые поля, если в них лежит id учителя)
         return null;
     }
 
-    // МАКСИМАЛЬНО НАДЕЖНЫЙ поиск учителя (с учётом даты/периода)
     function getTeacherForSubject(subjectObj, journal = null, lessonKey = null) {
         if (!subjectObj) return '—';
 
-        // 1. Сначала пробуем найти учителя по периоду, в который попадает дата урока
         let dateForPeriod = null;
         if (lessonKey) {
             const parsed = parseKey(lessonKey);
             dateForPeriod = parsed.date;
         } else if (journal) {
-            // если ключ не передан, но журнал есть — берём текущую дату (или из первого ключа оценок)
             dateForPeriod = new Date();
         }
         const periodTeacher = findTeacherForSubjectPeriod(subjectObj, dateForPeriod);
         if (periodTeacher) return periodTeacher;
 
-        // 2. Прямой поиск в объекте журнала (на случай, если в журнале лежит id учителя или ФИО)
         if (journal) {
             for (const key in journal) {
                 const val = journal[key];
@@ -659,7 +703,6 @@
             }
         }
 
-        // 3. Нагрузки без привязки к периоду
         const myClassId = CURRENT_CLASS ? CURRENT_CLASS.id : null;
         if (myClassId) {
             const wl = ALL_WORKLOADS.find(w => w.class_id === myClassId && (w.subject_id === subjectObj.id || w.subject_name === subjectObj.name));
@@ -669,7 +712,6 @@
             }
         }
 
-        // 4. Любой учитель, у которого в профиле указан этот предмет
         const tAny = ALL_TEACHERS.find(x => x.subject === subjectObj.name || x.subject_name === subjectObj.name);
         if (tAny) return tAny.full_name;
 
@@ -804,7 +846,6 @@
             const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
             
             const key = isoDate(date) + '_' + n;
-            // Ищем учителя строго по периоду, в который попадает дата урока
             let teacherName = getTeacherForSubject(subjObj, journal, key);
             
             let roomName = lesson.roomName || '';
@@ -839,10 +880,8 @@
         const parsedCell = parseCell(rawCell);
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
 
-        // Ищем учителя строго для периода этого урока
         let teacherName = getTeacherForSubject(subjObj, journal, lessonKey);
         
-        // Определяем кабинет
         let roomName = '';
         if (CURRENT_SCHEDULE && parsed.date) {
             const dowKey = JS_DAY_MAP[parsed.date.getDay()];
@@ -887,9 +926,6 @@
             </div>`;
     }
 
-    /* ============================================================
-       СТАТИСТИКА ПО ОЦЕНКЕ (модальное окно)
-       ============================================================ */
     function openStatModal(subjectName, lessonKey) {
         const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
         const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
@@ -902,10 +938,8 @@
         const myGrade = parsedCell.grade;
         const myDigit = firstDigit(myGrade) || 0;
 
-        // Поиск учителя строго для периода этого урока
         const teacherName = getTeacherForSubject(subjObj, journal, lessonKey);
 
-        // --- СРЕДНИЙ БАЛЛ ЗА ТЕКУЩИЙ ПЕРИОД ---
         let currentPeriod = null;
         if (parsed.date) {
             const dStr = isoDate(parsed.date);
@@ -925,7 +959,6 @@
         }
         const avg = count > 0 ? (sum / count).toFixed(2).replace('.', ',') : '—';
 
-        // Статистика по классу
         const classCounts = { 5: 0, 4: 0, 3: 0, 2: 0 };
         if (journal && journal.grades && CURRENT_CLASS) {
             const classStudentIds = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id);
@@ -937,7 +970,6 @@
             });
         }
 
-        // Кольцо
         let ringGradient = '';
         if (myDigit === 5) {
             ringGradient = `conic-gradient(#65A30D 0deg 360deg)`;
@@ -995,9 +1027,6 @@
         if (e.key === 'Escape') closeStatModal();
     });
 
-    /* ============================================================
-       ЧАТ
-       ============================================================ */
     (function () {
         let contacts = [];
         let contactsLoaded = false;
