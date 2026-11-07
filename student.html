@@ -204,7 +204,6 @@
             width: 80px; height: 80px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             position: relative;
-            /* conic-gradient устанавливается инлайн */
         }
         .stat-circle::before {
             content: ''; position: absolute; inset: 8px;
@@ -575,27 +574,25 @@
         CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
     }
 
-    // ИЩЕМ УЧИТЕЛЯ СТРОГО ИЗ ЖУРНАЛА
+    // МАКСИМАЛЬНО НАДЕЖНЫЙ поиск учителя
     function getTeacherForSubject(subjectObj, journal = null) {
         if (!subjectObj) return '—';
 
-        // 1. Если есть объект журнала, проверяем ВСЕ возможные поля с учителем, которые могут быть в БД
+        // 1. Прямой поиск в объекте журнала (перебираем все ключи)
         if (journal) {
-            // Проверяем стандартные и вероятные названия полей
-            const tId = journal.teacher_id || journal.teacherId || journal.teacher;
-            const tName = journal.teacher_name || journal.teacherName || (typeof journal.teacher === 'string' && journal.teacher.length > 5 ? journal.teacher : null);
-            
-            if (tId) {
-                const foundT = ALL_TEACHERS.find(x => x.id === tId);
-                if (foundT) return foundT.full_name;
-            }
-            if (tName) {
-                // Если это просто строка с ФИО, возвращаем её
-                if (typeof tName === 'string') return tName;
+            for (const key in journal) {
+                const val = journal[key];
+                if (typeof val === 'string' && val.length > 3) {
+                    // Если значение похоже на ID учителя из базы
+                    const t = ALL_TEACHERS.find(x => x.id === val);
+                    if (t) return t.full_name;
+                    // Если значение содержит ФИО (есть пробел и длина > 5)
+                    if (val.includes(' ') && val.length > 5 && !val.includes('/')) return val;
+                }
             }
         }
 
-        // 2. Если в журнале не нашли - ищем по нагрузкам для этого класса
+        // 2. Если в журнале не нашли - ищем по нагрузкам (workloads) для этого класса
         const myClassId = CURRENT_CLASS ? CURRENT_CLASS.id : null;
         if (myClassId) {
             const wl = ALL_WORKLOADS.find(w => w.class_id === myClassId && (w.subject_id === subjectObj.id || w.subject_name === subjectObj.name));
@@ -841,7 +838,6 @@
         const teacherName = getTeacherForSubject(subjObj, journal);
 
         // --- СРЕДНИЙ БАЛЛ ЗА ТЕКУЩИЙ ПЕРИОД ---
-        // 1. Определяем текущую четверть/период, к которой относится урок
         let currentPeriod = null;
         if (parsed.date) {
             const dStr = isoDate(parsed.date);
@@ -851,7 +847,6 @@
         let sum = 0, count = 0;
         if (journal && journal.grades && journal.grades[CURRENT_STUDENT.id]) {
             Object.entries(journal.grades[CURRENT_STUDENT.id]).forEach(([key, val]) => {
-                // Если нашли период - считаем только оценки этого периода
                 if (currentPeriod) {
                     const dPart = key.split('_')[0];
                     if (dPart < currentPeriod.start || dPart > currentPeriod.end) return;
@@ -862,7 +857,7 @@
         }
         const avg = count > 0 ? (sum / count).toFixed(2).replace('.', ',') : '—';
 
-        // Статистика по классу (все ученики, только за этот конкретный урок)
+        // Статистика по классу
         const classCounts = { 5: 0, 4: 0, 3: 0, 2: 0 };
         if (journal && journal.grades && CURRENT_CLASS) {
             const classStudentIds = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id);
@@ -874,7 +869,7 @@
             });
         }
 
-        // Кольцо (conic-gradient)
+        // Кольцо
         let ringGradient = '';
         if (myDigit === 5) {
             ringGradient = `conic-gradient(#65A30D 0deg 360deg)`;
@@ -928,7 +923,6 @@
         backdrop.classList.remove('show');
     }
     
-    // Поддержка закрытия по Esc
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeStatModal();
     });
