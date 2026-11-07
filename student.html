@@ -571,27 +571,32 @@
         CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
     }
 
-    // Надежный поиск учителя по предмету и классу
-    function getTeacherForSubject(subjectObj) {
+    // Надежный поиск учителя. В приоритете — тот, кто закреплен за журналом!
+    function getTeacherForSubject(subjectObj, specificJournal = null) {
         if (!subjectObj) return '—';
+        
+        // 1. Если нам передали конкретный журнал — берем учителя прямо из него
+        const journal = specificJournal || (ALL_JOURNALS ? ALL_JOURNALS.find(j => j.subject_id === subjectObj.id) : null);
+        
+        if (journal) {
+            if (journal.teacher_id) {
+                const t = ALL_TEACHERS.find(x => x.id === journal.teacher_id);
+                if (t) return t.full_name;
+            }
+            if (journal.teacher_name) return journal.teacher_name;
+        }
+
+        // 2. Если в журнале пусто — ищем в нагрузках (workloads) для этого класса
         const myClassId = CURRENT_CLASS ? CURRENT_CLASS.id : null;
-        if (!myClassId) return '—';
-
-        // 1. Ищем в нагрузках (workloads) для этого класса
-        const wl = ALL_WORKLOADS.find(w => w.class_id === myClassId && w.subject_id === subjectObj.id && w.teacher_id);
-        if (wl) {
-            const t = ALL_TEACHERS.find(x => x.id === wl.teacher_id);
-            if (t) return t.full_name;
+        if (myClassId) {
+            const wl = ALL_WORKLOADS.find(w => w.class_id === myClassId && w.subject_id === subjectObj.id && w.teacher_id);
+            if (wl) {
+                const t = ALL_TEACHERS.find(x => x.id === wl.teacher_id);
+                if (t) return t.full_name;
+            }
         }
 
-        // 2. Ищем в нагрузках этого класса по названию предмета (если нет subject_id)
-        const wlName = ALL_WORKLOADS.find(w => w.class_id === myClassId && w.subject_name === subjectObj.name && w.teacher_id);
-        if (wlName) {
-            const t = ALL_TEACHERS.find(x => x.id === wlName.teacher_id);
-            if (t) return t.full_name;
-        }
-
-        // 3. Ищем любого учителя, который ведет этот предмет (по совпадению предмета)
+        // 3. Ищем любого учителя, который ведет этот предмет
         const tAny = ALL_TEACHERS.find(x => x.subject === subjectObj.name);
         if (tAny) return tAny.full_name;
 
@@ -689,20 +694,17 @@
         
         container.querySelectorAll('.today-lesson[data-subject]').forEach(row => {
             row.addEventListener('click', (e) => {
-                // Если кликнули на оценку, не переходим на страницу урока
                 if (e.target.closest('.today-lesson-grade')) return;
                 openLessonPage(row.dataset.subject, row.dataset.date + '_' + row.dataset.num);
             });
         });
 
-        // Обработчики для плиток оценок (верхние)
         container.querySelectorAll('.grade-tile[data-subject]').forEach(tile => {
             tile.addEventListener('click', () => {
                 openStatModal(tile.dataset.subject, tile.dataset.key);
             });
         });
 
-        // Обработчики для оценок в списке уроков
         container.querySelectorAll('.today-lesson-grade[data-kind]').forEach(badge => {
             badge.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -727,19 +729,15 @@
             if (!lesson || !lesson.subject) continue;
             const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
             
-            // Берем учителя в первую очередь из расписания, если есть. Если нет — по предмету.
-            let teacherName = lesson.teacherName || '';
-            if (!teacherName && lesson.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId); if (t) teacherName = t.full_name; }
-            if (!teacherName && subjObj) { teacherName = getTeacherForSubject(subjObj); }
+            // Ищем журнал по этому предмету, чтобы взять учителя
+            const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj?.id);
+            let teacherName = getTeacherForSubject(subjObj, journal); // Используем приоритетный поиск
             
             let roomName = lesson.roomName || '';
             if (!roomName && lesson.roomId) { const r = ALL_ROOMS.find(x => x.id === lesson.roomId); if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : ''); }
             const key = isoDate(date) + '_' + n;
             let topic = '', homework = '';
-            if (subjObj) {
-                const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
-                if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
-            }
+            if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
             const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
             const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
             result.push({ num: n, subject: lesson.subject, subjectObj: subjObj || null, teacherName, roomName, topic, homework, grade: gradeRec ? gradeRec.grade : null, presence: presRec ? presRec.presence : null });
@@ -767,24 +765,21 @@
         const parsedCell = parseCell(rawCell);
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
 
-        // Ищем учителя сначала в расписании на этот день, если пусто - по предмету
-        let teacherName = '—', roomName = '';
+        // Ищем учителя приоритетно из журнала
+        let teacherName = getTeacherForSubject(subjObj, journal);
+        
+        // Определяем кабинет
+        let roomName = '';
         if (CURRENT_SCHEDULE && parsed.date) {
             const dowKey = JS_DAY_MAP[parsed.date.getDay()];
             if (dowKey) {
                 const dayGrid = CURRENT_SCHEDULE.grid[dowKey] || {};
                 const lessonInGrid = dayGrid[parsed.lesson] || dayGrid[String(parsed.lesson)];
                 if (lessonInGrid) {
-                    if (lessonInGrid.teacherName) teacherName = lessonInGrid.teacherName;
-                    else if (lessonInGrid.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lessonInGrid.teacherId); if (t) teacherName = t.full_name; }
                     if (lessonInGrid.roomName) roomName = lessonInGrid.roomName;
                     else if (lessonInGrid.roomId) { const r = ALL_ROOMS.find(x => x.id === lessonInGrid.roomId); if (r) roomName = r.number + ' каб.'; }
                 }
             }
-        }
-        // Если учитель не найден в расписании - берем закрепленного за предметом
-        if (teacherName === '—' && subjObj) {
-            teacherName = getTeacherForSubject(subjObj);
         }
 
         const topic = lessonData ? (lessonData.t || '') : '';
@@ -833,8 +828,8 @@
         const myGrade = parsedCell.grade;
         const myDigit = firstDigit(myGrade) || 0;
 
-        // Поиск учителя (надежный, по предмету)
-        const teacherName = getTeacherForSubject(subjObj);
+        // Поиск учителя приоритетно из журнала!
+        const teacherName = getTeacherForSubject(subjObj, journal);
 
         // Средний балл ученика по предмету
         let sum = 0, count = 0;
