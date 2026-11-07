@@ -407,7 +407,8 @@ function getUrlParams() {
         classId: params.get('class'),
         subjectId: params.get('subject'),
         date: params.get('date'),
-        lessonNum: parseInt(params.get('lesson') || '1', 10)
+        lessonNum: parseInt(params.get('lesson') || '1', 10),
+        lessonKey: params.get('key')
     };
 }
 
@@ -586,39 +587,17 @@ async function init() {
     }
 
     // ============================================================
-    // ГЛАВНОЕ ИСПРАВЛЕНИЕ: Ищем реальный ключ урока в журнале
-    // (может быть с "_0" или без, в зависимости от того,
-    // как его сохранил journal-view.html)
+    // ГЛАВНОЕ ИСПРАВЛЕНИЕ: используем точный ключ урока из URL
+    // (журнал передаёт его в параметре "key").
+    // Формат ключа: YYYY-MM-DD_N_0 для базового урока,
+    // YYYY-MM-DD_N_k (k>=1) для добавленных уроков.
     // ============================================================
-    let realKey = null;
-    const baseKey = DATE_ISO + '_' + LESSON_NUM;
-    
-    // Проверяем все записи оценок учеников, чтобы найти подходящий ключ
-    outer:
-    for (const studentId in JOURNAL.grades) {
-        const studentGrades = JOURNAL.grades[studentId];
-        if (!studentGrades) continue;
-        for (const key in studentGrades) {
-            // Ищем ключ, который начинается с baseKey, но не является ДЗ
-            if (key.startsWith(baseKey) && !key.includes('_hw_')) {
-                realKey = key;
-                break outer;
-            }
-        }
-    }
-    
-    // Если нашли в оценках — отлично. Если нет — ищем в темах уроков
-    if (!realKey) {
-        for (const key in JOURNAL.lessons) {
-            if (key.startsWith(baseKey) && !key.includes('_hw_')) {
-                realKey = key;
-                break;
-            }
-        }
-    }
+    GRADE_KEY = p.lessonKey || (DATE_ISO + '_' + LESSON_NUM + '_0');
 
-    // Если вообще ничего нет — создаём по стандарту журнала (с _0)
-    GRADE_KEY = realKey || (baseKey + '_0');
+    // Гарантируем наличие записи урока в lessons
+    if (!JOURNAL.lessons[GRADE_KEY]) {
+        JOURNAL.lessons[GRADE_KEY] = { t: '', h: [] };
+    }
 
     rebuildHwKeys();
 
@@ -632,7 +611,6 @@ async function init() {
 }
 
 function rebuildHwKeys() {
-    // ДЗ привязаны к реальному ключу урока, который мы определили в init()
     const lesson = JOURNAL.lessons[GRADE_KEY] || { t: '', h: [] };
     const hwList = normalizeHwList(lesson.h);
     HW_KEYS = hwList.map((_, i) => GRADE_KEY + '_hw_' + (i + 1));
@@ -1048,7 +1026,43 @@ function editGrade(studentId, gradeKey, boxEl) {
     });
 }
 
+/* ============================================================
+   ИСПРАВЛЕНО: сохраняем только СВОЙ урок, а не перезаписываем
+   весь журнал. Сначала перечитываем актуальный журнал из БД,
+   затем мержим изменения по GRADE_KEY. Это гарантирует, что
+   оценки, выставленные в журнале (journal-view.html), не
+   будут потеряны, и что наши оценки попадут в правильный ключ.
+   ============================================================ */
 async function saveJournal() {
+    const fresh = await DB.getJournal(CLASS_ID, SUBJECT_ID);
+    if (fresh) {
+        const freshGrades = fresh.grades || {};
+        const freshLessons = fresh.lessons || {};
+        const freshQtr = fresh.qtr_grades || {};
+        const freshTypes = fresh.lesson_types || {};
+
+        // Переносим только наш ключ урока — остальное оставляем как в БД
+        Object.keys(JOURNAL.grades).forEach(sid => {
+            if (!freshGrades[sid]) freshGrades[sid] = {};
+            if (JOURNAL.grades[sid][GRADE_KEY] !== undefined) {
+                freshGrades[sid][GRADE_KEY] = JOURNAL.grades[sid][GRADE_KEY];
+            } else if (freshGrades[sid][GRADE_KEY] !== undefined) {
+                delete freshGrades[sid][GRADE_KEY];
+            }
+        });
+        if (JOURNAL.lessons[GRADE_KEY] !== undefined) {
+            freshLessons[GRADE_KEY] = JOURNAL.lessons[GRADE_KEY];
+        }
+        if (JOURNAL.lessonTypes[GRADE_KEY] !== undefined) {
+            freshTypes[GRADE_KEY] = JOURNAL.lessonTypes[GRADE_KEY];
+        }
+
+        JOURNAL.grades = freshGrades;
+        JOURNAL.lessons = freshLessons;
+        JOURNAL.qtrGrades = freshQtr;
+        JOURNAL.lessonTypes = freshTypes;
+    }
+
     await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
         grades: JOURNAL.grades,
         lessons: JOURNAL.lessons,
