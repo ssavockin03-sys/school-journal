@@ -495,6 +495,7 @@
     let ALL_JOURNALS = [];
     let ALL_STUDENTS = [];
     let ALL_WORKLOADS = [];
+    let ALL_PERIODS = [];
     let CURRENT_SCHEDULE = null;
     let ALL_ROOMS = [];
     let TODAY_DATE = new Date(); TODAY_DATE.setHours(0, 0, 0, 0);
@@ -542,15 +543,18 @@
     })();
 
     async function loadAll() {
-        const [classes, subjects, teachers, journals, students, schedules, rooms, workloads] = await Promise.all([
+        const [classes, subjects, teachers, journals, students, schedules, rooms, workloads, periods] = await Promise.all([
             DB.getAll('classes'), DB.getAll('subjects'), DB.getAll('teachers'),
             DB.getAll('journals'), DB.getAll('students'),
             DB.getAll('class_schedules'), DB.getAll('rooms'),
-            DB.getAll('workloads').catch(() => [])
+            DB.getAll('workloads').catch(() => []),
+            DB.getAll('educational_periods').catch(() => [])
         ]);
         ALL_STUDENTS = students;
         ALL_ROOMS = rooms;
         ALL_WORKLOADS = workloads;
+        ALL_PERIODS = periods[0] && periods[0].periods ? periods[0].periods : [];
+        
         CURRENT_CLASS = classes.find(c => c.id === CURRENT_STUDENT.class_id) || null;
         ALL_SUBJECTS = subjects;
         ALL_TEACHERS = teachers;
@@ -571,33 +575,52 @@
         CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
     }
 
-    // Надежный поиск учителя. В приоритете — тот, кто закреплен за журналом!
-    function getTeacherForSubject(subjectObj, specificJournal = null) {
+    // МАКСИМАЛЬНО НАДЕЖНЫЙ поиск учителя
+    function getTeacherForSubject(subjectObj, journal = null, dateStr = null, lessonNum = null) {
         if (!subjectObj) return '—';
-        
-        // 1. Если нам передали конкретный журнал — берем учителя прямо из него
-        const journal = specificJournal || (ALL_JOURNALS ? ALL_JOURNALS.find(j => j.subject_id === subjectObj.id) : null);
-        
+
+        // 1. Если есть конкретный журнал - проверяем все возможные поля с учителем
         if (journal) {
+            if (journal.teacher_name) return journal.teacher_name;
             if (journal.teacher_id) {
                 const t = ALL_TEACHERS.find(x => x.id === journal.teacher_id);
                 if (t) return t.full_name;
             }
-            if (journal.teacher_name) return journal.teacher_name;
+            if (journal.teacher) {
+                const t = ALL_TEACHERS.find(x => x.id === journal.teacher || x.full_name === journal.teacher);
+                if (t) return t.full_name;
+                return journal.teacher;
+            }
         }
 
-        // 2. Если в журнале пусто — ищем в нагрузках (workloads) для этого класса
+        // 2. Ищем в нагрузках (workloads) по ID предмета
         const myClassId = CURRENT_CLASS ? CURRENT_CLASS.id : null;
         if (myClassId) {
-            const wl = ALL_WORKLOADS.find(w => w.class_id === myClassId && w.subject_id === subjectObj.id && w.teacher_id);
+            const wl = ALL_WORKLOADS.find(w => w.class_id === myClassId && (w.subject_id === subjectObj.id || w.subject_name === subjectObj.name) && w.teacher_id);
             if (wl) {
                 const t = ALL_TEACHERS.find(x => x.id === wl.teacher_id);
                 if (t) return t.full_name;
             }
         }
 
-        // 3. Ищем любого учителя, который ведет этот предмет
-        const tAny = ALL_TEACHERS.find(x => x.subject === subjectObj.name);
+        // 3. Ищем в расписании на этот день/урок
+        if (dateStr && lessonNum && CURRENT_SCHEDULE) {
+            const d = new Date(dateStr + 'T00:00:00');
+            const dowKey = JS_DAY_MAP[d.getDay()];
+            if (dowKey) {
+                const lesson = (CURRENT_SCHEDULE.grid[dowKey] || {})[lessonNum];
+                if (lesson) {
+                    if (lesson.teacherName) return lesson.teacherName;
+                    if (lesson.teacherId) {
+                        const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId);
+                        if (t) return t.full_name;
+                    }
+                }
+            }
+        }
+
+        // 4. Ищем любого учителя по совпадению предмета
+        const tAny = ALL_TEACHERS.find(x => x.subject === subjectObj.name || x.subject_name === subjectObj.name);
         if (tAny) return tAny.full_name;
 
         return '—';
@@ -728,10 +751,10 @@
             const lesson = dayGrid[n] || dayGrid[String(n)];
             if (!lesson || !lesson.subject) continue;
             const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
+            const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
             
-            // Ищем журнал по этому предмету, чтобы взять учителя
-            const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj?.id);
-            let teacherName = getTeacherForSubject(subjObj, journal); // Используем приоритетный поиск
+            // Жесткий поиск учителя
+            let teacherName = getTeacherForSubject(subjObj, journal, isoDate(date), n);
             
             let roomName = lesson.roomName || '';
             if (!roomName && lesson.roomId) { const r = ALL_ROOMS.find(x => x.id === lesson.roomId); if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : ''); }
@@ -765,8 +788,8 @@
         const parsedCell = parseCell(rawCell);
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
 
-        // Ищем учителя приоритетно из журнала
-        let teacherName = getTeacherForSubject(subjObj, journal);
+        // Ищем учителя
+        let teacherName = getTeacherForSubject(subjObj, journal, parsed.date ? isoDate(parsed.date) : null, parsed.lesson);
         
         // Определяем кабинет
         let roomName = '';
@@ -828,23 +851,32 @@
         const myGrade = parsedCell.grade;
         const myDigit = firstDigit(myGrade) || 0;
 
-        // Поиск учителя приоритетно из журнала!
-        const teacherName = getTeacherForSubject(subjObj, journal);
+        // Поиск учителя
+        const teacherName = getTeacherForSubject(subjObj, journal, parsed.date ? isoDate(parsed.date) : null, parsed.lesson);
 
-        // Средний балл ученика по предмету
+        // --- СРЕДНИЙ БАЛЛ ЗА ТЕКУЩИЙ ПЕРИОД ---
+        // 1. Определяем текущую четверть/период, к которой относится урок
+        let currentPeriod = null;
+        if (parsed.date) {
+            const dStr = isoDate(parsed.date);
+            currentPeriod = ALL_PERIODS.find(p => dStr >= p.start && dStr <= p.end);
+        }
+
         let sum = 0, count = 0;
-        if (journal && journal.grades) {
-            Object.entries(journal.grades).forEach(([sid, studentGrades]) => {
-                if (sid !== CURRENT_STUDENT.id) return;
-                Object.values(studentGrades || {}).forEach(v => {
-                    const d = firstDigit(parseCell(v).grade);
-                    if (d) { sum += d; count++; }
-                });
+        if (journal && journal.grades && journal.grades[CURRENT_STUDENT.id]) {
+            Object.entries(journal.grades[CURRENT_STUDENT.id]).forEach(([key, val]) => {
+                // Если нашли период - считаем только оценки этого периода
+                if (currentPeriod) {
+                    const dPart = key.split('_')[0];
+                    if (dPart < currentPeriod.start || dPart > currentPeriod.end) return;
+                }
+                const d = firstDigit(parseCell(val).grade);
+                if (d) { sum += d; count++; }
             });
         }
         const avg = count > 0 ? (sum / count).toFixed(2).replace('.', ',') : '—';
 
-        // Статистика по классу (все ученики)
+        // Статистика по классу (все ученики, только за этот конкретный урок)
         const classCounts = { 5: 0, 4: 0, 3: 0, 2: 0 };
         if (journal && journal.grades && CURRENT_CLASS) {
             const classStudentIds = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id);
