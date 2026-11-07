@@ -9,18 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
-html { -webkit-font-smoothing: antialiased; }
-body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; }
+html { -webkit-font-smoothing: antialiased; height: 100%; }
+body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; display: flex; flex-direction: column; }
 
 .loading-hidden { opacity: 0 !important; transition: opacity 0.25s ease; pointer-events: none; }
 .loading-fade-in { opacity: 1 !important; pointer-events: auto; }
 
-.top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #F4F6F8; }
+.top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #F4F6F8; flex-shrink: 0; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
 .top-nav .sep { color: #CBD5E1; font-size: 12px; }
 .top-nav .current { color: #2563EB; font-weight: 500; }
-.header-bar { padding: 4px 30px 16px 30px; background: #F4F6F8; }
+.header-bar { padding: 4px 30px 16px 30px; background: #F4F6F8; flex-shrink: 0; }
 .header-grid { display: inline-grid; grid-template-columns: max-content max-content; column-gap: 40px; row-gap: 8px; align-items: center; }
 .dropdown { position: relative; display: inline-block; }
 .dropdown-trigger { display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: transparent; border: none; font-size: 17.85px; font-weight: 700; color: #3B82F6; cursor: pointer; font-family: inherit; white-space: nowrap; letter-spacing: -0.4px; }
@@ -34,7 +34,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; }
 
-.period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; background: #FFFFFF; }
+.period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; background: #FFFFFF; flex-shrink: 0; }
 .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
 .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
 .tab-pill:first-child { border-radius: 8px 0 0 8px; }
@@ -58,9 +58,21 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 
 .mobile-view-tabs { display: none; }
 
-.panels-container { display: flex; padding: 0 30px; height: calc(100vh - 185px); min-height: 300px; align-items: stretch; background: #FFFFFF; }
+/* ===== Контейнер на всю оставшуюся высоту ===== */
+#mainContent { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+
+.panels-container {
+    display: flex;
+    padding: 0 30px;
+    flex: 1 1 auto;
+    min-height: 0;
+    align-items: stretch;
+    background: #FFFFFF;
+}
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
-.panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0 0 12px 0; }
+
+/* Убираем нижний отступ у панелей — тянем до самого низа */
+.panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0; }
 
 .panel-right {
     flex: 1;
@@ -72,7 +84,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     background: #FFFFFF;
     border-radius: 0 8px 8px 0;
     border-left: none;
-    margin: 0 0 12px 0;
+    margin: 0;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -89,7 +101,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .panels-container.summary-mode .panel-left { border-radius: 8px; border-right: 1px solid #CFD8E3; }
 .panels-container.summary-mode .side-toggle-tabs { display: none; }
 
-.side-toggle-tabs { width: 0; flex-shrink: 0; position: relative; margin: 0 0 12px 0; align-self: stretch; }
+.side-toggle-tabs { width: 0; flex-shrink: 0; position: relative; margin: 0; align-self: stretch; }
 .side-toggle-tab { position: absolute; display: inline-flex; align-items: center; justify-content: center; gap: 5px; height: 130px; width: 27px; padding: 0; background: #3B82F6; color: #FFFFFF; border: 1px solid #3B82F6; font-size: 8.8px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; user-select: none; line-height: 1; letter-spacing: 0.2px; box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25); z-index: 6; }
 .side-toggle-tab.tab-left { left: 100%; top: calc(47% - 130px); border-radius: 8px 0 0 8px; border-right: none; transform: rotate(180deg); }
 .side-toggle-tab.tab-left:hover, .side-toggle-tab.tab-left.active { background: #2563EB; border-color: #2563EB; }
@@ -138,12 +150,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .marks-table thead tr:first-child th.col-today { border-top: 1px solid #1E40AF !important; }
 .marks-table tbody tr:last-child td.col-today { border-bottom: 1px solid #1E40AF !important; }
 
-/* === НОВОЕ: у добавленных уроков "сегодня" убираем ТОЛЬКО левую синюю границу === */
+/* У добавленных уроков "сегодня" убираем ТОЛЬКО левую синюю границу */
 .marks-table th.col-today.col-added-lesson::before,
 .marks-table td.col-today.col-added-lesson::before {
     display: none !important;
 }
-/* ============================================================ */
 
 .marks-table.period-mode thead th.col-period-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px; color: #334155; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
 .marks-table.period-mode thead th.col-final-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px; color: #1E293B; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; }
@@ -399,7 +410,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 }
 
 @media (max-width: 1100px) {
-    body { overflow: auto; }
+    body { overflow: auto; height: auto; min-height: 100vh; display: block; }
+    #mainContent { display: block; }
     .mobile-view-tabs { display: flex; gap: 6px; padding: 8px 10px 0 10px; margin-bottom: 4px; flex-wrap: wrap; }
     .mobile-view-tab { flex: 1 1 0; min-width: 0; padding: 7px 8px; font-size: 12px; font-weight: 600; color: #64748B; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; cursor: pointer; font-family: inherit; transition: all 0.15s ease; text-align: center; white-space: nowrap; }
     .mobile-view-tab:hover { background: #F1F5F9; }
@@ -410,7 +422,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
     .dropdown-trigger { font-size: 15px; }
     .header-grid { column-gap: 12px; row-gap: 4px; }
     .side-toggle-tabs { display: none; }
-    .panels-container { flex-direction: column; padding: 0 8px 8px 8px; height: auto; min-height: 0; gap: 0; }
+    .panels-container { flex-direction: column; padding: 0 8px 8px 8px; height: auto; min-height: 0; gap: 0; flex: none; }
     .panels-container .panel-left-wrapper, .panels-container .panel-right-wrapper { max-width: 100% !important; flex: 1 1 auto !important; height: auto; display: none; width: 100%; }
     .panels-container.mobile-show-journal .panel-left-wrapper { display: flex; width: 100%; }
     .panels-container.mobile-show-plan .panel-right-wrapper { display: flex; width: 100%; }
@@ -1500,8 +1512,7 @@ function renderMainTable() {
     renderLessonPlanRows();
 }
 
-// ВАЖНО: поурочка строится ТОЛЬКО по базовым урокам (gradeKey заканчивается на _0),
-// поэтому добавление/удаление уроков в журнале не меняет поурочный план.
+// Поурочка строится ТОЛЬКО по базовым урокам (_0) — добавленные уроки её не меняют
 function renderLessonPlanRows() {
     const pBody = document.getElementById('pBody');
     if (!pBody) return;
