@@ -488,7 +488,7 @@
     let ALL_STUDENTS = [];
     let ALL_WORKLOADS = [];
     let ALL_PERIODS = [];
-    let CURRENT_SCHEDULE = null;
+    let CURRENT_SCHEDULES = []; // теперь массив, а не один объект
     let ALL_ROOMS = [];
     let TODAY_DATE = new Date(); TODAY_DATE.setHours(0, 0, 0, 0);
 
@@ -531,7 +531,6 @@
                 <div class="info-banner-item"><div class="info-banner-label">Класс</div><div class="info-banner-value">${escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '—')}</div></div>
                 <div class="info-banner-item"><div class="info-banner-label">Логин</div><div class="info-banner-value">${escapeHtml(CURRENT_STUDENT.login)}</div></div>`;
             renderToday();
-            setTimeout(debugWorkloads, 2000);
         } catch (err) { console.error(err); }
     })();
 
@@ -554,168 +553,37 @@
         ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
         const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
         if (withData.length > 0) ALL_JOURNALS = withData;
-        const classSchedules = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
-        const mergedGrid = {};
-        classSchedules.forEach(s => {
-            if (!s.grid) return;
-            Object.entries(s.grid).forEach(([day, lessons]) => {
-                if (!mergedGrid[day]) mergedGrid[day] = {};
-                Object.entries(lessons || {}).forEach(([num, lesson]) => {
-                    if (lesson && lesson.subject && !mergedGrid[day][num]) mergedGrid[day][num] = lesson;
-                });
-            });
-        });
-        CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
+        
+        // Сохраняем ВСЕ расписания для нашего класса с их периодами
+        CURRENT_SCHEDULES = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
     }
 
-    /* ============================================================
-       ДИАГНОСТИКА — покажет в консоли, что реально лежит в базе
-       ============================================================ */
-    function debugWorkloads() {
-        console.log('%c=== ДИАГНОСТИКА УЧИТЕЛЕЙ ===', 'color:#1976d2;font-weight:bold;font-size:14px');
-        console.log('Класс:', CURRENT_CLASS);
-        console.log('Периоды (educational_periods):', ALL_PERIODS);
-        console.log('Все нагрузки (workloads):', ALL_WORKLOADS);
-        console.log('Все учителя (teachers):', ALL_TEACHERS);
-
-        const myClassId = CURRENT_CLASS ? CURRENT_CLASS.id : null;
-        const myWorkloads = ALL_WORKLOADS.filter(w => w.class_id === myClassId);
-        console.log('%cНагрузки для моего класса:', 'color:#65A30D;font-weight:bold', myWorkloads);
-
-        if (myWorkloads.length) {
-            console.log('Ключи первой нагрузки:', Object.keys(myWorkloads[0]));
-            console.log('Пример нагрузки:', myWorkloads[0]);
-        }
-
-        if (ALL_PERIODS.length) {
-            console.log('Ключи первого периода:', Object.keys(ALL_PERIODS[0]));
-            console.log('Пример периода:', ALL_PERIODS[0]);
-        }
-
-        console.log('%c--- По каждому предмету из журнала ---', 'color:#1976d2;font-weight:bold');
-        const seenSubj = new Set();
-        ALL_JOURNALS.forEach(j => {
-            const subj = ALL_SUBJECTS.find(s => s.id === j.subject_id);
-            if (!subj || seenSubj.has(subj.id)) return;
-            seenSubj.add(subj.id);
-
-            // берём первый ключ оценок как пример даты
-            const sg = j.grades && j.grades[CURRENT_STUDENT.id] ? j.grades[CURRENT_STUDENT.id] : {};
-            const firstKey = Object.keys(sg)[0] || null;
-            const dateForPeriod = firstKey ? parseKey(firstKey).date : new Date();
-            const period = getPeriodForDate(dateForPeriod);
-
-            const candidates = ALL_WORKLOADS.filter(w =>
-                w.class_id === myClassId &&
-                (w.subject_id === subj.id || w.subject_name === subj.name)
-            );
-
-            console.log(`\n📚 ${subj.name} (id=${subj.id})`);
-            console.log('  первый ключ оценок:', firstKey, '→ дата:', dateForPeriod ? isoDate(dateForPeriod) : '—');
-            console.log('  период для этой даты:', period);
-            console.log('  все нагрузки по этому предмету:', candidates);
-            candidates.forEach((w, i) => {
-                const t = ALL_TEACHERS.find(x => x.id === w.teacher_id);
-                console.log(`    [${i}] workload:`, w, '→ учитель:', t ? t.full_name : '(не найден)');
-            });
-            const chosen = getTeacherForSubject(subj, j, firstKey);
-            console.log('  ✅ ВЫБРАННЫЙ УЧИТЕЛЬ:', chosen);
-        });
-    }
-
-    /* ============================================================
-       ПОИСК УЧИТЕЛЯ С УЧЁТОМ ПЕРИОДА
-       ============================================================ */
-
+    // Определяем, к какому периоду относится дата
     function getPeriodForDate(date) {
         if (!date || !ALL_PERIODS.length) return null;
         const dStr = isoDate(date);
         return ALL_PERIODS.find(p => dStr >= p.start && dStr <= p.end) || null;
     }
 
-    function workloadMatchesPeriod(w, period) {
-        if (!period) return true;
-        if (w.period_id && period.id) return w.period_id === period.id;
-        if (w.period && (period.id || period.name)) return w.period === period.id || w.period === period.name;
-        if (w.start_date && w.end_date) return w.start_date <= period.end && w.end_date >= period.start;
-        return true;
-    }
-
-    function findTeacherForSubjectPeriod(subjectObj, date) {
-        if (!subjectObj) return null;
-        const myClassId = CURRENT_CLASS ? CURRENT_CLASS.id : null;
-        if (!myClassId) return null;
-
+    // Ищем индекс периода для даты
+    function getPeriodIndexForDate(date) {
         const period = getPeriodForDate(date);
-        console.log(`[findTeacher] ${subjectObj.name}, дата=${date ? isoDate(date) : '—'}, период=`, period);
-
-        if (period) {
-            const wl = ALL_WORKLOADS.find(w =>
-                w.class_id === myClassId &&
-                (w.subject_id === subjectObj.id || w.subject_name === subjectObj.name) &&
-                workloadMatchesPeriod(w, period) &&
-                w.teacher_id
-            );
-            if (wl) {
-                const t = ALL_TEACHERS.find(x => x.id === wl.teacher_id);
-                console.log(`[findTeacher] → найдено по периоду:`, wl, '→', t ? t.full_name : '?');
-                if (t) return t.full_name;
-            } else {
-                console.log(`[findTeacher] → по периоду нагрузка НЕ найдена`);
-            }
-        }
-
-        const wlAny = ALL_WORKLOADS.find(w =>
-            w.class_id === myClassId &&
-            (w.subject_id === subjectObj.id || w.subject_name === subjectObj.name) &&
-            w.teacher_id
-        );
-        if (wlAny) {
-            const t = ALL_TEACHERS.find(x => x.id === wlAny.teacher_id);
-            console.log(`[findTeacher] → fallback нагрузка без периода:`, wlAny, '→', t ? t.full_name : '?');
-            if (t) return t.full_name;
-        }
-
-        return null;
+        if (!period) return null;
+        return ALL_PERIODS.indexOf(period);
     }
 
-    function getTeacherForSubject(subjectObj, journal = null, lessonKey = null) {
-        if (!subjectObj) return '—';
+    // Получаем сетку уроков из ПРАВИЛЬНОГО расписания для конкретной даты
+    function getGridForDate(date) {
+        const idx = getPeriodIndexForDate(date);
+        if (idx === null) return null;
 
-        let dateForPeriod = null;
-        if (lessonKey) {
-            const parsed = parseKey(lessonKey);
-            dateForPeriod = parsed.date;
-        } else if (journal) {
-            dateForPeriod = new Date();
-        }
-        const periodTeacher = findTeacherForSubjectPeriod(subjectObj, dateForPeriod);
-        if (periodTeacher) return periodTeacher;
+        // Ищем расписание, у которого period_index совпадает с нашим
+        const schedule = CURRENT_SCHEDULES.find(s => s.period_index === idx);
+        if (schedule && schedule.grid) return schedule.grid;
 
-        if (journal) {
-            for (const key in journal) {
-                const val = journal[key];
-                if (typeof val === 'string' && val.length > 3) {
-                    const t = ALL_TEACHERS.find(x => x.id === val);
-                    if (t) return t.full_name;
-                    if (val.includes(' ') && val.length > 5 && !val.includes('/')) return val;
-                }
-            }
-        }
-
-        const myClassId = CURRENT_CLASS ? CURRENT_CLASS.id : null;
-        if (myClassId) {
-            const wl = ALL_WORKLOADS.find(w => w.class_id === myClassId && (w.subject_id === subjectObj.id || w.subject_name === subjectObj.name));
-            if (wl) {
-                const t = ALL_TEACHERS.find(x => x.id === wl.teacher_id);
-                if (t) return t.full_name;
-            }
-        }
-
-        const tAny = ALL_TEACHERS.find(x => x.subject === subjectObj.name || x.subject_name === subjectObj.name);
-        if (tAny) return tAny.full_name;
-
-        return '—';
+        // Если не нашли по индексу, берём любое (fallback)
+        if (CURRENT_SCHEDULES.length > 0 && CURRENT_SCHEDULES[0].grid) return CURRENT_SCHEDULES[0].grid;
+        return null;
     }
 
     function collectAllStudentGrades() {
@@ -830,10 +698,11 @@
     }
 
     function getLessonsForDate(date) {
-        if (!CURRENT_SCHEDULE || !CURRENT_SCHEDULE.grid) return [];
+        const grid = getGridForDate(date);
+        if (!grid) return [];
         const dowKey = JS_DAY_MAP[date.getDay()];
         if (!dowKey) return [];
-        const dayGrid = CURRENT_SCHEDULE.grid[dowKey] || {};
+        const dayGrid = grid[dowKey] || {};
         const nums = Object.keys(dayGrid).map(n => parseInt(n, 10)).filter(n => !isNaN(n));
         if (!nums.length) return [];
         const maxNum = Math.max(...nums);
@@ -846,7 +715,14 @@
             const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
             
             const key = isoDate(date) + '_' + n;
-            let teacherName = getTeacherForSubject(subjObj, journal, key);
+            
+            // УЧИТЕЛЬ БЕРЁМ ПРЯМО ИЗ УРОКА РАСПИСАНИЯ (как ты ставила в админке)
+            let teacherName = lesson.teacherName || '—';
+            // Если вдруг там только ID, ищем по справочнику
+            if (!teacherName && lesson.teacherId) {
+                const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId);
+                if (t) teacherName = t.full_name;
+            }
             
             let roomName = lesson.roomName || '';
             if (!roomName && lesson.roomId) { const r = ALL_ROOMS.find(x => x.id === lesson.roomId); if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : ''); }
@@ -880,15 +756,21 @@
         const parsedCell = parseCell(rawCell);
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
 
-        let teacherName = getTeacherForSubject(subjObj, journal, lessonKey);
-        
+        // Учителя берём из урока расписания для этой даты
+        let teacherName = '—';
         let roomName = '';
-        if (CURRENT_SCHEDULE && parsed.date) {
+        const grid = getGridForDate(parsed.date);
+        if (grid) {
             const dowKey = JS_DAY_MAP[parsed.date.getDay()];
             if (dowKey) {
-                const dayGrid = CURRENT_SCHEDULE.grid[dowKey] || {};
+                const dayGrid = grid[dowKey] || {};
                 const lessonInGrid = dayGrid[parsed.lesson] || dayGrid[String(parsed.lesson)];
                 if (lessonInGrid) {
+                    teacherName = lessonInGrid.teacherName || '—';
+                    if (!teacherName && lessonInGrid.teacherId) {
+                        const t = ALL_TEACHERS.find(x => x.id === lessonInGrid.teacherId);
+                        if (t) teacherName = t.full_name;
+                    }
                     if (lessonInGrid.roomName) roomName = lessonInGrid.roomName;
                     else if (lessonInGrid.roomId) { const r = ALL_ROOMS.find(x => x.id === lessonInGrid.roomId); if (r) roomName = r.number + ' каб.'; }
                 }
@@ -938,7 +820,23 @@
         const myGrade = parsedCell.grade;
         const myDigit = firstDigit(myGrade) || 0;
 
-        const teacherName = getTeacherForSubject(subjObj, journal, lessonKey);
+        // Ищем учителя в правильном расписании
+        let teacherName = '—';
+        const grid = getGridForDate(parsed.date);
+        if (grid) {
+            const dowKey = JS_DAY_MAP[parsed.date.getDay()];
+            if (dowKey) {
+                const dayGrid = grid[dowKey] || {};
+                const lessonInGrid = dayGrid[parsed.lesson] || dayGrid[String(parsed.lesson)];
+                if (lessonInGrid) {
+                    teacherName = lessonInGrid.teacherName || '—';
+                    if (!teacherName && lessonInGrid.teacherId) {
+                        const t = ALL_TEACHERS.find(x => x.id === lessonInGrid.teacherId);
+                        if (t) teacherName = t.full_name;
+                    }
+                }
+            }
+        }
 
         let currentPeriod = null;
         if (parsed.date) {
