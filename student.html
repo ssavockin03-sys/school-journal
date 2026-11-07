@@ -575,51 +575,37 @@
         CURRENT_SCHEDULE = Object.keys(mergedGrid).length > 0 ? { grid: mergedGrid } : null;
     }
 
-    // МАКСИМАЛЬНО НАДЕЖНЫЙ поиск учителя
-    function getTeacherForSubject(subjectObj, journal = null, dateStr = null, lessonNum = null) {
+    // ИЩЕМ УЧИТЕЛЯ СТРОГО ИЗ ЖУРНАЛА
+    function getTeacherForSubject(subjectObj, journal = null) {
         if (!subjectObj) return '—';
 
-        // 1. Если есть конкретный журнал - проверяем все возможные поля с учителем
+        // 1. Если есть объект журнала, проверяем ВСЕ возможные поля с учителем, которые могут быть в БД
         if (journal) {
-            if (journal.teacher_name) return journal.teacher_name;
-            if (journal.teacher_id) {
-                const t = ALL_TEACHERS.find(x => x.id === journal.teacher_id);
-                if (t) return t.full_name;
+            // Проверяем стандартные и вероятные названия полей
+            const tId = journal.teacher_id || journal.teacherId || journal.teacher;
+            const tName = journal.teacher_name || journal.teacherName || (typeof journal.teacher === 'string' && journal.teacher.length > 5 ? journal.teacher : null);
+            
+            if (tId) {
+                const foundT = ALL_TEACHERS.find(x => x.id === tId);
+                if (foundT) return foundT.full_name;
             }
-            if (journal.teacher) {
-                const t = ALL_TEACHERS.find(x => x.id === journal.teacher || x.full_name === journal.teacher);
-                if (t) return t.full_name;
-                return journal.teacher;
+            if (tName) {
+                // Если это просто строка с ФИО, возвращаем её
+                if (typeof tName === 'string') return tName;
             }
         }
 
-        // 2. Ищем в нагрузках (workloads) по ID предмета
+        // 2. Если в журнале не нашли - ищем по нагрузкам для этого класса
         const myClassId = CURRENT_CLASS ? CURRENT_CLASS.id : null;
         if (myClassId) {
-            const wl = ALL_WORKLOADS.find(w => w.class_id === myClassId && (w.subject_id === subjectObj.id || w.subject_name === subjectObj.name) && w.teacher_id);
+            const wl = ALL_WORKLOADS.find(w => w.class_id === myClassId && (w.subject_id === subjectObj.id || w.subject_name === subjectObj.name));
             if (wl) {
                 const t = ALL_TEACHERS.find(x => x.id === wl.teacher_id);
                 if (t) return t.full_name;
             }
         }
 
-        // 3. Ищем в расписании на этот день/урок
-        if (dateStr && lessonNum && CURRENT_SCHEDULE) {
-            const d = new Date(dateStr + 'T00:00:00');
-            const dowKey = JS_DAY_MAP[d.getDay()];
-            if (dowKey) {
-                const lesson = (CURRENT_SCHEDULE.grid[dowKey] || {})[lessonNum];
-                if (lesson) {
-                    if (lesson.teacherName) return lesson.teacherName;
-                    if (lesson.teacherId) {
-                        const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId);
-                        if (t) return t.full_name;
-                    }
-                }
-            }
-        }
-
-        // 4. Ищем любого учителя по совпадению предмета
+        // 3. В крайнем случае ищем любого учителя, у которого в профиле указан этот предмет
         const tAny = ALL_TEACHERS.find(x => x.subject === subjectObj.name || x.subject_name === subjectObj.name);
         if (tAny) return tAny.full_name;
 
@@ -753,8 +739,8 @@
             const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
             const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
             
-            // Жесткий поиск учителя
-            let teacherName = getTeacherForSubject(subjObj, journal, isoDate(date), n);
+            // Ищем учителя строго по журналу
+            let teacherName = getTeacherForSubject(subjObj, journal);
             
             let roomName = lesson.roomName || '';
             if (!roomName && lesson.roomId) { const r = ALL_ROOMS.find(x => x.id === lesson.roomId); if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : ''); }
@@ -789,7 +775,7 @@
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
 
         // Ищем учителя
-        let teacherName = getTeacherForSubject(subjObj, journal, parsed.date ? isoDate(parsed.date) : null, parsed.lesson);
+        let teacherName = getTeacherForSubject(subjObj, journal);
         
         // Определяем кабинет
         let roomName = '';
@@ -851,8 +837,8 @@
         const myGrade = parsedCell.grade;
         const myDigit = firstDigit(myGrade) || 0;
 
-        // Поиск учителя
-        const teacherName = getTeacherForSubject(subjObj, journal, parsed.date ? isoDate(parsed.date) : null, parsed.lesson);
+        // Поиск учителя строго по журналу
+        const teacherName = getTeacherForSubject(subjObj, journal);
 
         // --- СРЕДНИЙ БАЛЛ ЗА ТЕКУЩИЙ ПЕРИОД ---
         // 1. Определяем текущую четверть/период, к которой относится урок
