@@ -148,7 +148,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table thead tr:first-child th.col-today { border-top: 1px solid #1E40AF !important; }
 .marks-table tbody tr:last-child td.col-today { border-bottom: 1px solid #1E40AF !important; }
 
-/* У добавленных уроков "сегодня" убираем ТОЛЬКО левую синюю границу */
 .marks-table th.col-today.col-added-lesson::before,
 .marks-table td.col-today.col-added-lesson::before {
     display: none !important;
@@ -1360,8 +1359,8 @@ async function upFinal(studentId, inputElement) {
     const displayLayer = inputElement.previousElementSibling;
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
-        if (!JOURNAL.qtrGrades[student.id]) JOURNAL.qtrGrades[student.id] = {};
-        JOURNAL.qtrGrades[student.id]['final'] = up;
+        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
+        JOURNAL.qtrGrades[studentId]['final'] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     }, EDIT_DELAY_MS);
@@ -1510,7 +1509,6 @@ function renderMainTable() {
     renderLessonPlanRows();
 }
 
-// Поурочка строится ТОЛЬКО по базовым урокам (_0) — добавленные уроки её не меняют
 function renderLessonPlanRows() {
     const pBody = document.getElementById('pBody');
     if (!pBody) return;
@@ -1575,12 +1573,16 @@ function renderLessonPlanRows() {
     safeCall(fillPlanFillers);
 }
 
+/* ============================================================
+   ИСПРАВЛЕНО: передаём полный gradeKey (iso_N_0, iso_N_1, ...)
+   ============================================================ */
 function openLessonPage(d) {
     const params = new URLSearchParams();
     params.set('class', CLASS_ID);
     params.set('subject', SUBJECT_ID);
     params.set('date', d.iso);
     params.set('lesson', String(d.lessonNum));
+    params.set('key', d.gradeKey);
     window.location.href = 'lesson-view.html?' + params.toString();
 }
 
@@ -1670,7 +1672,6 @@ function fillPlanFillersInternal(ignoreEditFlag) {
     const pc = document.getElementById('panelsContainer');
     if (pc && pc.classList.contains('summary-mode')) return;
 
-    // Удаляем существующие филлеры, чтобы измерить «реальную» высоту таблицы без них
     const existingFillers = Array.from(pBody.querySelectorAll('.plan-filler-row'));
     existingFillers.forEach(r => r.remove());
 
@@ -1682,7 +1683,6 @@ function fillPlanFillersInternal(ignoreEditFlag) {
     const freeSpace = panelBottom - tableRect.bottom;
 
     if (overflows || freeSpace <= 0) {
-        // Филлеры не нужны — они уже удалены
         return;
     }
 
