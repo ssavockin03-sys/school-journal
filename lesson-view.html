@@ -508,15 +508,6 @@ function isPresenceValue(val) {
     return PRESENCE_VALUES.includes(String(val).toUpperCase().trim());
 }
 
-/* ============================================================
-   Формат хранения в БД (совместим с journal-view.html):
-   - "5"          — только оценка
-   - "Н"          — только присутствие
-   - "Н5"         — присутствие + оценка (буква ПЕРВОЙ, без разделителя)
-   - "5/4"        — двойная оценка
-   - "Н5/4"       — присутствие + двойная оценка
-   journal-view.html парсит букву регуляркой /^(Н|О|Б|П|СП)/ в начале строки.
-   ============================================================ */
 function parseCellValue(raw) {
     if (!raw) return { grade: '', presence: '' };
     const s = String(raw).toUpperCase().trim();
@@ -555,7 +546,6 @@ async function init() {
         alert('Не заданы параметры class, subject или date.');
         return;
     }
-    GRADE_KEY = DATE_ISO + '_' + LESSON_NUM;
 
     const classes = await DB.getAll('classes');
     ALL_CLASSES = classes;
@@ -595,6 +585,41 @@ async function init() {
         JOURNAL = { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
     }
 
+    // ============================================================
+    // ГЛАВНОЕ ИСПРАВЛЕНИЕ: Ищем реальный ключ урока в журнале
+    // (может быть с "_0" или без, в зависимости от того,
+    // как его сохранил journal-view.html)
+    // ============================================================
+    let realKey = null;
+    const baseKey = DATE_ISO + '_' + LESSON_NUM;
+    
+    // Проверяем все записи оценок учеников, чтобы найти подходящий ключ
+    outer:
+    for (const studentId in JOURNAL.grades) {
+        const studentGrades = JOURNAL.grades[studentId];
+        if (!studentGrades) continue;
+        for (const key in studentGrades) {
+            // Ищем ключ, который начинается с baseKey, но не является ДЗ
+            if (key.startsWith(baseKey) && !key.includes('_hw_')) {
+                realKey = key;
+                break outer;
+            }
+        }
+    }
+    
+    // Если нашли в оценках — отлично. Если нет — ищем в темах уроков
+    if (!realKey) {
+        for (const key in JOURNAL.lessons) {
+            if (key.startsWith(baseKey) && !key.includes('_hw_')) {
+                realKey = key;
+                break;
+            }
+        }
+    }
+
+    // Если вообще ничего нет — создаём по стандарту журнала (с _0)
+    GRADE_KEY = realKey || (baseKey + '_0');
+
     rebuildHwKeys();
 
     renderHeader();
@@ -607,6 +632,7 @@ async function init() {
 }
 
 function rebuildHwKeys() {
+    // ДЗ привязаны к реальному ключу урока, который мы определили в init()
     const lesson = JOURNAL.lessons[GRADE_KEY] || { t: '', h: [] };
     const hwList = normalizeHwList(lesson.h);
     HW_KEYS = hwList.map((_, i) => GRADE_KEY + '_hw_' + (i + 1));
