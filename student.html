@@ -114,12 +114,16 @@
             font-weight: 400; font-size: 22px; color: #fff;
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.15s ease;
         }
+        .today-lesson-grade:hover { transform: scale(1.05); }
         .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
         .today-lesson-grade.g3 { background: #FB923C; }
         .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
         .today-lesson-grade.gn { background: #94A3B8; }
-        .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; }
+        .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; cursor: default; }
+        .today-lesson-grade.no-grade:hover { transform: none; }
         .today-lesson-grade .grade-tile-icon { right: -7px; bottom: -7px; }
         .today-lesson-grade .grade-tile-icon svg { width: 34px; height: 34px; }
         .today-lesson-grade .grade-tile-value { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
@@ -145,6 +149,97 @@
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: #1976d2; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 18px; background: none; border: none; font-family: inherit; padding: 0; text-decoration: none; }
         .back-link:hover { text-decoration: underline; }
         .back-link svg { width: 14px; height: 14px; fill: currentColor; }
+
+        /* =====================================================
+           МОДАЛКА СТАТИСТИКИ
+           ===================================================== */
+        .stat-modal-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(26, 43, 74, 0.45);
+            backdrop-filter: blur(2px);
+            z-index: 10000;
+            display: none; align-items: center; justify-content: center;
+            padding: 20px;
+            opacity: 0; transition: opacity 0.2s ease;
+        }
+        .stat-modal-backdrop.show { display: flex; opacity: 1; }
+        .stat-modal {
+            background: #fff; border-radius: 16px;
+            width: 100%; max-width: 360px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            padding: 22px 22px 26px;
+            position: relative;
+            transform: translateY(10px); transition: transform 0.2s ease;
+        }
+        .stat-modal-backdrop.show .stat-modal { transform: translateY(0); }
+        
+        .stat-modal-close {
+            position: absolute; top: 16px; right: 16px;
+            width: 32px; height: 32px;
+            background: #e2e8f0; border: none; border-radius: 50%;
+            color: #64748b; font-size: 22px; line-height: 1;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s ease;
+            font-family: inherit;
+        }
+        .stat-modal-close:hover { background: #cbd5e1; color: #334155; }
+
+        .stat-modal-subject { font-size: 24px; font-weight: 700; color: #1e293b; line-height: 1.2; margin-bottom: 4px; padding-right: 30px; }
+        .stat-modal-meta { font-size: 14px; color: #64748b; margin-bottom: 16px; }
+        .stat-modal-divider { height: 1px; background: #e2e8f0; margin: 0 -22px 16px; }
+        
+        .stat-modal-teacher { font-size: 14px; color: #64748b; margin-bottom: 18px; }
+        .stat-modal-teacher span { color: #64748b; }
+        .stat-modal-teacher b { color: #1e293b; font-weight: 400; }
+
+        .stat-card {
+            background: #f1f5f9; border-radius: 16px;
+            padding: 18px 20px;
+            display: flex; gap: 20px; align-items: stretch;
+        }
+        .stat-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+        .stat-title { font-size: 14px; font-weight: 700; color: #1e293b; text-align: center; }
+        
+        .stat-circle {
+            width: 80px; height: 80px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            /* conic-gradient устанавливается инлайн */
+        }
+        .stat-circle::before {
+            content: ''; position: absolute; inset: 8px;
+            background: #f1f5f9; border-radius: 50%;
+        }
+        .stat-circle-value {
+            position: relative; z-index: 1;
+            font-size: 32px; font-weight: 400; color: #475569; line-height: 1;
+        }
+        
+        .stat-avg {
+            font-size: 13px; color: #64748b;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .stat-avg-pill {
+            background: #65A30D; color: #fff;
+            padding: 2px 10px; border-radius: 12px;
+            font-weight: 600; font-size: 13px;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .stat-avg-pill.up::after { content: '↑'; font-size: 14px; }
+
+        .stat-right { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+        .stat-right-title { font-size: 14px; font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 4px; }
+        .stat-row { display: flex; align-items: center; gap: 8px; }
+        .stat-row-badge {
+            width: 22px; height: 22px; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 700; font-size: 12px;
+            flex-shrink: 0;
+        }
+        .stat-row-badge.g5, .stat-row-badge.g4 { background: #65A30D; }
+        .stat-row-badge.g3 { background: #FB923C; }
+        .stat-row-badge.g2, .stat-row-badge.g1 { background: #DC2626; }
+        .stat-row-text { font-size: 14px; color: #1e293b; white-space: nowrap; }
 
         /* =====================================================
            ЧАТ
@@ -360,6 +455,11 @@
     </div>
 </div>
 
+<!-- Модалка статистики -->
+<div class="stat-modal-backdrop" id="statModalBackdrop" onclick="closeStatModal(event)">
+    <div class="stat-modal" id="statModalContent" onclick="event.stopPropagation()"></div>
+</div>
+
 <button id="chatFab" type="button" title="Чаты">
     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
     Чаты
@@ -479,7 +579,7 @@
                 const parsed = parseKey(key);
                 const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
                 const cell = parseCell(val);
-                const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson, type };
+                const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson, type, journal };
                 if (cell.grade) result.push({ ...base, kind: 'grade', grade: cell.grade, presence: '' });
                 if (cell.presence) result.push({ ...base, kind: 'presence', grade: '', presence: cell.presence });
             });
@@ -527,8 +627,8 @@
         } else {
             lessonsHtml = `<div class="today-lessons">${dayLessons.map(l => {
                 let badges = '';
-                if (l.presence) badges += `<div class="today-lesson-grade ${gradeClass(l.presence)}"><span class="grade-tile-value">${escapeHtml(l.presence)}</span></div>`;
-                if (l.grade) { const icon = profileIconHtml(l.subjectObj); badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}">${icon}<span class="grade-tile-value">${escapeHtml(l.grade)}</span></div>`; }
+                if (l.presence) badges += `<div class="today-lesson-grade ${gradeClass(l.presence)}" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}" data-kind="presence"><span class="grade-tile-value">${escapeHtml(l.presence)}</span></div>`;
+                if (l.grade) { const icon = profileIconHtml(l.subjectObj); badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}" data-kind="grade">${icon}<span class="grade-tile-value">${escapeHtml(l.grade)}</span></div>`; }
                 if (!l.presence && !l.grade) badges = `<div class="today-lesson-grade no-grade">—</div>`;
                 const metaParts = [];
                 if (l.teacherName) metaParts.push(l.teacherName);
@@ -556,8 +656,29 @@
                 </div>
                 <div class="today-card-inner" style="padding-top:0;">${lessonsHtml}</div>
             </div>`;
+        
         container.querySelectorAll('.today-lesson[data-subject]').forEach(row => {
-            row.addEventListener('click', () => { openLessonPage(row.dataset.subject, row.dataset.date + '_' + row.dataset.num); });
+            row.addEventListener('click', (e) => {
+                // Если кликнули на оценку, не переходим на страницу урока
+                if (e.target.closest('.today-lesson-grade')) return;
+                openLessonPage(row.dataset.subject, row.dataset.date + '_' + row.dataset.num);
+            });
+        });
+
+        // Обработчики для плиток оценок (верхние)
+        container.querySelectorAll('.grade-tile[data-subject]').forEach(tile => {
+            tile.addEventListener('click', () => {
+                openStatModal(tile.dataset.subject, tile.dataset.key);
+            });
+        });
+
+        // Обработчики для оценок в списке уроков
+        container.querySelectorAll('.today-lesson-grade[data-kind]').forEach(badge => {
+            badge.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const key = badge.dataset.date + '_' + badge.dataset.num;
+                openStatModal(badge.dataset.subject, key);
+            });
         });
     }
 
@@ -656,6 +777,136 @@
                 </div>
             </div>`;
     }
+
+    /* ============================================================
+       СТАТИСТИКА ПО ОЦЕНКЕ (модальное окно)
+       ============================================================ */
+    function openStatModal(subjectName, lessonKey) {
+        const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
+        const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
+        const parsed = parseKey(lessonKey);
+        const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
+        const typeFullName = getLessonTypeFullName(lessonType);
+
+        const rawCell = (journal && journal.grades && journal.grades[CURRENT_STUDENT.id] && journal.grades[CURRENT_STUDENT.id][lessonKey]) || null;
+        const parsedCell = parseCell(rawCell);
+        const myGrade = parsedCell.grade;
+        const myDigit = firstDigit(myGrade) || 0;
+
+        // Поиск учителя
+        let teacherName = '—';
+        if (CURRENT_SCHEDULE && parsed.date) {
+            const dowKey = JS_DAY_MAP[parsed.date.getDay()];
+            if (dowKey) {
+                const dayGrid = CURRENT_SCHEDULE.grid[dowKey] || {};
+                const lessonInGrid = dayGrid[parsed.lesson] || dayGrid[String(parsed.lesson)];
+                if (lessonInGrid) {
+                    if (lessonInGrid.teacherName) teacherName = lessonInGrid.teacherName;
+                    else if (lessonInGrid.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lessonInGrid.teacherId); if (t) teacherName = t.full_name; }
+                }
+            }
+        }
+
+        // Средний балл ученика по предмету
+        let sum = 0, count = 0;
+        if (journal && journal.grades) {
+            Object.entries(journal.grades).forEach(([sid, studentGrades]) => {
+                if (sid !== CURRENT_STUDENT.id) return;
+                Object.values(studentGrades || {}).forEach(v => {
+                    const d = firstDigit(parseCell(v).grade);
+                    if (d) { sum += d; count++; }
+                });
+            });
+        }
+        const avg = count > 0 ? (sum / count).toFixed(2).replace('.', ',') : '—';
+
+        // Статистика по классу (все ученики)
+        const classCounts = { 5: 0, 4: 0, 3: 0, 2: 0 };
+        if (journal && journal.grades && CURRENT_CLASS) {
+            const classStudentIds = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id);
+            classStudentIds.forEach(sid => {
+                const sg = journal.grades[sid];
+                if (!sg || !sg[lessonKey]) return;
+                const digit = firstDigit(parseCell(sg[lessonKey]).grade);
+                if (digit >= 2 && digit <= 5) classCounts[digit]++;
+            });
+        }
+
+        // Кольцо (conic-gradient)
+        // Оценка 5 = 360deg, 4 = 288deg, 3 = 216deg, 2 = 144deg
+        let degrees = 0;
+        let color = '#94A3B8';
+        if (myDigit === 5) { degrees = 360; color = '#65A30D'; }
+        else if (myDigit === 4) { degrees = 288; color = '#65A30D'; }
+        else if (myDigit === 3) { degrees = 216; color = '#FB923C'; }
+        else if (myDigit === 2) { degrees = 144; color = '#DC2626'; }
+        
+        // В макете цвет кольца: зеленая часть, красная и оранжевая (имитация прогресса)
+        // Сделаем красивую заливку от красного к зеленому
+        let ringGradient = '';
+        if (myDigit >= 2) {
+            // Разбиваем на 3 цвета: красный (0-25%), оранжевый (25-50%), зеленый (50-100%) для визуала
+            // Но проще сделать прогресс-бар от красного к зеленому по длине
+            ringGradient = `conic-gradient(#DC2626 0deg, #FB923C ${degrees * 0.3}deg, #65A30D ${degrees * 0.7}deg, #65A30D ${degrees}deg, #e2e8f0 ${degrees}deg)`;
+        } else {
+            ringGradient = `conic-gradient(#e2e8f0 0deg 360deg)`;
+        }
+        
+        // Если оценка 4, то в макете кольцо почти полностью зеленое с красным хвостиком
+        if (myDigit === 4) {
+            ringGradient = `conic-gradient(#DC2626 0deg 30deg, #65A30D 30deg 288deg, #e2e8f0 288deg 360deg)`;
+        } else if (myDigit === 5) {
+            ringGradient = `conic-gradient(#65A30D 0deg 360deg)`;
+        } else if (myDigit === 3) {
+            ringGradient = `conic-gradient(#DC2626 0deg 45deg, #FB923C 45deg 120deg, #65A30D 120deg 216deg, #e2e8f0 216deg 360deg)`;
+        } else if (myDigit === 2) {
+            ringGradient = `conic-gradient(#DC2626 0deg 144deg, #e2e8f0 144deg 360deg)`;
+        }
+
+        const modalContent = document.getElementById('statModalContent');
+        modalContent.innerHTML = `
+            <button class="stat-modal-close" onclick="closeStatModal()">×</button>
+            <div class="stat-modal-subject">${escapeHtml(subjectName)}</div>
+            <div class="stat-modal-meta">${escapeHtml(typeFullName)}, ${formatDateHuman(parsed.date)}.</div>
+            <div class="stat-modal-divider"></div>
+            <div class="stat-modal-teacher"><span>Учитель:</span> <b>${escapeHtml(teacherName)}</b></div>
+            
+            <div class="stat-card">
+                <div class="stat-left">
+                    <div class="stat-title">Ваша оценка</div>
+                    <div class="stat-circle" style="background: ${ringGradient};">
+                        <div class="stat-circle-value">${myDigit || '—'}</div>
+                    </div>
+                    <div class="stat-avg">
+                        ср. балл <div class="stat-avg-pill ${myDigit >= 3 ? 'up' : ''}">${avg}</div>
+                    </div>
+                </div>
+                <div class="stat-right">
+                    <div class="stat-right-title">Одноклассники</div>
+                    ${[5, 4, 3, 2].map(g => {
+                        const cnt = classCounts[g];
+                        const cls = g >= 4 ? 'g5' : (g === 3 ? 'g3' : 'g2');
+                        const word = cnt % 10 === 1 && cnt % 100 !== 11 ? 'ученик' : (cnt % 10 >= 2 && cnt % 10 <= 4 && (cnt % 100 < 10 || cnt % 100 >= 20) ? 'ученика' : 'учеников');
+                        return `<div class="stat-row"><div class="stat-row-badge ${cls}">${g}</div><div class="stat-row-text">${cnt} ${word}</div></div>`;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+
+        const backdrop = document.getElementById('statModalBackdrop');
+        backdrop.classList.add('show');
+    }
+
+    function closeStatModal(e) {
+        if (e && e.target !== e.currentTarget) return;
+        const backdrop = document.getElementById('statModalBackdrop');
+        backdrop.classList.remove('show');
+    }
+    
+    // Поддержка закрытия по Esc
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeStatModal();
+    });
 
     /* ============================================================
        ЧАТ
