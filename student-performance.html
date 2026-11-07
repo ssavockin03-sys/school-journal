@@ -342,7 +342,7 @@
     let ALL_ROOMS = [];
     let ALL_STUDENTS = [];
     let ALL_CLASSES = [];
-    let CURRENT_SCHEDULES = []; // теперь массив расписаний (по периодам)
+    let CURRENT_SCHEDULES = [];
     let PERIODS = [];
     let PERIOD_SYSTEM = '';
     let ACTIVE_PERIOD_INDEX = 0;
@@ -357,9 +357,7 @@
     function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
     function gradeClass(grade) { const s = String(grade == null ? '' : grade); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) { const d = c - 48; if (d === 5 || d === 4) return 'g5'; if (d === 3) return 'g3'; if (d === 2 || d === 1) return 'g2'; } } return 'gn'; }
     function firstDigit(v) { const s = String(v == null ? '' : v); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) return c - 48; } return null; }
-    function isNumericGrade(v) { return firstDigit(v) !== null; }
     function getMondayOfCurrentWeek() { const t = new Date(); t.setHours(0,0,0,0); const dow = t.getDay(); const diff = (dow === 0 ? -6 : 1 - dow); const m = new Date(t); m.setDate(t.getDate() + diff); return m; }
-    function initials(name) { return (name || '').split(' ').map(w => w[0] || '').slice(0, 2).join('').toUpperCase(); }
     function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate() + days); return d; }
     function getLessonTypeFullName(abbr) { const map = { 'ОТВ': 'Ответ на уроке', 'К/Р': 'Контрольная работа', 'С/Р': 'Самостоятельная работа', 'Д': 'Диктант', 'СОЧ': 'Сочинение', 'И': 'Изложение', 'Тест': 'Тест', 'ПР': 'Проверочная работа', 'Л/Р': 'Лабораторная работа', 'Пр-т': 'Проект', 'РЕФ': 'Реферат', 'Зчт': 'Зачет', 'ДОК': 'Доклад', 'Р/У': 'Работа на уроке', 'РНО': 'Работа над ошибками', 'О': 'Опрос', 'Д/Р': 'Домашняя работа', 'УС': 'Устный счет', 'Наиз': 'Наизусть', 'ЧИТ': 'Чтение' }; return map[abbr] || abbr; }
 
@@ -398,9 +396,6 @@
         });
     }
 
-    // ============================================================
-    // ОПРЕДЕЛЕНИЕ ПЕРИОДА ДЛЯ ДАТЫ
-    // ============================================================
     function getPeriodForDate(date) {
         if (!date || !PERIODS.length) return null;
         const dStr = isoDate(date);
@@ -451,7 +446,6 @@
             const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
             if (withData.length > 0) ALL_JOURNALS = withData;
 
-            // ВСЕ расписания для нашего класса (с периодами)
             CURRENT_SCHEDULES = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
 
             const pd = periodDocs[0] || null;
@@ -513,7 +507,7 @@
         renderRating();
     }
 
-    // ================= ФУНКЦИЯ ДНЕВНИКА СО СКРОЛЛОМ ДНЕЙ =================
+    // ================= ФУНКЦИЯ ДНЕВНИКА =================
     function renderDiary() {
         const container = document.getElementById('diaryContent');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
@@ -543,7 +537,6 @@
             const isWeekend = (dayKey === 'sun');
             const isToday = date.getTime() === today.getTime();
             
-            // БЕРЁМ РАСПИСАНИЕ ДЛЯ ЭТОЙ ДАТЫ (по периоду)
             const grid = getGridForDate(date);
             const dayGrid = (grid && grid[dayKey]) || {};
             
@@ -556,7 +549,6 @@
                     const lesson = dayGrid[n] || dayGrid[String(n)];
                     if (!lesson || !lesson.subject) continue;
                     
-                    // УЧИТЕЛЬ ИЗ УРОКА (как в админке)
                     let teacherName = lesson.teacherName || '';
                     if (!teacherName && lesson.teacherId) { const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId); if (t) teacherName = t.full_name; }
                     let roomName = lesson.roomName || '';
@@ -693,6 +685,7 @@
         return { start: p.start, end: p.end };
     }
 
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ ТАБЛИЦЫ
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
@@ -723,6 +716,7 @@
             
             let displayGrades = [];
             
+            // БЕРЁМ ОЦЕНКИ ТОЛЬКО ИЗ ЖУРНАЛА ЭТОГО ПРЕДМЕТА, И ТОЛЬКО ЗА НУЖНЫЙ ПЕРИОД
             if (journal && journal.grades && journal.grades[CURRENT_STUDENT.id]) {
                 const sg = journal.grades[CURRENT_STUDENT.id];
                 Object.entries(sg).forEach(([key, val]) => {
@@ -744,7 +738,7 @@
             const periodQtr = qtrGrades[ACTIVE_PERIOD_INDEX] || qtrGrades[String(ACTIVE_PERIOD_INDEX)] || null;
 
             html += '<tr>';
-            html += `<td class="subject-name">${subjectName}</td>`;
+            html += `<td class="subject-name">${escapeHtml(subjectName)}</td>`;
             
             if (displayGrades.length === 0) {
                 html += '<td><span style="color:#999;font-style:italic;font-size:12px;">Нет оценок</span></td>';
@@ -945,4 +939,4 @@
     }
 </script>
 </body>
-</html>   
+</html>
