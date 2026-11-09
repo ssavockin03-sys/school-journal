@@ -65,7 +65,7 @@
         .grades-strip-label { font-size: 12px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
         .grades-strip { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
         
-        /* Обновленный кубик */
+        /* Кубик */
         .grade-tile { 
             position: relative;
             display: flex; 
@@ -112,16 +112,16 @@
             background: #94A3B8; 
         }
 
-        /* Двойная оценка в кубике (чтобы влезало в 95px) */
+        /* Двойная оценка: шрифт как у одиночной, чуть плотнее буквы, чтобы влезло */
         .grade-tile-box.double {
-            font-size: 24px;
-            letter-spacing: -0.5px;
+            font-size: 34px;
+            letter-spacing: -1px;
         }
 
         .grade-tile-subject { font-size: 12px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95px; text-align: left; }
         .grade-tile-type { font-size: 10px; color: #94a3b8; line-height: 1.2; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95px; text-align: left; }
 
-        /* Иконка предмета: позиционируется как на скриншоте, не мешает цифре */
+        /* Иконка предмета */
         .grade-tile-icon {
             position: absolute;
             right: -15px;
@@ -148,7 +148,7 @@
             position: relative; 
             z-index: 2; 
             text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-            margin-top: 2px; /* Легкая оптическая коррекция */
+            margin-top: 2px;
         }
 
         .today-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin-bottom: 20px; overflow: hidden; }
@@ -206,9 +206,10 @@
             background: #94A3B8; 
         }
 
+        /* Двойная оценка в бейдже: шрифт как у одиночной, чуть плотнее */
         .today-lesson-grade.double {
-            font-size: 20px;
-            letter-spacing: -0.4px;
+            font-size: 26px;
+            letter-spacing: -0.8px;
             padding: 0 8px;
         }
         
