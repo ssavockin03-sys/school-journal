@@ -32,31 +32,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; }
 
-.page-content {
-    padding: 8px 30px 40px 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
+.page-content { padding: 8px 30px 40px 30px; max-width: 1200px; margin: 0 auto; }
 .page-title { font-size: 26px; font-weight: 700; color: #1E293B; margin: 4px 0 20px 0; }
 
-.layout-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
-    gap: 24px;
-    align-items: start;
-    justify-content: center;
-    margin-bottom: 18px;
-}
+.layout-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; justify-content: center; margin-bottom: 18px; }
 @media (max-width: 1100px) { .layout-grid { grid-template-columns: 1fr; } }
 
-.card {
-    background: #FFFFFF;
-    border: 1px solid #CFD8E3;
-    border-radius: 8px;
-    padding: 14px 18px 16px 18px;
-    margin-bottom: 18px;
-}
+.card { background: #FFFFFF; border: 1px solid #CFD8E3; border-radius: 8px; padding: 14px 18px 16px 18px; margin-bottom: 18px; }
 .card:last-child { margin-bottom: 0; }
 .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .card-title { font-size: 14px; font-weight: 700; color: #1E293B; }
@@ -80,17 +62,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .btn-upload:hover { background: #2563EB; border-color: #2563EB; }
 
 .flat-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-.flat-table th {
-    background: #F4F7FB; color: #475569; font-size: 11.5px; font-weight: 600; text-align: center;
-    padding: 8px 6px; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; border-left: 1px solid #E2E8F0;
-}
+.flat-table th { background: #F4F7FB; color: #475569; font-size: 11.5px; font-weight: 600; text-align: center; padding: 8px 6px; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; border-left: 1px solid #E2E8F0; }
 .flat-table th:last-child { border-right: 1px solid #E2E8F0; }
 .flat-table th:first-child { border-top-left-radius: 8px; }
 .flat-table th:last-child  { border-top-right-radius: 8px; }
-.flat-table td {
-    padding: 8px 10px; font-size: 12.5px; color: #1E293B;
-    border-bottom: 1px solid #E2E8F0; border-left: 1px solid #E2E8F0; vertical-align: middle;
-}
+.flat-table td { padding: 8px 10px; font-size: 12.5px; color: #1E293B; border-bottom: 1px solid #E2E8F0; border-left: 1px solid #E2E8F0; vertical-align: middle; }
 .flat-table td:last-child { border-right: 1px solid #E2E8F0; }
 .flat-table tbody tr:first-child td { background: #FFFFFF; }
 .flat-table tbody tr.hw-row-1 td { background: #FEF3C7; }
@@ -98,11 +74,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .flat-table tbody tr:last-child td:first-child { border-bottom-left-radius: 8px; }
 .flat-table tbody tr:last-child td:last-child  { border-bottom-right-radius: 8px; }
 .flat-table .col-center { text-align: center; }
-.flat-table .icon-btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 22px; height: 22px; background: transparent; border: none;
-    border-radius: 4px; color: #64748B; cursor: pointer; padding: 0; vertical-align: middle;
-}
+.flat-table .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: transparent; border: none; border-radius: 4px; color: #64748B; cursor: pointer; padding: 0; vertical-align: middle; }
 .flat-table .icon-btn:hover { background: #EFF6FF; color: #2563EB; }
 .flat-table .icon-btn svg { width: 13px; height: 13px; fill: currentColor; }
 
@@ -120,20 +92,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-full-width { margin-top: 0; }
 
 .journal-wrap { border-radius: 10px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 6px 10px 10px 10px; }
-.journal-top {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 6px; font-size: 13px; font-weight: 600;
-    color: #334155; background: #DBEAFE; border-radius: 6px;
-}
+.journal-top { display: flex; align-items: center; gap: 8px; padding: 8px 6px; font-size: 13px; font-weight: 600; color: #334155; background: #DBEAFE; border-radius: 6px; }
 .journal-top input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; }
 
 .journal-scroll-x { overflow-x: auto; overflow-y: visible; }
 
 .journal-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; min-width: 100%; }
-.journal-table thead th {
-    background: #EBF0F6; color: #334155; font-size: 12px; font-weight: 600; text-align: center;
-    padding: 6px 8px; border-bottom: 1px solid #CFD8E3; border-right: 1px solid #CFD8E3; vertical-align: middle;
-}
+.journal-table thead th { background: #EBF0F6; color: #334155; font-size: 12px; font-weight: 600; text-align: center; padding: 6px 8px; border-bottom: 1px solid #CFD8E3; border-right: 1px solid #CFD8E3; vertical-align: middle; }
 .journal-table thead th:last-child { border-right: none; }
 .journal-table thead th .subhead { display: block; font-size: 11px; font-weight: 400; color: #0EA5E9; margin-top: 2px; }
 
@@ -144,40 +109,22 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-table thead th.th-work     { width: 160px; }
 .journal-table thead th.th-comment  { width: 150px; }
 
-.journal-table tbody td {
-    background: #FFFFFF; font-size: 13px; color: #1E293B;
-    padding: 3px 10px; border-bottom: 1px solid #E2E8F0;
-    border-right: 1px solid #E2E8F0; vertical-align: middle;
-    height: 34px; position: relative;
-}
+.journal-table tbody td { background: #FFFFFF; font-size: 13px; color: #1E293B; padding: 3px 10px; border-bottom: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; vertical-align: middle; height: 34px; position: relative; }
 .journal-table tbody td:last-child { border-right: none; }
-.journal-table tbody tr.class-head-row td {
-    background: #F8FAFC; color: #334155; font-size: 14px; font-weight: 700;
-    padding: 7px 10px; border-bottom: 1px solid #E2E8F0; border-right: none; height: auto;
-}
+.journal-table tbody tr.class-head-row td { background: #F8FAFC; color: #334155; font-size: 14px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #E2E8F0; border-right: none; height: auto; }
 
 .journal-table .num-col { text-align: center; color: #334155; font-weight: 500; }
 .journal-table .student-col { text-align: left; }
 .journal-table .presence-col { text-align: center; padding: 3px 6px; }
 .journal-table .grade-col { text-align: center; padding: 3px 4px; }
 
-.presence-box {
-    display: block; width: 100%; height: 26px; line-height: 26px;
-    border-radius: 4px; font-size: 13px; font-weight: 600;
-    color: #FFFFFF; text-align: center;
-    background: transparent; cursor: default; user-select: none;
-}
+.presence-box { display: block; width: 100%; height: 26px; line-height: 26px; border-radius: 4px; font-size: 13px; font-weight: 600; color: #FFFFFF; text-align: center; background: transparent; cursor: default; user-select: none; }
 .presence-box.empty { background: transparent; }
 .presence-box.h  { background: #F87171; }
 .presence-box.blue { background: #60A5FA; }
 .presence-box.orange { background: #FB923C; }
 
-.grade-box-long {
-    display: block; width: 100%; height: 26px; line-height: 26px;
-    border-radius: 4px; text-align: center;
-    font-size: 14px; font-weight: 700; color: #FFFFFF !important;
-    cursor: default; user-select: none;
-}
+.grade-box-long { display: block; width: 100%; height: 26px; line-height: 26px; border-radius: 4px; text-align: center; font-size: 14px; font-weight: 700; color: #FFFFFF !important; cursor: default; user-select: none; }
 .grade-box-long.g5 { background: #A3E635; }
 .grade-box-long.g4 { background: #84CC16; }
 .grade-box-long.g3 { background: #FB923C; }
@@ -189,35 +136,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; font-size: 13px; 
 .journal-table .comment-col:hover { text-decoration: underline; }
 
 .journal-cell-input-wrap { position: relative; }
-.journal-cell-input-wrap input {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    width: 100%; height: 100%; text-align: center;
-    border: 1.5px solid #60A5FA; border-radius: 4px;
-    background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700;
-    color: #1E293B; outline: none; padding: 0; z-index: 5;
-    text-transform: uppercase;
-}
+.journal-cell-input-wrap input { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; text-align: center; border: 1.5px solid #60A5FA; border-radius: 4px; background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; color: #1E293B; outline: none; padding: 0; z-index: 5; text-transform: uppercase; }
 
 .side-block { margin-bottom: 18px; }
 .side-block:last-child { margin-bottom: 0; }
 
-.teacher-card {
-    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-    background: #FFFFFF; border: 1px solid #CFD8E3; border-radius: 8px;
-}
-.teacher-avatar {
-    width: 52px; height: 52px; border-radius: 8px;
-    background: #EFF6FF; border: 1px solid #BFDBFE;
-    display: flex; align-items: center; justify-content: center;
-    color: #2563EB; font-weight: 700; font-size: 18px; flex-shrink: 0;
-}
+.teacher-card { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: #FFFFFF; border: 1px solid #CFD8E3; border-radius: 8px; }
+.teacher-avatar { width: 52px; height: 52px; border-radius: 8px; background: #EFF6FF; border: 1px solid #BFDBFE; display: flex; align-items: center; justify-content: center; color: #2563EB; font-weight: 700; font-size: 18px; flex-shrink: 0; }
 .teacher-name { color: #65A30D; font-size: 13.5px; font-weight: 600; line-height: 1.25; }
 
 .nav-menu-block { background: #F1F5F9; border-radius: 8px; padding: 14px 18px; }
-.nav-menu-block a {
-    display: block; color: #2563EB; font-size: 15px; font-weight: 600;
-    text-decoration: none; padding: 5px 0; cursor: pointer; line-height: 1.25;
-}
+.nav-menu-block a { display: block; color: #2563EB; font-size: 15px; font-weight: 600; text-decoration: none; padding: 5px 0; cursor: pointer; line-height: 1.25; }
 .nav-menu-block a:hover { text-decoration: underline; }
 
 .help-note { display: flex; gap: 8px; font-size: 12px; color: #64748B; line-height: 1.45; padding: 10px 4px; }
@@ -536,6 +465,27 @@ function showToast(message) {
     }, 2500);
 }
 
+/* ------------------------------------------------------------
+   Гарантируем, что JOURNAL.grades / lessons / qtrGrades /
+   lessonTypes — это объекты, а не строки/массивы.
+   ------------------------------------------------------------ */
+function ensureObject(x) {
+    return (x && typeof x === 'object' && !Array.isArray(x)) ? x : {};
+}
+
+async function loadJournalFromDb() {
+    const rec = await DB.getJournal(CLASS_ID, SUBJECT_ID);
+    if (!rec) {
+        return { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
+    }
+    return {
+        grades: ensureObject(rec.grades),
+        lessons: ensureObject(rec.lessons),
+        qtrGrades: ensureObject(rec.qtr_grades),
+        lessonTypes: ensureObject(rec.lesson_types)
+    };
+}
+
 async function init() {
     const p = getUrlParams();
     CLASS_ID = p.classId;
@@ -574,20 +524,8 @@ async function init() {
         .filter(s => s.class_id === CLASS_ID)
         .sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
 
-    const journalRecord = await DB.getJournal(CLASS_ID, SUBJECT_ID);
-    if (journalRecord) {
-        JOURNAL = {
-            grades: journalRecord.grades || {},
-            lessons: journalRecord.lessons || {},
-            qtrGrades: journalRecord.qtr_grades || {},
-            lessonTypes: journalRecord.lesson_types || {}
-        };
-    } else {
-        JOURNAL = { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
-    }
+    JOURNAL = await loadJournalFromDb();
 
-    // Точный ключ урока из URL (журнал передаёт его в параметре "key").
-    // Формат: YYYY-MM-DD_N_0 для базового, YYYY-MM-DD_N_k (k>=1) для добавленных.
     GRADE_KEY = p.lessonKey || (DATE_ISO + '_' + LESSON_NUM + '_0');
 
     if (!JOURNAL.lessons[GRADE_KEY]) {
@@ -936,9 +874,7 @@ function editPresence(studentId, boxEl) {
         if (combined) JOURNAL.grades[studentId][GRADE_KEY] = combined;
         else delete JOURNAL.grades[studentId][GRADE_KEY];
 
-        // Сначала перерисовываем локально — данные уже в JOURNAL
         renderJournal();
-        // Затем сохраняем (асинхронно)
         saveJournal().catch(err => {
             console.error('saveJournal failed:', err);
             showToast('Не удалось сохранить. Проверьте соединение.');
@@ -1032,50 +968,59 @@ function editGrade(studentId, gradeKey, boxEl) {
 }
 
 /* ============================================================
-   ИСПРАВЛЕНО: сначала читаем актуальные данные из БД,
-   СЛИВАЕМ наш урок в прочитанные данные и СОХРАНЯЕМ результат.
-   Локальный JOURNAL синхронизируется с сохранёнными данными
-   ПОСЛЕ формирования payload — так наши изменения не теряются.
+   КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ:
+   Читаем актуальный журнал из БД, переносим ТОЛЬКО изменения
+   нашего урока (GRADE_KEY и HW-ключи) и сохраняем результат.
+   Никогда не перезаписываем весь объект локальным состоянием,
+   чтобы не затереть оценки из journal-view.html.
    ============================================================ */
 async function saveJournal() {
-    let fresh = null;
+    let fresh;
     try {
-        fresh = await DB.getJournal(CLASS_ID, SUBJECT_ID);
+        fresh = await loadJournalFromDb();
     } catch (e) {
         console.warn('getJournal failed, saving local snapshot', e);
+        fresh = null;
     }
 
     let payload;
 
-    // Проверяем, что fresh — валидный объект с нужной структурой
-    const hasFresh =
-        fresh &&
-        typeof fresh === 'object' &&
-        fresh.grades !== null &&
-        fresh.grades !== undefined &&
-        typeof fresh.grades === 'object';
+    if (fresh) {
+        const mergedGrades = Object.assign({}, fresh.grades);
+        const keysOfLesson = new Set([GRADE_KEY, ...HW_KEYS]);
 
-    if (hasFresh) {
-        const mergedGrades = Object.assign({}, fresh.grades || {});
-
-        // Переносим ТОЛЬКО наш урок из локального JOURNAL
+        // Переносим значения только по ключам нашего урока.
         Object.keys(JOURNAL.grades).forEach(sid => {
             const local = JOURNAL.grades[sid] || {};
-            const hasLocal = Object.prototype.hasOwnProperty.call(local, GRADE_KEY);
-            if (hasLocal) {
+            let hasLocalLesson = false;
+            keysOfLesson.forEach(k => {
+                if (Object.prototype.hasOwnProperty.call(local, k)) {
+                    hasLocalLesson = true;
+                }
+            });
+
+            if (hasLocalLesson) {
                 if (!mergedGrades[sid]) mergedGrades[sid] = {};
-                mergedGrades[sid][GRADE_KEY] = local[GRADE_KEY];
-            } else if (mergedGrades[sid] && Object.prototype.hasOwnProperty.call(mergedGrades[sid], GRADE_KEY)) {
-                delete mergedGrades[sid][GRADE_KEY];
+                keysOfLesson.forEach(k => {
+                    if (Object.prototype.hasOwnProperty.call(local, k)) {
+                        mergedGrades[sid][k] = local[k];
+                    } else {
+                        delete mergedGrades[sid][k];
+                    }
+                });
+                // если у ученика совсем не осталось ключей — чистим запись
+                if (Object.keys(mergedGrades[sid]).length === 0) {
+                    delete mergedGrades[sid];
+                }
             }
         });
 
-        const mergedLessons = Object.assign({}, fresh.lessons || {});
+        const mergedLessons = Object.assign({}, fresh.lessons);
         if (JOURNAL.lessons[GRADE_KEY] !== undefined) {
             mergedLessons[GRADE_KEY] = JOURNAL.lessons[GRADE_KEY];
         }
 
-        const mergedTypes = Object.assign({}, fresh.lesson_types || {});
+        const mergedTypes = Object.assign({}, fresh.lessonTypes);
         if (JOURNAL.lessonTypes[GRADE_KEY] !== undefined) {
             mergedTypes[GRADE_KEY] = JOURNAL.lessonTypes[GRADE_KEY];
         }
@@ -1083,18 +1028,17 @@ async function saveJournal() {
         payload = {
             grades: mergedGrades,
             lessons: mergedLessons,
-            qtr_grades: fresh.qtr_grades || {},
+            qtr_grades: fresh.qtrGrades,
             lesson_types: mergedTypes
         };
 
-        // Синхронизируем локальный JOURNAL с тем, что сейчас сохраним,
-        // чтобы дальнейшие render'ы показывали актуальные данные
+        // Синхронизируем локальный JOURNAL с сохранённым
         JOURNAL.grades = mergedGrades;
         JOURNAL.lessons = mergedLessons;
-        JOURNAL.qtrGrades = payload.qtr_grades;
+        JOURNAL.qtrGrades = fresh.qtrGrades;
         JOURNAL.lessonTypes = mergedTypes;
     } else {
-        // Записи в БД нет или она повреждена — сохраняем локальный снимок
+        // Если БД недоступна — сохраняем локальный снимок как есть
         payload = {
             grades: JOURNAL.grades,
             lessons: JOURNAL.lessons,
