@@ -466,8 +466,7 @@ function showToast(message) {
 }
 
 /* ============================================================
-   НОРМАЛИЗАЦИЯ: любые данные из БД приводим к плоским объектам.
-   Работает даже если grades пришёл строкой JSON или массивом.
+   НОРМАЛИЗАЦИЯ ДАННЫХ ИЗ БД
    ============================================================ */
 function toPlainObject(x) {
     if (!x) return {};
@@ -484,47 +483,35 @@ function toPlainObject(x) {
 function normalizeGradesMap(grades) {
     const src = toPlainObject(grades);
     const out = {};
-    Object.keys(src).forEach(sid => {
-        const v = src[sid];
-        out[sid] = toPlainObject(v);
-    });
+    Object.keys(src).forEach(sid => { out[sid] = toPlainObject(src[sid]); });
     return out;
 }
 function normalizeLessonsMap(lessons) {
     const src = toPlainObject(lessons);
     const out = {};
     Object.keys(src).forEach(k => {
-        const v = src[k];
-        const plain = toPlainObject(v);
-        out[k] = { t: typeof plain.t === 'string' ? plain.t : '', h: normalizeHwList(plain.h) };
+        const p = toPlainObject(src[k]);
+        out[k] = { t: typeof p.t === 'string' ? p.t : '', h: normalizeHwList(p.h) };
     });
     return out;
 }
 function normalizeQtrMap(qtr) {
     const src = toPlainObject(qtr);
     const out = {};
-    Object.keys(src).forEach(sid => {
-        out[sid] = toPlainObject(src[sid]);
-    });
+    Object.keys(src).forEach(sid => { out[sid] = toPlainObject(src[sid]); });
     return out;
 }
 function normalizeTypesMap(types) {
     const src = toPlainObject(types);
     const out = {};
-    Object.keys(src).forEach(k => {
-        if (typeof src[k] === 'string') out[k] = src[k];
-    });
+    Object.keys(src).forEach(k => { if (typeof src[k] === 'string') out[k] = src[k]; });
     return out;
 }
 
-/* Загрузка журнала из БД с полной нормализацией. */
 async function loadJournalNormalized() {
     let rec = null;
-    try {
-        rec = await DB.getJournal(CLASS_ID, SUBJECT_ID);
-    } catch (e) {
-        console.warn('DB.getJournal failed', e);
-    }
+    try { rec = await DB.getJournal(CLASS_ID, SUBJECT_ID); }
+    catch (e) { console.warn('DB.getJournal failed', e); }
     if (!rec) return { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
     return {
         grades: normalizeGradesMap(rec.grades),
@@ -919,8 +906,15 @@ function editPresence(studentId, boxEl) {
         else if (isPresenceValue(v)) newPres = v;
         else { renderJournal(); return; }
         const combined = buildCellValue(cur.grade, newPres);
-        if (combined) JOURNAL.grades[studentId][GRADE_KEY] = combined;
-        else delete JOURNAL.grades[studentId][GRADE_KEY];
+        if (combined) {
+            JOURNAL.grades[studentId][GRADE_KEY] = combined;
+        } else {
+            delete JOURNAL.grades[studentId][GRADE_KEY];
+            // Если у ученика больше нет ни одной оценки — удаляем запись
+            if (Object.keys(JOURNAL.grades[studentId]).length === 0) {
+                delete JOURNAL.grades[studentId];
+            }
+        }
 
         renderJournal();
         saveJournal().catch(err => {
@@ -982,6 +976,9 @@ function editGrade(studentId, gradeKey, boxEl) {
             } else {
                 delete JOURNAL.grades[studentId][gradeKey];
             }
+            if (Object.keys(JOURNAL.grades[studentId]).length === 0) {
+                delete JOURNAL.grades[studentId];
+            }
         } else if (isPresenceValue(v)) {
             renderJournal();
             return;
@@ -1016,102 +1013,100 @@ function editGrade(studentId, gradeKey, boxEl) {
 }
 
 /* ============================================================
-   СОХРАНЕНИЕ. Сохраняем ВСЁ: и локальные grades, и те, что уже
-   были в БД. Ключи текущего урока и его HW берём из локального
-   состояния, остальные grades (другие уроки) — из fresh.
-   Если fresh пуст — сохраняем полностью локально.
-   lessons/lessonTypes/qtrGrades — мержим с fresh по тем же
-   правилам, чтобы не затирать данные других уроков/периодов.
+   СОХРАНЕНИЕ.
+   Главное отличие от предыдущей версии:
+   для КАЖДОГО ученика, который есть в fresh.grades ИЛИ в
+   JOURNAL.grades, вычисляем итоговую запись так:
+     - начинаем с fresh.grades[sid],
+     - для ключей текущего урока и его HW-ключей:
+         * если в локальном JOURNAL.grades[sid] есть значение — ставим его;
+         * если локального значения НЕТ — УДАЛЯЕМ ключ (это и есть
+           исправление проблемы с удалением оценки).
+   Это гарантирует, что удалённая оценка не «воскреснет».
    ============================================================ */
 async function saveJournal() {
     let fresh = null;
-    try {
-        fresh = await loadJournalNormalized();
-    } catch (e) {
-        console.warn('loadJournalNormalized in save failed', e);
-        fresh = null;
-    }
+    try { fresh = await loadJournalNormalized(); }
+    catch (e) { console.warn('loadJournalNormalized failed', e); fresh = null; }
 
     const lessonKeys = new Set([GRADE_KEY, ...HW_KEYS]);
-    // Для "Работы на уроке" GRADE_KEY хранится отдельно (это обычная оценка),
-    // но по ключу тот же — переносим его тоже.
-    lessonKeys.add(GRADE_KEY);
-
-    let payload;
 
     if (fresh) {
-        // 1) GRADES: начинаем с того, что в БД; накладываем локальные
-        //    значения только по ключам текущего урока.
         const mergedGrades = {};
-        Object.keys(fresh.grades).forEach(sid => {
-            mergedGrades[sid] = Object.assign({}, fresh.grades[sid]);
-        });
-        Object.keys(JOURNAL.grades).forEach(sid => {
-            const local = JOURNAL.grades[sid] || {};
-            let touched = false;
+        // Множество всех учеников, фигурирующих в fresh или локально
+        const allSids = new Set([
+            ...Object.keys(fresh.grades),
+            ...Object.keys(JOURNAL.grades)
+        ]);
+
+        allSids.forEach(sid => {
+            const fromFresh = fresh.grades[sid] || {};
+            const fromLocal = JOURNAL.grades[sid] || {};
+            const out = {};
+            // 1) копируем всё из fresh
+            Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
+            // 2) по ключам текущего урока применяем локальное состояние:
+            //    есть значение — ставим, нет значения — удаляем.
             lessonKeys.forEach(k => {
-                if (Object.prototype.hasOwnProperty.call(local, k)) touched = true;
-            });
-            if (!touched) return;
-            if (!mergedGrades[sid]) mergedGrades[sid] = {};
-            lessonKeys.forEach(k => {
-                if (Object.prototype.hasOwnProperty.call(local, k)) {
-                    mergedGrades[sid][k] = local[k];
+                if (Object.prototype.hasOwnProperty.call(fromLocal, k)) {
+                    const val = fromLocal[k];
+                    if (val !== '' && val !== null && val !== undefined) {
+                        out[k] = val;
+                    } else {
+                        delete out[k];
+                    }
                 } else {
-                    delete mergedGrades[sid][k];
+                    // локально ключа нет — значит пользователь очистил
+                    delete out[k];
                 }
             });
-            if (Object.keys(mergedGrades[sid]).length === 0) delete mergedGrades[sid];
+            if (Object.keys(out).length > 0) mergedGrades[sid] = out;
         });
 
-        // 2) LESSONS: мержим локальную запись нашего урока.
+        // lessons: мержим локальную запись текущего урока
         const mergedLessons = {};
         Object.keys(fresh.lessons).forEach(k => {
-            mergedLessons[k] = fresh.lessons[k];
+            mergedLessons[k] = { t: fresh.lessons[k].t || '', h: normalizeHwList(fresh.lessons[k].h) };
         });
         if (JOURNAL.lessons[GRADE_KEY] !== undefined) {
             mergedLessons[GRADE_KEY] = {
-                t: (JOURNAL.lessons[GRADE_KEY].t || ''),
+                t: JOURNAL.lessons[GRADE_KEY].t || '',
                 h: normalizeHwList(JOURNAL.lessons[GRADE_KEY].h)
             };
         }
 
-        // 3) TYPES: мержим только наш ключ.
+        // types: мержим только наш ключ
         const mergedTypes = {};
-        Object.keys(fresh.lessonTypes).forEach(k => {
-            mergedTypes[k] = fresh.lessonTypes[k];
-        });
+        Object.keys(fresh.lessonTypes).forEach(k => { mergedTypes[k] = fresh.lessonTypes[k]; });
         if (JOURNAL.lessonTypes[GRADE_KEY] !== undefined) {
             mergedTypes[GRADE_KEY] = JOURNAL.lessonTypes[GRADE_KEY];
         }
 
-        // 4) QTR: сохраняем как есть из БД (эта страница их не меняет).
+        // qtr: без изменений
         const mergedQtr = {};
         Object.keys(fresh.qtrGrades).forEach(sid => {
             mergedQtr[sid] = Object.assign({}, fresh.qtrGrades[sid]);
         });
 
-        payload = {
+        JOURNAL.grades = mergedGrades;
+        JOURNAL.lessons = mergedLessons;
+        JOURNAL.lessonTypes = mergedTypes;
+        JOURNAL.qtrGrades = mergedQtr;
+
+        await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
             grades: mergedGrades,
             lessons: mergedLessons,
             qtr_grades: mergedQtr,
             lesson_types: mergedTypes
-        };
-
-        JOURNAL.grades = mergedGrades;
-        JOURNAL.lessons = mergedLessons;
-        JOURNAL.qtrGrades = mergedQtr;
-        JOURNAL.lessonTypes = mergedTypes;
+        });
     } else {
-        payload = {
+        await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
             grades: JOURNAL.grades,
             lessons: JOURNAL.lessons,
             qtr_grades: JOURNAL.qtrGrades,
             lesson_types: JOURNAL.lessonTypes
-        };
+        });
     }
-
-    await DB.upsertJournal(CLASS_ID, SUBJECT_ID, payload);
 }
 
 function onFileChosen() {
