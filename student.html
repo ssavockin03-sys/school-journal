@@ -315,6 +315,15 @@
         .stat-dual-legend .stat-row-text { font-size: 13px; }
         .stat-dual-legend .stat-row-badge { width: 20px; height: 20px; font-size: 11px; }
 
+        /* Мини-легенда под кружком */
+        .stat-circle-legend {
+            display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;
+            margin-top: -4px;
+        }
+        .stat-circle-legend .stat-row-badge {
+            width: 18px; height: 18px; font-size: 10px; border-radius: 3px;
+        }
+
         #chatFab {
             position: fixed;
             right: 20px; bottom: 20px;
@@ -891,13 +900,40 @@
             </div>`;
     }
 
-    function buildRingGradient(digit) {
-        if (digit === 5) return `conic-gradient(#65A30D 0deg 360deg)`;
-        if (digit === 4) return `conic-gradient(#DC2626 0deg 30deg, #65A30D 30deg 288deg, #e2e8f0 288deg 360deg)`;
-        if (digit === 3) return `conic-gradient(#DC2626 0deg 45deg, #FB923C 45deg 120deg, #65A30D 120deg 216deg, #e2e8f0 216deg 360deg)`;
-        if (digit === 2) return `conic-gradient(#DC2626 0deg 144deg, #e2e8f0 144deg 360deg)`;
-        if (digit === 1) return `conic-gradient(#DC2626 0deg 280deg, #e2e8f0 280deg 360deg)`;
-        return `conic-gradient(#e2e8f0 0deg 360deg)`;
+    /* ============================================================
+       НОВАЯ ЛОГИКА: Круг показывает распределение оценок КЛАССА.
+       Генерируем conic-gradient на основе количества оценок.
+       ============================================================ */
+    function buildClassDistributionGradient(counts) {
+        let total = 0;
+        [5, 4, 3, 2, 1].forEach(g => total += (counts[g] || 0));
+        
+        if (total === 0) {
+            return `conic-gradient(#e2e8f0 0deg 360deg)`;
+        }
+        
+        let currentAngle = 0;
+        const parts = [];
+        
+        // Порядок: 5, 4, 3, 2, 1. Цвета: зеленый, зеленый, оранжевый, красный, красный.
+        const colors = {
+            5: '#65A30D',
+            4: '#65A30D',
+            3: '#FB923C',
+            2: '#DC2626',
+            1: '#DC2626'
+        };
+        
+        [5, 4, 3, 2, 1].forEach(g => {
+            const cnt = counts[g] || 0;
+            if (cnt === 0) return;
+            const angle = (cnt / total) * 360;
+            const endAngle = currentAngle + angle;
+            parts.push(`${colors[g]} ${currentAngle}deg ${endAngle}deg`);
+            currentAngle = endAngle;
+        });
+        
+        return `conic-gradient(${parts.join(', ')})`;
     }
 
     function computeStudentAvg(journal, studentId, period, position /* 0 или 1 */) {
@@ -996,7 +1032,9 @@
             const myDigit = myDigits.length ? myDigits[0] : 0;
             const avg = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 0);
             const classCounts = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
-            const ringGradient = buildRingGradient(myDigit);
+            // Используем распределение оценок класса для фона круга
+            const ringGradient = buildClassDistributionGradient(classCounts);
+            
             bodyHtml = `
                 <div class="stat-card">
                     <div class="stat-left">
@@ -1004,7 +1042,10 @@
                         <div class="stat-circle" style="background: ${ringGradient};">
                             <div class="stat-circle-value">${myDigit || '—'}</div>
                         </div>
-                        <div class="stat-avg">
+                        <div class="stat-circle-legend">
+                            ${[5,4,3,2,1].map(g => `<div class="stat-row-badge ${g >= 4 ? 'g5' : (g === 3 ? 'g3' : 'g2')}">${g}</div>`).join('')}
+                        </div>
+                        <div class="stat-avg" style="margin-top: 4px;">
                             ср. балл <div class="stat-avg-pill ${myDigit >= 3 ? 'up' : ''}">${formatAvg(avg)}</div>
                         </div>
                     </div>
@@ -1019,13 +1060,18 @@
             const avg2 = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 1);
             const counts1 = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
             const counts2 = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 1);
+            const ring1 = buildClassDistributionGradient(counts1);
+            const ring2 = buildClassDistributionGradient(counts2);
 
             bodyHtml = `
                 <div class="stat-dual">
                     <div class="stat-dual-col">
                         <div class="stat-dual-col-title">1-я оценка</div>
-                        <div class="stat-dual-circle" style="background: ${buildRingGradient(d1)};">
+                        <div class="stat-dual-circle" style="background: ${ring1};">
                             <div class="stat-dual-value">${d1}</div>
+                        </div>
+                        <div class="stat-circle-legend" style="margin-top: 0; margin-bottom: 4px;">
+                            ${[5,4,3,2,1].map(g => `<div class="stat-row-badge ${g >= 4 ? 'g5' : (g === 3 ? 'g3' : 'g2')}">${g}</div>`).join('')}
                         </div>
                         <div class="stat-dual-avg">
                             ср. балл <span class="stat-avg-pill ${d1 >= 3 ? 'up' : ''}">${formatAvg(avg1)}</span>
@@ -1034,8 +1080,11 @@
                     </div>
                     <div class="stat-dual-col">
                         <div class="stat-dual-col-title">2-я оценка</div>
-                        <div class="stat-dual-circle" style="background: ${buildRingGradient(d2)};">
+                        <div class="stat-dual-circle" style="background: ${ring2};">
                             <div class="stat-dual-value">${d2}</div>
+                        </div>
+                        <div class="stat-circle-legend" style="margin-top: 0; margin-bottom: 4px;">
+                            ${[5,4,3,2,1].map(g => `<div class="stat-row-badge ${g >= 4 ? 'g5' : (g === 3 ? 'g3' : 'g2')}">${g}</div>`).join('')}
                         </div>
                         <div class="stat-dual-avg">
                             ср. балл <span class="stat-avg-pill ${d2 >= 3 ? 'up' : ''}">${formatAvg(avg2)}</span>
