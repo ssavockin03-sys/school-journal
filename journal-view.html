@@ -906,10 +906,10 @@ async function init() {
     const journalRecord = await DB.getJournal(CLASS_ID, SUBJECT_ID);
     if (journalRecord) {
         JOURNAL = {
-            grades: journalRecord.grades || {},
-            lessons: journalRecord.lessons || {},
-            qtrGrades: journalRecord.qtr_grades || {},
-            lessonTypes: journalRecord.lesson_types || {}
+            grades: (journalRecord.grades && typeof journalRecord.grades === 'object') ? journalRecord.grades : {},
+            lessons: (journalRecord.lessons && typeof journalRecord.lessons === 'object') ? journalRecord.lessons : {},
+            qtrGrades: (journalRecord.qtr_grades && typeof journalRecord.qtr_grades === 'object') ? journalRecord.qtr_grades : {},
+            lessonTypes: (journalRecord.lesson_types && typeof journalRecord.lesson_types === 'object') ? journalRecord.lesson_types : {}
         };
     } else {
         JOURNAL = { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
@@ -1573,9 +1573,6 @@ function renderLessonPlanRows() {
     safeCall(fillPlanFillers);
 }
 
-/* ============================================================
-   ИСПРАВЛЕНО: передаём полный gradeKey (iso_N_0, iso_N_1, ...)
-   ============================================================ */
 function openLessonPage(d) {
     const params = new URLSearchParams();
     params.set('class', CLASS_ID);
@@ -2372,13 +2369,109 @@ async function upqtr(studentId, inputElement) {
     }, EDIT_DELAY_MS);
 }
 
+/* ============================================================
+   КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ:
+   Читаем актуальный журнал из БД и переносим ТОЛЬКО те данные,
+   которые редактируются на этой странице (оценки по видимым
+   колонкам, итоговые оценки, типы уроков). Поле lessons
+   (темы и ДЗ) НЕ трогаем — его редактирует только lesson-view,
+   чтобы не затирать данные со страницы урока.
+   ============================================================ */
 async function saveJournal() {
-    await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
-        grades: JOURNAL.grades,
-        lessons: JOURNAL.lessons,
-        qtr_grades: JOURNAL.qtrGrades,
-        lesson_types: JOURNAL.lessonTypes
-    });
+    let fresh = null;
+    try {
+        fresh = await DB.getJournal(CLASS_ID, SUBJECT_ID);
+    } catch (e) {
+        console.warn('getJournal failed, saving local snapshot', e);
+    }
+
+    const hasFresh = fresh && typeof fresh === 'object' && fresh.grades && typeof fresh.grades === 'object';
+
+    if (hasFresh) {
+        const freshGrades = (fresh.grades && typeof fresh.grades === 'object') ? fresh.grades : {};
+        const freshLessons = (fresh.lessons && typeof fresh.lessons === 'object') ? fresh.lessons : {};
+        const freshQtr = (fresh.qtr_grades && typeof fresh.qtr_grades === 'object') ? fresh.qtr_grades : {};
+        const freshTypes = (fresh.lesson_types && typeof fresh.lesson_types === 'object') ? fresh.lesson_types : {};
+
+        // Ключи уроков, отображаемых в текущем журнале
+        const visibleKeys = new Set(DATES.map(d => d.gradeKey));
+
+        // Сливаем оценки: только для видимых колонок
+        const mergedGrades = {};
+        const allStudentIds = new Set([
+            ...Object.keys(freshGrades),
+            ...Object.keys(JOURNAL.grades)
+        ]);
+
+        allStudentIds.forEach(sid => {
+            const merged = Object.assign({}, freshGrades[sid] || {});
+            const local = JOURNAL.grades[sid] || {};
+            visibleKeys.forEach(k => {
+                if (Object.prototype.hasOwnProperty.call(local, k)) {
+                    merged[k] = local[k];
+                } else {
+                    delete merged[k];
+                }
+            });
+            if (Object.keys(merged).length > 0) mergedGrades[sid] = merged;
+        });
+
+        // Итоговые оценки: сливаем по индексам периода + final
+        const mergedQtr = {};
+        const allQtrStudents = new Set([
+            ...Object.keys(freshQtr),
+            ...Object.keys(JOURNAL.qtrGrades)
+        ]);
+        allQtrStudents.forEach(sid => {
+            const merged = Object.assign({}, freshQtr[sid] || {});
+            const local = JOURNAL.qtrGrades[sid] || {};
+            const keys = new Set([
+                ...Object.keys(local),
+                ...Object.keys(merged)
+            ]);
+            keys.forEach(k => {
+                if (Object.prototype.hasOwnProperty.call(local, k)) {
+                    merged[k] = local[k];
+                } else {
+                    delete merged[k];
+                }
+            });
+            if (Object.keys(merged).length > 0) mergedQtr[sid] = merged;
+        });
+
+        // Типы уроков: сливаем только по видимым ключам
+        const mergedTypes = Object.assign({}, freshTypes);
+        visibleKeys.forEach(k => {
+            if (JOURNAL.lessonTypes[k] !== undefined) {
+                mergedTypes[k] = JOURNAL.lessonTypes[k];
+            } else {
+                delete mergedTypes[k];
+            }
+        });
+
+        // lessons НЕ трогаем — их редактирует только страница урока.
+        const mergedLessons = freshLessons;
+
+        JOURNAL.grades = mergedGrades;
+        JOURNAL.qtrGrades = mergedQtr;
+        JOURNAL.lessonTypes = mergedTypes;
+        JOURNAL.lessons = mergedLessons;
+
+        await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
+            grades: mergedGrades,
+            lessons: mergedLessons,
+            qtr_grades: mergedQtr,
+            lesson_types: mergedTypes
+        });
+    } else {
+        // БД пуста/недоступна — сохраняем локальный снимок
+        await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
+            grades: JOURNAL.grades,
+            lessons: JOURNAL.lessons,
+            qtr_grades: JOURNAL.qtrGrades,
+            lesson_types: JOURNAL.lessonTypes
+        });
+    }
 }
 
 let currentLessonTypeContext = { gradeKey: null, baseGradeKey: null, date: null };
@@ -2601,6 +2694,33 @@ init().catch(err => {
     showEmpty('Ошибка', 'Не удалось загрузить журнал. Проверьте консоль (F12).');
 });
 updateTabIcons();
+
+/* Обновляем журнал при возврате на страницу (кнопка «назад» / bfcache),
+   чтобы оценки, поставленные на странице урока, были видны. */
+window.addEventListener('pageshow', (event) => {
+    if (!CLASS_ID || !SUBJECT_ID) return;
+    if (!event.persisted && document.visibilityState !== 'visible') return;
+    const reload = async () => {
+        try {
+            const rec = await DB.getJournal(CLASS_ID, SUBJECT_ID);
+            if (rec) {
+                JOURNAL = {
+                    grades: (rec.grades && typeof rec.grades === 'object') ? rec.grades : {},
+                    lessons: (rec.lessons && typeof rec.lessons === 'object') ? rec.lessons : {},
+                    qtrGrades: (rec.qtr_grades && typeof rec.qtr_grades === 'object') ? rec.qtr_grades : {},
+                    lessonTypes: (rec.lesson_types && typeof rec.lesson_types === 'object') ? rec.lesson_types : {}
+                };
+            }
+            DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
+            renderMainTable();
+            requestAnimationFrame(() => {
+                safeCall(fillFillers);
+                safeCall(fillPlanFillers);
+            });
+        } catch (e) { console.warn(e); }
+    };
+    reload();
+});
 </script>
 </body>
 </html>
