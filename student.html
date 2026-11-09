@@ -63,28 +63,15 @@
             margin-bottom: 5px;
             overflow: hidden;
         }
-        /* Двойная оценка в плитке — две мини-цифры */
+        /* Двойная оценка в кубике — просто текст "4/3" шрифтом поменьше */
         .grade-tile-box.double {
-            font-size: 0;
-            gap: 2px;
+            font-size: 20px;
+            letter-spacing: -0.5px;
         }
-        .grade-tile-box.double .half {
-            display: inline-flex; align-items: center; justify-content: center;
-            min-width: 22px; height: 34px;
-            font-size: 22px; line-height: 1; font-weight: 400;
-        }
-        .grade-tile-box.double .slash-mini {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 10px; height: 34px; font-size: 14px; font-weight: 700;
-            color: rgba(255,255,255,0.85);
-        }
-
         .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { background: #65A30D; }
         .grade-tile.g3 .grade-tile-box { background: #FB923C; }
         .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
         .grade-tile.gn .grade-tile-box { background: #94A3B8; }
-        .grade-tile.gdouble .grade-tile-box { background: linear-gradient(135deg, #65A30D 0%, #65A30D 50%, #FB923C 50%, #FB923C 100%); }
-
         .grade-tile-subject { font-size: 11.5px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
         .grade-tile-type { font-size: 10px; color: #94a3b8; line-height: 1.2; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
 
@@ -136,14 +123,16 @@
             transition: transform 0.15s ease;
         }
         .today-lesson-grade:hover { transform: scale(1.05); }
-        .today-lesson-grade.double { font-size: 0; gap: 1px; }
-        .today-lesson-grade.double .half { font-size: 18px; display: inline-flex; align-items: center; justify-content: center; min-width: 16px; }
-        .today-lesson-grade.double .slash-mini { font-size: 12px; width: 8px; color: rgba(255,255,255,0.85); display: inline-flex; align-items: center; justify-content: center; }
+        /* Двойная оценка в бейдже — текст "4/3" поменьше */
+        .today-lesson-grade.double {
+            font-size: 16px;
+            letter-spacing: -0.4px;
+            padding: 0 8px;
+        }
         .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
         .today-lesson-grade.g3 { background: #FB923C; }
         .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
         .today-lesson-grade.gn { background: #94A3B8; }
-        .today-lesson-grade.gdouble { background: linear-gradient(135deg, #65A30D 0%, #65A30D 50%, #FB923C 50%, #FB923C 100%); }
         .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; cursor: default; }
         .today-lesson-grade.no-grade:hover { transform: none; }
         .today-lesson-grade .grade-tile-icon { right: -7px; bottom: -7px; }
@@ -259,12 +248,7 @@
         .stat-row-badge.g2, .stat-row-badge.g1 { background: #DC2626; }
         .stat-row-text { font-size: 14px; color: #1e293b; white-space: nowrap; }
 
-        /* ===== Новое: блок для двойных оценок ===== */
-        .stat-modal-subtitle {
-            font-size: 12px; font-weight: 700; color: #7a8aa3;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            margin-bottom: 10px;
-        }
+        /* ===== Блок для двойных оценок (в модалке) ===== */
         .stat-dual {
             display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
         }
@@ -303,15 +287,6 @@
         }
         .stat-dual-legend .stat-row-text { font-size: 13px; }
         .stat-dual-legend .stat-row-badge { width: 20px; height: 20px; font-size: 11px; }
-
-        /* Двойной бейдж в разбивке по классу */
-        .stat-row-badge.dual {
-            width: auto; padding: 0 6px;
-            font-size: 11px; gap: 1px;
-        }
-        .stat-row-badge.dual .slash-mini {
-            font-size: 10px; color: rgba(255,255,255,0.85);
-        }
 
         #chatFab {
             position: fixed;
@@ -581,7 +556,6 @@
     /* ============================================================
        РАЗБОР ОЦЕНОК. Возвращает массив цифр 1..5 из строки вида
        "4", "4/3", "5/2", "4/4". Если оценок нет — пустой массив.
-       Используется и для одиночных, и для двойных.
        ============================================================ */
     function parseGradeDigits(grade) {
         if (!grade) return [];
@@ -711,18 +685,12 @@
                         const isGrade = g.kind === 'grade';
                         const value = isGrade ? g.grade : g.presence;
                         const isDouble = isGrade && isDoubleGrade(g.grade);
-                        const cls = isGrade
-                            ? (isDouble ? 'gdouble' : gradeClass(g.grade))
-                            : gradeClass(g.presence);
+                        const cls = isGrade ? gradeClass(g.grade) : gradeClass(g.presence);
                         const isNum = isGrade && isNumericGrade(g.grade);
                         const typeLabel = isGrade ? g.type : 'присутствие';
                         const icon = isGrade ? profileIconHtml(g.subjectObj) : '';
-                        const digits = isGrade ? parseGradeDigits(g.grade) : [];
-                        const inner = (isDouble && digits.length === 2)
-                            ? `<span class="half">${digits[0]}</span><span class="slash-mini">/</span><span class="half">${digits[1]}</span>`
-                            : `<span class="grade-tile-value">${escapeHtml(value)}</span>`;
                         return `<div class="grade-tile ${cls}" ${isNum ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
-                            <div class="grade-tile-box ${isDouble ? 'double' : ''}">${icon}${inner}</div>
+                            <div class="grade-tile-box ${isDouble ? 'double' : ''}">${icon}<span class="grade-tile-value">${escapeHtml(value)}</span></div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
                             <div class="grade-tile-type">${escapeHtml(typeLabel)}</div>
                         </div>`;
@@ -743,12 +711,8 @@
                 if (l.presence) badges += `<div class="today-lesson-grade ${gradeClass(l.presence)}" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}" data-kind="presence"><span class="grade-tile-value">${escapeHtml(l.presence)}</span></div>`;
                 if (l.grade) {
                     const icon = profileIconHtml(l.subjectObj);
-                    const digits = parseGradeDigits(l.grade);
-                    if (digits.length === 2) {
-                        badges += `<div class="today-lesson-grade gdouble double" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}" data-kind="grade">${icon}<span class="half">${digits[0]}</span><span class="slash-mini">/</span><span class="half">${digits[1]}</span></div>`;
-                    } else {
-                        badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}" data-kind="grade">${icon}<span class="grade-tile-value">${escapeHtml(l.grade)}</span></div>`;
-                    }
+                    const isDouble = isDoubleGrade(l.grade);
+                    badges += `<div class="today-lesson-grade ${gradeClass(l.grade)} ${isDouble ? 'double' : ''}" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}" data-kind="grade">${icon}<span class="grade-tile-value">${escapeHtml(l.grade)}</span></div>`;
                 }
                 if (!l.presence && !l.grade) badges = `<div class="today-lesson-grade no-grade">—</div>`;
                 const metaParts = [];
@@ -919,9 +883,6 @@
         return `conic-gradient(#e2e8f0 0deg 360deg)`;
     }
 
-    /* Считаем средний балл ученика по предмету за период (по всем урокам)
-       отдельно для 1-й позиции и 2-й позиции оценки. Если позиции нет —
-       возвращаем null. */
     function computeStudentAvg(journal, studentId, period, position /* 0 или 1 */) {
         if (!journal || !journal.grades || !journal.grades[studentId]) return null;
         let sum = 0, count = 0;
@@ -941,8 +902,6 @@
         return count ? (sum / count) : null;
     }
 
-    /* Считаем по классу разбивку для конкретной позиции (0/1) для
-       конкретного урока lessonKey. Возвращает {5:n,4:n,3:n,2:n,1:n}. */
     function computeClassCountsForLesson(journal, classStudentIds, lessonKey, position /* 0 или 1 */) {
         const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
         if (!journal || !journal.grades) return counts;
@@ -987,7 +946,6 @@
         const myDigits = parseGradeDigits(myGrade);
         const isDouble = myDigits.length === 2;
 
-        // Учитель
         let teacherName = '—';
         const grid = getGridForDate(parsed.date);
         if (grid) {
@@ -1005,14 +963,12 @@
             }
         }
 
-        // Текущий период
         let currentPeriod = null;
         if (parsed.date) {
             const dStr = isoDate(parsed.date);
             currentPeriod = ALL_PERIODS.find(p => dStr >= p.start && dStr <= p.end);
         }
 
-        // Класс
         const classStudentIds = CURRENT_CLASS
             ? ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id)
             : [];
@@ -1020,7 +976,6 @@
         let bodyHtml = '';
 
         if (!isDouble) {
-            /* ===== Одиночная оценка: как раньше ===== */
             const myDigit = myDigits.length ? myDigits[0] : 0;
             const avg = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 0);
             const classCounts = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
@@ -1042,7 +997,6 @@
                     </div>
                 </div>`;
         } else {
-            /* ===== Двойная оценка: два блока ===== */
             const [d1, d2] = myDigits;
             const avg1 = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 0);
             const avg2 = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 1);
