@@ -62,16 +62,30 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             margin-bottom: 5px;
             overflow: hidden;
+            transition: background 0.2s ease;
         }
+        
+        /* Красивые градиенты по вашим скриншотам */
+        .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { 
+            background-image: linear-gradient(-45deg, #b4ec51 0%, #429321 100%); 
+        }
+        .grade-tile.g3 .grade-tile-box { 
+            background-image: linear-gradient(-38deg, #fad961 0%, #f76b1c 100%); 
+        }
+        .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { 
+            background-image: linear-gradient(-45deg, #ff7a7a 0%, #c0392b 100%); 
+        }
+        .grade-tile.gn .grade-tile-box { 
+            background-image: none; 
+            background: #94A3B8; 
+        }
+
         /* Двойная оценка в кубике — просто текст "4/3" шрифтом поменьше */
         .grade-tile-box.double {
             font-size: 20px;
             letter-spacing: -0.5px;
         }
-        .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { background: #65A30D; }
-        .grade-tile.g3 .grade-tile-box { background: #FB923C; }
-        .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
-        .grade-tile.gn .grade-tile-box { background: #94A3B8; }
+
         .grade-tile-subject { font-size: 11.5px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
         .grade-tile-type { font-size: 10px; color: #94a3b8; line-height: 1.2; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
 
@@ -123,17 +137,30 @@
             transition: transform 0.15s ease;
         }
         .today-lesson-grade:hover { transform: scale(1.05); }
+        
+        /* Красивые градиенты для бейджей в списке уроков */
+        .today-lesson-grade.g5, .today-lesson-grade.g4 { 
+            background-image: linear-gradient(-45deg, #b4ec51 0%, #429321 100%); 
+        }
+        .today-lesson-grade.g3 { 
+            background-image: linear-gradient(-38deg, #fad961 0%, #f76b1c 100%); 
+        }
+        .today-lesson-grade.g2, .today-lesson-grade.g1 { 
+            background-image: linear-gradient(-45deg, #ff7a7a 0%, #c0392b 100%); 
+        }
+        .today-lesson-grade.gn { 
+            background-image: none;
+            background: #94A3B8; 
+        }
+
         /* Двойная оценка в бейдже — текст "4/3" поменьше */
         .today-lesson-grade.double {
             font-size: 16px;
             letter-spacing: -0.4px;
             padding: 0 8px;
         }
-        .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
-        .today-lesson-grade.g3 { background: #FB923C; }
-        .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
-        .today-lesson-grade.gn { background: #94A3B8; }
-        .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; cursor: default; }
+        
+        .today-lesson-grade.no-grade { background-image: none; background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; cursor: default; }
         .today-lesson-grade.no-grade:hover { transform: none; }
         .today-lesson-grade .grade-tile-icon { right: -7px; bottom: -7px; }
         .today-lesson-grade .grade-tile-icon svg { width: 34px; height: 34px; }
@@ -553,10 +580,6 @@
     function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
     function gradeClass(grade) { const s = String(grade == null ? '' : grade); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) { const d = c - 48; if (d === 5 || d === 4) return 'g5'; if (d === 3) return 'g3'; if (d === 2 || d === 1) return 'g2'; } } return 'gn'; }
 
-    /* ============================================================
-       РАЗБОР ОЦЕНОК. Возвращает массив цифр 1..5 из строки вида
-       "4", "4/3", "5/2", "4/4". Если оценок нет — пустой массив.
-       ============================================================ */
     function parseGradeDigits(grade) {
         if (!grade) return [];
         const s = String(grade);
@@ -868,12 +891,6 @@
             </div>`;
     }
 
-    /* ============================================================
-       МОДАЛКА СТАТИСТИКИ. Поддерживает одиночные и двойные оценки.
-       Для двойной (4/3, 5/2, ...) рисуем два независимых блока:
-       "1-я оценка" и "2-я оценка". В каждом — свой круг, свой ср. балл
-       по классу для соответствующей позиции, своя разбивка.
-       ============================================================ */
     function buildRingGradient(digit) {
         if (digit === 5) return `conic-gradient(#65A30D 0deg 360deg)`;
         if (digit === 4) return `conic-gradient(#DC2626 0deg 30deg, #65A30D 30deg 288deg, #e2e8f0 288deg 360deg)`;
