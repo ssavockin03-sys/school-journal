@@ -63,10 +63,28 @@
             margin-bottom: 5px;
             overflow: hidden;
         }
+        /* Двойная оценка в плитке — две мини-цифры */
+        .grade-tile-box.double {
+            font-size: 0;
+            gap: 2px;
+        }
+        .grade-tile-box.double .half {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 22px; height: 34px;
+            font-size: 22px; line-height: 1; font-weight: 400;
+        }
+        .grade-tile-box.double .slash-mini {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 10px; height: 34px; font-size: 14px; font-weight: 700;
+            color: rgba(255,255,255,0.85);
+        }
+
         .grade-tile.g5 .grade-tile-box, .grade-tile.g4 .grade-tile-box { background: #65A30D; }
         .grade-tile.g3 .grade-tile-box { background: #FB923C; }
         .grade-tile.g2 .grade-tile-box, .grade-tile.g1 .grade-tile-box { background: #DC2626; }
         .grade-tile.gn .grade-tile-box { background: #94A3B8; }
+        .grade-tile.gdouble .grade-tile-box { background: linear-gradient(135deg, #65A30D 0%, #65A30D 50%, #FB923C 50%, #FB923C 100%); }
+
         .grade-tile-subject { font-size: 11.5px; font-weight: 600; color: #1a2b4a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
         .grade-tile-type { font-size: 10px; color: #94a3b8; line-height: 1.2; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78px; text-align: left; }
 
@@ -118,10 +136,14 @@
             transition: transform 0.15s ease;
         }
         .today-lesson-grade:hover { transform: scale(1.05); }
+        .today-lesson-grade.double { font-size: 0; gap: 1px; }
+        .today-lesson-grade.double .half { font-size: 18px; display: inline-flex; align-items: center; justify-content: center; min-width: 16px; }
+        .today-lesson-grade.double .slash-mini { font-size: 12px; width: 8px; color: rgba(255,255,255,0.85); display: inline-flex; align-items: center; justify-content: center; }
         .today-lesson-grade.g5, .today-lesson-grade.g4 { background: #65A30D; }
         .today-lesson-grade.g3 { background: #FB923C; }
         .today-lesson-grade.g2, .today-lesson-grade.g1 { background: #DC2626; }
         .today-lesson-grade.gn { background: #94A3B8; }
+        .today-lesson-grade.gdouble { background: linear-gradient(135deg, #65A30D 0%, #65A30D 50%, #FB923C 50%, #FB923C 100%); }
         .today-lesson-grade.no-grade { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; cursor: default; }
         .today-lesson-grade.no-grade:hover { transform: none; }
         .today-lesson-grade .grade-tile-icon { right: -7px; bottom: -7px; }
@@ -162,7 +184,7 @@
         .stat-modal-backdrop.show { display: flex; opacity: 1; }
         .stat-modal {
             background: #fff; border-radius: 16px;
-            width: 100%; max-width: 360px;
+            width: 100%; max-width: 420px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.25);
             padding: 22px 22px 26px;
             position: relative;
@@ -236,6 +258,60 @@
         .stat-row-badge.g3 { background: #FB923C; }
         .stat-row-badge.g2, .stat-row-badge.g1 { background: #DC2626; }
         .stat-row-text { font-size: 14px; color: #1e293b; white-space: nowrap; }
+
+        /* ===== Новое: блок для двойных оценок ===== */
+        .stat-modal-subtitle {
+            font-size: 12px; font-weight: 700; color: #7a8aa3;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .stat-dual {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        }
+        .stat-dual-col {
+            background: #f1f5f9; border-radius: 14px;
+            padding: 14px 12px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .stat-dual-col-title {
+            font-size: 12px; font-weight: 700; color: #64748b;
+            text-transform: uppercase; letter-spacing: 0.4px;
+        }
+        .stat-dual-circle {
+            width: 68px; height: 68px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .stat-dual-circle::before {
+            content: ''; position: absolute; inset: 7px;
+            background: #f1f5f9; border-radius: 50%;
+        }
+        .stat-dual-value {
+            position: relative; z-index: 1;
+            font-size: 28px; font-weight: 400; color: #475569; line-height: 1;
+        }
+        .stat-dual-avg {
+            font-size: 12px; color: #64748b;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .stat-dual-avg .stat-avg-pill {
+            padding: 1px 8px; font-size: 12px;
+        }
+        .stat-dual-legend {
+            display: flex; flex-direction: column; gap: 6px;
+            align-self: stretch;
+        }
+        .stat-dual-legend .stat-row-text { font-size: 13px; }
+        .stat-dual-legend .stat-row-badge { width: 20px; height: 20px; font-size: 11px; }
+
+        /* Двойной бейдж в разбивке по классу */
+        .stat-row-badge.dual {
+            width: auto; padding: 0 6px;
+            font-size: 11px; gap: 1px;
+        }
+        .stat-row-badge.dual .slash-mini {
+            font-size: 10px; color: rgba(255,255,255,0.85);
+        }
 
         #chatFab {
             position: fixed;
@@ -397,6 +473,7 @@
         }
         @media (max-width: 480px) {
             #chatPanel { right: 10px; left: 10px; width: auto; bottom: 78px; height: calc(100vh - 100px); }
+            .stat-dual { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -488,7 +565,7 @@
     let ALL_STUDENTS = [];
     let ALL_WORKLOADS = [];
     let ALL_PERIODS = [];
-    let CURRENT_SCHEDULES = []; // теперь массив, а не один объект
+    let CURRENT_SCHEDULES = [];
     let ALL_ROOMS = [];
     let TODAY_DATE = new Date(); TODAY_DATE.setHours(0, 0, 0, 0);
 
@@ -500,8 +577,27 @@
     function parseKey(key) { const p = String(key).split('_'); const d = new Date(p[0] + 'T00:00:00'); return { date: isNaN(d.getTime()) ? null : d, dateRu: isNaN(d.getTime()) ? p[0] : formatDateRu(d), lesson: p[1] || '' }; }
     function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
     function gradeClass(grade) { const s = String(grade == null ? '' : grade); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) { const d = c - 48; if (d === 5 || d === 4) return 'g5'; if (d === 3) return 'g3'; if (d === 2 || d === 1) return 'g2'; } } return 'gn'; }
-    function firstDigit(v) { const s = String(v == null ? '' : v); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 49 && c <= 53) return c - 48; } return null; }
-    function isNumericGrade(v) { return firstDigit(v) !== null; }
+
+    /* ============================================================
+       РАЗБОР ОЦЕНОК. Возвращает массив цифр 1..5 из строки вида
+       "4", "4/3", "5/2", "4/4". Если оценок нет — пустой массив.
+       Используется и для одиночных, и для двойных.
+       ============================================================ */
+    function parseGradeDigits(grade) {
+        if (!grade) return [];
+        const s = String(grade);
+        const out = [];
+        for (let i = 0; i < s.length; i++) {
+            const c = s.charCodeAt(i);
+            if (c >= 49 && c <= 53) out.push(c - 48);
+        }
+        return out;
+    }
+    function isDoubleGrade(grade) {
+        return parseGradeDigits(grade).length === 2;
+    }
+    function isNumericGrade(v) { return parseGradeDigits(v).length > 0; }
+    function firstDigit(v) { const arr = parseGradeDigits(v); return arr.length ? arr[0] : null; }
     function getLessonTypeFullName(abbr) { const map = { 'ОТВ': 'Ответ на уроке', 'К/Р': 'Контрольная работа', 'С/Р': 'Самостоятельная работа', 'Д': 'Диктант', 'СОЧ': 'Сочинение', 'И': 'Изложение', 'Тест': 'Тест', 'ПР': 'Проверочная работа', 'Л/Р': 'Лабораторная работа', 'Пр-т': 'Проект', 'РЕФ': 'Реферат', 'Зчт': 'Зачет', 'ДОК': 'Доклад', 'Р/У': 'Работа на уроке', 'РНО': 'Работа над ошибками', 'О': 'Опрос', 'Д/Р': 'Домашняя работа', 'УС': 'Устный счет', 'Наиз': 'Наизусть', 'ЧИТ': 'Чтение' }; return map[abbr] || abbr; }
 
     async function logout() {
@@ -554,34 +650,26 @@
         const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
         if (withData.length > 0) ALL_JOURNALS = withData;
         
-        // Сохраняем ВСЕ расписания для нашего класса с их периодами
         CURRENT_SCHEDULES = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
     }
 
-    // Определяем, к какому периоду относится дата
     function getPeriodForDate(date) {
         if (!date || !ALL_PERIODS.length) return null;
         const dStr = isoDate(date);
         return ALL_PERIODS.find(p => dStr >= p.start && dStr <= p.end) || null;
     }
 
-    // Ищем индекс периода для даты
     function getPeriodIndexForDate(date) {
         const period = getPeriodForDate(date);
         if (!period) return null;
         return ALL_PERIODS.indexOf(period);
     }
 
-    // Получаем сетку уроков из ПРАВИЛЬНОГО расписания для конкретной даты
     function getGridForDate(date) {
         const idx = getPeriodIndexForDate(date);
         if (idx === null) return null;
-
-        // Ищем расписание, у которого period_index совпадает с нашим
         const schedule = CURRENT_SCHEDULES.find(s => s.period_index === idx);
         if (schedule && schedule.grid) return schedule.grid;
-
-        // Если не нашли по индексу, берём любое (fallback)
         if (CURRENT_SCHEDULES.length > 0 && CURRENT_SCHEDULES[0].grid) return CURRENT_SCHEDULES[0].grid;
         return null;
     }
@@ -621,13 +709,20 @@
                 <div class="grades-strip">
                     ${dayRecords.map(g => {
                         const isGrade = g.kind === 'grade';
-                        const cls = gradeClass(isGrade ? g.grade : g.presence);
                         const value = isGrade ? g.grade : g.presence;
+                        const isDouble = isGrade && isDoubleGrade(g.grade);
+                        const cls = isGrade
+                            ? (isDouble ? 'gdouble' : gradeClass(g.grade))
+                            : gradeClass(g.presence);
                         const isNum = isGrade && isNumericGrade(g.grade);
                         const typeLabel = isGrade ? g.type : 'присутствие';
                         const icon = isGrade ? profileIconHtml(g.subjectObj) : '';
+                        const digits = isGrade ? parseGradeDigits(g.grade) : [];
+                        const inner = (isDouble && digits.length === 2)
+                            ? `<span class="half">${digits[0]}</span><span class="slash-mini">/</span><span class="half">${digits[1]}</span>`
+                            : `<span class="grade-tile-value">${escapeHtml(value)}</span>`;
                         return `<div class="grade-tile ${cls}" ${isNum ? `data-subject="${escapeHtml(g.subject)}" data-key="${escapeHtml(g.key)}"` : ''}>
-                            <div class="grade-tile-box">${icon}<span class="grade-tile-value">${escapeHtml(value)}</span></div>
+                            <div class="grade-tile-box ${isDouble ? 'double' : ''}">${icon}${inner}</div>
                             <div class="grade-tile-subject">${escapeHtml(g.subject)}</div>
                             <div class="grade-tile-type">${escapeHtml(typeLabel)}</div>
                         </div>`;
@@ -646,7 +741,15 @@
             lessonsHtml = `<div class="today-lessons">${dayLessons.map(l => {
                 let badges = '';
                 if (l.presence) badges += `<div class="today-lesson-grade ${gradeClass(l.presence)}" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}" data-kind="presence"><span class="grade-tile-value">${escapeHtml(l.presence)}</span></div>`;
-                if (l.grade) { const icon = profileIconHtml(l.subjectObj); badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}" data-kind="grade">${icon}<span class="grade-tile-value">${escapeHtml(l.grade)}</span></div>`; }
+                if (l.grade) {
+                    const icon = profileIconHtml(l.subjectObj);
+                    const digits = parseGradeDigits(l.grade);
+                    if (digits.length === 2) {
+                        badges += `<div class="today-lesson-grade gdouble double" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}" data-kind="grade">${icon}<span class="half">${digits[0]}</span><span class="slash-mini">/</span><span class="half">${digits[1]}</span></div>`;
+                    } else {
+                        badges += `<div class="today-lesson-grade ${gradeClass(l.grade)}" data-subject="${escapeHtml(l.subject)}" data-date="${isoDate(date)}" data-num="${l.num}" data-kind="grade">${icon}<span class="grade-tile-value">${escapeHtml(l.grade)}</span></div>`;
+                    }
+                }
                 if (!l.presence && !l.grade) badges = `<div class="today-lesson-grade no-grade">—</div>`;
                 const metaParts = [];
                 if (l.teacherName) metaParts.push(l.teacherName);
@@ -713,20 +816,14 @@
             if (!lesson || !lesson.subject) continue;
             const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
             const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
-            
             const key = isoDate(date) + '_' + n;
-            
-            // УЧИТЕЛЬ БЕРЁМ ПРЯМО ИЗ УРОКА РАСПИСАНИЯ (как ты ставила в админке)
             let teacherName = lesson.teacherName || '—';
-            // Если вдруг там только ID, ищем по справочнику
             if (!teacherName && lesson.teacherId) {
                 const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId);
                 if (t) teacherName = t.full_name;
             }
-            
             let roomName = lesson.roomName || '';
             if (!roomName && lesson.roomId) { const r = ALL_ROOMS.find(x => x.id === lesson.roomId); if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : ''); }
-            
             let topic = '', homework = '';
             if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
             const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
@@ -756,7 +853,6 @@
         const parsedCell = parseCell(rawCell);
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
 
-        // Учителя берём из урока расписания для этой даты
         let teacherName = '—';
         let roomName = '';
         const grid = getGridForDate(parsed.date);
@@ -808,6 +904,76 @@
             </div>`;
     }
 
+    /* ============================================================
+       МОДАЛКА СТАТИСТИКИ. Поддерживает одиночные и двойные оценки.
+       Для двойной (4/3, 5/2, ...) рисуем два независимых блока:
+       "1-я оценка" и "2-я оценка". В каждом — свой круг, свой ср. балл
+       по классу для соответствующей позиции, своя разбивка.
+       ============================================================ */
+    function buildRingGradient(digit) {
+        if (digit === 5) return `conic-gradient(#65A30D 0deg 360deg)`;
+        if (digit === 4) return `conic-gradient(#DC2626 0deg 30deg, #65A30D 30deg 288deg, #e2e8f0 288deg 360deg)`;
+        if (digit === 3) return `conic-gradient(#DC2626 0deg 45deg, #FB923C 45deg 120deg, #65A30D 120deg 216deg, #e2e8f0 216deg 360deg)`;
+        if (digit === 2) return `conic-gradient(#DC2626 0deg 144deg, #e2e8f0 144deg 360deg)`;
+        if (digit === 1) return `conic-gradient(#DC2626 0deg 280deg, #e2e8f0 280deg 360deg)`;
+        return `conic-gradient(#e2e8f0 0deg 360deg)`;
+    }
+
+    /* Считаем средний балл ученика по предмету за период (по всем урокам)
+       отдельно для 1-й позиции и 2-й позиции оценки. Если позиции нет —
+       возвращаем null. */
+    function computeStudentAvg(journal, studentId, period, position /* 0 или 1 */) {
+        if (!journal || !journal.grades || !journal.grades[studentId]) return null;
+        let sum = 0, count = 0;
+        Object.entries(journal.grades[studentId]).forEach(([key, val]) => {
+            if (period) {
+                const dPart = key.split('_')[0];
+                if (dPart < period.start || dPart > period.end) return;
+            }
+            const digits = parseGradeDigits(parseCell(val).grade);
+            if (!digits.length) return;
+            if (position === 0) {
+                sum += digits[0]; count++;
+            } else if (position === 1 && digits.length >= 2) {
+                sum += digits[1]; count++;
+            }
+        });
+        return count ? (sum / count) : null;
+    }
+
+    /* Считаем по классу разбивку для конкретной позиции (0/1) для
+       конкретного урока lessonKey. Возвращает {5:n,4:n,3:n,2:n,1:n}. */
+    function computeClassCountsForLesson(journal, classStudentIds, lessonKey, position /* 0 или 1 */) {
+        const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        if (!journal || !journal.grades) return counts;
+        classStudentIds.forEach(sid => {
+            const sg = journal.grades[sid];
+            if (!sg || !sg[lessonKey]) return;
+            const digits = parseGradeDigits(parseCell(sg[lessonKey]).grade);
+            if (!digits.length) return;
+            let digit = null;
+            if (position === 0) digit = digits[0];
+            else if (position === 1 && digits.length >= 2) digit = digits[1];
+            if (digit >= 1 && digit <= 5) counts[digit]++;
+        });
+        return counts;
+    }
+
+    function formatAvg(v) {
+        if (v === null || v === undefined) return '—';
+        return String(Number(v).toFixed(2)).replace('.', ',');
+    }
+
+    function renderCountsRows(counts) {
+        return [5, 4, 3, 2, 1].map(g => {
+            const cnt = counts[g] || 0;
+            const cls = g >= 4 ? 'g5' : (g === 3 ? 'g3' : 'g2');
+            const word = cnt % 10 === 1 && cnt % 100 !== 11 ? 'ученик'
+                : (cnt % 10 >= 2 && cnt % 10 <= 4 && (cnt % 100 < 10 || cnt % 100 >= 20) ? 'ученика' : 'учеников');
+            return `<div class="stat-row"><div class="stat-row-badge ${cls}">${g}</div><div class="stat-row-text">${cnt} ${word}</div></div>`;
+        }).join('');
+    }
+
     function openStatModal(subjectName, lessonKey) {
         const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
         const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
@@ -818,9 +984,10 @@
         const rawCell = (journal && journal.grades && journal.grades[CURRENT_STUDENT.id] && journal.grades[CURRENT_STUDENT.id][lessonKey]) || null;
         const parsedCell = parseCell(rawCell);
         const myGrade = parsedCell.grade;
-        const myDigit = firstDigit(myGrade) || 0;
+        const myDigits = parseGradeDigits(myGrade);
+        const isDouble = myDigits.length === 2;
 
-        // Ищем учителя в правильном расписании
+        // Учитель
         let teacherName = '—';
         const grid = getGridForDate(parsed.date);
         if (grid) {
@@ -838,51 +1005,73 @@
             }
         }
 
+        // Текущий период
         let currentPeriod = null;
         if (parsed.date) {
             const dStr = isoDate(parsed.date);
             currentPeriod = ALL_PERIODS.find(p => dStr >= p.start && dStr <= p.end);
         }
 
-        let sum = 0, count = 0;
-        if (journal && journal.grades && journal.grades[CURRENT_STUDENT.id]) {
-            Object.entries(journal.grades[CURRENT_STUDENT.id]).forEach(([key, val]) => {
-                if (currentPeriod) {
-                    const dPart = key.split('_')[0];
-                    if (dPart < currentPeriod.start || dPart > currentPeriod.end) return;
-                }
-                const d = firstDigit(parseCell(val).grade);
-                if (d) { sum += d; count++; }
-            });
-        }
-        const avg = count > 0 ? (sum / count).toFixed(2).replace('.', ',') : '—';
+        // Класс
+        const classStudentIds = CURRENT_CLASS
+            ? ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id)
+            : [];
 
-        // Статистика по классу (добавили единицу)
-        const classCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-        if (journal && journal.grades && CURRENT_CLASS) {
-            const classStudentIds = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id);
-            classStudentIds.forEach(sid => {
-                const sg = journal.grades[sid];
-                if (!sg || !sg[lessonKey]) return;
-                const digit = firstDigit(parseCell(sg[lessonKey]).grade);
-                if (digit >= 1 && digit <= 5) classCounts[digit]++;
-            });
-        }
+        let bodyHtml = '';
 
-        let ringGradient = '';
-        if (myDigit === 5) {
-            ringGradient = `conic-gradient(#65A30D 0deg 360deg)`;
-        } else if (myDigit === 4) {
-            ringGradient = `conic-gradient(#DC2626 0deg 30deg, #65A30D 30deg 288deg, #e2e8f0 288deg 360deg)`;
-        } else if (myDigit === 3) {
-            ringGradient = `conic-gradient(#DC2626 0deg 45deg, #FB923C 45deg 120deg, #65A30D 120deg 216deg, #e2e8f0 216deg 360deg)`;
-        } else if (myDigit === 2) {
-            ringGradient = `conic-gradient(#DC2626 0deg 144deg, #e2e8f0 144deg 360deg)`;
-        } else if (myDigit === 1) {
-            // Единица — почти всё красное
-            ringGradient = `conic-gradient(#DC2626 0deg 280deg, #e2e8f0 280deg 360deg)`;
+        if (!isDouble) {
+            /* ===== Одиночная оценка: как раньше ===== */
+            const myDigit = myDigits.length ? myDigits[0] : 0;
+            const avg = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 0);
+            const classCounts = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
+            const ringGradient = buildRingGradient(myDigit);
+            bodyHtml = `
+                <div class="stat-card">
+                    <div class="stat-left">
+                        <div class="stat-title">Ваша оценка</div>
+                        <div class="stat-circle" style="background: ${ringGradient};">
+                            <div class="stat-circle-value">${myDigit || '—'}</div>
+                        </div>
+                        <div class="stat-avg">
+                            ср. балл <div class="stat-avg-pill ${myDigit >= 3 ? 'up' : ''}">${formatAvg(avg)}</div>
+                        </div>
+                    </div>
+                    <div class="stat-right">
+                        <div class="stat-right-title">Одноклассники</div>
+                        ${renderCountsRows(classCounts)}
+                    </div>
+                </div>`;
         } else {
-            ringGradient = `conic-gradient(#e2e8f0 0deg 360deg)`;
+            /* ===== Двойная оценка: два блока ===== */
+            const [d1, d2] = myDigits;
+            const avg1 = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 0);
+            const avg2 = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 1);
+            const counts1 = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
+            const counts2 = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 1);
+
+            bodyHtml = `
+                <div class="stat-dual">
+                    <div class="stat-dual-col">
+                        <div class="stat-dual-col-title">1-я оценка</div>
+                        <div class="stat-dual-circle" style="background: ${buildRingGradient(d1)};">
+                            <div class="stat-dual-value">${d1}</div>
+                        </div>
+                        <div class="stat-dual-avg">
+                            ср. балл <span class="stat-avg-pill ${d1 >= 3 ? 'up' : ''}">${formatAvg(avg1)}</span>
+                        </div>
+                        <div class="stat-dual-legend">${renderCountsRows(counts1)}</div>
+                    </div>
+                    <div class="stat-dual-col">
+                        <div class="stat-dual-col-title">2-я оценка</div>
+                        <div class="stat-dual-circle" style="background: ${buildRingGradient(d2)};">
+                            <div class="stat-dual-value">${d2}</div>
+                        </div>
+                        <div class="stat-dual-avg">
+                            ср. балл <span class="stat-avg-pill ${d2 >= 3 ? 'up' : ''}">${formatAvg(avg2)}</span>
+                        </div>
+                        <div class="stat-dual-legend">${renderCountsRows(counts2)}</div>
+                    </div>
+                </div>`;
         }
 
         const modalContent = document.getElementById('statModalContent');
@@ -892,27 +1081,7 @@
             <div class="stat-modal-meta">${escapeHtml(typeFullName)}, ${formatDateHuman(parsed.date)}.</div>
             <div class="stat-modal-divider"></div>
             <div class="stat-modal-teacher"><span>Учитель:</span> <b>${escapeHtml(teacherName)}</b></div>
-            
-            <div class="stat-card">
-                <div class="stat-left">
-                    <div class="stat-title">Ваша оценка</div>
-                    <div class="stat-circle" style="background: ${ringGradient};">
-                        <div class="stat-circle-value">${myDigit || '—'}</div>
-                    </div>
-                    <div class="stat-avg">
-                        ср. балл <div class="stat-avg-pill ${myDigit >= 3 ? 'up' : ''}">${avg}</div>
-                    </div>
-                </div>
-                <div class="stat-right">
-                    <div class="stat-right-title">Одноклассники</div>
-                    ${[5, 4, 3, 2, 1].map(g => {
-                        const cnt = classCounts[g];
-                        const cls = g >= 4 ? 'g5' : (g === 3 ? 'g3' : 'g2');
-                        const word = cnt % 10 === 1 && cnt % 100 !== 11 ? 'ученик' : (cnt % 10 >= 2 && cnt % 10 <= 4 && (cnt % 100 < 10 || cnt % 100 >= 20) ? 'ученика' : 'учеников');
-                        return `<div class="stat-row"><div class="stat-row-badge ${cls}">${g}</div><div class="stat-row-text">${cnt} ${word}</div></div>`;
-                    }).join('')}
-                </div>
-            </div>
+            ${bodyHtml}
         `;
 
         const backdrop = document.getElementById('statModalBackdrop');
