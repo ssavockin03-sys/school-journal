@@ -2302,9 +2302,10 @@ async function upqtr(studentId, inputElement) {
 
 /* ============================================================
    СОХРАНЕНИЕ ЖУРНАЛА:
-   Главное изменение: для GRADES мы теперь удаляем ключи, которых
-   нет в JOURNAL.grades. Это гарантирует, что удалённые оценки
-   (в том числе при удалении урока) не вернутся из БД.
+   Главное изменение: для GRADES мы теперь удаляем все ключи,
+   которых нет в JOURNAL.grades (включая ключи с суффиксами _hw_*).
+   Это гарантирует, что удалённые оценки (в том числе при удалении
+   урока) не вернутся из БД.
    ============================================================ */
 async function saveJournal() {
     let fresh = null;
@@ -2316,7 +2317,6 @@ async function saveJournal() {
 
         // GRADES: полная синхронизация с локальным состоянием
         const mergedGrades = {};
-        // Собираем всех учеников из fresh и локального
         const allSids = new Set([...Object.keys(fresh.grades), ...Object.keys(JOURNAL.grades)]);
         allSids.forEach(sid => {
             const fromFresh = fresh.grades[sid] || {};
@@ -2332,9 +2332,7 @@ async function saveJournal() {
                 else delete out[k];
             });
             
-            // 3. Удаляем ключи, которых нет в локальном состоянии (удаленные уроки)
-            // Проходим по всем ключам из fresh. Если ключа нет в fromLocal, удаляем его.
-            // Это касается и удаленных уроков, т.к. при удалении мы удалили их из JOURNAL.grades.
+            // 3. Удаляем ключи, которых нет в локальном состоянии (включая удаленные уроки и их HW)
             Object.keys(fromFresh).forEach(k => {
                 if (!Object.prototype.hasOwnProperty.call(fromLocal, k)) {
                     delete out[k];
@@ -2491,9 +2489,14 @@ async function deleteLessonColumn() {
     delete JOURNAL.lessonTypes[gradeKey];
     
     // 2. Удаляем оценки и присутствие у ВСЕХ учеников
+    // ВАЖНО: также удаляем все ключи, начинающиеся с gradeKey + '_' (например, gradeKey + '_hw_1')
     Object.keys(JOURNAL.grades).forEach(studentId => {
         if (JOURNAL.grades[studentId]) {
-            delete JOURNAL.grades[studentId][gradeKey];
+            Object.keys(JOURNAL.grades[studentId]).forEach(k => {
+                if (k === gradeKey || k.startsWith(gradeKey + '_')) {
+                    delete JOURNAL.grades[studentId][k];
+                }
+            });
             if (Object.keys(JOURNAL.grades[studentId]).length === 0) {
                 delete JOURNAL.grades[studentId];
             }
