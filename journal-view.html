@@ -2300,14 +2300,12 @@ async function upqtr(studentId, inputElement) {
     }, EDIT_DELAY_MS);
 }
 
-/* СОХРАНЕНИЕ ЖУРНАЛА:
-   - читаем актуальный журнал из БД,
-   - берём из fresh те уроки/оценки, которые не отображаются в текущем журнале,
-   - накладываем наши локальные значения для видимых колонок,
-   - итоги и типы уроков — также мержим,
-   - lessons: берём fresh, но для уроков, которые пользователь мог менять
-     через поурочку, обновляем t/h из локального JOURNAL. 
-*/
+/* ============================================================
+   ИСПРАВЛЕНИЕ УДАЛЕНИЯ УРОКА:
+   Теперь при сохранении мы явно проходимся по fresh.lessons и
+   fresh.lessonTypes. Если локально урок (или его тип) был удалён,
+   мы явно удаляем его из итогового объекта.
+   ============================================================ */
 async function saveJournal() {
     let fresh = null;
     try { fresh = await loadJournalNormalized(); }
@@ -2331,19 +2329,37 @@ async function saveJournal() {
             if (Object.keys(out).length > 0) mergedGrades[sid] = out;
         });
 
-        // LESSONS: объединяем, для видимых уроков берём локальные t/h
+        // LESSONS
         const mergedLessons = {};
+        // 1. Берем все уроки из fresh
         Object.keys(fresh.lessons).forEach(k => {
             mergedLessons[k] = { t: fresh.lessons[k].t || '', h: normalizeHwList(fresh.lessons[k].h) };
         });
-        // На странице урока/поурочки локальные lessons могут быть изменены
-        // для любых ключей, которые есть в JOURNAL.lessons. Их переносим.
+        // 2. Накладываем локальные изменения (добавление/редактирование)
         Object.keys(JOURNAL.lessons).forEach(k => {
-            if (visibleKeys.has(k) || JOURNAL.lessons[k]) {
-                mergedLessons[k] = {
-                    t: JOURNAL.lessons[k].t || '',
-                    h: normalizeHwList(JOURNAL.lessons[k].h)
-                };
+            mergedLessons[k] = {
+                t: JOURNAL.lessons[k].t || '',
+                h: normalizeHwList(JOURNAL.lessons[k].h)
+            };
+        });
+        // 3. Явно удаляем то, чего нет в локальном состоянии (удаленные уроки)
+        // Если локально урок отсутствует, значит мы его удалили.
+        const localLessonKeys = new Set(Object.keys(JOURNAL.lessons));
+        Object.keys(fresh.lessons).forEach(k => {
+            if (!localLessonKeys.has(k)) {
+                delete mergedLessons[k];
+            }
+        });
+
+        // TYPES
+        const mergedTypes = {};
+        Object.keys(fresh.lessonTypes).forEach(k => { mergedTypes[k] = fresh.lessonTypes[k]; });
+        Object.keys(JOURNAL.lessonTypes).forEach(k => { mergedTypes[k] = JOURNAL.lessonTypes[k]; });
+        // Аналогично удаляем типы удаленных уроков
+        const localTypeKeys = new Set(Object.keys(JOURNAL.lessonTypes));
+        Object.keys(fresh.lessonTypes).forEach(k => {
+            if (!localTypeKeys.has(k)) {
+                delete mergedTypes[k];
             }
         });
 
@@ -2357,13 +2373,6 @@ async function saveJournal() {
             Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
             Object.keys(fromLocal).forEach(k => { out[k] = fromLocal[k]; });
             if (Object.keys(out).length > 0) mergedQtr[sid] = out;
-        });
-
-        // TYPES
-        const mergedTypes = {};
-        Object.keys(fresh.lessonTypes).forEach(k => { mergedTypes[k] = fresh.lessonTypes[k]; });
-        Object.keys(JOURNAL.lessonTypes).forEach(k => {
-            if (JOURNAL.lessonTypes[k] !== undefined) mergedTypes[k] = JOURNAL.lessonTypes[k];
         });
 
         JOURNAL.grades = mergedGrades;
@@ -2470,11 +2479,14 @@ async function deleteLessonColumn() {
     const { gradeKey } = currentLessonTypeContext;
     if (!gradeKey) return;
     if (gradeKey.endsWith('_0')) { showToast('Базовый урок удалить нельзя'); return; }
+    
+    // Удаляем локально
     delete JOURNAL.lessons[gradeKey];
     delete JOURNAL.lessonTypes[gradeKey];
     Object.keys(JOURNAL.grades).forEach(studentId => {
         if (JOURNAL.grades[studentId]) delete JOURNAL.grades[studentId][gradeKey];
     });
+
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
     await saveJournal();
     closeLessonTypePopup();
