@@ -147,17 +147,21 @@
         .dnevnik-marks-table td { min-height: 28px; vertical-align: middle; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; font-size: 12px; line-height: 1.4; }
         .dnevnik-marks-table tr:last-child td { border-bottom: none; }
         .dnevnik-marks-table td.subject-name { font-weight: 600; color: #333; font-size: 14px; }
-        
-        /* Оценки в таблице */
+        .dnevnik-marks-table td.avg-cell { text-align: center; }
+        .dnevnik-marks-table td.qtr-cell { text-align: center; }
+
+        /* Оценки в таблице (маленькие квадратики) */
         .dnevnik-grade-tile-table {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             height: 17px;
             box-sizing: border-box;
             color: #fff;
-            padding: 4px;
+            padding: 0 4px;
             font-weight: 400;
             font-size: 14px;
-            line-height: 9px;
+            line-height: 1;
             border-radius: 2px;
             cursor: pointer;
             margin-right: 4px;
@@ -169,30 +173,29 @@
         }
         .dnevnik-grade-tile-table:hover { transform: scale(1.15); }
 
-        /* --- НОВЫЕ СРЕДНИЕ БАЛЛЫ (КУБИКИ) --- */
+        /* Кубик среднего балла (в точности как оценка) */
         .dnevnik-avg-tile {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 58px; 
-            height: 48px;
-            border-radius: 10px;
+            height: 17px;
+            box-sizing: border-box;
             color: #fff;
-            font-size: 24px;
-            font-weight: 400;
+            padding: 0 6px;
+            font-weight: 600;
+            font-size: 12px;
             line-height: 1;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-            position: relative;
-            overflow: hidden;
+            border-radius: 2px;
+            text-align: center;
+            min-width: 17px;
             vertical-align: middle;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.35);
         }
 
-        /* Градиенты для среднего балла */
-        .dnevnik-avg-tile.avg-green { background-image: linear-gradient(-45deg, #b4ec51 0%, #429321 100%); }
-        .dnevnik-avg-tile.avg-orange { background-image: linear-gradient(-38deg, #fad961 0%, #f76b1c 100%); }
-        .dnevnik-avg-tile.avg-red { background-image: linear-gradient(-45deg, #ff7a7a 0%, #c0392b 100%); }
-        .dnevnik-avg-tile.avg-empty { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 20px; }
+        /* Цвета для среднего балла */
+        .dnevnik-avg-tile.avg-green { background-color: #4b9a25; }
+        .dnevnik-avg-tile.avg-orange { background-color: #ff8f00; }
+        .dnevnik-avg-tile.avg-red { background-color: #cf3838; }
+        .dnevnik-avg-tile.avg-empty { background-color: #94acc8; }
 
         .dnevnik-qtr-tile { display: inline-block; padding: 4px 8px; border-radius: 2px; font-weight: 600; font-size: 14px; color: #fff; line-height: 1; }
         .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
@@ -791,27 +794,24 @@
                 html += '</td>';
             }
             
-            // ВЫВОДИМ СРЕДНИЙ БАЛЛ КАК КУБИК
+            // ВЫВОДИМ СРЕДНИЙ БАЛЛ КАК МАЛЕНЬКУЮ ПЛАШКУ
             if (avg !== null) {
                 const avgCls = getAvgClass(avg);
-                // Форматируем до 2 знаков, убираем .00
                 const avgText = avg.toFixed(2).replace(/\.00$/, '');
-                html += `<td class="avg-cell" style="text-align:center; padding: 6px 4px;">
-                    <div class="dnevnik-avg-tile ${avgCls}" style="margin: 0 auto;">
-                        ${avgText}
-                    </div>
+                html += `<td class="avg-cell" style="text-align:center;">
+                    <span class="dnevnik-avg-tile ${avgCls}">${avgText}</span>
                 </td>`;
             } else {
-                html += `<td class="avg-cell" style="text-align:center; padding: 6px 4px;">
-                    <div class="dnevnik-avg-tile avg-empty" style="margin: 0 auto;">—</div>
+                html += `<td class="avg-cell" style="text-align:center;">
+                    <span class="dnevnik-avg-tile avg-empty">—</span>
                 </td>`;
             }
 
-            // Оценка за период (осталась текстовой плашкой как в оригинале)
+            // Оценка за период (четверть)
             if (periodQtr) {
-                html += `<td class="qtr-cell" style="text-align:center;"><span class="dnevnik-qtr-tile ${gradeClass(periodQtr)}">${periodQtr}</span></td>`;
+                html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile ${gradeClass(periodQtr)}">${periodQtr}</span></td>`;
             } else {
-                html += `<td class="qtr-cell" style="text-align:center;"><span class="dnevnik-qtr-tile no-grade">-</span></td>`;
+                html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile no-grade">-</span></td>`;
             }
             html += '</tr>';
         });
