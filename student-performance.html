@@ -181,9 +181,9 @@
             height: 17px;
             box-sizing: border-box;
             color: #fff;
-            padding: 0 6px;
-            font-weight: 600;
-            font-size: 12px;
+            padding: 0 4px;
+            font-weight: 400;
+            font-size: 14px;
             line-height: 1;
             border-radius: 2px;
             text-align: center;
@@ -191,11 +191,10 @@
             vertical-align: middle;
         }
 
-        /* Цвета для среднего балла */
+        /* Цвета для среднего балла (совпадают с g5, g3, g2) */
         .dnevnik-avg-tile.avg-green { background-color: #4b9a25; }
         .dnevnik-avg-tile.avg-orange { background-color: #ff8f00; }
         .dnevnik-avg-tile.avg-red { background-color: #cf3838; }
-        .dnevnik-avg-tile.avg-empty { background-color: #94acc8; }
 
         .dnevnik-qtr-tile { display: inline-block; padding: 4px 8px; border-radius: 2px; font-weight: 600; font-size: 14px; color: #fff; line-height: 1; }
         .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
@@ -414,6 +413,15 @@
         if (avg <= 2.5) return 'avg-red';
         if (avg <= 3.49) return 'avg-orange';
         return 'avg-green'; // 3.5 - 5
+    }
+
+    // Функция для форматирования среднего балла (без .00)
+    function formatAvgValue(avg) {
+        if (avg === null || avg === undefined) return '';
+        const str = avg.toFixed(2);
+        if (str.endsWith('.00')) return str.slice(0, -3);
+        if (str.endsWith('0')) return str.slice(0, -1);
+        return str;
     }
 
     function setupViewSwitcher() {
@@ -797,14 +805,13 @@
             // ВЫВОДИМ СРЕДНИЙ БАЛЛ КАК МАЛЕНЬКУЮ ПЛАШКУ
             if (avg !== null) {
                 const avgCls = getAvgClass(avg);
-                const avgText = avg.toFixed(2).replace(/\.00$/, '');
+                const avgText = formatAvgValue(avg);
                 html += `<td class="avg-cell" style="text-align:center;">
                     <span class="dnevnik-avg-tile ${avgCls}">${avgText}</span>
                 </td>`;
             } else {
-                html += `<td class="avg-cell" style="text-align:center;">
-                    <span class="dnevnik-avg-tile avg-empty">—</span>
-                </td>`;
+                // Если среднего балла нет, оставляем ячейку ПУСТОЙ
+                html += `<td class="avg-cell"></td>`;
             }
 
             // Оценка за период (четверть)
