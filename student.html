@@ -83,14 +83,16 @@
         
         .grade-tile-box {
             position: relative;
-            width: 95px; height: 60px;
+            width: 95px; 
+            /* Убрали жесткую высоту, задали паддинги для естественной высоты */
+            padding: 12px 0;
             border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            /* Внутренний интерфейс цифры: */
+            
             color: #fff; 
             font-size: 34px; 
             font-weight: 400; 
-            line-height: 1;
+            line-height: 1; /* Важно для точного центрирования */
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             margin-bottom: 6px;
             overflow: hidden;
@@ -112,7 +114,7 @@
             background: #94A3B8; 
         }
 
-        /* Двойная оценка: шрифт как у одиночной, чуть плотнее буквы, чтобы влезло */
+        /* Двойная оценка: шрифт как у одиночной, чуть плотнее буквы */
         .grade-tile-box.double {
             font-size: 34px;
             letter-spacing: -1px;
@@ -148,7 +150,6 @@
             position: relative; 
             z-index: 2; 
             text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-            margin-top: 2px;
         }
 
         .today-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eef2f8; margin-bottom: 20px; overflow: hidden; }
@@ -179,8 +180,8 @@
         .today-lesson-grades { display: flex; gap: 5px; align-items: center; }
         .today-lesson-grade {
             position: relative;
-            min-width: 54px; height: 42px;
-            padding: 0 6px;
+            min-width: 54px; 
+            padding: 8px 6px;
             border-radius: 9px;
             display: inline-flex; align-items: center; justify-content: center;
             font-weight: 400; font-size: 26px; color: #fff;
@@ -206,7 +207,7 @@
             background: #94A3B8; 
         }
 
-        /* Двойная оценка в бейдже: шрифт как у одиночной, чуть плотнее */
+        /* Двойная оценка в бейдже */
         .today-lesson-grade.double {
             font-size: 26px;
             letter-spacing: -0.8px;
@@ -216,7 +217,7 @@
         .today-lesson-grade.no-grade { background-image: none; background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 18px; cursor: default; }
         .today-lesson-grade.no-grade:hover { transform: none; }
         
-        /* Иконка для бейджа (поменьше, чтобы не вылезала) */
+        /* Иконка для бейджа (поменьше) */
         .today-lesson-grade .grade-tile-icon { right: -8px; bottom: -8px; width: 40px; height: 40px; opacity: 0.4; }
         .today-lesson-grade .grade-tile-icon svg { width: 40px; height: 40px; }
         .today-lesson-grade .grade-tile-value { position: relative; z-index: 2; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
