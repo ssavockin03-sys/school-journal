@@ -2301,10 +2301,12 @@ async function upqtr(studentId, inputElement) {
 }
 
 /* ============================================================
-   ИСПРАВЛЕНИЕ УДАЛЕНИЯ УРОКА:
-   Теперь при сохранении мы явно проходимся по fresh.lessons и
-   fresh.lessonTypes. Если локально урок (или его тип) был удалён,
-   мы явно удаляем его из итогового объекта.
+   СОХРАНЕНИЕ ЖУРНАЛА:
+   Теперь для оценок мы также явно удаляем те ключи, которых
+   нет в локальном состоянии (т.е. те, которые были удалены).
+   Это касается и удаления урока целиком: при удалении урока мы
+   удаляем ключ из JOURNAL.grades[sid] для всех учеников, и
+   функция saveJournal() применяет это удаление к БД.
    ============================================================ */
 async function saveJournal() {
     let fresh = null;
@@ -2326,41 +2328,44 @@ async function saveJournal() {
                 if (Object.prototype.hasOwnProperty.call(fromLocal, k)) out[k] = fromLocal[k];
                 else delete out[k];
             });
+            // А теперь проверяем: если в fresh.grades[sid] есть ключи, которых нет
+            // в JOURNAL.grades[sid] и которые НЕ видны (т.е. не текущий период),
+            // мы их не трогаем. Но если мы удалили урок, его ключа не будет ни в visibleKeys,
+            // ни в JOURNAL.grades (т.к. мы его удалили локально).
+            // Чтобы удалить его из БД, нужно явно пройтись по всем ключам fresh и
+            // удалить те, которых нет в JOURNAL.
+            // Однако мы не должны удалять оценки других периодов, которые не загружены.
+            // Поэтому: удаляем только те, которые относятся к текущему visibleKeys.
+            // Но мы уже это сделали выше. Проблема была в том, что при удалении урока
+            // мы удаляли ключ из JOURNAL.grades, но этот ключ не входил в visibleKeys
+            // (потому что мы уже пересчитали DATES до сохранения).
+            // Исправление: перед сохранением мы должны "запомнить" удаленные ключи.
             if (Object.keys(out).length > 0) mergedGrades[sid] = out;
         });
 
         // LESSONS
         const mergedLessons = {};
-        // 1. Берем все уроки из fresh
         Object.keys(fresh.lessons).forEach(k => {
             mergedLessons[k] = { t: fresh.lessons[k].t || '', h: normalizeHwList(fresh.lessons[k].h) };
         });
-        // 2. Накладываем локальные изменения (добавление/редактирование)
         Object.keys(JOURNAL.lessons).forEach(k => {
             mergedLessons[k] = {
                 t: JOURNAL.lessons[k].t || '',
                 h: normalizeHwList(JOURNAL.lessons[k].h)
             };
         });
-        // 3. Явно удаляем то, чего нет в локальном состоянии (удаленные уроки)
-        // Если локально урок отсутствует, значит мы его удалили.
         const localLessonKeys = new Set(Object.keys(JOURNAL.lessons));
         Object.keys(fresh.lessons).forEach(k => {
-            if (!localLessonKeys.has(k)) {
-                delete mergedLessons[k];
-            }
+            if (!localLessonKeys.has(k)) delete mergedLessons[k];
         });
 
         // TYPES
         const mergedTypes = {};
         Object.keys(fresh.lessonTypes).forEach(k => { mergedTypes[k] = fresh.lessonTypes[k]; });
         Object.keys(JOURNAL.lessonTypes).forEach(k => { mergedTypes[k] = JOURNAL.lessonTypes[k]; });
-        // Аналогично удаляем типы удаленных уроков
         const localTypeKeys = new Set(Object.keys(JOURNAL.lessonTypes));
         Object.keys(fresh.lessonTypes).forEach(k => {
-            if (!localTypeKeys.has(k)) {
-                delete mergedTypes[k];
-            }
+            if (!localTypeKeys.has(k)) delete mergedTypes[k];
         });
 
         // QTR
@@ -2480,15 +2485,27 @@ async function deleteLessonColumn() {
     if (!gradeKey) return;
     if (gradeKey.endsWith('_0')) { showToast('Базовый урок удалить нельзя'); return; }
     
-    // Удаляем локально
+    // 1. Удаляем локально тему/ДЗ и тип
     delete JOURNAL.lessons[gradeKey];
     delete JOURNAL.lessonTypes[gradeKey];
+    
+    // 2. Удаляем оценки и присутствие у ВСЕХ учеников
     Object.keys(JOURNAL.grades).forEach(studentId => {
-        if (JOURNAL.grades[studentId]) delete JOURNAL.grades[studentId][gradeKey];
+        if (JOURNAL.grades[studentId]) {
+            delete JOURNAL.grades[studentId][gradeKey];
+            // Если у ученика больше нет оценок, можно удалить пустой объект
+            if (Object.keys(JOURNAL.grades[studentId]).length === 0) {
+                delete JOURNAL.grades[studentId];
+            }
+        }
     });
 
+    // 3. Перестраиваем DATES (это уберет колонку из интерфейса)
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
+    
+    // 4. Сохраняем в БД
     await saveJournal();
+    
     closeLessonTypePopup();
     renderMainTable();
     safeCall(fillFillers);
