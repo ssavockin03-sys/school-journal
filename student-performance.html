@@ -101,11 +101,10 @@
         /* Плитки оценок */
         .dnevnik-grade-tile { display: inline-flex; align-items: center; justify-content: center; height: 20px; min-width: 20px; padding: 0 6px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 600; position: absolute; top: 0; right: 0; cursor: pointer; }
         
-        /* Градиенты как в student.html */
-        .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4, .dnevnik-grade-tile-table.g5, .dnevnik-grade-tile-table.g4 { background-image: linear-gradient(-45deg, #b4ec51 0%, #429321 100%); background-color: #4b9a25; }
-        .dnevnik-grade-tile.g3, .dnevnik-grade-tile-table.g3 { background-image: linear-gradient(-38deg, #fad961 0%, #f76b1c 100%); background-color: #ff8f00; }
-        .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1, .dnevnik-grade-tile-table.g2, .dnevnik-grade-tile-table.g1 { background-image: linear-gradient(-45deg, #ff7a7a 0%, #c0392b 100%); background-color: #cf3838; }
-        .dnevnik-grade-tile.gn, .dnevnik-grade-tile-table.gn { background: #94acc8; }
+        .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4, .dnevnik-grade-tile-table.g5, .dnevnik-grade-tile-table.g4 { background-color: #4b9a25; }
+        .dnevnik-grade-tile.g3, .dnevnik-grade-tile-table.g3 { background-color: #ff8f00; }
+        .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1, .dnevnik-grade-tile-table.g2, .dnevnik-grade-tile-table.g1 { background-color: #cf3838; }
+        .dnevnik-grade-tile.gn, .dnevnik-grade-tile-table.gn { background-color: #94acc8; }
 
         .weekend-text { text-align: center; color: #999; font-size: 13px; margin-top: 20px; }
 
@@ -149,7 +148,7 @@
         .dnevnik-marks-table tr:last-child td { border-bottom: none; }
         .dnevnik-marks-table td.subject-name { font-weight: 600; color: #333; font-size: 14px; }
         
-        /* Обычные оценки в таблице */
+        /* Оценки в таблице */
         .dnevnik-grade-tile-table {
             display: inline-block;
             height: 17px;
@@ -179,7 +178,7 @@
             height: 48px;
             border-radius: 10px;
             color: #fff;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 400;
             line-height: 1;
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
@@ -195,11 +194,12 @@
         .dnevnik-avg-tile.avg-red { background-image: linear-gradient(-45deg, #ff7a7a 0%, #c0392b 100%); }
         .dnevnik-avg-tile.avg-empty { background: #e2e8f0; color: #94a3b8; box-shadow: none; font-size: 20px; }
 
-        .dnevnik-qtr-tile { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 48px; border-radius: 10px; font-weight: 400; font-size: 28px; color: #fff; line-height: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
-        .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-image: linear-gradient(-45deg, #b4ec51 0%, #429321 100%); }
-        .dnevnik-qtr-tile.g3 { background-image: linear-gradient(-38deg, #fad961 0%, #f76b1c 100%); }
-        .dnevnik-qtr-tile.g2, .dnevnik-qtr-tile.g1 { background-image: linear-gradient(-45deg, #ff7a7a 0%, #c0392b 100%); }
-        .dnevnik-qtr-tile.no-grade { background: #e2e8f0; color: #94a3b8; font-size: 20px; box-shadow: none; }
+        .dnevnik-qtr-tile { display: inline-block; padding: 4px 8px; border-radius: 2px; font-weight: 600; font-size: 14px; color: #fff; line-height: 1; }
+        .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
+        .dnevnik-qtr-tile.g3 { background-color: #ff8f00; }
+        .dnevnik-qtr-tile.g2, .dnevnik-qtr-tile.g1 { background-color: #cf3838; }
+        .dnevnik-qtr-tile.gn { background-color: #94acc8; }
+        .dnevnik-qtr-tile.no-grade { background: transparent; color: #999; }
 
         /* ===================== МОДАЛКИ И ЧАТ ===================== */
         #subjectModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
@@ -471,7 +471,10 @@
             ALL_TEACHERS = teachers;
             ALL_ROOMS = rooms;
             
+            // ЖУРНАЛЫ СТРОГО ДЛЯ НАШЕГО КЛАССА
             ALL_JOURNALS = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
+
+            // Расписания для нашего класса
             CURRENT_SCHEDULES = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
 
             const pd = periodDocs[0] || null;
@@ -741,6 +744,7 @@
                 return;
             }
 
+            // ЖЁСТКО: журнал только для этого предмета и нашего класса
             const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id && j.class_id === CURRENT_STUDENT.class_id);
             
             if (!journal) {
@@ -750,9 +754,11 @@
 
             let displayGrades = [];
             
+            // БЕРЁМ ТОЛЬКО grades[CURRENT_STUDENT.id] ИЗ ЭТОГО ЖУРНАЛА
             const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
             Object.entries(sg).forEach(([key, val]) => {
                 if (!val) return;
+                // Фильтр по дате периода
                 if (range) {
                     const dateStr = key.split('_')[0];
                     if (dateStr < range.start || dateStr > range.end) return;
@@ -788,17 +794,20 @@
             // ВЫВОДИМ СРЕДНИЙ БАЛЛ КАК КУБИК
             if (avg !== null) {
                 const avgCls = getAvgClass(avg);
-                html += `<td class="avg-cell" style="text-align:center;">
+                // Форматируем до 2 знаков, убираем .00
+                const avgText = avg.toFixed(2).replace(/\.00$/, '');
+                html += `<td class="avg-cell" style="text-align:center; padding: 6px 4px;">
                     <div class="dnevnik-avg-tile ${avgCls}" style="margin: 0 auto;">
-                        ${avg.toFixed(2).replace(/\.00$/, '')}
+                        ${avgText}
                     </div>
                 </td>`;
             } else {
-                html += `<td class="avg-cell" style="text-align:center;">
+                html += `<td class="avg-cell" style="text-align:center; padding: 6px 4px;">
                     <div class="dnevnik-avg-tile avg-empty" style="margin: 0 auto;">—</div>
                 </td>`;
             }
 
+            // Оценка за период (осталась текстовой плашкой как в оригинале)
             if (periodQtr) {
                 html += `<td class="qtr-cell" style="text-align:center;"><span class="dnevnik-qtr-tile ${gradeClass(periodQtr)}">${periodQtr}</span></td>`;
             } else {
@@ -862,6 +871,9 @@
         container.innerHTML = html;
     }
 
+    // ============================================================
+    // МОДАЛКА РЕЙТИНГА
+    // ============================================================
     window.openGradeStat = function(subjectName, value, lessonKey, kind) {
         if (!CURRENT_STUDENT) return;
 
