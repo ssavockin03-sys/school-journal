@@ -2302,11 +2302,9 @@ async function upqtr(studentId, inputElement) {
 
 /* ============================================================
    СОХРАНЕНИЕ ЖУРНАЛА:
-   Теперь для оценок мы также явно удаляем те ключи, которых
-   нет в локальном состоянии (т.е. те, которые были удалены).
-   Это касается и удаления урока целиком: при удалении урока мы
-   удаляем ключ из JOURNAL.grades[sid] для всех учеников, и
-   функция saveJournal() применяет это удаление к БД.
+   Главное изменение: для GRADES мы теперь удаляем ключи, которых
+   нет в JOURNAL.grades. Это гарантирует, что удалённые оценки
+   (в том числе при удалении урока) не вернутся из БД.
    ============================================================ */
 async function saveJournal() {
     let fresh = null;
@@ -2316,30 +2314,33 @@ async function saveJournal() {
     if (fresh) {
         const visibleKeys = new Set(DATES.map(d => d.gradeKey));
 
-        // GRADES
+        // GRADES: полная синхронизация с локальным состоянием
         const mergedGrades = {};
+        // Собираем всех учеников из fresh и локального
         const allSids = new Set([...Object.keys(fresh.grades), ...Object.keys(JOURNAL.grades)]);
         allSids.forEach(sid => {
             const fromFresh = fresh.grades[sid] || {};
             const fromLocal = JOURNAL.grades[sid] || {};
             const out = {};
+            
+            // 1. Копируем все из fresh
             Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
+            
+            // 2. Применяем локальные изменения для видимых ключей
             visibleKeys.forEach(k => {
                 if (Object.prototype.hasOwnProperty.call(fromLocal, k)) out[k] = fromLocal[k];
                 else delete out[k];
             });
-            // А теперь проверяем: если в fresh.grades[sid] есть ключи, которых нет
-            // в JOURNAL.grades[sid] и которые НЕ видны (т.е. не текущий период),
-            // мы их не трогаем. Но если мы удалили урок, его ключа не будет ни в visibleKeys,
-            // ни в JOURNAL.grades (т.к. мы его удалили локально).
-            // Чтобы удалить его из БД, нужно явно пройтись по всем ключам fresh и
-            // удалить те, которых нет в JOURNAL.
-            // Однако мы не должны удалять оценки других периодов, которые не загружены.
-            // Поэтому: удаляем только те, которые относятся к текущему visibleKeys.
-            // Но мы уже это сделали выше. Проблема была в том, что при удалении урока
-            // мы удаляли ключ из JOURNAL.grades, но этот ключ не входил в visibleKeys
-            // (потому что мы уже пересчитали DATES до сохранения).
-            // Исправление: перед сохранением мы должны "запомнить" удаленные ключи.
+            
+            // 3. Удаляем ключи, которых нет в локальном состоянии (удаленные уроки)
+            // Проходим по всем ключам из fresh. Если ключа нет в fromLocal, удаляем его.
+            // Это касается и удаленных уроков, т.к. при удалении мы удалили их из JOURNAL.grades.
+            Object.keys(fromFresh).forEach(k => {
+                if (!Object.prototype.hasOwnProperty.call(fromLocal, k)) {
+                    delete out[k];
+                }
+            });
+            
             if (Object.keys(out).length > 0) mergedGrades[sid] = out;
         });
 
@@ -2493,14 +2494,13 @@ async function deleteLessonColumn() {
     Object.keys(JOURNAL.grades).forEach(studentId => {
         if (JOURNAL.grades[studentId]) {
             delete JOURNAL.grades[studentId][gradeKey];
-            // Если у ученика больше нет оценок, можно удалить пустой объект
             if (Object.keys(JOURNAL.grades[studentId]).length === 0) {
                 delete JOURNAL.grades[studentId];
             }
         }
     });
 
-    // 3. Перестраиваем DATES (это уберет колонку из интерфейса)
+    // 3. Перестраиваем DATES
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
     
     // 4. Сохраняем в БД
