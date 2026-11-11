@@ -28,17 +28,14 @@
         .user-actions a.logout { color: #d9534f; }
         .user-actions a:hover { text-decoration: underline; }
 
-        /* ===================== МЕНЮ (как в performance) ===================== */
+        /* ===================== МЕНЮ (в точности как в performance) ===================== */
         .header-menu { height: 45px; width: 940px; background-color: #0273b2; border-radius: 5px 5px 0 0; margin: 0 14px; display: block; padding: 0; list-style: none; position: relative; flex-shrink: 0; }
         .header-menu > li { display: inline-block; height: 45px; line-height: 45px; float: left; }
         .header-menu > li > a { display: block; height: 100%; padding: 0 20px; color: #fff; text-decoration: none; font-size: 14px; border-bottom: 3px solid transparent; cursor: pointer; }
         .header-menu > li > a.active { background: #015b8e; border-bottom-color: #fff; font-weight: 600; }
 
-        /* ===================== ПОДМЕНЮ (как в performance) ===================== */
-        .header-submenu-wrapper { flex-shrink: 0; width: 940px; margin: 0 auto; }
-        /* В performance подменю позиционируется абсолютно внутри header-inner-wrap, но у нас оно под шапкой.
-           Сделаем его точной копией по ширине и отступам. */
-        .header-submenu { width: 938px; height: 42px; background-color: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.11); display: flex; align-items: center; font-size: 14px; overflow: hidden; padding-left: 0; list-style: none; margin: 0 auto; border-radius: 0 0 5px 5px; border: 1px solid #e0e0e0; border-top: none; }
+        /* ===================== ПОДМЕНЮ (в точности как в performance) ===================== */
+        .header-submenu { position: absolute; top: 45px; left: 0; width: 938px; height: 42px; background-color: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.11); display: flex; align-items: center; font-size: 14px; overflow: hidden; padding-left: 0; list-style: none; margin: 0; border-radius: 0 0 5px 5px; }
         .header-submenu__item { margin: 0 0 0 18px; height: 42px; list-style-type: none; display: flex; align-items: center; }
         .header-submenu__link { text-decoration: none; color: #000; padding: 11px 0; display: block; font-size: 14px; line-height: 20px; border-bottom: 2px solid transparent; cursor: pointer; }
         .header-submenu__link:hover { color: #0273b2; }
@@ -46,6 +43,7 @@
 
 
         /* ===================== ОСНОВНОЙ КОНТЕНТ ===================== */
+        /* Отступ сверху, чтобы контент не заезжал под абсолютное подменю (45+42 = 87px) */
         .main-layout-wrapper {
             flex: 1;
             overflow: hidden;
@@ -53,7 +51,10 @@
             max-width: 968px;
             margin: 0 auto;
             display: flex;
-            padding: 20px 0; /* Отступ от подменю, как в performance */
+            padding-top: 87px; 
+            padding-left: 14px;
+            padding-right: 14px;
+            padding-bottom: 20px;
         }
 
         /* ЛЕВАЯ ПАНЕЛЬ */
@@ -570,18 +571,14 @@
                 <li><a href="#" onclick="return false">ОБЩЕНИЕ</a></li>
                 <li><a href="#" onclick="return false">ПРИЛОЖЕНИЯ</a></li>
             </ul>
+            <ul class="header-submenu">
+                <li class="header-submenu__item header-submenu__item_active"><a href="student.html" class="header-submenu__link">Сегодня</a></li>
+                <li class="header-submenu__item"><a href="student-performance.html" class="header-submenu__link">Успеваемость</a></li>
+                <li class="header-submenu__item"><a href="student-group.html" class="header-submenu__link">Моя группа</a></li>
+                <li class="header-submenu__item"><a href="student-schedule.html" class="header-submenu__link">Расписание</a></li>
+            </ul>
         </div>
     </header>
-
-    <!-- Подменю (в точности как в performance, прилегает к синему) -->
-    <div class="header-submenu-wrapper">
-        <ul class="header-submenu">
-            <li class="header-submenu__item header-submenu__item_active"><a href="student.html" class="header-submenu__link">Сегодня</a></li>
-            <li class="header-submenu__item"><a href="student-performance.html" class="header-submenu__link">Успеваемость</a></li>
-            <li class="header-submenu__item"><a href="student-group.html" class="header-submenu__link">Моя группа</a></li>
-            <li class="header-submenu__item"><a href="student-schedule.html" class="header-submenu__link">Расписание</a></li>
-        </ul>
-    </div>
 
     <!-- ОСНОВНОЙ КОНТЕНТ -->
     <div class="main-layout-wrapper">
@@ -649,7 +646,7 @@
 
 <script src="supabase-config.js"></script>
 <script>
-    // ... (ВЕСЬ JS КОД БЕЗ ИЗМЕНЕНИЙ) ...
+    // ... (ВЕСЬ JS КОД БЕЗ ИЗМЕНЕНИЙ, ОН РАБОЧИЙ) ...
     const DAYS_FULL   = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота', sun: 'Воскресенье' };
     const DAYS_SHORT  = { mon: 'пн', tue: 'вт', wed: 'ср', thu: 'чт', fri: 'пт', sat: 'сб', sun: 'вс' };
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 0: 'sun' };
@@ -800,14 +797,9 @@
         const date = TODAY_DATE;
         const all = collectAllStudentGrades();
         
-        // 1. Лента оценок
         const dayRecords = all.filter(g => g.date && isoDate(g.date) === isoDate(date));
         renderGradesList(dayRecords, date);
-
-        // 2. Мини-карточки
         renderMiniCards();
-
-        // 3. Расписание
         const dayLessons = getLessonsForDate(date);
         renderSchedule(dayLessons, date);
     }
