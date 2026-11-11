@@ -24,9 +24,17 @@
             flex-direction: column;
         }
 
+        /* Общий контейнер для центрирования контента */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
         /* ===================== ШАПКА ===================== */
         .header { background: #fff; border-bottom: 1px solid #e0e0e0; flex-shrink: 0; }
-        .header-inner { max-width: 1400px; margin: 0 auto; padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+        .header-inner { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
         .logo { font-size: 22px; color: #007baf; text-decoration: none; }
         .logo-bold { font-weight: 700; }
         .logo-sub { color: #777; font-weight: 400; }
@@ -41,25 +49,28 @@
 
         /* ===================== МЕНЮ ===================== */
         .d-top-blue-bar { background: #166a94; flex-shrink: 0; }
-        .d-top-blue-inner { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; }
+        .d-top-blue-inner { display: flex; }
         .d-nav-item { display: inline-block; padding: 12px 20px; color: #fff; text-decoration: none; font-size: 14px; border-bottom: 3px solid transparent; cursor: pointer; }
         .d-nav-item:hover { background: rgba(255,255,255,0.12); }
         .d-nav-item.active { background: #0f4f70; border-bottom-color: #fff; }
 
         .d-sub-menu-bar { background: #fff; border-bottom: 1px solid #e0e0e0; flex-shrink: 0; }
-        .d-sub-menu-inner { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; flex-wrap: wrap; }
+        .d-sub-menu-inner { display: flex; flex-wrap: wrap; }
         .d-sub-item { display: inline-block; padding: 10px 15px; color: #555; font-size: 13px; border-bottom: 3px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; text-decoration: none; }
         .d-sub-item:hover { color: #1d82b5; }
         .d-sub-item.active { color: #1d82b5; border-bottom-color: #1d82b5; font-weight: 500; }
 
         /* ===================== ОСНОВНОЙ КОНТЕНТ ===================== */
-        .main-layout {
-            display: flex;
+        .main-layout-wrapper {
             flex: 1;
             overflow: hidden;
-            max-width: 1400px;
-            margin: 0 auto;
             width: 100%;
+        }
+        .main-layout {
+            display: flex;
+            height: 100%;
+            border-left: 1px solid transparent; /* Для выравнивания, если нужно */
+            border-right: 1px solid transparent;
         }
 
         /* ЛЕВАЯ ПАНЕЛЬ */
@@ -143,7 +154,7 @@
             width: 100%;
             height: 64px;
             background: #5cb85c;
-            border-radius: 2px; /* Как на фото, очень маленькое скругление */
+            border-radius: 2px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -251,7 +262,6 @@
         }
         .mini-card-btn:hover { background: #015b8e; }
 
-        /* Специфичные стили для "Ваш рейтинг" */
         .rating-card { display: flex; flex-direction: column; align-items: flex-start; }
         .rating-badge {
             background: #f0ad4e;
@@ -266,7 +276,6 @@
         .rating-stars { color: #f0ad4e; font-size: 14px; margin-bottom: 4px; }
         .rating-status { font-size: 12px; color: #888; }
 
-        /* Специфичные стили для "Можно улучшить" */
         .improve-card { align-items: center; text-align: center; }
         .improve-icon { font-size: 24px; margin-bottom: 8px; }
         .improve-text { font-size: 12px; color: #333; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 4px; }
@@ -376,7 +385,7 @@
             color: #555;
         }
 
-        /* ===================== МОДАЛКИ (Без изменений) ===================== */
+        /* ===================== МОДАЛКИ ===================== */
         .stat-modal-backdrop {
             position: fixed; inset: 0;
             background: rgba(26, 43, 74, 0.45);
@@ -464,74 +473,36 @@
         .stat-row-badge.g2, .stat-row-badge.g1 { background: #DC2626; }
         .stat-row-text { font-size: 14px; color: #1e293b; white-space: nowrap; }
 
-        /* ===== Блок для двойных оценок (в модалке) ===== */
-        .stat-dual {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-        }
-        .stat-dual-col {
-            background: #f1f5f9; border-radius: 14px;
-            padding: 14px 12px;
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-        }
-        .stat-dual-col-title {
-            font-size: 12px; font-weight: 700; color: #64748b;
-            text-transform: uppercase; letter-spacing: 0.4px;
-        }
-        .stat-dual-circle {
-            width: 68px; height: 68px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            position: relative;
-        }
-        .stat-dual-circle::before {
-            content: ''; position: absolute; inset: 7px;
-            background: #f1f5f9; border-radius: 50%;
-        }
-        .stat-dual-value {
-            position: relative; z-index: 1;
-            font-size: 28px; font-weight: 400; color: #475569; line-height: 1;
-        }
-        .stat-dual-avg {
-            font-size: 12px; color: #64748b;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .stat-dual-avg .stat-avg-pill {
-            padding: 1px 8px; font-size: 12px;
-        }
-        .stat-dual-legend {
-            display: flex; flex-direction: column; gap: 6px;
-            align-self: stretch;
-        }
+        .stat-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-dual-col { background: #f1f5f9; border-radius: 14px; padding: 14px 12px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .stat-dual-col-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.4px; }
+        .stat-dual-circle { width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
+        .stat-dual-circle::before { content: ''; position: absolute; inset: 7px; background: #f1f5f9; border-radius: 50%; }
+        .stat-dual-value { position: relative; z-index: 1; font-size: 28px; font-weight: 400; color: #475569; line-height: 1; }
+        .stat-dual-avg { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 5px; }
+        .stat-dual-avg .stat-avg-pill { padding: 1px 8px; font-size: 12px; }
+        .stat-dual-legend { display: flex; flex-direction: column; gap: 6px; align-self: stretch; }
         .stat-dual-legend .stat-row-text { font-size: 13px; }
         .stat-dual-legend .stat-row-badge { width: 20px; height: 20px; font-size: 11px; }
 
-        /* Мини-легенда под кружком */
-        .stat-circle-legend {
-            display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;
-            margin-top: -4px;
-        }
-        .stat-circle-legend .stat-row-badge {
-            width: 18px; height: 18px; font-size: 10px; border-radius: 3px;
-        }
+        .stat-circle-legend { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; margin-top: -4px; }
+        .stat-circle-legend .stat-row-badge { width: 18px; height: 18px; font-size: 10px; border-radius: 3px; }
 
         /* ===================== ЧАТ ===================== */
         #chatFab {
-            position: fixed;
-            right: 20px; bottom: 20px;
-            z-index: 9998;
+            position: fixed; right: 20px; bottom: 20px; z-index: 9998;
             height: 48px; padding: 0 20px;
             background: linear-gradient(135deg, #166a94, #1d82b5);
             color: #fff; border: none; border-radius: 24px;
             font-size: 15px; font-weight: 600; font-family: inherit;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(22,106,148,0.4);
+            cursor: pointer; box-shadow: 0 6px 20px rgba(22,106,148,0.4);
             display: inline-flex; align-items: center; gap: 8px;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         #chatFab:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(22,106,148,0.5); }
         #chatFab svg { width: 20px; height: 20px; fill: currentColor; }
         #chatFabBadge {
-            position: absolute;
-            top: -6px; right: -6px;
+            position: absolute; top: -6px; right: -6px;
             min-width: 22px; height: 22px; padding: 0 6px;
             background: #dc2626; color: #fff; border-radius: 11px;
             font-size: 12px; font-weight: 700;
@@ -541,11 +512,8 @@
         #chatFabBadge.show { display: inline-flex; }
 
         #chatPanel {
-            position: fixed;
-            right: 20px; bottom: 84px;
-            z-index: 9999;
-            width: 340px; height: 520px;
-            max-height: calc(100vh - 120px);
+            position: fixed; right: 20px; bottom: 84px; z-index: 9999;
+            width: 340px; height: 520px; max-height: calc(100vh - 120px);
             background: #fff; border-radius: 16px;
             box-shadow: 0 20px 60px rgba(26,43,74,0.35);
             display: none; flex-direction: column; overflow: hidden;
@@ -553,115 +521,43 @@
         }
         #chatPanel.show { display: flex; }
 
-        .chat-header {
-            padding: 14px 18px;
-            background: linear-gradient(135deg, #166a94, #1d82b5);
-            color: #fff;
-            display: flex; align-items: center; justify-content: space-between; gap: 10px;
-            flex-shrink: 0;
-        }
+        .chat-header { padding: 14px 18px; background: linear-gradient(135deg, #166a94, #1d82b5); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-shrink: 0; }
         .chat-header-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .chat-header-title svg { width: 18px; height: 18px; fill: currentColor; }
-        .chat-header-close {
-            background: rgba(255,255,255,0.15); border: none;
-            width: 30px; height: 30px; border-radius: 8px;
-            color: #fff; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; line-height: 1; font-family: inherit;
-        }
+        .chat-header-close { background: rgba(255,255,255,0.15); border: none; width: 30px; height: 30px; border-radius: 8px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; font-family: inherit; }
         .chat-header-close:hover { background: rgba(255,255,255,0.28); }
-        .chat-back-btn {
-            background: rgba(255,255,255,0.15); border: none;
-            width: 30px; height: 30px; border-radius: 8px;
-            color: #fff; cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center;
-            flex-shrink: 0; font-family: inherit;
-        }
+        .chat-back-btn { background: rgba(255,255,255,0.15); border: none; width: 30px; height: 30px; border-radius: 8px; color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: inherit; }
         .chat-back-btn:hover { background: rgba(255,255,255,0.28); }
         .chat-back-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
         .chat-contacts { flex: 1; overflow-y: auto; padding: 6px 0; }
         .chat-contacts::-webkit-scrollbar { width: 6px; }
         .chat-contacts::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        .chat-contacts-section {
-            padding: 10px 18px 4px;
-            font-size: 11px; font-weight: 700; color: #7a8aa3;
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .chat-contact {
-            display: flex; align-items: center; gap: 12px;
-            padding: 10px 18px; cursor: pointer;
-            transition: background 0.15s ease;
-        }
+        .chat-contacts-section { padding: 10px 18px 4px; font-size: 11px; font-weight: 700; color: #7a8aa3; text-transform: uppercase; letter-spacing: 0.5px; }
+        .chat-contact { display: flex; align-items: center; gap: 12px; padding: 10px 18px; cursor: pointer; transition: background 0.15s ease; }
         .chat-contact:hover { background: #f0f4f9; }
-        .chat-avatar {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: #e3f2fd; color: #166a94;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; font-weight: 700; flex-shrink: 0;
-        }
+        .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e3f2fd; color: #166a94; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
         .chat-avatar.admin { background: #fce4ec; color: #c2185b; }
         .chat-avatar.teacher { background: #e8f5e9; color: #22874a; }
         .chat-avatar.parent { background: #fff4e0; color: #b8720a; }
         .chat-contact-info { flex: 1; min-width: 0; }
         .chat-contact-name { font-size: 14px; font-weight: 600; color: #1a2b4a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .chat-contact-role { font-size: 12px; color: #7a8aa3; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chat-contact-badge {
-            min-width: 22px; height: 22px; padding: 0 7px;
-            background: #dc2626; color: #fff; border-radius: 11px;
-            font-size: 12px; font-weight: 700;
-            display: inline-flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
+        .chat-contact-badge { min-width: 22px; height: 22px; padding: 0 7px; background: #dc2626; color: #fff; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-        .chat-messages {
-            flex: 1; overflow-y: auto;
-            padding: 16px 14px 8px;
-            background: #f8fafc;
-            display: flex; flex-direction: column; gap: 8px;
-        }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 16px 14px 8px; background: #f8fafc; display: flex; flex-direction: column; gap: 8px; }
         .chat-messages::-webkit-scrollbar { width: 6px; }
         .chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        .chat-msg {
-            max-width: 78%; padding: 8px 12px;
-            border-radius: 14px; font-size: 14px; line-height: 1.4;
-            word-wrap: break-word; white-space: pre-wrap;
-        }
-        .chat-msg.mine {
-            align-self: flex-end;
-            background: linear-gradient(135deg, #166a94, #1d82b5);
-            color: #fff; border-bottom-right-radius: 4px;
-        }
-        .chat-msg.theirs {
-            align-self: flex-start;
-            background: #fff; color: #1a2b4a;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-        }
+        .chat-msg { max-width: 78%; padding: 8px 12px; border-radius: 14px; font-size: 14px; line-height: 1.4; word-wrap: break-word; white-space: pre-wrap; }
+        .chat-msg.mine { align-self: flex-end; background: linear-gradient(135deg, #166a94, #1d82b5); color: #fff; border-bottom-right-radius: 4px; }
+        .chat-msg.theirs { align-self: flex-start; background: #fff; color: #1a2b4a; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
         .chat-msg-time { font-size: 10px; opacity: 0.7; margin-top: 4px; display: block; }
         .chat-empty-msg { text-align: center; color: #94a3b8; font-size: 13px; padding: 30px 20px; }
 
-        .chat-input-bar {
-            display: flex; gap: 8px;
-            padding: 12px 14px;
-            background: #fff;
-            border-top: 1px solid #eef2f8;
-            flex-shrink: 0;
-        }
-        .chat-input-bar input {
-            flex: 1; height: 40px; padding: 0 14px;
-            border: 1.5px solid #e2e8f0; border-radius: 20px;
-            background: #f8fafc; font-size: 14px; font-family: inherit;
-            color: #1a2b4a; outline: none;
-        }
+        .chat-input-bar { display: flex; gap: 8px; padding: 12px 14px; background: #fff; border-top: 1px solid #eef2f8; flex-shrink: 0; }
+        .chat-input-bar input { flex: 1; height: 40px; padding: 0 14px; border: 1.5px solid #e2e8f0; border-radius: 20px; background: #f8fafc; font-size: 14px; font-family: inherit; color: #1a2b4a; outline: none; }
         .chat-input-bar input:focus { border-color: #166a94; background: #fff; }
-        .chat-send-btn {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: linear-gradient(135deg, #166a94, #1d82b5);
-            border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; flex-shrink: 0;
-        }
+        .chat-send-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #166a94, #1d82b5); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
         .chat-send-btn:hover { opacity: 0.9; }
         .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .chat-send-btn svg { width: 18px; height: 18px; fill: currentColor; }
@@ -671,7 +567,7 @@
 
 <!-- ШАПКА -->
 <header class="header">
-    <div class="header-inner">
+    <div class="container header-inner">
         <a href="#" class="logo"><span class="logo-bold">Дневник</span><span class="logo-sub">.ру</span></a>
         <div class="d-user-profile-zone">
             <div class="d-user-info">
@@ -686,18 +582,18 @@
     </div>
 </header>
 
-<!-- СИНЕЕ МЕНЮ -->
+<!-- СИНЕЕ МЕНЮ (теперь в контейнере) -->
 <div class="d-top-blue-bar">
-    <div class="d-top-blue-inner">
+    <div class="container d-top-blue-inner">
         <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
         <a href="#" class="d-nav-item" onclick="return false">ОБЩЕНИЕ</a>
         <a href="#" class="d-nav-item" onclick="return false">ПРИЛОЖЕНИЯ</a>
     </div>
 </div>
 
-<!-- СЕРОЕ ПОДМЕНЮ -->
+<!-- СЕРОЕ ПОДМЕНЮ (теперь в контейнере) -->
 <div class="d-sub-menu-bar">
-    <div class="d-sub-menu-inner">
+    <div class="container d-sub-menu-inner">
         <a href="student.html" class="d-sub-item active">Сегодня</a>
         <a href="student-performance.html" class="d-sub-item">Успеваемость</a>
         <a href="student-group.html" class="d-sub-item">Моя группа</a>
@@ -706,53 +602,57 @@
 </div>
 
 <!-- ОСНОВНОЙ КОНТЕНТ -->
-<div class="main-layout">
-    <!-- ЛЕВАЯ ПАНЕЛЬ -->
-    <div class="left-panel">
-        <!-- Профиль -->
-        <div class="profile-card" onclick="showToast('Профиль ученика — в разработке')">
-            <div class="profile-avatar" id="profileAvatar">И</div>
-            <div class="profile-info">
-                <div class="profile-name" id="profileName">Иван Иванов</div>
-                <div class="profile-class" id="profileClass">11-А класс</div>
+<div class="main-layout-wrapper">
+    <div class="container" style="height: 100%;">
+        <div class="main-layout">
+            <!-- ЛЕВАЯ ПАНЕЛЬ -->
+            <div class="left-panel">
+                <!-- Профиль -->
+                <div class="profile-card" onclick="showToast('Профиль ученика — в разработке')">
+                    <div class="profile-avatar" id="profileAvatar">И</div>
+                    <div class="profile-info">
+                        <div class="profile-name" id="profileName">Иван Иванов</div>
+                        <div class="profile-class" id="profileClass">11-А класс</div>
+                    </div>
+                    <div class="profile-arrow">⌄</div>
+                </div>
+
+                <!-- Лента оценок за день -->
+                <div class="grades-section" id="gradesSection">
+                    <!-- Сюда JS будет вставлять оценки -->
+                </div>
+
+                <!-- Мини-карточки (Рейтинг, Улучшить) -->
+                <div class="mini-cards-section" id="miniCardsSection">
+                    <!-- Сюда JS будет вставлять карточки -->
+                </div>
+
+                <!-- Расписание на день -->
+                <div class="schedule-header">
+                    <button class="schedule-arrow" onclick="shiftDay(-1)">←</button>
+                    <span id="scheduleDateLabel">11 нояб., среда</span>
+                    <button class="schedule-arrow" onclick="shiftDay(1)">→</button>
+                </div>
+                <div id="scheduleList">
+                    <!-- Сюда JS будет вставлять уроки -->
+                </div>
             </div>
-            <div class="profile-arrow">⌄</div>
-        </div>
 
-        <!-- Лента оценок за день -->
-        <div class="grades-section" id="gradesSection">
-            <!-- Сюда JS будет вставлять оценки -->
-        </div>
-
-        <!-- Мини-карточки (Рейтинг, Улучшить) -->
-        <div class="mini-cards-section" id="miniCardsSection">
-            <!-- Сюда JS будет вставлять карточки -->
-        </div>
-
-        <!-- Расписание на день -->
-        <div class="schedule-header">
-            <button class="schedule-arrow" onclick="shiftDay(-1)">←</button>
-            <span id="scheduleDateLabel">11 нояб., среда</span>
-            <button class="schedule-arrow" onclick="shiftDay(1)">→</button>
-        </div>
-        <div id="scheduleList">
-            <!-- Сюда JS будет вставлять уроки -->
-        </div>
-    </div>
-
-    <!-- ПРАВАЯ ПАНЕЛЬ -->
-    <div class="right-panel">
-        <div class="news-placeholder">
-            <!-- SVG-иллюстрация из вашего референса (упрощенная) -->
-            <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M100 20L120 60H80L100 20Z" fill="#65a3e3"/>
-                <circle cx="100" cy="60" r="15" fill="#4b9a25"/>
-                <rect x="70" y="70" width="60" height="10" rx="3" fill="#d9534f"/>
-                <path d="M40 110C40 110 60 90 100 90C140 90 160 110 160 110" stroke="#cbd5e1" stroke-width="2"/>
-                <circle cx="50" cy="130" r="10" fill="#e2e8f0"/>
-                <circle cx="150" cy="130" r="10" fill="#e2e8f0"/>
-            </svg>
-            <div class="news-placeholder-text">Здесь появятся объявления и новости</div>
+            <!-- ПРАВАЯ ПАНЕЛЬ -->
+            <div class="right-panel">
+                <div class="news-placeholder">
+                    <!-- SVG-иллюстрация из вашего референса (упрощенная) -->
+                    <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M100 20L120 60H80L100 20Z" fill="#65a3e3"/>
+                        <circle cx="100" cy="60" r="15" fill="#4b9a25"/>
+                        <rect x="70" y="70" width="60" height="10" rx="3" fill="#d9534f"/>
+                        <path d="M40 110C40 110 60 90 100 90C140 90 160 110 160 110" stroke="#cbd5e1" stroke-width="2"/>
+                        <circle cx="50" cy="130" r="10" fill="#e2e8f0"/>
+                        <circle cx="150" cy="130" r="10" fill="#e2e8f0"/>
+                    </svg>
+                    <div class="news-placeholder-text">Здесь появятся объявления и новости</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
