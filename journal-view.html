@@ -192,25 +192,29 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     z-index: 20 !important;
 }
 
+/* === NEW: обводка ровно по границам ячейки, цвет на 3% темнее === */
 .focus-outline {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    border: 1.5px solid #60A5FA;
+    border: 1.5px solid #5CA1F4;
     pointer-events: none;
     z-index: 100;
     display: none;
     box-sizing: border-box;
+    border-radius: 0;
 }
 .marks-table td:focus-within .focus-outline {
     display: block;
 }
 
+/* ячейка «сегодня»: сверху/снизу уже есть синие линии col-today,
+   поэтому обводка не должна дублировать их по бокам — только границы */
 .marks-table td.col-today:focus-within .focus-outline {
     border-left: none;
     border-right: none;
 }
 
-/* === NEW: синяя обводка во время сохранения (после потери фокуса, пока идёт задержка) === */
+/* синяя обводка во время сохранения (после потери фокуса, пока идёт задержка) */
 .marks-table td.saving-outline .focus-outline {
     display: block;
 }
@@ -617,7 +621,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 const DAYS_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const DAYS_JS_INDEX = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
 
-const EDIT_DELAY_MS = 200;
+const EDIT_DELAY_MS = 125;
 
 const PERIOD_NAMES = { 
     'Четверти': 'четверть', 
