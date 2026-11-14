@@ -192,7 +192,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     z-index: 20 !important;
 }
 
-/* обводка ячейки при фокусе: как было, 1.5px, цвет на 3% темнее #60A5FA → #5CA1F4 */
+/* === NEW: обводка 1.5px, цвет на 3% темнее, при фокусе/сохранении скрываем собственные границы ячейки, чтобы не было серой полосы === */
 .focus-outline {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -206,12 +206,19 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     display: block;
 }
 
+/* ключевое: пока ячейка в фокусе или сохраняется — её серые border-right/bottom прозрачны,
+   чтобы синяя обводка шла ровно по краю без серой полосы рядом */
+.marks-table td:focus-within,
+.marks-table td.saving-outline {
+    border-right-color: transparent !important;
+    border-bottom-color: transparent !important;
+}
+
 .marks-table td.col-today:focus-within .focus-outline {
     border-left: none;
     border-right: none;
 }
 
-/* NEW: обводка во время сохранения (после потери фокуса, пока идёт задержка) */
 .marks-table td.saving-outline .focus-outline {
     display: block;
 }
@@ -222,7 +229,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table td.saving-outline {
     z-index: 20 !important;
 }
-/* END NEW */
+/* === END NEW === */
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
@@ -1326,7 +1333,7 @@ function renderSummaryTable() {
             td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                 '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(val) + '</div>' +
                 '<input type="text" value="' + escapeHtml(val) + '"' +
-                    ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
+                    ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\'; clearSavingOutline();"' +
                     ' onblur="hlSum(this, false); this.style.color=\'transparent\';"' +
                     ' onkeydown="handleGradeKeydown(event, this)"' +
                     ' onchange="upqtrSummary(\'' + student.id + '\', ' + idx + ', this)">' +
@@ -1340,7 +1347,7 @@ function renderSummaryTable() {
         tdFinal.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
             '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(finalVal) + '</div>' +
             '<input type="text" value="' + escapeHtml(finalVal) + '"' +
-                ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
+                ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\'; clearSavingOutline();"' +
                 ' onblur="hlSum(this, false); this.style.color=\'transparent\';"' +
                 ' onkeydown="handleGradeKeydown(event, this)"' +
                 ' onchange="upFinal(\'' + student.id + '\', this)">' +
@@ -1506,7 +1513,7 @@ function renderMainTable() {
             td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                     '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(value) + '</div>' +
                     '<input type="text" value="' + escapeHtml(value) + '"' +
-                        ' onfocus="hl(this, ' + dIdx + ', true); this.style.color=\'#1E293B\';"' +
+                        ' onfocus="hl(this, ' + dIdx + ', true); this.style.color=\'#1E293B\'; clearSavingOutline();"' +
                         ' onblur="hl(this, ' + dIdx + ', false); this.style.color=\'transparent\';"' +
                         ' onkeydown="handleGradeKeydown(event, this)"' +
                         ' onchange="upg(\'' + student.id + '\', \'' + d.gradeKey + '\', this)">' +
@@ -1524,7 +1531,7 @@ function renderMainTable() {
         tdQtr.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                 '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(qtrValue) + '</div>' +
                 '<input type="text" value="' + escapeHtml(qtrValue) + '"' +
-                    ' onfocus="hlQtr(this, true); this.style.color=\'#1E293B\';"' +
+                    ' onfocus="hlQtr(this, true); this.style.color=\'#1E293B\'; clearSavingOutline();"' +
                     ' onblur="hlQtr(this, false); this.style.color=\'transparent\';"' +
                     ' onkeydown="handleGradeKeydown(event, this)"' +
                     ' onchange="upqtr(\'' + student.id + '\', this)">' +
