@@ -122,9 +122,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .fio-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
-
-/* === NEW: убираем реальные border-right/bottom у ячеек оценок и рисуем сетку через inset box-shadow.
-   Это устраняет 1px «мёртвую» полосу между ячейками — клик по всей площади ячейки работает. === */
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th,
 .marks-table td {
@@ -135,15 +132,15 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     line-height: 36px;
     vertical-align: middle;
     border: none;
-    /* сетка вместо border: рисуется внутри ячейки, не занимает места, не создаёт мёртвых зон */
-    box-shadow: inset -1px 0 0 #CFD8E3, inset 0 -1px 0 #CFD8E3;
+    border-right: 1px solid #CFD8E3;
+    border-bottom: 1px solid #CFD8E3;
     box-sizing: border-box;
     position: relative;
 }
 .marks-table thead { position: sticky; top: 0; z-index: 50; transform: translateZ(0); }
 
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
-.marks-table thead th { background: #EBF0F6 !important; box-shadow: inset -1px 0 0 #CFD8E3, inset 0 -1px 0 #CFD8E3; }
+.marks-table thead th { background: #EBF0F6 !important; border-bottom: none; box-shadow: inset 0 -1px 0 #CFD8E3; }
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .col-period { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; font-size: 12px !important; font-weight: 400 !important; position: relative; }
@@ -151,10 +148,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table thead tr:first-child .col-date.clickable-date:hover { background: #DBEAFE !important; color: #1D4ED8 !important; text-decoration: underline; }
 .marks-table thead tr:nth-child(2) .col-date { font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; cursor: pointer !important; user-select: none; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #DFE7F0 !important; }
-
-.marks-table tbody tr:nth-child(5n) td {
-    box-shadow: inset -1px 0 0 #CFD8E3, inset 0 -1px 0 #000000 !important;
-}
+.marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
 .marks-table thead tr:first-child th.col-date.col-today { padding: 4px 2px; line-height: 1.15; vertical-align: middle; }
 .marks-table thead tr:first-child th.col-date .today-date { display: block; font-size: 12px; color: #0EA5E9; font-weight: 500; line-height: 1.1; }
@@ -163,14 +157,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .marks-table th.col-today::before, .marks-table td.col-today::before { content: ''; position: absolute; top: 0; bottom: -1px; left: 0; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .marks-table th.col-today::after, .marks-table td.col-today::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
-.marks-table thead tr:first-child th.col-today { box-shadow: inset -1px 0 0 #CFD8E3, inset 0 -1px 0 #CFD8E3, inset 0 1px 0 #1E40AF !important; }
-.marks-table tbody tr:last-child td.col-today { box-shadow: inset -1px 0 0 #CFD8E3, inset 0 -1px 0 #1E40AF !important; }
+.marks-table thead tr:first-child th.col-today { border-top: 1px solid #1E40AF !important; }
+.marks-table tbody tr:last-child td.col-today { border-bottom: 1px solid #1E40AF !important; }
 
 .marks-table th.col-today.col-added-lesson::before,
 .marks-table td.col-today.col-added-lesson::before {
     display: none !important;
 }
-/* === END NEW === */
 
 .marks-table.period-mode thead th.col-period-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px; color: #334155; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
 .marks-table.period-mode thead th.col-final-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px; color: #1E293B; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; }
@@ -183,22 +176,24 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table thead .col-qtr { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
+/* === NEW: input теперь на всю площадь ячейки, чтобы клики по самым краям (у границ) попадали в input === */
 .grade-cell input { 
     width: 100%; 
-    height: 26px; 
+    height: 100%; 
     text-align: center; 
     border: none; 
     background: transparent; 
     font-size: 13.5px; 
     cursor: pointer; 
     position: absolute; 
-    top: 5px; 
+    top: 0; 
     left: 0; 
     z-index: 5; 
     padding: 0; 
     color: transparent; 
     font-family: inherit; 
     outline: none; 
+    box-sizing: border-box;
 }
 .grade-cell input:focus { 
     background: #FFFFFF; 
@@ -206,6 +201,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     color: #1E293B !important; 
 }
 .grade-cell input::selection { background: #BFDBFE; }
+/* === END NEW === */
 
 .marks-table td:focus-within {
     z-index: 20 !important;
@@ -254,25 +250,25 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
 
-/* фейковые колонки-заполнители */
 .marks-table thead th.col-filler-head {
     background: #EBF0F6 !important;
-    box-shadow: inset -1px 0 0 #CFD8E3, inset 0 -1px 0 #CFD8E3;
+    border-right: 1px solid #CFD8E3;
+    border-bottom: 1px solid #CFD8E3;
+    box-shadow: none;
 }
 .marks-table tbody td.col-filler-body {
     background: #FFFFFF !important;
+    border-right: 1px solid #CFD8E3;
+    border-bottom: 1px solid #CFD8E3;
     pointer-events: none;
-    box-shadow: inset -1px 0 0 #CFD8E3, inset 0 -1px 0 #CFD8E3;
+    box-shadow: none;
 }
 .marks-table tbody tr:nth-child(5n) td.col-filler-body {
-    box-shadow: inset -1px 0 0 #CFD8E3, inset 0 -1px 0 #000000 !important;
+    border-bottom: 1px solid #000000 !important;
 }
 .marks-table thead th.col-filler-head.col-filler-last,
 .marks-table tbody td.col-filler-body.col-filler-last {
-    box-shadow: inset 0 -1px 0 #CFD8E3;
-}
-.marks-table tbody tr:nth-child(5n) td.col-filler-body.col-filler-last {
-    box-shadow: inset 0 -1px 0 #000000 !important;
+    border-right: none;
 }
 
 .journal-scroll::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
@@ -471,6 +467,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     .fio-table td { padding: 0 6px; }
     .fio-table .student-number-text { width: 16px; margin-right: 4px; font-size: 11.5px; }
     .fio-table .student-name-text { font-size: 11.5px; }
+    .marks-table thead th.col-filler-head, .marks-table tbody td.col-filler-body { min-width: 38px !important; }
     .panel-right { overflow-y: visible; }
 }
 @media (max-width: 480px) {
@@ -482,6 +479,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     .col-qtr    { width: 42px; min-width: 42px; max-width: 42px; }
     .fio-table .student-number-text { font-size: 11px; }
     .fio-table .student-name-text { font-size: 11px; }
+    .marks-table thead th.col-filler-head, .marks-table tbody td.col-filler-body { min-width: 34px !important; }
 }
 </style>
 </head>
