@@ -108,7 +108,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .side-toggle-tab svg { width: 9.8px; height: 9.8px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
 
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
-.journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; transform: translateZ(0); position: relative; }
+.journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; transform: translateZ(0); }
 
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 60; transform: translateZ(0); }
 
@@ -121,9 +121,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .fio-table .student-name-text { display: inline-block; font-size: 13.65px; }
 .fio-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
 
-.marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; position: relative; }
+.marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 
-/* === сетка — как в исходнике: реальные border-right/bottom 1px. === */
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th,
 .marks-table td {
@@ -202,19 +201,46 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 }
 .grade-cell input::selection { background: #BFDBFE; }
 
-/* === ОБВОДКА — отдельный SVG-слой, наложенный поверх таблицы. === */
-.outline-svg-layer {
+.marks-table td:focus-within {
+    z-index: 20 !important;
+}
+
+/* === ОБВОДКА через ОТДЕЛЬНЫЙ DIV-элемент .focus-outline.
+   Рисуется строго внутри ячейки (top/left/right/bottom = 0), чтобы не
+   перекрывать границы соседних ячеек и не создавать эффект «жирных» линий
+   при переходе фокуса на соседнюю ячейку. === */
+.focus-outline {
     position: absolute;
     top: 0; left: 0;
+    right: 0;
+    bottom: 0;
     pointer-events: none;
-    z-index: 9999;
-    overflow: visible;
+    z-index: 1000;
+    display: none;
+    box-sizing: border-box;
+    border: 1.5px solid #5CA1F4;
+    background: transparent;
 }
-.outline-svg-layer rect {
-    fill: none;
-    stroke: #5CA1F4;
-    stroke-width: 1.5;
-    shape-rendering: geometricPrecision;
+.marks-table td:focus-within .focus-outline {
+    display: block;
+}
+
+/* на ячейке «сегодня» синие линии сверху/снизу рисуются псевдоэлементами,
+   поэтому у обводки убираем боковые грани */
+.marks-table td.col-today:focus-within .focus-outline {
+    border-left: none;
+    border-right: none;
+}
+
+.marks-table td.saving-outline .focus-outline {
+    display: block;
+}
+.marks-table td.col-today.saving-outline .focus-outline {
+    border-left: none;
+    border-right: none;
+}
+.marks-table td.saving-outline {
+    z-index: 20 !important;
 }
 /* === END === */
 
@@ -1316,7 +1342,7 @@ function renderSummaryTable() {
             const td = document.createElement('td');
             td.className = 'col-period';
             td.dataset.periodIdx = idx;
-            td.innerHTML = '<div class="grade-cell">' +
+            td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                 '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(val) + '</div>' +
                 '<input type="text" value="' + escapeHtml(val) + '"' +
                     ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
@@ -1330,7 +1356,7 @@ function renderSummaryTable() {
         const finalVal = qtrs['final'] || '';
         const tdFinal = document.createElement('td');
         tdFinal.className = 'col-period col-final';
-        tdFinal.innerHTML = '<div class="grade-cell">' +
+        tdFinal.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
             '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(finalVal) + '</div>' +
             '<input type="text" value="' + escapeHtml(finalVal) + '"' +
                 ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
@@ -1496,7 +1522,7 @@ function renderMainTable() {
                 if (isAddedLessonKey(d.gradeKey)) td.classList.add('col-added-lesson');
             }
             const value = (JOURNAL.grades[student.id] || {})[d.gradeKey] || '';
-            td.innerHTML = '<div class="grade-cell">' +
+            td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                     '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(value) + '</div>' +
                     '<input type="text" value="' + escapeHtml(value) + '"' +
                         ' onfocus="hl(this, ' + dIdx + ', true); this.style.color=\'#1E293B\';"' +
@@ -1514,7 +1540,7 @@ function renderMainTable() {
         const qtrValue = (JOURNAL.qtrGrades[student.id] || {})[ACTIVE_PERIOD_INDEX] || '';
         const tdQtr = document.createElement('td');
         tdQtr.className = 'col-qtr qtr-cell';
-        tdQtr.innerHTML = '<div class="grade-cell">' +
+        tdQtr.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                 '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(qtrValue) + '</div>' +
                 '<input type="text" value="' + escapeHtml(qtrValue) + '"' +
                     ' onfocus="hlQtr(this, true); this.style.color=\'#1E293B\';"' +
@@ -2224,7 +2250,6 @@ function hl(input, colIdx, active) {
     }
     document.querySelectorAll('#jBody td[data-col="' + colIdx + '"]').forEach(td => td.classList.toggle('highlight-cross', active));
     setTimeout(fillFillers, 0);
-    if (active) scheduleOutlineRedraw();
 }
 
 function hlQtr(input, active) {
@@ -2237,7 +2262,6 @@ function hlQtr(input, active) {
     }
     document.querySelectorAll('#jBody td.col-qtr').forEach(td => td.classList.toggle('highlight-cross', active));
     setTimeout(fillFillers, 0);
-    if (active) scheduleOutlineRedraw();
 }
 
 function getEditableCellsInRow(tr) {
@@ -2302,14 +2326,12 @@ async function upg(studentId, gradeKey, inputElement) {
     if (cellTd) cellTd.classList.add('saving-outline');
 
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
-    scheduleOutlineRedraw();
     setTimeout(async () => {
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
         JOURNAL.grades[studentId][gradeKey] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
-        scheduleOutlineRedraw();
     }, EDIT_DELAY_MS);
 }
 
@@ -2326,14 +2348,12 @@ async function upqtr(studentId, inputElement) {
     if (cellTd) cellTd.classList.add('saving-outline');
 
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
-    scheduleOutlineRedraw();
     setTimeout(async () => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
-        scheduleOutlineRedraw();
     }, EDIT_DELAY_MS);
 }
 
@@ -2422,119 +2442,6 @@ async function saveJournal() {
         });
     }
 }
-
-/* =============== SVG outline layer =============== */
-let _outlineSvg = null;
-let _outlineRects = [];
-let _outlineRaf = null;
-
-function scheduleOutlineRedraw() {
-    if (_outlineRaf !== null) return;
-    _outlineRaf = requestAnimationFrame(() => {
-        _outlineRaf = null;
-        redrawOutlines();
-    });
-}
-
-function ensureOutlineSvg() {
-    if (_outlineSvg) return _outlineSvg;
-    const wrapper = document.querySelector('.marks-table-wrapper');
-    if (!wrapper) return null;
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('class', 'outline-svg-layer');
-    svg.style.position = 'absolute';
-    svg.style.top = '0';
-    svg.style.left = '0';
-    svg.style.pointerEvents = 'none';
-    svg.style.zIndex = '9999';
-    svg.style.overflow = 'visible';
-    svg.setAttribute('width', '100%');
-    svg.setAttribute('height', '100%');
-    wrapper.appendChild(svg);
-    _outlineSvg = svg;
-    return svg;
-}
-
-function redrawOutlines() {
-    const svg = ensureOutlineSvg();
-    if (!svg) return;
-    // Clean
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-    _outlineRects = [];
-
-    const wrapper = document.querySelector('.marks-table-wrapper');
-    if (!wrapper) return;
-    const wrapperRect = wrapper.getBoundingClientRect();
-
-    // Find all td with focus-within or saving-outline
-    const activeCells = document.querySelectorAll('.marks-table td.saving-outline, .marks-table td:focus-within');
-    activeCells.forEach(td => {
-        if (!td.querySelector('input')) return;
-        const r = td.getBoundingClientRect();
-        const x = r.left - wrapperRect.left;
-        const y = r.top - wrapperRect.top;
-        const w = r.width;
-        const h = r.height;
-        if (w <= 0 || h <= 0) return;
-
-        const isToday = td.classList.contains('col-today');
-        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        // SVG rect coordinates: left/top border stroke centered on the outline
-        // outline 1.5px stroke — inset by 0.75px to sit exactly on the cell edge
-        rect.setAttribute('x', (x + 0.75).toString());
-        rect.setAttribute('y', (y + 0.75).toString());
-        rect.setAttribute('width', Math.max(0, w - 1.5).toString());
-        rect.setAttribute('height', Math.max(0, h - 1.5).toString());
-        rect.setAttribute('fill', 'none');
-        rect.setAttribute('stroke', '#5CA1F4');
-        rect.setAttribute('stroke-width', '1.5');
-        rect.setAttribute('shape-rendering', 'geometricPrecision');
-        if (isToday) {
-            // draw only top/bottom
-            rect.setAttribute('stroke', 'none');
-            // top line
-            const top = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            top.setAttribute('x1', x.toString());
-            top.setAttribute('y1', (y + 0.75).toString());
-            top.setAttribute('x2', (x + w).toString());
-            top.setAttribute('y2', (y + 0.75).toString());
-            top.setAttribute('stroke', '#5CA1F4');
-            top.setAttribute('stroke-width', '1.5');
-            svg.appendChild(top);
-            const bot = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            bot.setAttribute('x1', x.toString());
-            bot.setAttribute('y1', (y + h - 0.75).toString());
-            bot.setAttribute('x2', (x + w).toString());
-            bot.setAttribute('y2', (y + h - 0.75).toString());
-            bot.setAttribute('stroke', '#5CA1F4');
-            bot.setAttribute('stroke-width', '1.5');
-            svg.appendChild(bot);
-        } else {
-            svg.appendChild(rect);
-        }
-        _outlineRects.push(rect);
-    });
-
-    // Size SVG exactly to wrapper so SVG coordinates match
-    svg.setAttribute('width', wrapper.scrollWidth);
-    svg.setAttribute('height', wrapper.scrollHeight);
-}
-
-// Hook: call scheduleOutlineRedraw on focus/blur/input change and on scroll/resize
-document.addEventListener('focusin', (e) => {
-    if (e.target && e.target.matches('.marks-table td input')) scheduleOutlineRedraw();
-}, true);
-document.addEventListener('focusout', (e) => {
-    if (e.target && e.target.matches('.marks-table td input')) scheduleOutlineRedraw();
-}, true);
-
-const journalScrollEl = document.getElementById('journalScroll');
-if (journalScrollEl) {
-    journalScrollEl.addEventListener('scroll', () => scheduleOutlineRedraw(), { passive: true });
-}
-window.addEventListener('resize', () => scheduleOutlineRedraw());
-window.addEventListener('scroll', () => scheduleOutlineRedraw(), true);
-/* ================================================== */
 
 let currentLessonTypeContext = { gradeKey: null, baseGradeKey: null, date: null };
 let popupJustOpened = false;
@@ -2682,9 +2589,9 @@ function toggleLeftPanel() {
         if (tr) tr.classList.remove('active');
     }
     updateTabIcons();
-    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); scheduleOutlineRedraw(); });
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); scheduleOutlineRedraw(); }, 100);
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); scheduleOutlineRedraw(); }, 350);
+    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); });
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 100);
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 350);
 }
 
 function toggleRightPanel() {
@@ -2703,9 +2610,9 @@ function toggleRightPanel() {
         if (tl) tl.classList.remove('active');
     }
     updateTabIcons();
-    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); scheduleOutlineRedraw(); });
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); scheduleOutlineRedraw(); }, 100);
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); scheduleOutlineRedraw(); }, 350);
+    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); });
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 100);
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 350);
 }
 
 function updateTabIcons() {
@@ -2753,7 +2660,6 @@ window.addEventListener('pageshow', () => {
             requestAnimationFrame(() => {
                 safeCall(SUMMARY_MODE ? fillFillersSummary : fillFillers);
                 safeCall(fillPlanFillers);
-                scheduleOutlineRedraw();
             });
         } catch (e) { console.warn(e); }
     })();
