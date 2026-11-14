@@ -123,20 +123,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
-.marks-table th,
-.marks-table td {
-    padding: 0;
-    text-align: center;
-    font-size: 12px;
-    height: 38px;
-    line-height: 36px;
-    vertical-align: middle;
-    border: none;
-    border-right: 1px solid #CFD8E3;
-    border-bottom: 1px solid #CFD8E3;
-    box-sizing: border-box;
-    position: relative;
-}
+.marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 36px; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; position: relative; }
+
 .marks-table thead { position: sticky; top: 0; z-index: 50; transform: translateZ(0); }
 
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
@@ -176,24 +164,22 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table thead .col-qtr { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
 
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-/* === NEW: input теперь на всю площадь ячейки, чтобы клики по самым краям (у границ) попадали в input === */
 .grade-cell input { 
     width: 100%; 
-    height: 100%; 
+    height: 26px; 
     text-align: center; 
     border: none; 
     background: transparent; 
     font-size: 13.5px; 
     cursor: pointer; 
     position: absolute; 
-    top: 0; 
+    top: 5px; 
     left: 0; 
     z-index: 5; 
     padding: 0; 
     color: transparent; 
     font-family: inherit; 
     outline: none; 
-    box-sizing: border-box;
 }
 .grade-cell input:focus { 
     background: #FFFFFF; 
@@ -201,7 +187,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     color: #1E293B !important; 
 }
 .grade-cell input::selection { background: #BFDBFE; }
-/* === END NEW === */
 
 .marks-table td:focus-within {
     z-index: 20 !important;
