@@ -207,11 +207,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     z-index: 20 !important;
 }
 
-/* === ОБВОДКА: рисуем чуть толще и с -0.5px по краям, чтобы гарантированно перекрыть серую inset-тень соседа === */
+/* обводка ячейки при фокусе: 1.5px, цвет на 3% темнее исходного #60A5FA → #5CA1F4 */
 .focus-outline {
     position: absolute;
-    top: -0.5px; left: -0.5px; right: -0.5px; bottom: -0.5px;
-    border: 2px solid #5CA1F4;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 1.5px solid #5CA1F4;
     pointer-events: none;
     z-index: 100;
     display: none;
@@ -236,6 +236,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 }
 .marks-table td.saving-outline {
     z-index: 20 !important;
+}
+
+/* === ЕДИНСТВЕННАЯ ПРАВКА: у ячейки с обводкой убираем inset-тень, чтобы на стыке не было
+   серой линии + синей обводки. У соседей без обводки inset-тень остаётся — сетка не ломается. === */
+.marks-table td:focus-within,
+.marks-table td.saving-outline {
+    box-shadow: none !important;
+}
+.marks-table td.col-today:focus-within,
+.marks-table td.col-today.saving-outline {
+    box-shadow: inset 0 1px 0 #1E40AF, inset 0 -1px 0 #1E40AF !important;
 }
 /* === END === */
 
