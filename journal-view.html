@@ -123,7 +123,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 
-.marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
+/* === ЕДИНСТВЕННОЕ ИЗМЕНЕНИЕ: border-collapse: collapse вместо separate === */
+.marks-table { border-collapse: collapse; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th,
 .marks-table td {
     padding: 0;
