@@ -192,36 +192,50 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     z-index: 20 !important;
 }
 
-/* обводка ячейки при фокусе: 1.5px, цвет на 3% темнее исходного #60A5FA → #5CA1F4 */
+/* === обводка: рисуем как outline, а не border. outline не занимает места и не "жирнит" соседей. === */
 .focus-outline {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    border: 1.5px solid #5CA1F4;
     pointer-events: none;
     z-index: 100;
     display: none;
     box-sizing: border-box;
+    outline: 1.5px solid #5CA1F4;
+    outline-offset: -1.5px;
+    border: none;
 }
 .marks-table td:focus-within .focus-outline {
     display: block;
 }
 
+/* на ячейке "сегодня" боковые синие линии уже нарисованы псевдоэлементами,
+   поэтому у обводки убираем боковые стороны — оставляем только top/bottom */
 .marks-table td.col-today:focus-within .focus-outline {
-    border-left: none;
-    border-right: none;
+    outline: none;
+    border-top: 1.5px solid #5CA1F4;
+    border-bottom: 1.5px solid #5CA1F4;
 }
 
-/* обводка во время сохранения (после потери фокуса, пока идёт задержка) */
+/* пока ячейка в фокусе или сохраняется — её собственные border-right/bottom прозрачны,
+   чтобы серая полоса не выглядывала из-под обводки. Толщина border та же → сетка не сдвигается. */
+.marks-table td:focus-within,
+.marks-table td.saving-outline {
+    border-right-color: transparent !important;
+    border-bottom-color: transparent !important;
+}
+
 .marks-table td.saving-outline .focus-outline {
     display: block;
 }
 .marks-table td.col-today.saving-outline .focus-outline {
-    border-left: none;
-    border-right: none;
+    outline: none;
+    border-top: 1.5px solid #5CA1F4;
+    border-bottom: 1.5px solid #5CA1F4;
 }
 .marks-table td.saving-outline {
     z-index: 20 !important;
 }
+/* === END === */
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
@@ -929,7 +943,6 @@ function detachActiveEditorDom() {
     if (ed.dom && ed.dom.parentNode) ed.dom.parentNode.removeChild(ed.dom);
 }
 
-/* снятие «сохраняющейся» обводки со всех ячеек (используется только при смене периода/итогов) */
 function clearSavingOutline() {
     document.querySelectorAll('.marks-table td.saving-outline').forEach(td => {
         td.classList.remove('saving-outline');
