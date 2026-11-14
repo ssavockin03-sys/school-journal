@@ -123,7 +123,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 
-/* === сетка — как в вашем исходнике: реальные border-right/bottom 1px === */
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th,
 .marks-table td {
@@ -206,37 +205,39 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     z-index: 20 !important;
 }
 
-/* === ОБВОДКА через outline: рисуется ПОВЕРХ соседей, перекрывает их серые границы.
-   outline-offset: -1.5px сдвигает контур внутрь на толщину самого контура, чтобы он лёг ровно по краю.
-   outline не занимает места в layout → ничего не сдвигается и не «жирнеет». === */
+/* === ОБВОДКА через ОТДЕЛЬНЫЙ DIV-элемент .focus-outline.
+   Он absolute внутри td с right:-1px; bottom:-1px, чтобы перекрыть 1px серую
+   границу соседа справа и снизу. z-index 1000 — выше всех border, box-shadow.
+   pointer-events: none, чтобы не мешать клику по input. === */
 .focus-outline {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0; left: 0;
+    right: -1px;
+    bottom: -1px;
     pointer-events: none;
-    z-index: 100;
+    z-index: 1000;
     display: none;
     box-sizing: border-box;
-    outline: 1.5px solid #5CA1F4;
-    outline-offset: -1.5px;
-    border: none;
+    border: 1.5px solid #5CA1F4;
+    background: transparent;
 }
 .marks-table td:focus-within .focus-outline {
     display: block;
 }
 
+/* на ячейке «сегодня» синие линии сверху/снизу рисуются псевдоэлементами,
+   поэтому у обводки убираем боковые грани */
 .marks-table td.col-today:focus-within .focus-outline {
-    outline: none;
-    border-top: 1.5px solid #5CA1F4;
-    border-bottom: 1.5px solid #5CA1F4;
+    border-left: none;
+    border-right: none;
 }
 
 .marks-table td.saving-outline .focus-outline {
     display: block;
 }
 .marks-table td.col-today.saving-outline .focus-outline {
-    outline: none;
-    border-top: 1.5px solid #5CA1F4;
-    border-bottom: 1.5px solid #5CA1F4;
+    border-left: none;
+    border-right: none;
 }
 .marks-table td.saving-outline {
     z-index: 20 !important;
