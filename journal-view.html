@@ -205,36 +205,36 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     z-index: 20 !important;
 }
 
-/* === ОБВОДКА через ОТДЕЛЬНЫЙ DIV-элемент .focus-outline.
-   right:-1px / bottom:-1px компенсируют border-right/bottom ячейки,
-   чтобы обводка прилегала к визуальному краю без зазора.
-   Левый/верхний край не компенсируется (там border нет).
-   Класс saving-outline удалён — он создавал наложение при переходе фокуса. === */
+/* обводка ячейки при фокусе: 1.5px, цвет на 3% темнее исходного #60A5FA → #5CA1F4 */
 .focus-outline {
     position: absolute;
-    top: 0; left: 0;
-    right: -1px;
-    bottom: -1px;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 1.5px solid #5CA1F4;
     pointer-events: none;
-    z-index: 1000;
+    z-index: 100;
     display: none;
     box-sizing: border-box;
-    border: 1.5px solid #5CA1F4;
-    border-left: none;
-    border-top: none;
-    background: transparent;
 }
 .marks-table td:focus-within .focus-outline {
     display: block;
 }
 
-/* на ячейке «сегодня» синие линии сверху/снизу рисуются псевдоэлементами,
-   поэтому у обводки убираем боковые грани */
 .marks-table td.col-today:focus-within .focus-outline {
     border-left: none;
     border-right: none;
 }
-/* === END === */
+
+/* обводка во время сохранения (после потери фокуса, пока идёт задержка) */
+.marks-table td.saving-outline .focus-outline {
+    display: block;
+}
+.marks-table td.col-today.saving-outline .focus-outline {
+    border-left: none;
+    border-right: none;
+}
+.marks-table td.saving-outline {
+    z-index: 20 !important;
+}
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
@@ -942,6 +942,13 @@ function detachActiveEditorDom() {
     if (ed.dom && ed.dom.parentNode) ed.dom.parentNode.removeChild(ed.dom);
 }
 
+/* снятие «сохраняющейся» обводки со всех ячеек (используется только при смене периода/итогов) */
+function clearSavingOutline() {
+    document.querySelectorAll('.marks-table td.saving-outline').forEach(td => {
+        td.classList.remove('saving-outline');
+    });
+}
+
 async function init() {
     const { classId, subjectId } = getUrlParams();
     if (!classId || !subjectId) { showEmpty('Не заданы параметры', 'В URL отсутствуют параметры class и subject.'); return; }
@@ -1212,6 +1219,7 @@ function renderPeriodTabs() {
         tab.title = p.start + ' – ' + p.end;
         tab.addEventListener('click', async () => {
             commitActiveEditor();
+            clearSavingOutline();
             SUMMARY_MODE = false;
             ACTIVE_PERIOD_INDEX = idx;
             renderPeriodTabs();
@@ -1253,6 +1261,7 @@ function renderPeriodTabs() {
     summaryTab.title = 'Итоговые оценки по всем периодам';
     summaryTab.addEventListener('click', () => {
         commitActiveEditor();
+        clearSavingOutline();
         SUMMARY_MODE = true;
         renderPeriodTabs();
         const mc = document.getElementById('mainContent');
@@ -1386,6 +1395,8 @@ async function upqtrSummary(studentId, periodIdx, inputElement) {
         return;
     }
     const displayLayer = inputElement.previousElementSibling;
+    const cellTd = inputElement.closest('td');
+    if (cellTd) cellTd.classList.add('saving-outline');
 
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
@@ -1393,6 +1404,7 @@ async function upqtrSummary(studentId, periodIdx, inputElement) {
         JOURNAL.qtrGrades[studentId][periodIdx] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+        if (cellTd) cellTd.classList.remove('saving-outline');
     }, EDIT_DELAY_MS);
 }
 
@@ -1405,6 +1417,8 @@ async function upFinal(studentId, inputElement) {
         return;
     }
     const displayLayer = inputElement.previousElementSibling;
+    const cellTd = inputElement.closest('td');
+    if (cellTd) cellTd.classList.add('saving-outline');
 
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
@@ -1412,6 +1426,7 @@ async function upFinal(studentId, inputElement) {
         JOURNAL.qtrGrades[studentId]['final'] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+        if (cellTd) cellTd.classList.remove('saving-outline');
     }, EDIT_DELAY_MS);
 }
 
@@ -2300,6 +2315,8 @@ async function upg(studentId, gradeKey, inputElement) {
         return;
     }
     const displayLayer = inputElement.previousElementSibling;
+    const cellTd = inputElement.closest('td');
+    if (cellTd) cellTd.classList.add('saving-outline');
 
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
@@ -2307,6 +2324,7 @@ async function upg(studentId, gradeKey, inputElement) {
         JOURNAL.grades[studentId][gradeKey] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+        if (cellTd) cellTd.classList.remove('saving-outline');
     }, EDIT_DELAY_MS);
 }
 
@@ -2319,6 +2337,8 @@ async function upqtr(studentId, inputElement) {
         return;
     }
     const displayLayer = inputElement.previousElementSibling;
+    const cellTd = inputElement.closest('td');
+    if (cellTd) cellTd.classList.add('saving-outline');
 
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
@@ -2326,6 +2346,7 @@ async function upqtr(studentId, inputElement) {
         JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
+        if (cellTd) cellTd.classList.remove('saving-outline');
     }, EDIT_DELAY_MS);
 }
 
