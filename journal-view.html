@@ -27,7 +27,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .dropdown-trigger:hover { color: #2563EB; }
 .dropdown-trigger .chevron { width: 13px; height: 13px; fill: #3B82F6; transition: transform 0.2s ease; margin-top: 3px; }
 .dropdown.open .dropdown-trigger .chevron { transform: rotate(180deg); }
-.dropdown-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12); padding: 4px; z-index: 200; display: none; max-height: 320px; overflow-y: auto; }
+.dropdown-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12); padding: 4px; z-index: 5000; display: none; max-height: 320px; overflow-y: auto; }
 .dropdown.open .dropdown-menu { display: block; }
 .dropdown-menu-item { display: block; width: 100%; padding: 8px 12px; background: transparent; border: none; border-radius: 5px; color: #1E293B; font-size: 14px; font-weight: 500; cursor: pointer; text-align: left; font-family: inherit; }
 .dropdown-menu-item:hover { background: #EFF6FF; color: #2563EB; }
@@ -110,7 +110,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
 
-.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 60; }
+.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 3000; }
 
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 2000; }
 .fio-table { border-collapse: collapse; border-spacing: 0; table-layout: fixed; width: 210px; }
@@ -135,8 +135,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     line-height: 1.2;
     vertical-align: middle;
     border: none;
-    border-right: 1px solid #CFD8E3;
     border-bottom: 1px solid #CFD8E3;
+    box-shadow: inset -1px 0 0 #CFD8E3;
     box-sizing: border-box;
     position: relative;
 }
@@ -144,9 +144,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table thead { position: sticky; top: 0; z-index: 2000; box-shadow: 0 1px 0 0 #CFD8E3; }
 
 .marks-table thead tr#mRow th { height: 38px; border-bottom: none; }
-.marks-table thead tr#sRow th { height: 38px; border-top: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
+.marks-table thead tr#sRow th { height: 38px; border-top: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-shadow: inset -1px 0 0 #CFD8E3; }
 .marks-table thead tr#mRow th.col-avg,
-.marks-table thead tr#mRow th.col-qtr { border-bottom: 1px solid #CFD8E3; }
+.marks-table thead tr#mRow th.col-qtr { border-bottom: none; }
 
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
 .marks-table thead th { background: #EBF0F6 !important; }
@@ -259,13 +259,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .marks-table thead th.col-filler-head {
     background: #EBF0F6 !important;
-    border-right: 1px solid #CFD8E3;
     border-bottom: 1px solid #CFD8E3;
+    box-shadow: inset -1px 0 0 #CFD8E3;
 }
 .marks-table tbody td.col-filler-body {
     background: #FFFFFF !important;
-    border-right: 1px solid #CFD8E3;
     border-bottom: 1px solid #CFD8E3;
+    box-shadow: inset -1px 0 0 #CFD8E3;
     pointer-events: none;
 }
 .marks-table tbody tr:nth-child(5n) td.col-filler-body {
@@ -273,7 +273,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 }
 .marks-table thead th.col-filler-head.col-filler-last,
 .marks-table tbody td.col-filler-body.col-filler-last {
-    border-right: none;
+    box-shadow: none;
 }
 
 .journal-scroll::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
