@@ -805,6 +805,7 @@ let ALL_SCHEDULES = [];
 let leftCollapsed = false;
 let rightCollapsed = false;
 let MOBILE_VIEW = 'journal';
+let toggleRestoreTimer = null;
 
 let toastTimer = null;
 function showToast(message) {
@@ -2593,6 +2594,9 @@ function toggleLeftPanel() {
     const savedScrollTop = journalScroll ? journalScroll.scrollTop : 0;
     const savedPlanTop = panelRight ? panelRight.scrollTop : 0;
 
+    if (journalObserver) journalObserver.disconnect();
+    if (planObserver) planObserver.disconnect();
+
     leftCollapsed = !leftCollapsed;
     container.classList.toggle('left-collapsed', leftCollapsed);
     tabLeft.classList.toggle('active', leftCollapsed);
@@ -2604,17 +2608,25 @@ function toggleLeftPanel() {
     }
     updateTabIcons();
 
-    const restoreScroll = () => {
+    if (toggleRestoreTimer) clearTimeout(toggleRestoreTimer);
+    toggleRestoreTimer = setTimeout(() => {
+        toggleRestoreTimer = null;
+        safeCall(fillFillers);
+        safeCall(fillPlanFillers);
         if (journalScroll) {
             journalScroll.scrollLeft = savedScrollLeft;
             journalScroll.scrollTop = savedScrollTop;
         }
         if (panelRight) panelRight.scrollTop = savedPlanTop;
-    };
-
-    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); });
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); }, 100);
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); }, 350);
+        if (journalObserver) {
+            const jw = document.getElementById('journalScroll');
+            if (jw) journalObserver.observe(jw);
+        }
+        if (planObserver) {
+            const prw = document.getElementById('panelRightWrapper');
+            if (prw) planObserver.observe(prw);
+        }
+    }, 350);
 }
 
 function toggleRightPanel() {
@@ -2630,6 +2642,9 @@ function toggleRightPanel() {
     const savedScrollTop = journalScroll ? journalScroll.scrollTop : 0;
     const savedPlanTop = panelRight ? panelRight.scrollTop : 0;
 
+    if (journalObserver) journalObserver.disconnect();
+    if (planObserver) planObserver.disconnect();
+
     rightCollapsed = !rightCollapsed;
     container.classList.toggle('right-collapsed', rightCollapsed);
     tabRight.classList.toggle('active', rightCollapsed);
@@ -2641,17 +2656,25 @@ function toggleRightPanel() {
     }
     updateTabIcons();
 
-    const restoreScroll = () => {
+    if (toggleRestoreTimer) clearTimeout(toggleRestoreTimer);
+    toggleRestoreTimer = setTimeout(() => {
+        toggleRestoreTimer = null;
+        safeCall(fillFillers);
+        safeCall(fillPlanFillers);
         if (journalScroll) {
             journalScroll.scrollLeft = savedScrollLeft;
             journalScroll.scrollTop = savedScrollTop;
         }
         if (panelRight) panelRight.scrollTop = savedPlanTop;
-    };
-
-    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); });
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); }, 100);
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); }, 350);
+        if (journalObserver) {
+            const jw = document.getElementById('journalScroll');
+            if (jw) journalObserver.observe(jw);
+        }
+        if (planObserver) {
+            const prw = document.getElementById('panelRightWrapper');
+            if (prw) planObserver.observe(prw);
+        }
+    }, 350);
 }
 
 function updateTabIcons() {
