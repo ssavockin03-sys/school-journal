@@ -594,7 +594,7 @@
                 <div class="profile-arrow">⌄</div>
             </div>
 
-            <!-- Лента оценок за день -->
+            <!-- Лента оценок -->
             <div class="grades-section" id="gradesSection">
                 <!-- Сюда JS будет вставлять оценки -->
             </div>
@@ -646,7 +646,6 @@
 
 <script src="supabase-config.js"></script>
 <script>
-    // ... (ВЕСЬ JS КОД БЕЗ ИЗМЕНЕНИЙ, ОН РАБОЧИЙ) ...
     const DAYS_FULL   = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота', sun: 'Воскресенье' };
     const DAYS_SHORT  = { mon: 'пн', tue: 'вт', wed: 'ср', thu: 'чт', fri: 'пт', sat: 'сб', sun: 'вс' };
     const JS_DAY_MAP  = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 0: 'sun' };
@@ -786,6 +785,28 @@
         return result;
     }
 
+    // === ПОСЛЕДНИЕ 15 ВЫСТАВЛЕННЫХ ОЦЕНОК ===
+    // Сортируем по grade_timestamps (время сохранения), свежие — первыми.
+    // Оценки без timestamp падают в конец.
+    // Берём только числовые оценки (kind === 'grade'), без О/СП/Н/Б/П.
+    function collectRecentGrades(limit) {
+        const all = collectAllStudentGrades();
+        const grades = all.filter(g => g.kind === 'grade' && g.grade);
+        const withTs = grades.map(g => {
+            const j = g.journal;
+            const ts = (j && j.grade_timestamps && j.grade_timestamps[CURRENT_STUDENT.id] && j.grade_timestamps[CURRENT_STUDENT.id][g.key]) || '';
+            return { ...g, gradedAt: ts };
+        });
+        withTs.sort((a, b) => {
+            const ta = a.gradedAt || '';
+            const tb = b.gradedAt || '';
+            if (ta !== tb) return tb.localeCompare(ta);
+            return String(b.key).localeCompare(String(a.key));
+        });
+        return withTs.slice(0, limit || 15);
+    }
+    // ===========================================
+
     function shiftDay(delta) {
         const next = new Date(TODAY_DATE);
         next.setDate(next.getDate() + delta);
@@ -795,26 +816,24 @@
 
     function renderToday() {
         const date = TODAY_DATE;
-        const all = collectAllStudentGrades();
-        
-        const dayRecords = all.filter(g => g.date && isoDate(g.date) === isoDate(date));
-        renderGradesList(dayRecords, date);
+        const recent = collectRecentGrades(15);
+        renderGradesList(recent);
         renderMiniCards();
         const dayLessons = getLessonsForDate(date);
         renderSchedule(dayLessons, date);
     }
 
-    function renderGradesList(records, date) {
+    function renderGradesList(records) {
         const container = document.getElementById('gradesSection');
         if (records.length === 0) {
-            container.innerHTML = `<div style="color:#999; font-size:13px; text-align:center; padding:20px 0;">Оценок за этот день нет</div>`;
+            container.innerHTML = `<div style="color:#999; font-size:13px; text-align:center; padding:20px 0;">Оценок пока нет</div>`;
             return;
         }
 
         let html = `
             <div class="grades-dates">
                 <span></span>
-                <span style="color:#333; font-weight:600;">${formatDateHuman(date)}</span>
+                <span style="color:#333; font-weight:600;">Последние оценки</span>
                 <span></span>
             </div>
             <div class="grades-scroll-wrapper">
@@ -822,14 +841,12 @@
         `;
 
         records.forEach(g => {
-            const isGrade = g.kind === 'grade';
-            const value = isGrade ? g.grade : g.presence;
-            const cls = isGrade ? gradeClass(g.grade) : gradeClass(g.presence);
-            const typeLabel = isGrade ? getLessonTypeFullName(g.type) : 'Присутствие';
+            const cls = gradeClass(g.grade);
+            const typeLabel = getLessonTypeFullName(g.type);
             
             html += `
                 <div class="grade-block" onclick="openStatModal('${escapeHtml(g.subject)}', '${escapeHtml(g.key)}')">
-                    <div class="grade-square ${cls}">${escapeHtml(value)}</div>
+                    <div class="grade-square ${cls}">${escapeHtml(g.grade)}</div>
                     <div class="grade-subject">${escapeHtml(g.subject)}</div>
                     <div class="grade-type">${escapeHtml(typeLabel)}</div>
                 </div>
@@ -1128,7 +1145,7 @@
     
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStatModal(); });
 
-    // ЧАТ (скопирован)
+    // ЧАТ
     (function () {
         let contacts = [], contactsLoaded = false, activeContact = null, lastSeenTs = null, pollTimer = null, unreadByContact = {}, panelOpen = false;
         function getMyId() { return (window.CURRENT_STUDENT && window.CURRENT_STUDENT.id) || null; }
