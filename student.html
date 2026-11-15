@@ -788,6 +788,7 @@
             document.getElementById('profileClass').textContent = CURRENT_CLASS ? CURRENT_CLASS.name : 'Класс не найден';
             
             renderToday();
+            startAutoRefresh();
         } catch (err) { console.error(err); }
     })();
 
@@ -813,6 +814,77 @@
         
         CURRENT_SCHEDULES = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
     }
+
+    /* ============================================================ */
+    /* АВТООБНОВЛЕНИЕ ЖУРНАЛОВ (polling + realtime, если доступен)   */
+    /* ============================================================ */
+    let _refreshTimer = null;
+    let _lastJournalsHash = null;
+    let _realtimeChannel = null;
+
+    function computeJournalsHash(arr) {
+        try {
+            return JSON.stringify((arr || []).map(j => ({
+                id: j.id,
+                grades: j.grades,
+                grade_timestamps: j.grade_timestamps,
+                lesson_types: j.lesson_types
+            })));
+        } catch (e) { return String(Date.now()); }
+    }
+
+    async function refreshJournalsOnly() {
+        // Не дёргаем, если открыта модалка
+        const backdrop = document.getElementById('statModalBackdrop');
+        if (backdrop && backdrop.classList.contains('show')) return;
+        if (!CURRENT_STUDENT) return;
+
+        try {
+            const journals = await DB.getAll('journals');
+            let fresh = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
+            const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
+            if (withData.length > 0) fresh = withData;
+
+            const newHash = computeJournalsHash(fresh);
+            if (newHash === _lastJournalsHash) return; // ничего не изменилось
+
+            ALL_JOURNALS = fresh;
+            _lastJournalsHash = newHash;
+            renderToday();
+        } catch (e) {
+            console.warn('[auto-refresh] journals:', e);
+        }
+    }
+
+    function startAutoRefresh() {
+        if (_refreshTimer) clearInterval(_refreshTimer);
+        _lastJournalsHash = computeJournalsHash(ALL_JOURNALS);
+
+        // 1) Раз в 4 секунды — гарантированно работает везде
+        _refreshTimer = setInterval(refreshJournalsOnly, 4000);
+
+        // 2) При возврате на вкладку — мгновенно
+        window.addEventListener('focus', refreshJournalsOnly);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) refreshJournalsOnly();
+        });
+
+        // 3) Realtime через Supabase (если включён — будет мгновенно)
+        try {
+            if (typeof window.supabase !== 'undefined' && window.supabase && typeof window.supabase.channel === 'function') {
+                _realtimeChannel = window.supabase
+                    .channel('journals-auto-refresh')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'journals' }, () => {
+                        refreshJournalsOnly();
+                    })
+                    .subscribe();
+            }
+        } catch (e) {
+            // Realtime не включён — не страшно, polling работает
+            console.warn('[realtime] not available:', e);
+        }
+    }
+    /* ============================================================ */
 
     function getPeriodIndexForDate(date) {
         if (!date || !ALL_PERIODS.length) return null;
