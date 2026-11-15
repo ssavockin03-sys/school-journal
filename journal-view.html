@@ -110,13 +110,14 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
 
-.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 3000; }
+.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 3000; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 2000; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
 .fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 1.2; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
-.fio-table thead { position: sticky; top: 0; z-index: 200; }
+.fio-table thead { position: sticky; top: 0; z-index: 200; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 1.2; padding: 0 10px; border-bottom: 1px solid #CFD8E3; vertical-align: middle; }
+.fio-table tbody { transform: translateZ(0); }
 .fio-table tbody tr { height: 38px; }
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
@@ -140,6 +141,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     box-sizing: border-box;
     position: relative;
 }
+.marks-table tbody { transform: translateZ(0); }
 .marks-table tbody tr { height: 38px; }
 
 .marks-table thead tr#mRow th { height: 38px; }
@@ -148,7 +150,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table thead tr#mRow th.col-qtr { border-bottom: 1px solid #CFD8E3; }
 
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
-.marks-table thead { position: sticky; top: 0; z-index: 200; }
+.marks-table thead { position: sticky; top: 0; z-index: 200; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .marks-table thead th { background: #EBF0F6 !important; }
 
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
@@ -918,28 +920,16 @@ function normalizeTypesMap(types) {
     Object.keys(src).forEach(k => { if (typeof src[k] === 'string') out[k] = src[k]; });
     return out;
 }
-function normalizeTimestampsMap(ts) {
-    const src = toPlainObject(ts);
-    const out = {};
-    Object.keys(src).forEach(sid => {
-        const m = toPlainObject(src[sid]);
-        const o = {};
-        Object.keys(m).forEach(k => { if (typeof m[k] === 'string' && m[k]) o[k] = m[k]; });
-        out[sid] = o;
-    });
-    return out;
-}
 async function loadJournalNormalized() {
     let rec = null;
     try { rec = await DB.getJournal(CLASS_ID, SUBJECT_ID); }
     catch (e) { console.warn('DB.getJournal failed', e); }
-    if (!rec) return { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {}, gradeTimestamps: {} };
+    if (!rec) return { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
     return {
         grades: normalizeGradesMap(rec.grades),
         lessons: normalizeLessonsMap(rec.lessons),
         qtrGrades: normalizeQtrMap(rec.qtr_grades),
-        lessonTypes: normalizeTypesMap(rec.lesson_types),
-        gradeTimestamps: normalizeTimestampsMap(rec.grade_timestamps)
+        lessonTypes: normalizeTypesMap(rec.lesson_types)
     };
 }
 
@@ -2349,15 +2339,6 @@ async function upg(studentId, gradeKey, inputElement) {
     setTimeout(async () => {
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
         JOURNAL.grades[studentId][gradeKey] = up;
-        // === ЗАПИСЬ ВРЕМЕНИ ВЫСТАВЛЕНИЯ ОЦЕНКИ ===
-        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
-        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
-        if (up === '') {
-            delete JOURNAL.gradeTimestamps[studentId][gradeKey];
-        } else {
-            JOURNAL.gradeTimestamps[studentId][gradeKey] = new Date().toISOString();
-        }
-        // =========================================
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
@@ -2451,42 +2432,23 @@ async function saveJournal() {
             if (Object.keys(out).length > 0) mergedQtr[sid] = out;
         });
 
-        // === МЕРЖ TIMESTAMP'ов ===
-        const mergedTimestamps = {};
-        const allTsSids = new Set([...Object.keys(fresh.gradeTimestamps || {}), ...Object.keys(JOURNAL.gradeTimestamps || {})]);
-        allTsSids.forEach(sid => {
-            const fromFresh = (fresh.gradeTimestamps || {})[sid] || {};
-            const fromLocal = (JOURNAL.gradeTimestamps || {})[sid] || {};
-            const out = {};
-            Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
-            Object.keys(fromLocal).forEach(k => { out[k] = fromLocal[k]; });
-            visibleKeys.forEach(k => {
-                if (!Object.prototype.hasOwnProperty.call(fromLocal, k)) delete out[k];
-            });
-            if (Object.keys(out).length > 0) mergedTimestamps[sid] = out;
-        });
-        // ==========================
-
         JOURNAL.grades = mergedGrades;
         JOURNAL.lessons = mergedLessons;
         JOURNAL.qtrGrades = mergedQtr;
         JOURNAL.lessonTypes = mergedTypes;
-        JOURNAL.gradeTimestamps = mergedTimestamps;
 
         await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
             grades: mergedGrades,
             lessons: mergedLessons,
             qtr_grades: mergedQtr,
-            lesson_types: mergedTypes,
-            grade_timestamps: mergedTimestamps
+            lesson_types: mergedTypes
         });
     } else {
         await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
             grades: JOURNAL.grades,
             lessons: JOURNAL.lessons,
             qtr_grades: JOURNAL.qtrGrades,
-            lesson_types: JOURNAL.lessonTypes,
-            grade_timestamps: JOURNAL.gradeTimestamps || {}
+            lesson_types: JOURNAL.lessonTypes
         });
     }
 }
@@ -2590,19 +2552,6 @@ async function deleteLessonColumn() {
             }
         }
     });
-
-    // === ЧИСТКА TIMESTAMP'ов при удалении урока ===
-    Object.keys(JOURNAL.gradeTimestamps || {}).forEach(sid => {
-        if (JOURNAL.gradeTimestamps[sid]) {
-            Object.keys(JOURNAL.gradeTimestamps[sid]).forEach(k => {
-                if (k === gradeKey || k.startsWith(gradeKey + '_')) {
-                    delete JOURNAL.gradeTimestamps[sid][k];
-                }
-            });
-            if (Object.keys(JOURNAL.gradeTimestamps[sid]).length === 0) delete JOURNAL.gradeTimestamps[sid];
-        }
-    });
-    // ===============================================
 
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
     await saveJournal();
