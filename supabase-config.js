@@ -110,7 +110,7 @@ const DB = {
             const data = { class_id: classId, subject_id: subjectId, ...payload, updated_at: new Date().toISOString() };
             if (!snap.empty) {
                 const docId = snap.docs[0].id;
-                await fb.updateDoc(fb.doc(fb.db, 'journals', docId), data);
+                await fb.setDoc(fb.doc(fb.db, 'journals', docId), data, { merge: true });
                 return { id: docId, ...data };
             } else {
                 const compositeId = classId + '__' + subjectId;
