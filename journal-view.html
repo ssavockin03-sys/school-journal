@@ -920,16 +920,25 @@ function normalizeTypesMap(types) {
     Object.keys(src).forEach(k => { if (typeof src[k] === 'string') out[k] = src[k]; });
     return out;
 }
+/* === НОВОЕ: нормализация карты таймстемпов оценок === */
+function normalizeTimestampsMap(ts) {
+    const src = toPlainObject(ts);
+    const out = {};
+    Object.keys(src).forEach(sid => { out[sid] = toPlainObject(src[sid]); });
+    return out;
+}
+
 async function loadJournalNormalized() {
     let rec = null;
     try { rec = await DB.getJournal(CLASS_ID, SUBJECT_ID); }
     catch (e) { console.warn('DB.getJournal failed', e); }
-    if (!rec) return { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {} };
+    if (!rec) return { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {}, gradeTimestamps: {} };
     return {
         grades: normalizeGradesMap(rec.grades),
         lessons: normalizeLessonsMap(rec.lessons),
         qtrGrades: normalizeQtrMap(rec.qtr_grades),
-        lessonTypes: normalizeTypesMap(rec.lesson_types)
+        lessonTypes: normalizeTypesMap(rec.lesson_types),
+        gradeTimestamps: normalizeTimestampsMap(rec.grade_timestamps)
     };
 }
 
@@ -1419,6 +1428,15 @@ async function upqtrSummary(studentId, periodIdx, inputElement) {
     setTimeout(async () => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId][periodIdx] = up;
+
+        /* === ТАЙМСТЕМП ДЛЯ ИТОГОВОЙ ОЦЕНКИ ПЕРИОДА === */
+        const qKey = 'qtr:' + periodIdx;
+        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
+        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
+        if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
+        else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
+        /* ============================================== */
+
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
@@ -1441,6 +1459,15 @@ async function upFinal(studentId, inputElement) {
     setTimeout(async () => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId]['final'] = up;
+
+        /* === ТАЙМСТЕМП ДЛЯ ФИНАЛЬНОЙ ОЦЕНКИ === */
+        const qKey = 'qtr:final';
+        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
+        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
+        if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
+        else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
+        /* ====================================== */
+
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
@@ -2339,6 +2366,17 @@ async function upg(studentId, gradeKey, inputElement) {
     setTimeout(async () => {
         if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
         JOURNAL.grades[studentId][gradeKey] = up;
+
+        /* === ТАЙМСТЕМП ВЫСТАВЛЕНИЯ ОЦЕНКИ === */
+        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
+        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
+        if (!up) {
+            delete JOURNAL.gradeTimestamps[studentId][gradeKey];
+        } else {
+            JOURNAL.gradeTimestamps[studentId][gradeKey] = Date.now();
+        }
+        /* ===================================== */
+
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
@@ -2361,6 +2399,15 @@ async function upqtr(studentId, inputElement) {
     setTimeout(async () => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
+
+        /* === ТАЙМСТЕМП ДЛЯ ИТОГОВОЙ ОЦЕНКИ ТЕКУЩЕГО ПЕРИОДА === */
+        const qKey = 'qtr:' + ACTIVE_PERIOD_INDEX;
+        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
+        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
+        if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
+        else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
+        /* =================================================== */
+
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
@@ -2432,6 +2479,29 @@ async function saveJournal() {
             if (Object.keys(out).length > 0) mergedQtr[sid] = out;
         });
 
+        /* === MERGE TIMESTAMPS === */
+        const mergedTs = {};
+        const freshTs = fresh.gradeTimestamps || {};
+        const localTs = JOURNAL.gradeTimestamps || {};
+        const allTsSids = new Set([...Object.keys(freshTs), ...Object.keys(localTs)]);
+        allTsSids.forEach(sid => {
+            const fromFresh = freshTs[sid] || {};
+            const fromLocal = localTs[sid] || {};
+            const out = {};
+            Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
+            Object.keys(fromLocal).forEach(k => { out[k] = fromLocal[k]; });
+            Object.keys(out).forEach(k => {
+                if (k.startsWith('qtr:')) {
+                    if (!(mergedQtr[sid] && mergedQtr[sid][k.slice(4)])) delete out[k];
+                } else {
+                    if (!(mergedGrades[sid] && mergedGrades[sid][k])) delete out[k];
+                }
+            });
+            if (Object.keys(out).length > 0) mergedTs[sid] = out;
+        });
+        JOURNAL.gradeTimestamps = mergedTs;
+        /* ====================== */
+
         JOURNAL.grades = mergedGrades;
         JOURNAL.lessons = mergedLessons;
         JOURNAL.qtrGrades = mergedQtr;
@@ -2441,14 +2511,16 @@ async function saveJournal() {
             grades: mergedGrades,
             lessons: mergedLessons,
             qtr_grades: mergedQtr,
-            lesson_types: mergedTypes
+            lesson_types: mergedTypes,
+            grade_timestamps: mergedTs
         });
     } else {
         await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
             grades: JOURNAL.grades,
             lessons: JOURNAL.lessons,
             qtr_grades: JOURNAL.qtrGrades,
-            lesson_types: JOURNAL.lessonTypes
+            lesson_types: JOURNAL.lessonTypes,
+            grade_timestamps: JOURNAL.gradeTimestamps || {}
         });
     }
 }
