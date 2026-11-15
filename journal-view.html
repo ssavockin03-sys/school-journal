@@ -247,6 +247,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table td:first-child .focus-outline {
     left: 0;
 }
+
+.marks-table tbody tr:first-child td .focus-outline {
+    top: 0;
+}
 /* === END === */
 
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
@@ -2582,6 +2586,13 @@ function toggleLeftPanel() {
     const container = document.getElementById('panelsContainer');
     const tabLeft = document.getElementById('tabLeft');
     if (!container || !tabLeft) return;
+
+    const journalScroll = document.getElementById('journalScroll');
+    const panelRight = document.getElementById('panelRight');
+    const savedScrollLeft = journalScroll ? journalScroll.scrollLeft : 0;
+    const savedScrollTop = journalScroll ? journalScroll.scrollTop : 0;
+    const savedPlanTop = panelRight ? panelRight.scrollTop : 0;
+
     leftCollapsed = !leftCollapsed;
     container.classList.toggle('left-collapsed', leftCollapsed);
     tabLeft.classList.toggle('active', leftCollapsed);
@@ -2592,9 +2603,18 @@ function toggleLeftPanel() {
         if (tr) tr.classList.remove('active');
     }
     updateTabIcons();
-    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); });
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 100);
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 350);
+
+    const restoreScroll = () => {
+        if (journalScroll) {
+            journalScroll.scrollLeft = savedScrollLeft;
+            journalScroll.scrollTop = savedScrollTop;
+        }
+        if (panelRight) panelRight.scrollTop = savedPlanTop;
+    };
+
+    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); });
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); }, 100);
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); }, 350);
 }
 
 function toggleRightPanel() {
@@ -2603,6 +2623,13 @@ function toggleRightPanel() {
     const container = document.getElementById('panelsContainer');
     const tabRight = document.getElementById('tabRight');
     if (!container || !tabRight) return;
+
+    const journalScroll = document.getElementById('journalScroll');
+    const panelRight = document.getElementById('panelRight');
+    const savedScrollLeft = journalScroll ? journalScroll.scrollLeft : 0;
+    const savedScrollTop = journalScroll ? journalScroll.scrollTop : 0;
+    const savedPlanTop = panelRight ? panelRight.scrollTop : 0;
+
     rightCollapsed = !rightCollapsed;
     container.classList.toggle('right-collapsed', rightCollapsed);
     tabRight.classList.toggle('active', rightCollapsed);
@@ -2613,9 +2640,18 @@ function toggleRightPanel() {
         if (tl) tl.classList.remove('active');
     }
     updateTabIcons();
-    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); });
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 100);
-    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); }, 350);
+
+    const restoreScroll = () => {
+        if (journalScroll) {
+            journalScroll.scrollLeft = savedScrollLeft;
+            journalScroll.scrollTop = savedScrollTop;
+        }
+        if (panelRight) panelRight.scrollTop = savedPlanTop;
+    };
+
+    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); });
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); }, 100);
+    setTimeout(() => { safeCall(fillFillers); safeCall(fillPlanFillers); restoreScroll(); }, 350);
 }
 
 function updateTabIcons() {
