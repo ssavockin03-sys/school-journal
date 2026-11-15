@@ -125,7 +125,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 
-.marks-table { border-collapse: collapse; border-spacing: 0; table-layout: fixed; width: max-content; }
+.marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th,
 .marks-table td {
     padding: 0;
@@ -143,13 +143,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table tbody tr { height: 38px; }
 .marks-table thead { position: sticky; top: 0; z-index: 2000; box-shadow: 0 1px 0 0 #CFD8E3; }
 
-.marks-table thead tr#mRow th { height: 38px; border-bottom: 1px solid #CFD8E3; }
-.marks-table thead tr#sRow th { height: 38px; border-bottom: 1px solid #CFD8E3; }
-
-.marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
-.marks-table thead th { background: #EBF0F6 !important; box-shadow: none; }
+.marks-table thead tr#mRow th { height: 38px; border-bottom: none; }
+.marks-table thead tr#sRow th { height: 38px; border-top: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
 .marks-table thead tr#mRow th.col-avg,
 .marks-table thead tr#mRow th.col-qtr { border-bottom: 1px solid #CFD8E3; }
+
+.marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
+.marks-table thead th { background: #EBF0F6 !important; }
 
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .col-period { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
@@ -261,14 +261,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     background: #EBF0F6 !important;
     border-right: 1px solid #CFD8E3;
     border-bottom: 1px solid #CFD8E3;
-    box-shadow: none;
 }
 .marks-table tbody td.col-filler-body {
     background: #FFFFFF !important;
     border-right: 1px solid #CFD8E3;
     border-bottom: 1px solid #CFD8E3;
     pointer-events: none;
-    box-shadow: none;
 }
 .marks-table tbody tr:nth-child(5n) td.col-filler-body {
     border-bottom: 1px solid #000000 !important;
