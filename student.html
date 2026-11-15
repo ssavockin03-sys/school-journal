@@ -414,6 +414,54 @@
             color: #555;
         }
 
+        /* === НОВОЕ: ПЛАШКА С ПРЕДУПРЕЖДЕНИЕМ === */
+        .news-alert-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            max-width: 420px;
+            padding: 24px 28px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #fff1f2 0%, #fff 100%);
+            border: 1px solid #fecdd3;
+            box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
+            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .news-alert-icon {
+            font-size: 36px;
+            line-height: 1;
+        }
+        .news-alert-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .news-alert-title b {
+            color: #dc2626;
+        }
+        .news-alert-body {
+            font-size: 14px;
+            line-height: 1.55;
+            color: #334155;
+        }
+        .news-alert-sub {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #64748b;
+            padding-top: 10px;
+            border-top: 1px solid #fee2e2;
+            width: 100%;
+        }
+        .news-alert-sub b {
+            color: #475569;
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(24px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        /* ========================================== */
+
         /* ===================== МОДАЛКИ ===================== */
         .stat-modal-backdrop {
             position: fixed; inset: 0;
@@ -661,8 +709,8 @@
         </div>
 
         <!-- ПРАВАЯ ПАНЕЛЬ -->
-        <div class="right-panel">
-            <div class="news-placeholder">
+        <div class="right-panel" id="newsPanel">
+            <div class="news-placeholder" id="newsPlaceholder">
                 <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M100 20L120 60H80L100 20Z" fill="#65a3e3"/>
                     <circle cx="100" cy="60" r="15" fill="#4b9a25"/>
@@ -816,11 +864,10 @@
     }
 
     /* ============================================================ */
-    /* АВТООБНОВЛЕНИЕ ЖУРНАЛОВ (polling + realtime, если доступен)   */
+    /* АВТООБНОВЛЕНИЕ ЖУРНАЛОВ (polling)                             */
     /* ============================================================ */
     let _refreshTimer = null;
     let _lastJournalsHash = null;
-    let _realtimeChannel = null;
 
     function computeJournalsHash(arr) {
         try {
@@ -834,7 +881,6 @@
     }
 
     async function refreshJournalsOnly() {
-        // Не дёргаем, если открыта модалка
         const backdrop = document.getElementById('statModalBackdrop');
         if (backdrop && backdrop.classList.contains('show')) return;
         if (!CURRENT_STUDENT) return;
@@ -846,11 +892,12 @@
             if (withData.length > 0) fresh = withData;
 
             const newHash = computeJournalsHash(fresh);
-            if (newHash === _lastJournalsHash) return; // ничего не изменилось
+            if (newHash === _lastJournalsHash) return;
 
             ALL_JOURNALS = fresh;
             _lastJournalsHash = newHash;
             renderToday();
+            renderNewsAlert();
         } catch (e) {
             console.warn('[auto-refresh] journals:', e);
         }
@@ -860,29 +907,12 @@
         if (_refreshTimer) clearInterval(_refreshTimer);
         _lastJournalsHash = computeJournalsHash(ALL_JOURNALS);
 
-        // 1) Раз в 4 секунды — гарантированно работает везде
         _refreshTimer = setInterval(refreshJournalsOnly, 4000);
 
-        // 2) При возврате на вкладку — мгновенно
         window.addEventListener('focus', refreshJournalsOnly);
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) refreshJournalsOnly();
         });
-
-        // 3) Realtime через Supabase (если включён — будет мгновенно)
-        try {
-            if (typeof window.supabase !== 'undefined' && window.supabase && typeof window.supabase.channel === 'function') {
-                _realtimeChannel = window.supabase
-                    .channel('journals-auto-refresh')
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'journals' }, () => {
-                        refreshJournalsOnly();
-                    })
-                    .subscribe();
-            }
-        } catch (e) {
-            // Realtime не включён — не страшно, polling работает
-            console.warn('[realtime] not available:', e);
-        }
     }
     /* ============================================================ */
 
@@ -921,10 +951,6 @@
         return result;
     }
 
-    /* === ПОСЛЕДНИЕ 15 ВЫСТАВЛЕННЫХ ОЦЕНОК ===
-       Сортируем по grade_timestamps (время СОХРАНЕНИЯ), свежие — первыми.
-       Оценки без timestamp падают в конец (fallback по дате урока).
-       Берём только числовые оценки (kind === 'grade'), без О/СП/Н/Б/П. */
     function collectRecentGrades(limit) {
         const all = collectAllStudentGrades();
         const grades = all.filter(g => g.kind === 'grade' && g.grade);
@@ -940,15 +966,12 @@
             const aHas = a.gradedAt !== null;
             const bHas = b.gradedAt !== null;
 
-            // 1) Свежие (с таймстемпом) — всегда выше старых без таймстемпа
             if (aHas !== bHas) return aHas ? -1 : 1;
 
-            // 2) Оба с таймстемпом — новые сохранения сверху
             if (aHas && bHas && a.gradedAt !== b.gradedAt) {
                 return b.gradedAt - a.gradedAt;
             }
 
-            // 3) Fallback (без таймстемпа) — по дате урока, потом по номеру
             const aParts = String(a.key).split('_');
             const bParts = String(b.key).split('_');
             const aDate = aParts[0] || '';
@@ -962,7 +985,136 @@
 
         return withTs.slice(0, limit || 15);
     }
-    /* =========================================== */
+
+    /* ============================================================ */
+    /* ЛОГИКА ОБЪЯВЛЕНИЯ (2/Н и т.д.)                               */
+    /* ============================================================ */
+
+    // Регулярка для "красных" оценок: 1, 2 с любыми модификаторами (1+, 2-, 2/2, 1/1 и т.д.)
+    // Учитываем, что оценка может быть двойной (через "/")
+    function isRedGrade(gradeStr) {
+        if (!gradeStr) return false;
+        const s = String(gradeStr).toUpperCase().replace(/\s/g, '');
+        // Если есть "/", проверяем каждую часть
+        if (s.includes('/')) {
+            const parts = s.split('/');
+            // Если ХОТЯ БЫ одна часть красная — считаем красной
+            return parts.some(p => /^[12][+-]?$/.test(p) || /^[12]$/.test(p));
+        }
+        return /^[12][+-]?$/.test(s) || /^[12]$/.test(s);
+    }
+
+    // Ищем самое свежее событие (красная оценка или Н) за последние 3 дня
+    function findLatestAlertEvent() {
+        if (!CURRENT_STUDENT) return null;
+        
+        const now = Date.now();
+        const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+        let latestEvent = null;
+
+        // Собираем ВСЕ оценки и отметки Н
+        collectAllStudentGrades().forEach(g => {
+            let isAlert = false;
+            let alertType = ''; // 'red' или 'N'
+            let gradeValue = '';
+
+            if (g.kind === 'grade') {
+                if (isRedGrade(g.grade)) {
+                    isAlert = true;
+                    alertType = 'red';
+                    gradeValue = g.grade;
+                }
+            } else if (g.kind === 'presence') {
+                // Ищем именно "Н" (не "СП", не "О", не "Б", не "П")
+                if (g.presence === 'Н' || g.presence.startsWith('Н')) {
+                    isAlert = true;
+                    alertType = 'N';
+                    gradeValue = 'Н';
+                }
+            }
+
+            if (!isAlert) return;
+
+            // Получаем таймстемп сохранения
+            const j = g.journal;
+            const tsMap = j && j.grade_timestamps && j.grade_timestamps[CURRENT_STUDENT.id];
+            const ts = tsMap && tsMap[g.key];
+
+            // Если таймстемпа нет — используем дату урока (fallback), чтобы хоть как-то отобразить
+            // Но если таймстемп есть и он старый (> 3 дней) — пропускаем
+            if (ts) {
+                if (now - ts > THREE_DAYS_MS) return; // старше 3 дней — пропускаем
+            } else {
+                // Fallback: если нет таймстемпа, проверяем по дате урока (если урок был больше 3 дней назад — не показываем)
+                if (g.date) {
+                    const lessonTs = g.date.getTime();
+                    if (now - lessonTs > THREE_DAYS_MS) return;
+                } else {
+                    return; // нет ни таймстемпа, ни даты — не показываем
+                }
+            }
+
+            const eventTs = ts || (g.date ? g.date.getTime() : now);
+
+            if (!latestEvent || eventTs > latestEvent.ts) {
+                latestEvent = {
+                    ts: eventTs,
+                    type: alertType,
+                    grade: gradeValue,
+                    subject: g.subject
+                };
+            }
+        });
+
+        return latestEvent;
+    }
+
+    function renderNewsAlert() {
+        const container = document.getElementById('newsPlaceholder');
+        if (!container) return;
+
+        const event = findLatestAlertEvent();
+
+        if (!event) {
+            // Нет события — показываем заглушку
+            container.className = 'news-placeholder';
+            container.innerHTML = `
+                <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 20L120 60H80L100 20Z" fill="#65a3e3"/>
+                    <circle cx="100" cy="60" r="15" fill="#4b9a25"/>
+                    <rect x="70" y="70" width="60" height="10" rx="3" fill="#d9534f"/>
+                    <path d="M40 110C40 110 60 90 100 90C140 90 160 110 160 110" stroke="#cbd5e1" stroke-width="2"/>
+                    <circle cx="50" cy="130" r="10" fill="#e2e8f0"/>
+                    <circle cx="150" cy="130" r="10" fill="#e2e8f0"/>
+                </svg>
+                <div class="news-placeholder-text">Здесь появятся объявления и новости</div>
+            `;
+            return;
+        }
+
+        // Есть событие — показываем алерт
+        container.className = 'news-alert-card';
+        if (event.type === 'red') {
+            container.innerHTML = `
+                <div class="news-alert-icon">😟</div>
+                <div class="news-alert-title">Тебе поставили <b>${escapeHtml(event.grade)}</b> по предмету «${escapeHtml(event.subject)}»</div>
+                <div class="news-alert-body">Обычно оценку можно исправить. Спроси учителя, что ты можешь для этого сделать.</div>
+                <div class="news-alert-sub">
+                    Это уведомление <b>исчезнет через 3 дня</b>.
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="news-alert-icon">📌</div>
+                <div class="news-alert-title">Тебя не было на уроке «${escapeHtml(event.subject)}»</div>
+                <div class="news-alert-body">Если есть уважительная причина для отсутствия, сообщи о ней учителю.</div>
+                <div class="news-alert-sub">
+                    Это уведомление <b>исчезнет через 3 дня</b>.
+                </div>
+            `;
+        }
+    }
+    /* ============================================================ */
 
     function shiftDay(delta) {
         const next = new Date(TODAY_DATE);
@@ -978,6 +1130,7 @@
         renderMiniCards();
         const dayLessons = getLessonsForDate(date);
         renderSchedule(dayLessons, date);
+        renderNewsAlert();
     }
 
     function renderGradesList(records) {
@@ -1002,7 +1155,6 @@
             const typeLabel = getLessonTypeFullName(g.type);
             const icon = profileIconHtml(g.subjectObj);
 
-            /* === Плашка «сегодня», если оценка СОХРАНЕНА сегодня === */
             let freshTag = '';
             if (g.gradedAt) {
                 const saved = new Date(g.gradedAt);
@@ -1011,7 +1163,6 @@
                     freshTag = '<div class="grade-fresh">сегодня</div>';
                 }
             }
-            /* ====================================================== */
 
             html += `
                 <div class="grade-block" onclick="openStatModal('${escapeHtml(g.subject)}', '${escapeHtml(g.key)}')">
