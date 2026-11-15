@@ -169,6 +169,21 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        /* === НОВОЕ: плашка «сегодня» для свежевыставленных оценок === */
+        .grade-fresh {
+            display: inline-block;
+            margin-top: 2px;
+            padding: 0 6px;
+            height: 14px;
+            line-height: 14px;
+            border-radius: 7px;
+            background: #e3f2fd;
+            color: #166a94;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        /* ============================================================ */
         
         .scroll-arrow-btn {
             position: absolute;
@@ -785,27 +800,48 @@
         return result;
     }
 
-    // === ПОСЛЕДНИЕ 15 ВЫСТАВЛЕННЫХ ОЦЕНОК ===
-    // Сортируем по grade_timestamps (время сохранения), свежие — первыми.
-    // Оценки без timestamp падают в конец.
-    // Берём только числовые оценки (kind === 'grade'), без О/СП/Н/Б/П.
+    /* === ПОСЛЕДНИЕ 15 ВЫСТАВЛЕННЫХ ОЦЕНОК ===
+       Сортируем по grade_timestamps (время СОХРАНЕНИЯ), свежие — первыми.
+       Оценки без timestamp падают в конец (fallback по дате урока).
+       Берём только числовые оценки (kind === 'grade'), без О/СП/Н/Б/П. */
     function collectRecentGrades(limit) {
         const all = collectAllStudentGrades();
         const grades = all.filter(g => g.kind === 'grade' && g.grade);
+
         const withTs = grades.map(g => {
             const j = g.journal;
-            const ts = (j && j.grade_timestamps && j.grade_timestamps[CURRENT_STUDENT.id] && j.grade_timestamps[CURRENT_STUDENT.id][g.key]) || '';
-            return { ...g, gradedAt: ts };
+            const tsMap = j && j.grade_timestamps && j.grade_timestamps[CURRENT_STUDENT.id];
+            const ts = tsMap && tsMap[g.key];
+            return { ...g, gradedAt: (typeof ts === 'number' ? ts : null) };
         });
+
         withTs.sort((a, b) => {
-            const ta = a.gradedAt || '';
-            const tb = b.gradedAt || '';
-            if (ta !== tb) return tb.localeCompare(ta);
+            const aHas = a.gradedAt !== null;
+            const bHas = b.gradedAt !== null;
+
+            // 1) Свежие (с таймстемпом) — всегда выше старых без таймстемпа
+            if (aHas !== bHas) return aHas ? -1 : 1;
+
+            // 2) Оба с таймстемпом — новые сохранения сверху
+            if (aHas && bHas && a.gradedAt !== b.gradedAt) {
+                return b.gradedAt - a.gradedAt;
+            }
+
+            // 3) Fallback (без таймстемпа) — по дате урока, потом по номеру
+            const aParts = String(a.key).split('_');
+            const bParts = String(b.key).split('_');
+            const aDate = aParts[0] || '';
+            const bDate = bParts[0] || '';
+            if (aDate !== bDate) return bDate.localeCompare(aDate);
+            const aNum = parseInt(aParts[1], 10) || 0;
+            const bNum = parseInt(bParts[1], 10) || 0;
+            if (aNum !== bNum) return bNum - aNum;
             return String(b.key).localeCompare(String(a.key));
         });
+
         return withTs.slice(0, limit || 15);
     }
-    // ===========================================
+    /* =========================================== */
 
     function shiftDay(delta) {
         const next = new Date(TODAY_DATE);
@@ -843,12 +879,24 @@
         records.forEach(g => {
             const cls = gradeClass(g.grade);
             const typeLabel = getLessonTypeFullName(g.type);
-            
+
+            /* === Плашка «сегодня», если оценка СОХРАНЕНА сегодня === */
+            let freshTag = '';
+            if (g.gradedAt) {
+                const saved = new Date(g.gradedAt);
+                const now = new Date();
+                if (saved.toDateString() === now.toDateString()) {
+                    freshTag = '<div class="grade-fresh">сегодня</div>';
+                }
+            }
+            /* ====================================================== */
+
             html += `
                 <div class="grade-block" onclick="openStatModal('${escapeHtml(g.subject)}', '${escapeHtml(g.key)}')">
                     <div class="grade-square ${cls}">${escapeHtml(g.grade)}</div>
                     <div class="grade-subject">${escapeHtml(g.subject)}</div>
                     <div class="grade-type">${escapeHtml(typeLabel)}</div>
+                    ${freshTag}
                 </div>
             `;
         });
