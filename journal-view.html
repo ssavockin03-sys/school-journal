@@ -110,13 +110,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
 
-.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 2000; }
+.fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 3000; }
 
-.fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 1; }
-.fio-table { border-collapse: collapse; border-spacing: 0; table-layout: fixed; width: 210px; }
+.fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 2000; }
+.fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
 .fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 1.2; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
-.fio-table thead { position: sticky; top: 0; z-index: 2001; }
-.fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 1.2; padding: 0 10px; border-bottom: 1px solid #CFD8E3; vertical-align: middle; }
+.fio-table thead th { position: sticky; top: 0; z-index: 20; background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 1.2; padding: 0 10px; border-bottom: 1px solid #CFD8E3; vertical-align: middle; }
 .fio-table tbody tr { height: 38px; }
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
@@ -125,7 +124,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 
-.marks-table { border-collapse: collapse; border-spacing: 0; table-layout: fixed; width: max-content; }
+.marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th,
 .marks-table td {
     padding: 0;
@@ -141,15 +140,16 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     position: relative;
 }
 .marks-table tbody tr { height: 38px; }
-.marks-table thead { position: sticky; top: 0; z-index: 2000; }
 
-.marks-table thead tr#mRow th { height: 38px; border-bottom: 1px solid #CFD8E3; }
-.marks-table thead tr#sRow th { height: 38px; border-top: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
+.marks-table thead tr#mRow th { height: 38px; }
+.marks-table thead tr#sRow th { height: 38px; }
 .marks-table thead tr#mRow th.col-avg,
 .marks-table thead tr#mRow th.col-qtr { border-bottom: 1px solid #CFD8E3; }
 
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
-.marks-table thead th { background: #EBF0F6 !important; }
+.marks-table thead th { background: #EBF0F6 !important; position: sticky; z-index: 20; }
+.marks-table thead tr#mRow th { top: 0; }
+.marks-table thead tr#sRow th { top: 38px; }
 
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .col-period { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
@@ -211,7 +211,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .grade-cell input::selection { background: #BFDBFE; }
 
 .marks-table td:focus-within {
-    z-index: 2000 !important;
+    z-index: 100 !important;
 }
 
 /* === ОБВОДКА — КАК БЫЛА, НЕ ТРОГАТЬ === */
@@ -241,7 +241,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     border-right: none;
 }
 .marks-table td.saving-outline {
-    z-index: 2000 !important;
+    z-index: 100 !important;
 }
 /* === END === */
 
@@ -461,8 +461,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     .panels-container.summary-mode .mobile-view-tabs { display: none; }
     .panel-left, .panel-right { max-height: none; height: auto; border-radius: 8px; border: 1px solid #CFD8E3; margin: 0; width: 100%; overflow: visible; }
     .journal-scroll { width: 100%; height: auto; overflow: auto; }
-    .fio-table thead th { position: static; }
-    .marks-table thead th { position: static; }
+    .fio-table thead th { position: sticky; top: 0; z-index: 20; }
+    .marks-table thead th { position: sticky; z-index: 20; }
+    .marks-table thead tr#mRow th { top: 0; }
+    .marks-table thead tr#sRow th { top: 38px; }
     .fio-table-wrapper { width: 200px; }
     .fio-table { width: 200px; }
     .col-date   { width: 38px; min-width: 38px; max-width: 38px; }
