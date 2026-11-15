@@ -113,8 +113,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 3000; }
 
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 2000; }
-.fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
+.fio-table { border-collapse: collapse; border-spacing: 0; table-layout: fixed; width: 210px; }
 .fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 1.2; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
+.fio-table thead { position: sticky; top: 0; z-index: 2000; }
 .fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 1.2; padding: 0 10px; border-bottom: 1px solid #CFD8E3; vertical-align: middle; }
 .fio-table tbody tr { height: 38px; }
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -124,7 +125,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
 
-.marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
+.marks-table { border-collapse: collapse; border-spacing: 0; table-layout: fixed; width: max-content; }
 .marks-table th,
 .marks-table td {
     padding: 0;
@@ -140,9 +141,10 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     position: relative;
 }
 .marks-table tbody tr { height: 38px; }
+.marks-table thead { position: sticky; top: 0; z-index: 2000; }
 
-.marks-table thead tr#mRow th { height: 38px; }
-.marks-table thead tr#sRow th { height: 38px; }
+.marks-table thead tr#mRow th { height: 38px; border-bottom: 1px solid #CFD8E3; }
+.marks-table thead tr#sRow th { height: 38px; border-bottom: 1px solid #CFD8E3; }
 .marks-table thead tr#mRow th.col-avg,
 .marks-table thead tr#mRow th.col-qtr { border-bottom: 1px solid #CFD8E3; }
 
