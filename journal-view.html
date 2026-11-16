@@ -1460,13 +1460,12 @@ async function upFinal(studentId, inputElement) {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId]['final'] = up;
 
-        /* === ТАЙМСТЕМП ДЛЯ ФИНАЛЬНОЙ ОЦЕНКИ === */
+        // === ТАЙМСТЕМП ===
         const qKey = 'qtr:final';
         if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
         if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
         if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
         else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
-        /* ====================================== */
 
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
