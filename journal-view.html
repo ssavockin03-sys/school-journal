@@ -11,10 +11,8 @@
 * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
 html { -webkit-font-smoothing: antialiased; height: 100%; }
 body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; font-size: 13px; line-height: 1.4; overflow: hidden; display: flex; flex-direction: column; }
-
 .loading-hidden { opacity: 0 !important; transition: opacity 0.25s ease; pointer-events: none; }
 .loading-fade-in { opacity: 1 !important; transition: opacity 0.25s ease; pointer-events: auto; }
-
 .top-nav { font-size: 13px; color: #94A3B8; padding: 14px 30px 6px 30px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #F4F6F8; flex-shrink: 0; }
 .top-nav a { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
 .top-nav a:hover { color: #1D4ED8; text-decoration: underline; }
@@ -33,15 +31,12 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .dropdown-menu-item:hover { background: #EFF6FF; color: #2563EB; }
 .dropdown-menu-item.active { background: #DBEAFE; color: #1D4ED8; font-weight: 600; }
 .header-meta-item { font-size: 13px; color: #1E293B; }
-
 .period-tabs-wrapper { display: flex; align-items: center; gap: 12px; padding: 12px 30px 14px 30px; flex-wrap: wrap; background: #FFFFFF; flex-shrink: 0; }
 .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
 .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
 .tab-pill:first-child { border-radius: 8px 0 0 8px; }
 .tab-pill:last-child { border-radius: 0 8px 8px 0; border-width: 0; }
 .tab-pill.active { padding: 6px 8px; margin: -1px; border: 1px solid #2f80ed; border-radius: 8px; color: #2f80ed; z-index: 1; background: #fff; }
-.tab-pill.summary-tab { border-color: #e0e7ed; }
-
 .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
 .btn-import { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFFFFF; color: #334155; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
 .btn-import:hover { background: #F8FAFC; border-color: #94A3B8; }
@@ -54,40 +49,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .icon-action-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: transparent; border: none; border-radius: 4px; color: #64748B; cursor: pointer; font-family: inherit; }
 .icon-action-btn:hover { background: #F1F5F9; color: #1E293B; }
 .icon-action-btn svg { width: 15px; height: 15px; fill: currentColor; }
-.icon-action-btn .excel-icon { fill: #217346; }
-
 .mobile-view-tabs { display: none; }
-
 #mainContent { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
-
-.panels-container {
-    display: flex;
-    padding: 0 30px;
-    flex: 1 1 auto;
-    min-height: 0;
-    align-items: stretch;
-    background: #FFFFFF;
-}
+.panels-container { display: flex; padding: 0 30px; flex: 1 1 auto; min-height: 0; align-items: stretch; background: #FFFFFF; }
 .panel-left-wrapper, .panel-right-wrapper { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-basis 0.3s ease, max-width 0.3s ease; height: 100%; }
-
 .panel-left { flex: 1; min-width: 0; height: 100%; overflow: hidden; background: #FFFFFF; border: 1px solid #CFD8E3; border-right: none; border-radius: 8px 0 0 8px; display: flex; flex-direction: column; margin: 0; }
-
-.panel-right {
-    flex: 1;
-    min-width: 0;
-    height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    border: 1px solid #CFD8E3;
-    background: #FFFFFF;
-    border-radius: 0 8px 8px 0;
-    border-left: none;
-    margin: 0;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
+.panel-right { flex: 1; min-width: 0; height: 100%; overflow-y: scroll; overflow-x: hidden; border: 1px solid #CFD8E3; background: #FFFFFF; border-radius: 0 8px 8px 0; border-left: none; margin: 0; scrollbar-width: none; -ms-overflow-style: none; }
 .panel-right::-webkit-scrollbar { display: none; width: 0; height: 0; }
-
 .panels-container.left-collapsed .panel-left-wrapper { flex: 0 0 0; max-width: 0; }
 .panels-container.left-collapsed .panel-right-wrapper { flex: 1; }
 .panels-container.left-collapsed .panel-right { border-radius: 8px; border-left: 1px solid #CFD8E3; }
@@ -98,7 +66,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .panels-container.summary-mode .panel-left-wrapper { flex: 1; }
 .panels-container.summary-mode .panel-left { border-radius: 8px; border-right: 1px solid #CFD8E3; }
 .panels-container.summary-mode .side-toggle-tabs { display: none; }
-
 .side-toggle-tabs { width: 0; flex-shrink: 0; position: relative; margin: 0; align-self: stretch; }
 .side-toggle-tab { position: absolute; display: inline-flex; align-items: center; justify-content: center; gap: 5px; height: 130px; width: 27px; padding: 0; background: #3B82F6; color: #FFFFFF; border: 1px solid #3B82F6; font-size: 8.8px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; user-select: none; line-height: 1; letter-spacing: 0.2px; box-shadow: 0 1px 2px rgba(59, 130, 246, 0.25); z-index: 6; }
 .side-toggle-tab.tab-left { left: 100%; top: calc(47% - 130px); border-radius: 8px 0 0 8px; border-right: none; transform: rotate(180deg); }
@@ -106,12 +73,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .side-toggle-tab.tab-right { right: 100%; top: 47%; border-radius: 0 8px 8px 0; border-left: none; transform: rotate(180deg); }
 .side-toggle-tab.tab-right:hover, .side-toggle-tab.tab-right.active { background: #2563EB; border-color: #2563EB; }
 .side-toggle-tab svg { width: 9.8px; height: 9.8px; fill: #FFFFFF; flex-shrink: 0; transform: rotate(90deg); }
-
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
-
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 3000; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 2000; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
 .fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 1.2; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
@@ -123,36 +87,17 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
 .fio-table .student-name-text { display: inline-block; font-size: 13.65px; }
 .fio-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
-
 .marks-table-wrapper { flex-shrink: 0; background: #FFFFFF; }
-
 .marks-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
-.marks-table th,
-.marks-table td {
-    padding: 0;
-    text-align: center;
-    font-size: 12px;
-    height: 38px;
-    line-height: 1.2;
-    vertical-align: middle;
-    border: none;
-    border-right: 1px solid #CFD8E3;
-    border-bottom: 1px solid #CFD8E3;
-    box-sizing: border-box;
-    position: relative;
-}
+.marks-table th, .marks-table td { padding: 0; text-align: center; font-size: 12px; height: 38px; line-height: 1.2; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; position: relative; }
 .marks-table tbody { transform: translateZ(0); }
 .marks-table tbody tr { height: 38px; }
-
 .marks-table thead tr#mRow th { height: 38px; }
 .marks-table thead tr#sRow th { height: 38px; }
-.marks-table thead tr#mRow th.col-avg,
-.marks-table thead tr#mRow th.col-qtr { border-bottom: 1px solid #CFD8E3; }
-
+.marks-table thead tr#mRow th.col-avg, .marks-table thead tr#mRow th.col-qtr { border-bottom: 1px solid #CFD8E3; }
 .marks-table th { background: #EBF0F6 !important; font-weight: 600; color: #475569; font-size: 11px; }
 .marks-table thead { position: sticky; top: 0; z-index: 200; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .marks-table thead th { background: #EBF0F6 !important; }
-
 .col-date { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .col-period { width: 46px; min-width: 46px; max-width: 46px; background: #FFFFFF; }
 .marks-table thead tr:first-child .col-date { color: #0EA5E9 !important; font-size: 12px !important; font-weight: 400 !important; position: relative; vertical-align: middle; }
@@ -161,100 +106,36 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table thead tr:nth-child(2) .col-date { font-size: 12px !important; color: #475569 !important; font-weight: 400 !important; cursor: pointer !important; user-select: none; }
 .marks-table thead tr:nth-child(2) .col-date:hover { background: #DFE7F0 !important; }
 .marks-table tbody tr:nth-child(5n) td { border-bottom: 1px solid #000000 !important; }
-
 .marks-table thead tr:first-child th.col-date.col-today { padding: 4px 2px; line-height: 1.15; vertical-align: middle; }
 .marks-table thead tr:first-child th.col-date .today-date { display: block; font-size: 12px; color: #0EA5E9; font-weight: 500; line-height: 1.1; }
 .marks-table thead tr:first-child th.col-date.col-today.clickable-date:hover .today-date { color: #1D4ED8; }
 .marks-table thead tr:first-child th.col-date .today-label { display: block; font-size: 9px; color: #475569; font-weight: 400; line-height: 1.1; margin-top: 2px; text-transform: lowercase; letter-spacing: 0.1px; }
-
 .marks-table th.col-today::before, .marks-table td.col-today::before { content: ''; position: absolute; top: 0; bottom: -1px; left: 0; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .marks-table th.col-today::after, .marks-table td.col-today::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .marks-table thead tr:first-child th.col-today { border-top: 1px solid #1E40AF !important; }
 .marks-table tbody tr:last-child td.col-today { border-bottom: 1px solid #1E40AF !important; }
-
-.marks-table th.col-today.col-added-lesson::before,
-.marks-table td.col-today.col-added-lesson::before {
-    display: none !important;
-}
-
+.marks-table th.col-today.col-added-lesson::before, .marks-table td.col-today.col-added-lesson::before { display: none !important; }
 .marks-table.period-mode thead th.col-period-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px; color: #334155; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
 .marks-table.period-mode thead th.col-final-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px; color: #1E293B; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; }
 .marks-table.period-mode tbody td.col-period { font-size: 13px; background: #FFFFFF; vertical-align: middle; height: 38px; width: 46px; min-width: 46px; max-width: 46px; }
 .marks-table.period-mode tbody td.col-final { background: #FFFFFF; font-weight: 600; color: #1E293B; }
-
 .col-avg { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-avg { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
 .col-qtr { width: 53px; min-width: 53px; max-width: 53px; background: #FFFFFF !important; font-size: 11px !important; color: #000000 !important; padding: 0 4px; }
 .marks-table thead .col-qtr { background: #EBF0F6 !important; color: #334155 !important; font-weight: 600 !important; font-size: 11px !important; vertical-align: middle !important; height: 76px; line-height: 74px; }
-
 .grade-cell { display: flex; justify-content: center; align-items: center; width: 100%; height: 36px; position: relative; }
-.grade-cell input { 
-    width: 100%; 
-    height: 26px; 
-    text-align: center; 
-    border: none; 
-    background: transparent; 
-    font-size: 13.5px; 
-    cursor: pointer; 
-    position: absolute; 
-    top: 5px; 
-    left: 0; 
-    z-index: 5; 
-    padding: 0; 
-    color: transparent; 
-    font-family: inherit; 
-    outline: none; 
-}
-.grade-cell input:focus { 
-    background: #FFFFFF; 
-    cursor: text; 
-    color: #1E293B !important; 
-}
+.grade-cell input { width: 100%; height: 26px; text-align: center; border: none; background: transparent; font-size: 13.5px; cursor: pointer; position: absolute; top: 5px; left: 0; z-index: 5; padding: 0; color: transparent; font-family: inherit; outline: none; }
+.grade-cell input:focus { background: #FFFFFF; cursor: text; color: #1E293B !important; }
 .grade-cell input::selection { background: #BFDBFE; }
-
-.marks-table td:focus-within {
-    z-index: 100 !important;
-}
-
-/* === ОБВОДКА — КАК БЫЛА, НЕ ТРОГАТЬ === */
-.focus-outline {
-    position: absolute;
-    top: -1px; left: -1px; right: -1px; bottom: -1px;
-    border: 1.5px solid #5CA1F4;
-    pointer-events: none;
-    z-index: 1000;
-    display: none;
-    box-sizing: border-box;
-}
-.marks-table td:focus-within .focus-outline {
-    display: block;
-}
-
-.marks-table td.col-today:focus-within .focus-outline {
-    border-left: none;
-    border-right: none;
-}
-
-.marks-table td.saving-outline .focus-outline {
-    display: block;
-}
-.marks-table td.col-today.saving-outline .focus-outline {
-    border-left: none;
-    border-right: none;
-}
-.marks-table td.saving-outline {
-    z-index: 100 !important;
-}
-
-.marks-table td:first-child .focus-outline {
-    left: 0;
-}
-
-.marks-table tbody tr:first-child td .focus-outline {
-    top: 0;
-}
-/* === END === */
-
+.marks-table td:focus-within { z-index: 100 !important; }
+.focus-outline { position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px; border: 1.5px solid #5CA1F4; pointer-events: none; z-index: 1000; display: none; box-sizing: border-box; }
+.marks-table td:focus-within .focus-outline { display: block; }
+.marks-table td.col-today:focus-within .focus-outline { border-left: none; border-right: none; }
+.marks-table td.saving-outline .focus-outline { display: block; }
+.marks-table td.col-today.saving-outline .focus-outline { border-left: none; border-right: none; }
+.marks-table td.saving-outline { z-index: 100 !important; }
+.marks-table td:first-child .focus-outline { left: 0; }
+.marks-table tbody tr:first-child td .focus-outline { top: 0; }
 .grade-display { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; pointer-events: none; gap: 1px; z-index: 1; position: absolute; top: 0; left: 0; }
 .grade-box { display: flex; align-items: center; justify-content: center; min-width: 14px; height: 16px; padding: 0 2px; color: #FFFFFF !important; font-weight: 700; font-size: 13.5px; line-height: 1; }
 .double-grade-box { display: flex; align-items: center; justify-content: center; min-width: 11px; height: 14px; padding: 0 1px; color: #FFFFFF !important; font-weight: 700; font-size: 12px; line-height: 1; }
@@ -262,35 +143,16 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .grade-4, .grade-5 { background: #65A30D !important; }
 .grade-3 { background: #FB923C !important; }
 .bad-grade { background: #DC2626 !important; }
-
 .status-letter { position: absolute; top: 0; left: 3px; color: #DC2626 !important; font-size: 13px !important; font-weight: 400 !important; pointer-events: none; z-index: 4; background: transparent !important; border: none !important; padding: 0 !important; line-height: 1; }
-
 .marks-table td.highlight-cross, .fio-table td.highlight-cross { background-color: #EFF6FF !important; }
-
-.marks-table thead th.col-filler-head {
-    background: #EBF0F6 !important;
-    border-right: 1px solid #CFD8E3;
-    border-bottom: 1px solid #CFD8E3;
-}
-.marks-table tbody td.col-filler-body {
-    background: #FFFFFF !important;
-    border-right: 1px solid #CFD8E3;
-    border-bottom: 1px solid #CFD8E3;
-    pointer-events: none;
-}
-.marks-table tbody tr:nth-child(5n) td.col-filler-body {
-    border-bottom: 1px solid #000000 !important;
-}
-.marks-table thead th.col-filler-head.col-filler-last,
-.marks-table tbody td.col-filler-body.col-filler-last {
-    border-right: none;
-}
-
+.marks-table thead th.col-filler-head { background: #EBF0F6 !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
+.marks-table tbody td.col-filler-body { background: #FFFFFF !important; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; pointer-events: none; }
+.marks-table tbody tr:nth-child(5n) td.col-filler-body { border-bottom: 1px solid #000000 !important; }
+.marks-table thead th.col-filler-head.col-filler-last, .marks-table tbody td.col-filler-body.col-filler-last { border-right: none; }
 .journal-scroll::-webkit-scrollbar { width: 20px; height: 20px; background: transparent; }
 .journal-scroll::-webkit-scrollbar-thumb { background: #CFD8E3; border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-thumb:hover { background: #B8C4D4; background-clip: padding-box; }
 .journal-scroll::-webkit-scrollbar-corner { background: transparent; }
-
 .panel-right table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .panel-right table thead { position: sticky; top: 0; z-index: 30; }
 .panel-right table th { background: #EBF0F6 !important; color: #1E293B !important; font-size: 12px !important; font-weight: 600; height: 76px; line-height: 18px; padding: 0 8px; text-align: center; vertical-align: middle; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; }
@@ -301,97 +163,39 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .panel-right table th:nth-child(4) { width: 55%; }
 .panel-right tbody td { background: #FFFFFF !important; border: none; border-right: 1px solid #CFD8E3; border-bottom: 1px solid #CFD8E3; vertical-align: top; text-align: left; padding: 4px 8px; box-sizing: border-box; word-wrap: break-word; height: 56px; position: relative; }
 .panel-right tbody td:last-child { border-right: none; }
-
 .panel-right tbody tr:last-child td { border-bottom: 0 !important; }
-
 .panel-right tbody td.lesson-num-cell { font-weight: 600; background: #F4F7FB !important; vertical-align: middle; color: #475569; font-size: 12px; text-align: center; padding: 0 !important; }
 .panel-right tbody td.lesson-date-cell { font-weight: 600; background: #FFFFFF !important; vertical-align: middle; color: #0EA5E9; font-size: 12px; text-align: center; padding: 0 !important; cursor: pointer; transition: background 0.15s ease; }
 .panel-right tbody td.lesson-date-cell:hover { background: #EFF6FF !important; color: #1D4ED8; }
-
 .panel-right tbody tr.plan-filler-row td { padding: 0 !important; line-height: 0 !important; font-size: 0 !important; height: 38px; box-sizing: border-box; }
-
 .panel-right tbody tr.lesson-row.lesson-today > td { border-top: 1px solid #1E40AF !important; border-bottom: 1px solid #1E40AF !important; }
 .panel-right tbody tr.lesson-row.lesson-today > td:not(:last-child) { border-right: 1px solid #1E40AF !important; }
 .panel-right tbody tr.lesson-row.lesson-today > td:first-child::before { content: ''; position: absolute; top: 0; bottom: -1px; left: 0; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .panel-right tbody tr.lesson-row.lesson-today > td:last-child::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
-
 .panel-right tbody td.lesson-date-cell .today-date { display: block; font-size: 12px; color: #0EA5E9; font-weight: 500; line-height: 1.1; }
 .panel-right tbody td.lesson-date-cell .today-label { display: block; font-size: 9px; color: #475569; font-weight: 400; line-height: 1.1; margin-top: 2px; text-transform: lowercase; letter-spacing: 0.1px; }
-
 .plan-filler-cell { background: #FFFFFF !important; pointer-events: none; }
-
-.theme-cell, .homework-cell, .hw-list-item, .theme-text {
-    font-size: 14px;
-    line-height: 1.4;
-    color: #334155;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-.theme-cell, .homework-cell {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    vertical-align: top;
-}
+.theme-cell, .homework-cell, .hw-list-item, .theme-text { font-size: 14px; line-height: 1.4; color: #334155; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+.theme-cell, .homework-cell { white-space: pre-wrap; word-wrap: break-word; vertical-align: top; }
 .homework-cell { padding-right: 84px !important; }
-
 .cell-online-btn { position: absolute; top: 4px; right: 6px; display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; background: #FFFFFF; border: 1px solid #93C5FD; border-radius: 6px; color: #2563EB; font-size: 10px; font-weight: 500; cursor: pointer; font-family: inherit; white-space: nowrap; line-height: 1.3; transition: all 0.15s ease; z-index: 2; }
 .cell-online-btn:hover { background: #EFF6FF; border-color: #2563EB; }
 .cell-online-btn svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
-
 .hw-list { display: block; }
 .hw-list-item { display: block; padding: 2px 6px; margin: 0; border-radius: 6px; cursor: pointer; white-space: pre-wrap; word-wrap: break-word; transition: background 0.12s ease; }
 .hw-divider { display: block; height: 1px; background: #CFD8E3; margin: 4px 0 4px 0; border: none; }
 .placeholder-text { display: inline-block; color: #0EA5E9; font-style: italic; font-size: 14px; cursor: pointer; padding: 8px 12px; margin: -8px -12px; line-height: 1.4; }
 .add-hw-btn { display: inline-block; padding: 2px 6px; margin: 0; border: none; background: transparent; color: #0EA5E9; font-style: italic; font-size: 14px; font-weight: 400; cursor: pointer; font-family: inherit; text-align: left; line-height: 1.4; }
-
 .edit-bubble { display: flex; align-items: flex-start; gap: 6px; width: 100%; }
-.edit-bubble textarea {
-    flex: 1 1 auto;
-    min-width: 0;
-    min-height: 32px;
-    padding: 6px 10px;
-    border: 1px solid #DCE3EB;
-    border-radius: 6px;
-    background: #F8FAFC;
-    font-size: 14px;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color: #1E293B;
-    outline: none;
-    resize: none;
-    line-height: 1.4;
-    box-shadow: none;
-    overflow: hidden;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    box-sizing: border-box;
-    transition: background 0.15s ease, border-color 0.15s ease;
-}
-.edit-bubble textarea:focus {
-    background: #FFFFFF;
-    border-color: #94A3B8;
-    box-shadow: none;
-}
-.edit-bubble .confirm-btn {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    background: #2563EB;
-    border: none;
-    border-radius: 6px;
-    color: #FFFFFF;
-    cursor: pointer;
-    margin-top: 3px;
-}
+.edit-bubble textarea { flex: 1 1 auto; min-width: 0; min-height: 32px; padding: 6px 10px; border: 1px solid #DCE3EB; border-radius: 6px; background: #F8FAFC; font-size: 14px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1E293B; outline: none; resize: none; line-height: 1.4; box-shadow: none; overflow: hidden; white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; transition: background 0.15s ease, border-color 0.15s ease; }
+.edit-bubble textarea:focus { background: #FFFFFF; border-color: #94A3B8; box-shadow: none; }
+.edit-bubble .confirm-btn { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: #2563EB; border: none; border-radius: 6px; color: #FFFFFF; cursor: pointer; margin-top: 3px; }
 .edit-bubble .confirm-btn:hover { background: #1D4ED8; }
 .edit-bubble .confirm-btn svg { width: 13px; height: 13px; fill: #FFFFFF; }
-
 .empty-state { padding: 60px 30px; text-align: center; border-radius: 10px; border: 1px solid #CFD8E3; margin: 24px 30px; }
 .empty-state svg { width: 56px; height: 56px; fill: #CBD5E1; margin-bottom: 14px; }
 .empty-state h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
 .empty-state p { font-size: 13px; color: #64748B; max-width: 480px; margin: 0 auto 18px; line-height: 1.6; }
-
 .lesson-type-popup { position: fixed; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18); z-index: 9999; display: none; flex-direction: column; width: 280px; max-height: 400px; overflow: hidden; }
 .lesson-type-popup.show { display: flex; }
 .lesson-type-popup-search { padding: 6px; border-bottom: 1px solid #E2E8F0; flex-shrink: 0; }
@@ -406,49 +210,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .lesson-type-popup-item .full { font-size: 12px; color: #1E293B; font-weight: 500; line-height: 1.25; }
 .lesson-type-popup-item.active .full { font-weight: 600; color: #1D4ED8; }
 .lesson-type-popup-empty { padding: 20px 12px; text-align: center; color: #94A3B8; font-size: 12px; }
-
-.lesson-type-popup-actions {
-    display: flex;
-    gap: 4px;
-    padding: 8px;
-    border-top: 1px solid #E2E8F0;
-    background: #F8FAFC;
-}
-.lesson-action-btn {
-    flex: 1;
-    padding: 6px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: inherit;
-    border: 1px solid #CBD5E1;
-    background: #FFFFFF;
-    color: #334155;
-    transition: all 0.15s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-}
-.lesson-action-btn:hover {
-    background: #F1F5F9;
-}
-.lesson-action-btn.add-btn {
-    color: #2563EB;
-    border-color: #93C5FD;
-}
-.lesson-action-btn.add-btn:hover {
-    background: #EFF6FF;
-}
-.lesson-action-btn.delete-btn {
-    color: #DC2626;
-    border-color: #FCA5A5;
-}
-.lesson-action-btn.delete-btn:hover {
-    background: #FEF2F2;
-}
-
+.lesson-type-popup-actions { display: flex; gap: 4px; padding: 8px; border-top: 1px solid #E2E8F0; background: #F8FAFC; }
+.lesson-action-btn { flex: 1; padding: 6px 10px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; font-family: inherit; border: 1px solid #CBD5E1; background: #FFFFFF; color: #334155; transition: all 0.15s ease; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.lesson-action-btn:hover { background: #F1F5F9; }
+.lesson-action-btn.add-btn { color: #2563EB; border-color: #93C5FD; }
+.lesson-action-btn.add-btn:hover { background: #EFF6FF; }
+.lesson-action-btn.delete-btn { color: #DC2626; border-color: #FCA5A5; }
+.lesson-action-btn.delete-btn:hover { background: #FEF2F2; }
 @media (max-width: 1100px) {
     body { overflow: auto; height: auto; min-height: 100vh; display: block; }
     #mainContent { display: block; }
@@ -646,15 +414,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 <script>
 const DAYS_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const DAYS_JS_INDEX = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
-
 const EDIT_DELAY_MS = 125;
-
-const PERIOD_NAMES = { 
-    'Четверти': 'четверть', 
-    'Семестры': 'семестр', 
-    'Триместры': 'триместр', 
-    'Полугодия': 'полугодие' 
-};
+const PERIOD_NAMES = { 'Четверти': 'четверть', 'Семестры': 'семестр', 'Триместры': 'триместр', 'Полугодия': 'полугодие' };
 
 const LESSON_TYPES = [
     { abbr: 'АК/Р', full: 'Административная контрольная работа' }, { abbr: 'АД', full: 'Арифметический диктант' },
@@ -691,448 +452,178 @@ const LESSON_TYPES = [
 ];
 LESSON_TYPES.sort((a, b) => a.full.localeCompare(b.full, 'ru'));
 
-function reveal(el) {
-    if (!el) return;
-    el.classList.remove('loading-hidden');
-    el.classList.add('loading-fade-in');
-}
-function safeCall(fn) {
-    try { fn(); } catch (e) { console.warn('[loading]', e); }
-}
+function reveal(el) { if (!el) return; el.classList.remove('loading-hidden'); el.classList.add('loading-fade-in'); }
+function safeCall(fn) { try { fn(); } catch (e) { console.warn('[loading]', e); } }
 function runLoadingSequence() {
-    safeCall(() => {
-        reveal(document.getElementById('loadTopNav'));
-        reveal(document.getElementById('loadHeaderBar'));
-    });
-
+    safeCall(() => { reveal(document.getElementById('loadTopNav')); reveal(document.getElementById('loadHeaderBar')); });
     setTimeout(() => safeCall(() => {
-        reveal(document.getElementById('loadPeriodTabsWrapper'));
-        reveal(document.getElementById('periodTabs'));
-        reveal(document.getElementById('loadBtnImport'));
-        reveal(document.getElementById('loadBtnRemark'));
-        reveal(document.getElementById('loadBtnClassRecord'));
-        reveal(document.getElementById('loadIconActions'));
+        reveal(document.getElementById('loadPeriodTabsWrapper')); reveal(document.getElementById('periodTabs'));
+        reveal(document.getElementById('loadBtnImport')); reveal(document.getElementById('loadBtnRemark'));
+        reveal(document.getElementById('loadBtnClassRecord')); reveal(document.getElementById('loadIconActions'));
     }), 150);
-
     setTimeout(() => safeCall(() => {
-        reveal(document.getElementById('loadMobileTabs'));
-        reveal(document.getElementById('mainContent'));
+        reveal(document.getElementById('loadMobileTabs')); reveal(document.getElementById('mainContent'));
         requestAnimationFrame(() => safeCall(() => {
             if (typeof fillFillers === 'function') fillFillers();
             if (typeof fillPlanFillers === 'function') fillPlanFillers();
             if (typeof centerOnToday === 'function') centerOnToday();
         }));
-        setTimeout(() => safeCall(() => {
-            if (typeof fillFillers === 'function') fillFillers();
-            if (typeof fillPlanFillers === 'function') fillPlanFillers();
-        }), 80);
-        setTimeout(() => safeCall(() => {
-            if (typeof fillFillers === 'function') fillFillers();
-            if (typeof fillPlanFillers === 'function') fillPlanFillers();
-        }), 250);
+        setTimeout(() => safeCall(() => { if (typeof fillFillers === 'function') fillFillers(); if (typeof fillPlanFillers === 'function') fillPlanFillers(); }), 80);
+        setTimeout(() => safeCall(() => { if (typeof fillFillers === 'function') fillFillers(); if (typeof fillPlanFillers === 'function') fillPlanFillers(); }), 250);
     }), 350);
 }
 
 let hwEditing = false;
-
-function forceReflow(el) {
-    if (!el) return 0;
-    return el.offsetHeight;
-}
-
+function forceReflow(el) { if (!el) return 0; return el.offsetHeight; }
 function refillPlan() {
     const panelRight = document.getElementById('panelRight');
-    forceReflow(panelRight);
-    safeCall(fillPlanFillers);
-    forceReflow(panelRight);
-    safeCall(fillPlanFillers);
-    requestAnimationFrame(() => {
-        forceReflow(panelRight);
-        safeCall(fillPlanFillers);
-    });
-    setTimeout(() => {
-        forceReflow(panelRight);
-        safeCall(fillPlanFillers);
-    }, 60);
-    setTimeout(() => {
-        forceReflow(panelRight);
-        safeCall(fillPlanFillers);
-    }, 250);
+    forceReflow(panelRight); safeCall(fillPlanFillers);
+    forceReflow(panelRight); safeCall(fillPlanFillers);
+    requestAnimationFrame(() => { forceReflow(panelRight); safeCall(fillPlanFillers); });
+    setTimeout(() => { forceReflow(panelRight); safeCall(fillPlanFillers); }, 60);
+    setTimeout(() => { forceReflow(panelRight); safeCall(fillPlanFillers); }, 250);
 }
 
-function getFillerColWidth() {
-    const w = window.innerWidth;
-    if (w <= 480) return 34;
-    if (w <= 1100) return 38;
-    return 46;
-}
-function getPlanFillerRowHeight() {
-    return 38;
-}
+function getFillerColWidth() { const w = window.innerWidth; if (w <= 480) return 34; if (w <= 1100) return 38; return 46; }
+function getPlanFillerRowHeight() { return 38; }
+function escapeHtml(text) { if (text === null || text === undefined) return ''; const s = String(text); return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
+function formatShortName(fullName) { if (!fullName) return ''; const parts = String(fullName).trim().split(/\s+/).filter(Boolean); if (parts.length === 0) return ''; if (parts.length === 1) return parts[0]; return parts[0] + ' ' + parts[1]; }
+function getUrlParams() { const params = new URLSearchParams(window.location.search); return { classId: params.get('class'), subjectId: params.get('subject') }; }
 
-function escapeHtml(text) {
-    if (text === null || text === undefined) return '';
-    const s = String(text);
-    return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-}
-function formatShortName(fullName) {
-    if (!fullName) return '';
-    const parts = String(fullName).trim().split(/\s+/).filter(Boolean);
-    if (parts.length === 0) return '';
-    if (parts.length === 1) return parts[0];
-    return parts[0] + ' ' + parts[1];
-}
-function getUrlParams() {
-    const params = new URLSearchParams(window.location.search);
-    return { classId: params.get('class'), subjectId: params.get('subject') };
-}
-
-let CLASS_ID = null;
-let SUBJECT_ID = null;
-let CLASS_OBJ = null;
-let SUBJECT_OBJ = null;
-let SUBJECT_NAME = '';
-let TEACHER_NAME = '';
-let STUDENTS = [];
-let DATES = [];
-let ACTIVE_PERIOD_INDEX = 0;
-let SUMMARY_MODE = false;
-let PERIODS = [];
-let PERIOD_SYSTEM = '';
-let JOURNAL = null;
-let ALL_CLASSES = [];
-let ALL_CLASS_SUBJECTS = [];
-let ALL_SCHEDULES = [];
-
-let leftCollapsed = false;
-let rightCollapsed = false;
-let MOBILE_VIEW = 'journal';
-let toggleRestoreTimer = null;
+let CLASS_ID = null, SUBJECT_ID = null, CLASS_OBJ = null, SUBJECT_OBJ = null, SUBJECT_NAME = '', TEACHER_NAME = '';
+let STUDENTS = [], DATES = [], ACTIVE_PERIOD_INDEX = 0, SUMMARY_MODE = false, PERIODS = [], PERIOD_SYSTEM = '', JOURNAL = null;
+let ALL_CLASSES = [], ALL_CLASS_SUBJECTS = [], ALL_SCHEDULES = [];
+let leftCollapsed = false, rightCollapsed = false, MOBILE_VIEW = 'journal', toggleRestoreTimer = null;
 
 let toastTimer = null;
 function showToast(message) {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = message;
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateY(0)';
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(20px)';
-    }, 2500);
+    const toast = document.getElementById('toast'); if (!toast) return;
+    toast.textContent = message; toast.style.opacity = '1'; toast.style.transform = 'translateY(0)';
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(20px)'; }, 2500);
 }
 
-function isMobileView() {
-    return window.matchMedia('(max-width: 1100px)').matches;
-}
-
+function isMobileView() { return window.matchMedia('(max-width: 1100px)').matches; }
 function switchMobileView(view) {
-    MOBILE_VIEW = view;
-    const container = document.getElementById('panelsContainer');
-    if (!container) return;
-    container.classList.toggle('mobile-show-journal', view === 'journal');
-    container.classList.toggle('mobile-show-plan', view === 'plan');
-    const tJ = document.getElementById('mobileTabJournal');
-    const tP = document.getElementById('mobileTabPlan');
-    if (tJ) tJ.classList.toggle('active', view === 'journal');
-    if (tP) tP.classList.toggle('active', view === 'plan');
-    requestAnimationFrame(() => {
-        safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else { fillFillers(); fillPlanFillers(); } });
-        safeCall(centerOnToday);
-    });
-    setTimeout(() => {
-        safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else { fillFillers(); fillPlanFillers(); } });
-        safeCall(centerOnToday);
-    }, 80);
-    setTimeout(() => {
-        safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else { fillFillers(); fillPlanFillers(); } });
-        safeCall(centerOnToday);
-    }, 250);
+    MOBILE_VIEW = view; const container = document.getElementById('panelsContainer'); if (!container) return;
+    container.classList.toggle('mobile-show-journal', view === 'journal'); container.classList.toggle('mobile-show-plan', view === 'plan');
+    const tJ = document.getElementById('mobileTabJournal'); const tP = document.getElementById('mobileTabPlan');
+    if (tJ) tJ.classList.toggle('active', view === 'journal'); if (tP) tP.classList.toggle('active', view === 'plan');
+    requestAnimationFrame(() => { safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else { fillFillers(); fillPlanFillers(); } }); safeCall(centerOnToday); });
+    setTimeout(() => { safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else { fillFillers(); fillPlanFillers(); } }); safeCall(centerOnToday); }, 80);
+    setTimeout(() => { safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else { fillFillers(); fillPlanFillers(); } }); safeCall(centerOnToday); }, 250);
 }
 
 function collectSubjectsFromSchedule(schedules, classId) {
     const map = new Map();
-    schedules
-        .filter(s => s.class_id === classId && s.grid)
-        .forEach(s => {
-            Object.values(s.grid).forEach(dayGrid => {
-                Object.values(dayGrid || {}).forEach(lesson => {
-                    if (!lesson || !lesson.subject) return;
-                    if (!map.has(lesson.subject)) {
-                        map.set(lesson.subject, { name: lesson.subject, teacherName: lesson.teacherName || '' });
-                    } else if (!map.get(lesson.subject).teacherName && lesson.teacherName) {
-                        map.get(lesson.subject).teacherName = lesson.teacherName;
-                    }
-                });
+    schedules.filter(s => s.class_id === classId && s.grid).forEach(s => {
+        Object.values(s.grid).forEach(dayGrid => {
+            Object.values(dayGrid || {}).forEach(lesson => {
+                if (!lesson || !lesson.subject) return;
+                if (!map.has(lesson.subject)) map.set(lesson.subject, { name: lesson.subject, teacherName: lesson.teacherName || '' });
+                else if (!map.get(lesson.subject).teacherName && lesson.teacherName) map.get(lesson.subject).teacherName = lesson.teacherName;
             });
         });
+    });
     return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 }
 
-function todayIso() {
-    const d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-}
-
-function normalizeHwList(h) {
-    if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== '');
-    if (typeof h === 'string' && h.trim() !== '') return [h];
-    return [];
-}
-
+function todayIso() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function normalizeHwList(h) { if (Array.isArray(h)) return h.filter(x => typeof x === 'string' && x.trim() !== ''); if (typeof h === 'string' && h.trim() !== '') return [h]; return []; }
 function toPlainObject(x) {
-    if (!x) return {};
-    if (typeof x === 'string') {
-        try {
-            const parsed = JSON.parse(x);
-            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed;
-        } catch (e) {}
-        return {};
-    }
-    if (typeof x === 'object' && !Array.isArray(x)) return x;
-    return {};
+    if (!x) return {}; if (typeof x === 'string') { try { const parsed = JSON.parse(x); if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed; } catch (e) {} return {}; }
+    if (typeof x === 'object' && !Array.isArray(x)) return x; return {};
 }
-function normalizeGradesMap(grades) {
-    const src = toPlainObject(grades);
-    const out = {};
-    Object.keys(src).forEach(sid => { out[sid] = toPlainObject(src[sid]); });
-    return out;
-}
+function normalizeGradesMap(grades) { const src = toPlainObject(grades); const out = {}; Object.keys(src).forEach(sid => { out[sid] = toPlainObject(src[sid]); }); return out; }
 function normalizeLessonsMap(lessons) {
-    const src = toPlainObject(lessons);
-    const out = {};
-    Object.keys(src).forEach(k => {
-        const p = toPlainObject(src[k]);
-        out[k] = { t: typeof p.t === 'string' ? p.t : '', h: normalizeHwList(p.h) };
-    });
+    const src = toPlainObject(lessons); const out = {};
+    Object.keys(src).forEach(k => { const p = toPlainObject(src[k]); out[k] = { t: typeof p.t === 'string' ? p.t : '', h: normalizeHwList(p.h) }; });
     return out;
 }
-function normalizeQtrMap(qtr) {
-    const src = toPlainObject(qtr);
-    const out = {};
-    Object.keys(src).forEach(sid => { out[sid] = toPlainObject(src[sid]); });
-    return out;
-}
-function normalizeTypesMap(types) {
-    const src = toPlainObject(types);
-    const out = {};
-    Object.keys(src).forEach(k => { if (typeof src[k] === 'string') out[k] = src[k]; });
-    return out;
-}
-/* === НОВОЕ: нормализация карты таймстемпов оценок === */
-function normalizeTimestampsMap(ts) {
-    const src = toPlainObject(ts);
-    const out = {};
-    Object.keys(src).forEach(sid => { out[sid] = toPlainObject(src[sid]); });
-    return out;
-}
+function normalizeQtrMap(qtr) { const src = toPlainObject(qtr); const out = {}; Object.keys(src).forEach(sid => { out[sid] = toPlainObject(src[sid]); }); return out; }
+function normalizeTypesMap(types) { const src = toPlainObject(types); const out = {}; Object.keys(src).forEach(k => { if (typeof src[k] === 'string') out[k] = src[k]; }); return out; }
+function normalizeTimestampsMap(ts) { const src = toPlainObject(ts); const out = {}; Object.keys(src).forEach(sid => { out[sid] = toPlainObject(src[sid]); }); return out; }
 
 async function loadJournalNormalized() {
-    let rec = null;
-    try { rec = await DB.getJournal(CLASS_ID, SUBJECT_ID); }
-    catch (e) { console.warn('DB.getJournal failed', e); }
+    let rec = null; try { rec = await DB.getJournal(CLASS_ID, SUBJECT_ID); } catch (e) { console.warn('DB.getJournal failed', e); }
     if (!rec) return { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {}, gradeTimestamps: {} };
     return {
-        grades: normalizeGradesMap(rec.grades),
-        lessons: normalizeLessonsMap(rec.lessons),
-        qtrGrades: normalizeQtrMap(rec.qtr_grades),
-        lessonTypes: normalizeTypesMap(rec.lesson_types),
+        grades: normalizeGradesMap(rec.grades), lessons: normalizeLessonsMap(rec.lessons),
+        qtrGrades: normalizeQtrMap(rec.qtr_grades), lessonTypes: normalizeTypesMap(rec.lesson_types),
         gradeTimestamps: normalizeTimestampsMap(rec.grade_timestamps)
     };
 }
 
 let activeEditor = null;
-
-function commitActiveEditor() {
-    if (!activeEditor) return;
-    const ed = activeEditor;
-    activeEditor = null;
-    if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; }
-    try { ed.commit(); } catch (e) { console.error(e); }
-}
-
-function cancelActiveEditor() {
-    if (!activeEditor) return;
-    const ed = activeEditor;
-    activeEditor = null;
-    if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; }
-    try { ed.cancel(); } catch (e) { console.error(e); }
-}
-
-function detachActiveEditorDom() {
-    if (!activeEditor) return;
-    const ed = activeEditor;
-    activeEditor = null;
-    if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; }
-    try { ed.commit(); } catch (e) { console.error(e); }
-    if (ed.dom && ed.dom.parentNode) ed.dom.parentNode.removeChild(ed.dom);
-}
-
-function clearSavingOutline() {
-    document.querySelectorAll('.marks-table td.saving-outline').forEach(td => {
-        td.classList.remove('saving-outline');
-    });
-}
+function commitActiveEditor() { if (!activeEditor) return; const ed = activeEditor; activeEditor = null; if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } try { ed.commit(); } catch (e) { console.error(e); } }
+function cancelActiveEditor() { if (!activeEditor) return; const ed = activeEditor; activeEditor = null; if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } try { ed.cancel(); } catch (e) { console.error(e); } }
+function detachActiveEditorDom() { if (!activeEditor) return; const ed = activeEditor; activeEditor = null; if (ed.timer) { clearTimeout(ed.timer); ed.timer = null; } try { ed.commit(); } catch (e) { console.error(e); } if (ed.dom && ed.dom.parentNode) ed.dom.parentNode.removeChild(ed.dom); }
+function clearSavingOutline() { document.querySelectorAll('.marks-table td.saving-outline').forEach(td => { td.classList.remove('saving-outline'); }); }
 
 async function init() {
     const { classId, subjectId } = getUrlParams();
     if (!classId || !subjectId) { showEmpty('Не заданы параметры', 'В URL отсутствуют параметры class и subject.'); return; }
-    CLASS_ID = classId;
-    SUBJECT_ID = subjectId;
-
-    const classes = await DB.getAll('classes');
-    ALL_CLASSES = classes;
-    CLASS_OBJ = classes.find(c => c.id === CLASS_ID);
+    CLASS_ID = classId; SUBJECT_ID = subjectId;
+    const classes = await DB.getAll('classes'); ALL_CLASSES = classes; CLASS_OBJ = classes.find(c => c.id === CLASS_ID);
     if (!CLASS_OBJ) { showEmpty('Класс не найден', 'В базе данных нет класса с указанным ID.'); return; }
-
-    const subjects = await DB.getAll('subjects');
-    SUBJECT_OBJ = subjects.find(s => s.id === SUBJECT_ID);
+    const subjects = await DB.getAll('subjects'); SUBJECT_OBJ = subjects.find(s => s.id === SUBJECT_ID);
     if (!SUBJECT_OBJ) { showEmpty('Предмет не найден', 'В базе данных нет предмета с указанным ID.'); return; }
     SUBJECT_NAME = SUBJECT_OBJ.name;
-
     ALL_SCHEDULES = await DB.getAll('class_schedules');
     const classSubjects = collectSubjectsFromSchedule(ALL_SCHEDULES, CLASS_ID);
     const matched = classSubjects.find(s => s.name === SUBJECT_NAME);
     if (matched) TEACHER_NAME = matched.teacherName || '';
-
     ALL_CLASS_SUBJECTS = [];
-    classSubjects.forEach(cs => {
-        const subjObj = subjects.find(s => s.name === cs.name);
-        if (subjObj) ALL_CLASS_SUBJECTS.push({ id: subjObj.id, name: cs.name });
-    });
-
+    classSubjects.forEach(cs => { const subjObj = subjects.find(s => s.name === cs.name); if (subjObj) ALL_CLASS_SUBJECTS.push({ id: subjObj.id, name: cs.name }); });
     const allStudents = await DB.getAll('students');
-    STUDENTS = allStudents
-        .filter(s => s.class_id === CLASS_ID)
-        .sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
-
-    const periodDocs = await DB.getAll('educational_periods');
-    const periodDoc = periodDocs[0] || null;
-    PERIODS = periodDoc ? (periodDoc.periods || []) : [];
-    PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
-
+    STUDENTS = allStudents.filter(s => s.class_id === CLASS_ID).sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', 'ru'));
+    const periodDocs = await DB.getAll('educational_periods'); const periodDoc = periodDocs[0] || null;
+    PERIODS = periodDoc ? (periodDoc.periods || []) : []; PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
     JOURNAL = await loadJournalNormalized();
-
-    ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
-    SUMMARY_MODE = false;
-
-    MOBILE_VIEW = 'journal';
-    const container = document.getElementById('panelsContainer');
+    ACTIVE_PERIOD_INDEX = findActivePeriodIndex(); SUMMARY_MODE = false;
+    MOBILE_VIEW = 'journal'; const container = document.getElementById('panelsContainer');
     if (container) container.classList.add('mobile-show-journal');
-    const tJ = document.getElementById('mobileTabJournal');
-    if (tJ) tJ.classList.add('active');
-
-    renderHeader();
-    renderPeriodTabs();
-
+    const tJ = document.getElementById('mobileTabJournal'); if (tJ) tJ.classList.add('active');
+    renderHeader(); renderPeriodTabs();
     if (STUDENTS.length === 0) { showEmpty('В классе нет учеников', 'Добавьте учеников в этот класс через панель администратора.'); return; }
-
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-
-    renderMainTable();
-    safeCall(fillFillers);
-    requestAnimationFrame(() => {
-        safeCall(fillFillers);
-        safeCall(fillPlanFillers);
-        safeCall(centerOnToday);
-    });
-
-    setupObservers();
-
-    document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
-
-    setTimeout(() => {
-        try { runLoadingSequence(); } catch (e) { console.warn('[loading]', e); }
-    }, 0);
+    renderMainTable(); safeCall(fillFillers);
+    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); safeCall(centerOnToday); });
+    setupObservers(); document.title = CLASS_OBJ.name + ' · ' + SUBJECT_NAME + ' — Журнал';
+    setTimeout(() => { try { runLoadingSequence(); } catch (e) { console.warn('[loading]', e); } }, 0);
 }
 
-let planObserver = null;
-let journalObserver = null;
+let planObserver = null, journalObserver = null;
 function setupObservers() {
     if (typeof ResizeObserver === 'undefined') return;
     const panelRightWrapper = document.getElementById('panelRightWrapper');
-    if (panelRightWrapper) {
-        if (planObserver) planObserver.disconnect();
-        planObserver = new ResizeObserver(() => { safeCall(fillPlanFillers); });
-        planObserver.observe(panelRightWrapper);
-    }
+    if (panelRightWrapper) { if (planObserver) planObserver.disconnect(); planObserver = new ResizeObserver(() => { safeCall(fillPlanFillers); }); planObserver.observe(panelRightWrapper); }
     const journalScroll = document.getElementById('journalScroll');
-    if (journalScroll) {
-        if (journalObserver) journalObserver.disconnect();
-        journalObserver = new ResizeObserver(() => {
-            safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else fillFillers(); });
-        });
-        journalObserver.observe(journalScroll);
-    }
+    if (journalScroll) { if (journalObserver) journalObserver.disconnect(); journalObserver = new ResizeObserver(() => { safeCall(() => { if (SUMMARY_MODE) fillFillersSummary(); else fillFillers(); }); }); journalObserver.observe(journalScroll); }
 }
 
 function findActivePeriodIndex() {
     if (PERIODS.length === 0) return 0;
     const today = new Date(); today.setHours(0, 0, 0, 0);
-    for (let i = 0; i < PERIODS.length; i++) {
-        const per = PERIODS[i];
-        const start = new Date(per.start + 'T00:00:00');
-        const end = new Date(per.end + 'T23:59:59');
-        if (today >= start && today <= end) return i;
-    }
+    for (let i = 0; i < PERIODS.length; i++) { const per = PERIODS[i]; const start = new Date(per.start + 'T00:00:00'); const end = new Date(per.end + 'T23:59:59'); if (today >= start && today <= end) return i; }
     return 0;
 }
 
 async function buildDatesForPeriod(periodIndex) {
     if (PERIODS.length === 0) return [];
-    const subPeriod = PERIODS[periodIndex];
-    if (!subPeriod) return [];
-
+    const subPeriod = PERIODS[periodIndex]; if (!subPeriod) return [];
     let classSchedule = ALL_SCHEDULES.find(s => s.class_id === CLASS_ID && s.period_index === periodIndex);
-    if (!classSchedule && periodIndex === 0) {
-        classSchedule = ALL_SCHEDULES.find(s => s.class_id === CLASS_ID && s.period_index === undefined);
-    }
+    if (!classSchedule && periodIndex === 0) classSchedule = ALL_SCHEDULES.find(s => s.class_id === CLASS_ID && s.period_index === undefined);
     if (!classSchedule || !classSchedule.grid) return [];
-
-    const grid = classSchedule.grid;
-    const start = new Date(subPeriod.start + 'T00:00:00');
-    const end = new Date(subPeriod.end + 'T23:59:59');
-    const cursor = new Date(start);
-
+    const grid = classSchedule.grid; const start = new Date(subPeriod.start + 'T00:00:00'); const end = new Date(subPeriod.end + 'T23:59:59'); const cursor = new Date(start);
     const baseLessons = [];
     while (cursor <= end) {
-        const jsDay = cursor.getDay();
-        const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
-        if (dayKey && grid[dayKey]) {
-            const dayGrid = grid[dayKey];
-            for (const lessonNumStr in dayGrid) {
-                const lesson = dayGrid[lessonNumStr];
-                if (lesson && lesson.subject === SUBJECT_NAME) {
-                    const iso = formatIso(cursor);
-                    baseLessons.push({
-                        iso, dateNoYear: formatDateNoYear(cursor), dateFull: formatDateFull(cursor),
-                        dayKey, lessonNum: parseInt(lessonNumStr, 10), baseGradeKey: iso + '_' + lessonNumStr
-                    });
-                }
-            }
-        }
+        const jsDay = cursor.getDay(); const dayKey = DAYS_KEYS.find(k => DAYS_JS_INDEX[k] === jsDay);
+        if (dayKey && grid[dayKey]) { const dayGrid = grid[dayKey]; for (const lessonNumStr in dayGrid) { const lesson = dayGrid[lessonNumStr]; if (lesson && lesson.subject === SUBJECT_NAME) { const iso = formatIso(cursor); baseLessons.push({ iso, dateNoYear: formatDateNoYear(cursor), dateFull: formatDateFull(cursor), dayKey, lessonNum: parseInt(lessonNumStr, 10), baseGradeKey: iso + '_' + lessonNumStr }); } } }
         cursor.setDate(cursor.getDate() + 1);
     }
-
     const finalDates = [];
-    baseLessons.forEach(base => {
-        finalDates.push({ ...base, gradeKey: base.baseGradeKey + '_0' });
-        let counter = 1;
-        while (JOURNAL.lessons[base.baseGradeKey + '_' + counter]) {
-            finalDates.push({ ...base, gradeKey: base.baseGradeKey + '_' + counter });
-            counter++;
-        }
-    });
-
-    finalDates.sort((a, b) => {
-        if (a.iso !== b.iso) return a.iso.localeCompare(b.iso);
-        if (a.lessonNum !== b.lessonNum) return a.lessonNum - b.lessonNum;
-        const aExtra = !a.gradeKey.endsWith('_0');
-        const bExtra = !b.gradeKey.endsWith('_0');
-        if (aExtra !== bExtra) return aExtra ? 1 : -1;
-        return a.gradeKey.localeCompare(b.gradeKey);
-    });
+    baseLessons.forEach(base => { finalDates.push({ ...base, gradeKey: base.baseGradeKey + '_0' }); let counter = 1; while (JOURNAL.lessons[base.baseGradeKey + '_' + counter]) { finalDates.push({ ...base, gradeKey: base.baseGradeKey + '_' + counter }); counter++; } });
+    finalDates.sort((a, b) => { if (a.iso !== b.iso) return a.iso.localeCompare(b.iso); if (a.lessonNum !== b.lessonNum) return a.lessonNum - b.lessonNum; const aExtra = !a.gradeKey.endsWith('_0'); const bExtra = !b.gradeKey.endsWith('_0'); if (aExtra !== bExtra) return aExtra ? 1 : -1; return a.gradeKey.localeCompare(b.gradeKey); });
     return finalDates;
 }
 
@@ -1141,37 +632,21 @@ function formatDateNoYear(d) { return String(d.getDate()).padStart(2, '0') + '.'
 function formatDateFull(d) { return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear(); }
 
 function renderHeader() {
-    const elClass = document.getElementById('classDropdownName');
-    const elSubj = document.getElementById('subjectDropdownName');
-    const elTeach = document.getElementById('teacherLabel');
-    const elNav = document.getElementById('navChain');
-    const elYear = document.getElementById('yearLabel');
-    if (elClass) elClass.textContent = CLASS_OBJ.name;
-    if (elSubj) elSubj.textContent = SUBJECT_NAME;
-    if (elTeach) elTeach.textContent = 'Учитель: ' + (TEACHER_NAME || '—');
-    if (elNav) elNav.textContent = CLASS_OBJ.name + ', ' + SUBJECT_NAME;
-    if (elYear) elYear.textContent = '2026/2027 учебный год';
-    renderClassDropdownMenu();
-    renderSubjectDropdownMenu();
+    const elClass = document.getElementById('classDropdownName'); const elSubj = document.getElementById('subjectDropdownName'); const elTeach = document.getElementById('teacherLabel'); const elNav = document.getElementById('navChain'); const elYear = document.getElementById('yearLabel');
+    if (elClass) elClass.textContent = CLASS_OBJ.name; if (elSubj) elSubj.textContent = SUBJECT_NAME;
+    if (elTeach) elTeach.textContent = 'Учитель: ' + (TEACHER_NAME || '—'); if (elNav) elNav.textContent = CLASS_OBJ.name + ', ' + SUBJECT_NAME;
+    if (elYear) elYear.textContent = '2026/2027 учебный год'; renderClassDropdownMenu(); renderSubjectDropdownMenu();
 }
 
 function renderClassDropdownMenu() {
-    const menu = document.getElementById('classDropdownMenu');
-    if (!menu) return;
-    menu.innerHTML = '';
+    const menu = document.getElementById('classDropdownMenu'); if (!menu) return; menu.innerHTML = '';
     ALL_CLASSES.forEach(c => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'dropdown-menu-item' + (c.id === CLASS_ID ? ' active' : '');
-        btn.textContent = c.name;
+        const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'dropdown-menu-item' + (c.id === CLASS_ID ? ' active' : ''); btn.textContent = c.name;
         btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            if (c.id === CLASS_ID) return;
-            const schedules = await DB.getAll('class_schedules');
-            const subjList = collectSubjectsFromSchedule(schedules, c.id);
+            e.stopPropagation(); if (c.id === CLASS_ID) return;
+            const schedules = await DB.getAll('class_schedules'); const subjList = collectSubjectsFromSchedule(schedules, c.id);
             if (subjList.length === 0) { showToast('В классе нет расписания'); return; }
-            const subjects = await DB.getAll('subjects');
-            const firstSubjObj = subjects.find(s => s.name === subjList[0].name);
+            const subjects = await DB.getAll('subjects'); const firstSubjObj = subjects.find(s => s.name === subjList[0].name);
             if (!firstSubjObj) { showToast('Предмет не найден'); return; }
             window.location.href = 'journal-view.html?class=' + encodeURIComponent(c.id) + '&subject=' + encodeURIComponent(firstSubjObj.id);
         });
@@ -1180,1053 +655,358 @@ function renderClassDropdownMenu() {
 }
 
 function renderSubjectDropdownMenu() {
-    const menu = document.getElementById('subjectDropdownMenu');
-    if (!menu) return;
-    menu.innerHTML = '';
+    const menu = document.getElementById('subjectDropdownMenu'); if (!menu) return; menu.innerHTML = '';
     ALL_CLASS_SUBJECTS.forEach(s => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'dropdown-menu-item' + (s.id === SUBJECT_ID ? ' active' : '');
-        btn.textContent = s.name;
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (s.id === SUBJECT_ID) return;
-            window.location.href = 'journal-view.html?class=' + encodeURIComponent(CLASS_ID) + '&subject=' + encodeURIComponent(s.id);
-        });
+        const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'dropdown-menu-item' + (s.id === SUBJECT_ID ? ' active' : ''); btn.textContent = s.name;
+        btn.addEventListener('click', (e) => { e.stopPropagation(); if (s.id === SUBJECT_ID) return; window.location.href = 'journal-view.html?class=' + encodeURIComponent(CLASS_ID) + '&subject=' + encodeURIComponent(s.id); });
         menu.appendChild(btn);
     });
 }
 
-function toggleClassDropdown(e) {
-    e.stopPropagation();
-    const dd = document.getElementById('classDropdown');
-    if (!dd) return;
-    const isOpen = dd.classList.contains('open');
-    closeAllDropdowns();
-    if (!isOpen) dd.classList.add('open');
-}
-function toggleSubjectDropdown(e) {
-    e.stopPropagation();
-    const dd = document.getElementById('subjectDropdown');
-    if (!dd) return;
-    const isOpen = dd.classList.contains('open');
-    closeAllDropdowns();
-    if (!isOpen) dd.classList.add('open');
-}
-function closeAllDropdowns() {
-    document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
-}
+function toggleClassDropdown(e) { e.stopPropagation(); const dd = document.getElementById('classDropdown'); if (!dd) return; const isOpen = dd.classList.contains('open'); closeAllDropdowns(); if (!isOpen) dd.classList.add('open'); }
+function toggleSubjectDropdown(e) { e.stopPropagation(); const dd = document.getElementById('subjectDropdown'); if (!dd) return; const isOpen = dd.classList.contains('open'); closeAllDropdowns(); if (!isOpen) dd.classList.add('open'); }
+function closeAllDropdowns() { document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open')); }
 document.addEventListener('click', closeAllDropdowns);
 
 function renderPeriodTabs() {
-    const container = document.getElementById('periodTabs');
-    if (!container) return;
-    container.innerHTML = '';
-    if (PERIODS.length === 0) {
-        const tab = document.createElement('button');
-        tab.type = 'button';
-        tab.className = 'tab-pill active';
-        tab.textContent = 'Периоды не созданы';
-        tab.disabled = true;
-        container.appendChild(tab);
-        return;
-    }
+    const container = document.getElementById('periodTabs'); if (!container) return; container.innerHTML = '';
+    if (PERIODS.length === 0) { const tab = document.createElement('button'); tab.type = 'button'; tab.className = 'tab-pill active'; tab.textContent = 'Периоды не созданы'; tab.disabled = true; container.appendChild(tab); return; }
     PERIODS.forEach((p, idx) => {
-        const tab = document.createElement('button');
-        tab.type = 'button';
-        const isActive = (!SUMMARY_MODE && idx === ACTIVE_PERIOD_INDEX);
+        const tab = document.createElement('button'); tab.type = 'button'; const isActive = (!SUMMARY_MODE && idx === ACTIVE_PERIOD_INDEX);
         tab.className = 'tab-pill' + (isActive ? ' active' : '');
-        if (isActive) {
-            const periodName = PERIOD_NAMES[PERIOD_SYSTEM] || 'период';
-            tab.textContent = (idx + 1) + ' ' + periodName;
-        } else {
-            tab.textContent = (idx + 1);
-        }
+        if (isActive) { const periodName = PERIOD_NAMES[PERIOD_SYSTEM] || 'период'; tab.textContent = (idx + 1) + ' ' + periodName; } else { tab.textContent = (idx + 1); }
         tab.title = p.start + ' – ' + p.end;
         tab.addEventListener('click', async () => {
-            commitActiveEditor();
-            clearSavingOutline();
-            SUMMARY_MODE = false;
-            ACTIVE_PERIOD_INDEX = idx;
-            renderPeriodTabs();
+            commitActiveEditor(); clearSavingOutline(); SUMMARY_MODE = false; ACTIVE_PERIOD_INDEX = idx; renderPeriodTabs();
             DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-            const pc = document.getElementById('panelsContainer');
-            if (pc) pc.classList.remove('summary-mode');
-            const mc = document.getElementById('mainContent');
-            if (mc) mc.style.display = '';
-            const es = document.getElementById('emptyState');
-            if (es) es.style.display = 'none';
-            if (isMobileView()) {
-                const mvt = document.querySelector('.mobile-view-tabs');
-                if (mvt) mvt.style.display = '';
-                if (pc) {
-                    pc.classList.add('mobile-show-journal');
-                    pc.classList.remove('mobile-show-plan');
-                }
-                const mj = document.getElementById('mobileTabJournal');
-                const mp = document.getElementById('mobileTabPlan');
-                if (mj) mj.classList.add('active');
-                if (mp) mp.classList.remove('active');
-                MOBILE_VIEW = 'journal';
-            }
-            renderMainTable();
-            safeCall(fillFillers);
-            requestAnimationFrame(() => {
-                safeCall(fillFillers);
-                safeCall(fillPlanFillers);
-                safeCall(centerOnToday);
-            });
+            const pc = document.getElementById('panelsContainer'); if (pc) pc.classList.remove('summary-mode');
+            const mc = document.getElementById('mainContent'); if (mc) mc.style.display = '';
+            const es = document.getElementById('emptyState'); if (es) es.style.display = 'none';
+            if (isMobileView()) { const mvt = document.querySelector('.mobile-view-tabs'); if (mvt) mvt.style.display = ''; if (pc) { pc.classList.add('mobile-show-journal'); pc.classList.remove('mobile-show-plan'); } const mj = document.getElementById('mobileTabJournal'); const mp = document.getElementById('mobileTabPlan'); if (mj) mj.classList.add('active'); if (mp) mp.classList.remove('active'); MOBILE_VIEW = 'journal'; }
+            renderMainTable(); safeCall(fillFillers); requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); safeCall(centerOnToday); });
         });
         container.appendChild(tab);
     });
-
-    const summaryTab = document.createElement('button');
-    summaryTab.type = 'button';
-    summaryTab.className = 'tab-pill summary-tab' + (SUMMARY_MODE ? ' active' : '');
-    summaryTab.textContent = 'итог';
-    summaryTab.title = 'Итоговые оценки по всем периодам';
+    const summaryTab = document.createElement('button'); summaryTab.type = 'button'; summaryTab.className = 'tab-pill summary-tab' + (SUMMARY_MODE ? ' active' : ''); summaryTab.textContent = 'итог'; summaryTab.title = 'Итоговые оценки по всем периодам';
     summaryTab.addEventListener('click', () => {
-        commitActiveEditor();
-        clearSavingOutline();
-        SUMMARY_MODE = true;
-        renderPeriodTabs();
-        const mc = document.getElementById('mainContent');
-        if (mc) mc.style.display = '';
-        const es = document.getElementById('emptyState');
-        if (es) es.style.display = 'none';
-        const pc = document.getElementById('panelsContainer');
-        if (pc) pc.classList.add('summary-mode');
-        if (isMobileView()) {
-            const mvt = document.querySelector('.mobile-view-tabs');
-            if (mvt) mvt.style.display = 'none';
-        }
-        renderSummaryTable();
-        requestAnimationFrame(() => {
-            safeCall(fillFillersSummary);
-            requestAnimationFrame(() => safeCall(fillFillersSummary));
-        });
-        setTimeout(() => safeCall(fillFillersSummary), 50);
-        setTimeout(() => safeCall(fillFillersSummary), 200);
+        commitActiveEditor(); clearSavingOutline(); SUMMARY_MODE = true; renderPeriodTabs();
+        const mc = document.getElementById('mainContent'); if (mc) mc.style.display = '';
+        const es = document.getElementById('emptyState'); if (es) es.style.display = 'none';
+        const pc = document.getElementById('panelsContainer'); if (pc) pc.classList.add('summary-mode');
+        if (isMobileView()) { const mvt = document.querySelector('.mobile-view-tabs'); if (mvt) mvt.style.display = 'none'; }
+        renderSummaryTable(); requestAnimationFrame(() => { safeCall(fillFillersSummary); requestAnimationFrame(() => safeCall(fillFillersSummary)); });
+        setTimeout(() => safeCall(fillFillersSummary), 50); setTimeout(() => safeCall(fillFillersSummary), 200);
     });
     container.appendChild(summaryTab);
 }
 
 function renderSummaryTable() {
-    const mRow = document.getElementById('mRow');
-    const sRow = document.getElementById('sRow');
-    const jBody = document.getElementById('jBody');
-    const fioBody = document.getElementById('fioBody');
-    const pBody = document.getElementById('pBody');
-    const marksTable = document.getElementById('marksTable');
+    const mRow = document.getElementById('mRow'); const sRow = document.getElementById('sRow'); const jBody = document.getElementById('jBody'); const fioBody = document.getElementById('fioBody'); const pBody = document.getElementById('pBody'); const marksTable = document.getElementById('marksTable');
     if (!mRow || !sRow || !jBody || !fioBody || !pBody || !marksTable) return;
-
-    marksTable.classList.add('period-mode');
-
-    mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
-
+    marksTable.classList.add('period-mode'); mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
     PERIODS.forEach((p, idx) => {
-        const th = document.createElement('th');
-        th.className = 'col-period col-period-header';
-        th.setAttribute('rowspan', '2');
-        const name = (idx + 1) + ' ' + (PERIOD_NAMES[PERIOD_SYSTEM] || 'период');
-        const sp = name.indexOf(' ');
-        if (sp > 0) {
-            th.innerHTML = escapeHtml(name.slice(0, sp)) + '<br>' + escapeHtml(name.slice(sp + 1));
-        } else {
-            th.textContent = name;
-        }
+        const th = document.createElement('th'); th.className = 'col-period col-period-header'; th.setAttribute('rowspan', '2');
+        const name = (idx + 1) + ' ' + (PERIOD_NAMES[PERIOD_SYSTEM] || 'период'); const sp = name.indexOf(' ');
+        if (sp > 0) th.innerHTML = escapeHtml(name.slice(0, sp)) + '<br>' + escapeHtml(name.slice(sp + 1)); else th.textContent = name;
         mRow.appendChild(th);
     });
-
-    const thFinal = document.createElement('th');
-    thFinal.className = 'col-period col-final-header';
-    thFinal.setAttribute('rowspan', '2');
-    thFinal.textContent = 'Итог';
-    mRow.appendChild(thFinal);
-
+    const thFinal = document.createElement('th'); thFinal.className = 'col-period col-final-header'; thFinal.setAttribute('rowspan', '2'); thFinal.textContent = 'Итог'; mRow.appendChild(thFinal);
     STUDENTS.forEach((student, sIdx) => {
-        const fioTr = document.createElement('tr');
-        const fioTd = document.createElement('td');
-        fioTd.style.cursor = 'pointer';
+        const fioTr = document.createElement('tr'); const fioTd = document.createElement('td'); fioTd.style.cursor = 'pointer';
         fioTd.innerHTML = '<span class="student-number-text">' + (sIdx + 1) + '</span><span class="student-name-text">' + escapeHtml(formatShortName(student.full_name)) + '</span>';
-        fioTd.addEventListener('click', () => { window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id); });
-        fioTr.appendChild(fioTd);
-        fioBody.appendChild(fioTr);
-
-        const tr = document.createElement('tr');
-        const qtrs = JOURNAL.qtrGrades[student.id] || {};
-
+        fioTd.addEventListener('click', () => { window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id); }); fioTr.appendChild(fioTd); fioBody.appendChild(fioTr);
+        const tr = document.createElement('tr'); const qtrs = JOURNAL.qtrGrades[student.id] || {};
         PERIODS.forEach((p, idx) => {
-            const val = qtrs[idx] || qtrs[String(idx)] || '';
-            const td = document.createElement('td');
-            td.className = 'col-period';
-            td.dataset.periodIdx = idx;
+            const val = qtrs[idx] || qtrs[String(idx)] || ''; const td = document.createElement('td'); td.className = 'col-period'; td.dataset.periodIdx = idx;
             td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                 '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(val) + '</div>' +
-                '<input type="text" value="' + escapeHtml(val) + '"' +
-                    ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
-                    ' onblur="hlSum(this, false); this.style.color=\'transparent\';"' +
-                    ' onkeydown="handleGradeKeydown(event, this)"' +
-                    ' onchange="upqtrSummary(\'' + student.id + '\', ' + idx + ', this)">' +
-            '</div>';
-            tr.appendChild(td);
+                '<input type="text" value="' + escapeHtml(val) + '" onfocus="hlSum(this, true); this.style.color=\'#1E293B\';" onblur="hlSum(this, false); this.style.color=\'transparent\';" onkeydown="handleGradeKeydown(event, this)" onchange="upqtrSummary(\'' + student.id + '\', ' + idx + ', this)">' +
+            '</div>'; tr.appendChild(td);
         });
-
-        const finalVal = qtrs['final'] || '';
-        const tdFinal = document.createElement('td');
-        tdFinal.className = 'col-period col-final';
+        const finalVal = qtrs['final'] || ''; const tdFinal = document.createElement('td'); tdFinal.className = 'col-period col-final';
         tdFinal.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
             '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(finalVal) + '</div>' +
-            '<input type="text" value="' + escapeHtml(finalVal) + '"' +
-                ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
-                ' onblur="hlSum(this, false); this.style.color=\'transparent\';"' +
-                ' onkeydown="handleGradeKeydown(event, this)"' +
-                ' onchange="upFinal(\'' + student.id + '\', this)">' +
-        '</div>';
-        tr.appendChild(tdFinal);
-
-        jBody.appendChild(tr);
+            '<input type="text" value="' + escapeHtml(finalVal) + '" onfocus="hlSum(this, true); this.style.color=\'#1E293B\';" onblur="hlSum(this, false); this.style.color=\'transparent\';" onkeydown="handleGradeKeydown(event, this)" onchange="upFinal(\'' + student.id + '\', this)">' +
+        '</div>'; tr.appendChild(tdFinal); jBody.appendChild(tr);
     });
 }
 
 function hlSum(input, active) {
-    const td = input.closest('td');
-    const tr = input.closest('tr');
-    if (!tr) return;
+    const td = input.closest('td'); const tr = input.closest('tr'); if (!tr) return;
     tr.querySelectorAll('td').forEach(x => x.classList.toggle('highlight-cross', active));
-    const jBody = document.getElementById('jBody');
-    const rows = Array.from(jBody.querySelectorAll('tr'));
-    const rowIdx = rows.indexOf(tr);
-    const fioRows = document.querySelectorAll('#fioBody tr');
-    if (fioRows[rowIdx]) {
-        fioRows[rowIdx].querySelectorAll('td').forEach(x => x.classList.toggle('highlight-cross', active));
-    }
-    if (td) {
-        if (td.classList.contains('col-final')) {
-            jBody.querySelectorAll('td.col-final').forEach(x => x.classList.toggle('highlight-cross', active));
-        } else if (td.dataset.periodIdx !== undefined) {
-            const pi = td.dataset.periodIdx;
-            jBody.querySelectorAll('td.col-period[data-period-idx="' + pi + '"]').forEach(x => x.classList.toggle('highlight-cross', active));
-        }
-    }
+    const jBody = document.getElementById('jBody'); const rows = Array.from(jBody.querySelectorAll('tr')); const rowIdx = rows.indexOf(tr); const fioRows = document.querySelectorAll('#fioBody tr');
+    if (fioRows[rowIdx]) fioRows[rowIdx].querySelectorAll('td').forEach(x => x.classList.toggle('highlight-cross', active));
+    if (td) { if (td.classList.contains('col-final')) { jBody.querySelectorAll('td.col-final').forEach(x => x.classList.toggle('highlight-cross', active)); } else if (td.dataset.periodIdx !== undefined) { const pi = td.dataset.periodIdx; jBody.querySelectorAll('td.col-period[data-period-idx="' + pi + '"]').forEach(x => x.classList.toggle('highlight-cross', active)); } }
     setTimeout(fillFillersSummary, 0);
 }
 
 async function upqtrSummary(studentId, periodIdx, inputElement) {
-    const v = inputElement.value.trim();
-    const up = v.toUpperCase();
-    if (!/^([1-5][+-]?)?$/.test(up)) {
-        alert('Для итоговой оценки используйте баллы от 1 до 5');
-        inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[periodIdx] || '';
-        return;
-    }
-    const displayLayer = inputElement.previousElementSibling;
-    const cellTd = inputElement.closest('td');
-    if (cellTd) cellTd.classList.add('saving-outline');
-
+    const v = inputElement.value.trim(); const up = v.toUpperCase();
+    if (!/^([1-5][+-]?)?$/.test(up)) { alert('Для итоговой оценки используйте баллы от 1 до 5'); inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[periodIdx] || ''; return; }
+    const displayLayer = inputElement.previousElementSibling; const cellTd = inputElement.closest('td'); if (cellTd) cellTd.classList.add('saving-outline');
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
-        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
-        JOURNAL.qtrGrades[studentId][periodIdx] = up;
-
-        /* === ТАЙМСТЕМП ДЛЯ ИТОГОВОЙ ОЦЕНКИ ПЕРИОДА === */
-        const qKey = 'qtr:' + periodIdx;
-        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
-        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
-        if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
-        /* ============================================== */
-
-        await saveJournal();
-        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-        if (cellTd) cellTd.classList.remove('saving-outline');
+        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {}; JOURNAL.qtrGrades[studentId][periodIdx] = up;
+        const qKey = 'qtr:' + periodIdx; if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {}; if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
+        if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey]; else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
+        await saveJournal(); if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up); if (cellTd) cellTd.classList.remove('saving-outline');
     }, EDIT_DELAY_MS);
 }
 
 async function upFinal(studentId, inputElement) {
-    const v = inputElement.value.trim();
-    const up = v.toUpperCase();
-    if (!/^([1-5][+-]?)?$/.test(up)) {
-        alert('Для итоговой оценки используйте баллы от 1 до 5');
-        inputElement.value = (JOURNAL.qtrGrades[studentId] || {})['final'] || '';
-        return;
-    }
-    const displayLayer = inputElement.previousElementSibling;
-    const cellTd = inputElement.closest('td');
-    if (cellTd) cellTd.classList.add('saving-outline');
-
+    const v = inputElement.value.trim(); const up = v.toUpperCase();
+    if (!/^([1-5][+-]?)?$/.test(up)) { alert('Для итоговой оценки используйте баллы от 1 до 5'); inputElement.value = (JOURNAL.qtrGrades[studentId] || {})['final'] || ''; return; }
+    const displayLayer = inputElement.previousElementSibling; const cellTd = inputElement.closest('td'); if (cellTd) cellTd.classList.add('saving-outline');
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
-        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
-        JOURNAL.qtrGrades[studentId]['final'] = up;
-
-        // === ТАЙМСТЕМП ===
-        const qKey = 'qtr:final';
-        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
-        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
-        if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
-
-        await saveJournal();
-        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-        if (cellTd) cellTd.classList.remove('saving-outline');
+        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {}; JOURNAL.qtrGrades[studentId]['final'] = up;
+        const qKey = 'qtr:final'; if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {}; if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
+        if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey]; else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
+        await saveJournal(); if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up); if (cellTd) cellTd.classList.remove('saving-outline');
     }, EDIT_DELAY_MS);
 }
 
-function isAddedLessonKey(gradeKey) {
-    return typeof gradeKey === 'string' && /_[1-9]\d*$/.test(gradeKey);
-}
+function isAddedLessonKey(gradeKey) { return typeof gradeKey === 'string' && /_[1-9]\d*$/.test(gradeKey); }
 
 function renderMainTable() {
-    const marksTable = document.getElementById('marksTable');
-    if (marksTable) marksTable.classList.remove('period-mode');
-
-    const mRow = document.getElementById('mRow');
-    const sRow = document.getElementById('sRow');
-    const jBody = document.getElementById('jBody');
-    const fioBody = document.getElementById('fioBody');
-    const pBody = document.getElementById('pBody');
+    const marksTable = document.getElementById('marksTable'); if (marksTable) marksTable.classList.remove('period-mode');
+    const mRow = document.getElementById('mRow'); const sRow = document.getElementById('sRow'); const jBody = document.getElementById('jBody'); const fioBody = document.getElementById('fioBody'); const pBody = document.getElementById('pBody');
     if (!mRow || !sRow || !jBody || !fioBody || !pBody) return;
-
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
-
     const todayIsoStr = todayIso();
-
     STUDENTS.forEach((student, sIdx) => {
-        const shortName = formatShortName(student.full_name);
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.style.cursor = 'pointer';
+        const shortName = formatShortName(student.full_name); const tr = document.createElement('tr'); const td = document.createElement('td'); td.style.cursor = 'pointer';
         td.innerHTML = '<span class="student-number-text">' + (sIdx + 1) + '</span><span class="student-name-text">' + escapeHtml(shortName) + '</span>';
-        td.addEventListener('click', () => { window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id); });
-        tr.appendChild(td);
-        fioBody.appendChild(tr);
+        td.addEventListener('click', () => { window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id); }); tr.appendChild(td); fioBody.appendChild(tr);
     });
-
     DATES.forEach((d) => {
-        const th = document.createElement('th');
-        th.className = 'col-date clickable-date';
-        th.title = 'Открыть страницу урока №' + d.lessonNum;
-        if (d.iso === todayIsoStr) {
-            th.classList.add('col-today');
-            if (isAddedLessonKey(d.gradeKey)) th.classList.add('col-added-lesson');
-            th.innerHTML = '<span class="today-date">' + escapeHtml(d.dateNoYear) + '</span>' +
-                '<span class="today-label">сегодня</span>';
-        } else {
-            th.textContent = d.dateNoYear;
-        }
-        th.addEventListener('click', (e) => { e.stopPropagation(); openLessonPage(d); });
-        mRow.appendChild(th);
+        const th = document.createElement('th'); th.className = 'col-date clickable-date'; th.title = 'Открыть страницу урока №' + d.lessonNum;
+        if (d.iso === todayIsoStr) { th.classList.add('col-today'); if (isAddedLessonKey(d.gradeKey)) th.classList.add('col-added-lesson'); th.innerHTML = '<span class="today-date">' + escapeHtml(d.dateNoYear) + '</span><span class="today-label">сегодня</span>'; } else { th.textContent = d.dateNoYear; }
+        th.addEventListener('click', (e) => { e.stopPropagation(); openLessonPage(d); }); mRow.appendChild(th);
     });
-
-    const thAvg = document.createElement('th');
-    thAvg.className = 'col-avg';
-    thAvg.setAttribute('rowspan', '2');
-    thAvg.textContent = 'Ср. бал';
-    mRow.appendChild(thAvg);
-
-    const thQtr = document.createElement('th');
-    thQtr.className = 'col-qtr';
-    thQtr.setAttribute('rowspan', '2');
-    thQtr.textContent = 'Итог';
-    mRow.appendChild(thQtr);
-
+    const thAvg = document.createElement('th'); thAvg.className = 'col-avg'; thAvg.setAttribute('rowspan', '2'); thAvg.textContent = 'Ср. бал'; mRow.appendChild(thAvg);
+    const thQtr = document.createElement('th'); thQtr.className = 'col-qtr'; thQtr.setAttribute('rowspan', '2'); thQtr.textContent = 'Итог'; mRow.appendChild(thQtr);
     DATES.forEach((d, dIdx) => {
-        const th2 = document.createElement('th');
-        th2.className = 'col-date type-lesson-col';
-        th2.dataset.gradeKey = d.gradeKey;
-        th2.dataset.colIdx = dIdx;
-        const abbr = JOURNAL.lessonTypes[d.gradeKey] || 'ОТВ';
-        th2.textContent = abbr;
-        th2.title = 'Нажмите, чтобы выбрать тип урока';
-        if (d.iso === todayIsoStr) {
-            th2.classList.add('col-today');
-            if (isAddedLessonKey(d.gradeKey)) th2.classList.add('col-added-lesson');
-        }
-        th2.addEventListener('click', (e) => { e.stopPropagation(); openLessonTypePopup(e.currentTarget, d.gradeKey); });
-        sRow.appendChild(th2);
+        const th2 = document.createElement('th'); th2.className = 'col-date type-lesson-col'; th2.dataset.gradeKey = d.gradeKey; th2.dataset.colIdx = dIdx;
+        const abbr = JOURNAL.lessonTypes[d.gradeKey] || 'ОТВ'; th2.textContent = abbr; th2.title = 'Нажмите, чтобы выбрать тип урока';
+        if (d.iso === todayIsoStr) { th2.classList.add('col-today'); if (isAddedLessonKey(d.gradeKey)) th2.classList.add('col-added-lesson'); }
+        th2.addEventListener('click', (e) => { e.stopPropagation(); openLessonTypePopup(e.currentTarget, d.gradeKey); }); sRow.appendChild(th2);
     });
-
     STUDENTS.forEach((student) => {
         const tr = document.createElement('tr');
         DATES.forEach((d, dIdx) => {
-            const td = document.createElement('td');
-            td.className = 'col-date';
-            td.dataset.col = dIdx;
-            if (d.iso === todayIsoStr) {
-                td.classList.add('col-today');
-                if (isAddedLessonKey(d.gradeKey)) td.classList.add('col-added-lesson');
-            }
+            const td = document.createElement('td'); td.className = 'col-date'; td.dataset.col = dIdx;
+            if (d.iso === todayIsoStr) { td.classList.add('col-today'); if (isAddedLessonKey(d.gradeKey)) td.classList.add('col-added-lesson'); }
             const value = (JOURNAL.grades[student.id] || {})[d.gradeKey] || '';
             td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                     '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(value) + '</div>' +
-                    '<input type="text" value="' + escapeHtml(value) + '"' +
-                        ' onfocus="hl(this, ' + dIdx + ', true); this.style.color=\'#1E293B\';"' +
-                        ' onblur="hl(this, ' + dIdx + ', false); this.style.color=\'transparent\';"' +
-                        ' onkeydown="handleGradeKeydown(event, this)"' +
-                        ' onchange="upg(\'' + student.id + '\', \'' + d.gradeKey + '\', this)">' +
-                '</div>';
-            tr.appendChild(td);
+                    '<input type="text" value="' + escapeHtml(value) + '" onfocus="hl(this, ' + dIdx + ', true); this.style.color=\'#1E293B\';" onblur="hl(this, ' + dIdx + ', false); this.style.color=\'transparent\';" onkeydown="handleGradeKeydown(event, this)" onchange="upg(\'' + student.id + '\', \'' + d.gradeKey + '\', this)">' +
+            '</div>'; tr.appendChild(td);
         });
-
-        const tdAvg = document.createElement('td');
-        tdAvg.className = 'col-avg avg-cell';
-        tr.appendChild(tdAvg);
-
-        const qtrValue = (JOURNAL.qtrGrades[student.id] || {})[ACTIVE_PERIOD_INDEX] || '';
-        const tdQtr = document.createElement('td');
-        tdQtr.className = 'col-qtr qtr-cell';
+        const tdAvg = document.createElement('td'); tdAvg.className = 'col-avg avg-cell'; tr.appendChild(tdAvg);
+        const qtrValue = (JOURNAL.qtrGrades[student.id] || {})[ACTIVE_PERIOD_INDEX] || ''; const tdQtr = document.createElement('td'); tdQtr.className = 'col-qtr qtr-cell';
         tdQtr.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
                 '<div class="display-layer" style="width:100%; height:100%; pointer-events:none;">' + makeGradeDisplay(qtrValue) + '</div>' +
-                '<input type="text" value="' + escapeHtml(qtrValue) + '"' +
-                    ' onfocus="hlQtr(this, true); this.style.color=\'#1E293B\';"' +
-                    ' onblur="hlQtr(this, false); this.style.color=\'transparent\';"' +
-                    ' onkeydown="handleGradeKeydown(event, this)"' +
-                    ' onchange="upqtr(\'' + student.id + '\', this)">' +
-            '</div>';
-        tr.appendChild(tdQtr);
-        jBody.appendChild(tr);
+                '<input type="text" value="' + escapeHtml(qtrValue) + '" onfocus="hlQtr(this, true); this.style.color=\'#1E293B\';" onblur="hlQtr(this, false); this.style.color=\'transparent\';" onkeydown="handleGradeKeydown(event, this)" onchange="upqtr(\'' + student.id + '\', this)">' +
+            '</div>'; tr.appendChild(tdQtr); jBody.appendChild(tr);
     });
-
     jBody.querySelectorAll('tr').forEach((tr, idx) => {
-        const avgCell = tr.querySelector('.avg-cell');
-        if (avgCell && STUDENTS[idx]) {
-            let sum = 0, count = 0;
-            const sg = JOURNAL.grades[STUDENTS[idx].id] || {};
+        const avgCell = tr.querySelector('.avg-cell'); if (avgCell && STUDENTS[idx]) {
+            let sum = 0, count = 0; const sg = JOURNAL.grades[STUDENTS[idx].id] || {};
             DATES.forEach(d => {
-                let v = (sg[d.gradeKey] || '').toUpperCase().trim();
-                if (!v) return;
-                let gp = v.replace(/[НОБП]|СП/g, '').trim();
-                if (!gp) return;
-                if (gp.includes('/')) {
-                    gp.split('/').forEach(p => { const n = parseInt(p); if (!isNaN(n)) { sum += n; count++; } });
-                } else {
-                    const n = parseInt(gp);
-                    if (!isNaN(n)) { sum += n; count++; }
-                }
+                let v = (sg[d.gradeKey] || '').toUpperCase().trim(); if (!v) return;
+                let gp = v.replace(/[НОБП]|СП/g, '').trim(); if (!gp) return;
+                if (gp.includes('/')) { gp.split('/').forEach(p => { const n = parseInt(p); if (!isNaN(n)) { sum += n; count++; } }); }
+                else { const n = parseInt(gp); if (!isNaN(n)) { sum += n; count++; } }
             });
             avgCell.textContent = count === 0 ? '' : parseFloat((sum / count).toFixed(2)).toString();
         }
     });
-
     renderLessonPlanRows();
 }
 
 function renderLessonPlanRows() {
-    const pBody = document.getElementById('pBody');
-    if (!pBody) return;
-    pBody.innerHTML = '';
-
-    const todayIsoStr = todayIso();
-    const baseDates = DATES.filter(d => !isAddedLessonKey(d.gradeKey));
-
+    const pBody = document.getElementById('pBody'); if (!pBody) return; pBody.innerHTML = '';
+    const todayIsoStr = todayIso(); const baseDates = DATES.filter(d => !isAddedLessonKey(d.gradeKey));
     baseDates.forEach((d, dIdx) => {
-        const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: [] };
-        const isToday = d.iso === todayIsoStr;
-
-        const tr = document.createElement('tr');
-        tr.className = 'lesson-row' + (isToday ? ' lesson-today' : '');
-        tr.dataset.gradeKey = d.gradeKey;
-        tr.dataset.iso = d.iso;
-        tr.dataset.lessonNum = d.lessonNum;
-
-        const tdNum = document.createElement('td');
-        tdNum.className = 'lesson-num-cell';
-        tdNum.textContent = dIdx + 1;
-        tr.appendChild(tdNum);
-
-        const tdDate = document.createElement('td');
-        tdDate.className = 'lesson-date-cell';
-        if (isToday) {
-            tdDate.innerHTML = '<span class="today-date">' + escapeHtml(d.dateFull) + '</span>' +
-                '<span class="today-label">сегодня</span>';
-        } else {
-            tdDate.textContent = d.dateFull;
-        }
-        tdDate.title = 'Открыть страницу урока';
-        tdDate.addEventListener('click', (e) => { e.stopPropagation(); openLessonPage(d); });
-        tr.appendChild(tdDate);
-
-        const tdTheme = document.createElement('td');
-        tdTheme.className = 'theme-cell';
-        tdTheme.dataset.gradeKey = d.gradeKey;
-        renderThemeContent(tdTheme, d.gradeKey, l.t || '');
-        tr.appendChild(tdTheme);
-
-        const tdHw = document.createElement('td');
-        tdHw.className = 'homework-cell';
-        tdHw.dataset.gradeKey = d.gradeKey;
-        renderHwContent(tdHw, d.gradeKey, normalizeHwList(l.h));
-
-        const onlineBtn = document.createElement('button');
-        onlineBtn.type = 'button';
-        onlineBtn.className = 'cell-online-btn';
-        onlineBtn.title = 'Выдать онлайн-урок';
-        onlineBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>Онлайн';
-        tdHw.appendChild(onlineBtn);
-
-        tr.appendChild(tdHw);
-        pBody.appendChild(tr);
+        const l = JOURNAL.lessons[d.gradeKey] || { t: '', h: [] }; const isToday = d.iso === todayIsoStr;
+        const tr = document.createElement('tr'); tr.className = 'lesson-row' + (isToday ? ' lesson-today' : ''); tr.dataset.gradeKey = d.gradeKey; tr.dataset.iso = d.iso; tr.dataset.lessonNum = d.lessonNum;
+        const tdNum = document.createElement('td'); tdNum.className = 'lesson-num-cell'; tdNum.textContent = dIdx + 1; tr.appendChild(tdNum);
+        const tdDate = document.createElement('td'); tdDate.className = 'lesson-date-cell';
+        if (isToday) tdDate.innerHTML = '<span class="today-date">' + escapeHtml(d.dateFull) + '</span><span class="today-label">сегодня</span>'; else tdDate.textContent = d.dateFull;
+        tdDate.title = 'Открыть страницу урока'; tdDate.addEventListener('click', (e) => { e.stopPropagation(); openLessonPage(d); }); tr.appendChild(tdDate);
+        const tdTheme = document.createElement('td'); tdTheme.className = 'theme-cell'; tdTheme.dataset.gradeKey = d.gradeKey; renderThemeContent(tdTheme, d.gradeKey, l.t || ''); tr.appendChild(tdTheme);
+        const tdHw = document.createElement('td'); tdHw.className = 'homework-cell'; tdHw.dataset.gradeKey = d.gradeKey; renderHwContent(tdHw, d.gradeKey, normalizeHwList(l.h));
+        const onlineBtn = document.createElement('button'); onlineBtn.type = 'button'; onlineBtn.className = 'cell-online-btn'; onlineBtn.title = 'Выдать онлайн-урок';
+        onlineBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>Онлайн'; tdHw.appendChild(onlineBtn);
+        tr.appendChild(tdHw); pBody.appendChild(tr);
     });
-
     safeCall(fillPlanFillers);
 }
 
-function openLessonPage(d) {
-    const params = new URLSearchParams();
-    params.set('class', CLASS_ID);
-    params.set('subject', SUBJECT_ID);
-    params.set('date', d.iso);
-    params.set('lesson', String(d.lessonNum));
-    params.set('key', d.gradeKey);
-    window.location.href = 'lesson-view.html?' + params.toString();
-}
+function openLessonPage(d) { const params = new URLSearchParams(); params.set('class', CLASS_ID); params.set('subject', SUBJECT_ID); params.set('date', d.iso); params.set('lesson', String(d.lessonNum)); params.set('key', d.gradeKey); window.location.href = 'lesson-view.html?' + params.toString(); }
 
 function findNearestDateIndex() {
-    if (!DATES || DATES.length === 0) return -1;
-    const t = todayIso();
-    let exact = -1, firstAfter = -1, lastBefore = -1;
-    for (let i = 0; i < DATES.length; i++) {
-        if (DATES[i].iso === t) { exact = i; break; }
-        if (DATES[i].iso < t) lastBefore = i;
-        if (DATES[i].iso > t && firstAfter === -1) firstAfter = i;
-    }
-    if (exact !== -1) return exact;
-    if (firstAfter !== -1) return firstAfter;
-    if (lastBefore !== -1) return lastBefore;
-    return -1;
+    if (!DATES || DATES.length === 0) return -1; const t = todayIso(); let exact = -1, firstAfter = -1, lastBefore = -1;
+    for (let i = 0; i < DATES.length; i++) { if (DATES[i].iso === t) { exact = i; break; } if (DATES[i].iso < t) lastBefore = i; if (DATES[i].iso > t && firstAfter === -1) firstAfter = i; }
+    if (exact !== -1) return exact; if (firstAfter !== -1) return firstAfter; if (lastBefore !== -1) return lastBefore; return -1;
 }
 
 function centerOnToday() {
-    const idx = findNearestDateIndex();
-    if (idx === -1) return;
-
+    const idx = findNearestDateIndex(); if (idx === -1) return;
     const journalScroll = document.getElementById('journalScroll');
     if (journalScroll && !SUMMARY_MODE) {
-        const allDateThs = document.querySelectorAll('#mRow th.col-date');
-        const th = allDateThs[idx];
-        if (th) {
-            const scrollRect = journalScroll.getBoundingClientRect();
-            const thRect = th.getBoundingClientRect();
-            const contentLeft = thRect.left - scrollRect.left + journalScroll.scrollLeft;
-            const targetScrollLeft = contentLeft + thRect.width / 2 - journalScroll.clientWidth / 2;
-            journalScroll.scrollLeft = Math.max(0, targetScrollLeft);
-        }
+        const allDateThs = document.querySelectorAll('#mRow th.col-date'); const th = allDateThs[idx];
+        if (th) { const scrollRect = journalScroll.getBoundingClientRect(); const thRect = th.getBoundingClientRect(); const contentLeft = thRect.left - scrollRect.left + journalScroll.scrollLeft; const targetScrollLeft = contentLeft + thRect.width / 2 - journalScroll.clientWidth / 2; journalScroll.scrollLeft = Math.max(0, targetScrollLeft); }
     }
-
     const panelRight = document.getElementById('panelRight');
     if (panelRight) {
-        const pBody = document.getElementById('pBody');
-        const targetDate = DATES[idx];
+        const pBody = document.getElementById('pBody'); const targetDate = DATES[idx];
         if (targetDate && pBody) {
-            const rows = Array.from(pBody.querySelectorAll('tr.lesson-row:not(.plan-filler-row)'));
-            let row = null;
-            for (const r of rows) {
-                if (r.dataset.iso === targetDate.iso && String(r.dataset.lessonNum) === String(targetDate.lessonNum)) {
-                    row = r;
-                    break;
-                }
-            }
-            if (row) {
-                const panelRect = panelRight.getBoundingClientRect();
-                const rowRect = row.getBoundingClientRect();
-                const contentTop = rowRect.top - panelRect.top + panelRight.scrollTop;
-                const targetScrollTop = contentTop + rowRect.height / 2 - panelRight.clientHeight / 2;
-                panelRight.scrollTop = Math.max(0, targetScrollTop);
-            }
+            const rows = Array.from(pBody.querySelectorAll('tr.lesson-row:not(.plan-filler-row)')); let row = null;
+            for (const r of rows) { if (r.dataset.iso === targetDate.iso && String(r.dataset.lessonNum) === String(targetDate.lessonNum)) { row = r; break; } }
+            if (row) { const panelRect = panelRight.getBoundingClientRect(); const rowRect = row.getBoundingClientRect(); const contentTop = rowRect.top - panelRect.top + panelRight.scrollTop; const targetScrollTop = contentTop + rowRect.height / 2 - panelRight.clientHeight / 2; panelRight.scrollTop = Math.max(0, targetScrollTop); }
         }
     }
 }
 
 let _planRefillRaf = null;
-function schedulePlanRefillDuringEdit() {
-    if (_planRefillRaf !== null) return;
-    _planRefillRaf = requestAnimationFrame(() => {
-        _planRefillRaf = null;
-        safeCall(() => fillPlanFillersInternal(true));
-    });
-}
+function schedulePlanRefillDuringEdit() { if (_planRefillRaf !== null) return; _planRefillRaf = requestAnimationFrame(() => { _planRefillRaf = null; safeCall(() => fillPlanFillersInternal(true)); }); }
 function fillPlanFillers() { fillPlanFillersInternal(false); }
 function fillPlanFillersInternal(ignoreEditFlag) {
-    if (hwEditing && !ignoreEditFlag) return;
-    const pBody = document.getElementById('pBody');
-    if (!pBody) return;
-    const panelRight = document.getElementById('panelRight');
-    const table = document.getElementById('lessonPlanTable');
-    if (!panelRight || !table) return;
-    const pc = document.getElementById('panelsContainer');
-    if (pc && pc.classList.contains('summary-mode')) return;
-
+    if (hwEditing && !ignoreEditFlag) return; const pBody = document.getElementById('pBody'); if (!pBody) return;
+    const panelRight = document.getElementById('panelRight'); const table = document.getElementById('lessonPlanTable'); if (!panelRight || !table) return;
+    const pc = document.getElementById('panelsContainer'); if (pc && pc.classList.contains('summary-mode')) return;
     pBody.querySelectorAll('.plan-filler-row').forEach(r => r.remove());
-
-    const overflows = panelRight.scrollHeight > panelRight.clientHeight + 1;
-    const panelRect = panelRight.getBoundingClientRect();
-    const tableRect = table.getBoundingClientRect();
-    const panelBottom = panelRect.top + panelRight.clientTop + panelRight.clientHeight;
-    const freeSpace = panelBottom - tableRect.bottom;
-    if (overflows || freeSpace <= 0) return;
-
-    const rowH = getPlanFillerRowHeight();
-    const fullRows = Math.floor(freeSpace / rowH);
-    const remainder = Math.round(freeSpace - fullRows * rowH);
-
+    const overflows = panelRight.scrollHeight > panelRight.clientHeight + 1; const panelRect = panelRight.getBoundingClientRect(); const tableRect = table.getBoundingClientRect();
+    const panelBottom = panelRect.top + panelRight.clientTop + panelRight.clientHeight; const freeSpace = panelBottom - tableRect.bottom; if (overflows || freeSpace <= 0) return;
+    const rowH = getPlanFillerRowHeight(); const fullRows = Math.floor(freeSpace / rowH); const remainder = Math.round(freeSpace - fullRows * rowH);
     const frag = document.createDocumentFragment();
     for (let i = 0; i < fullRows; i++) frag.appendChild(createPlanFillerRow());
-    if (remainder >= 1) {
-        const lastRow = createPlanFillerRow(remainder + 'px');
-        lastRow.classList.add('plan-filler-last');
-        frag.appendChild(lastRow);
-    } else if (fullRows > 0) {
-        const rows = frag.querySelectorAll('.plan-filler-row');
-        if (rows.length) rows[rows.length - 1].classList.add('plan-filler-last');
-    }
+    if (remainder >= 1) { const lastRow = createPlanFillerRow(remainder + 'px'); lastRow.classList.add('plan-filler-last'); frag.appendChild(lastRow); }
+    else if (fullRows > 0) { const rows = frag.querySelectorAll('.plan-filler-row'); if (rows.length) rows[rows.length - 1].classList.add('plan-filler-last'); }
     pBody.appendChild(frag);
 }
 
 function createPlanFillerRow(height) {
-    const tr = document.createElement('tr');
-    tr.className = 'lesson-row plan-filler-row';
+    const tr = document.createElement('tr'); tr.className = 'lesson-row plan-filler-row';
     ['lesson-num-cell plan-filler-cell','lesson-date-cell plan-filler-cell','theme-cell plan-filler-cell','homework-cell plan-filler-cell'].forEach(cls => {
-        const td = document.createElement('td');
-        td.className = cls;
-        if (height) td.style.height = height;
-        tr.appendChild(td);
+        const td = document.createElement('td'); td.className = cls; if (height) td.style.height = height; tr.appendChild(td);
     });
     return tr;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const pBody = document.getElementById('pBody');
-    if (!pBody) return;
-
+    const pBody = document.getElementById('pBody'); if (!pBody) return;
     pBody.addEventListener('click', (e) => {
-        const onlineBtn = e.target.closest('.cell-online-btn');
-        if (onlineBtn) { e.stopPropagation(); showToast('Выдача онлайн-урока — в разработке'); return; }
-        const hwItem = e.target.closest('.hw-list-item');
-        if (hwItem) {
-            e.stopPropagation();
-            detachActiveEditorDom();
-            const cell = hwItem.closest('.homework-cell');
-            const gradeKey = cell.dataset.gradeKey;
-            const idx = parseInt(hwItem.dataset.idx, 10);
-            openHwItemEdit(cell, gradeKey, idx, hwItem.dataset.value || '');
-            return;
-        }
-        const addHwBtn = e.target.closest('.add-hw-btn');
-        if (addHwBtn) {
-            e.stopPropagation();
-            detachActiveEditorDom();
-            const cell = addHwBtn.closest('.homework-cell');
-            openNewHwItem(cell, cell.dataset.gradeKey);
-            return;
-        }
-        const placeholderHw = e.target.closest('.homework-cell .placeholder-text');
-        if (placeholderHw) {
-            e.stopPropagation();
-            detachActiveEditorDom();
-            const cell = placeholderHw.closest('.homework-cell');
-            openNewHwItem(cell, cell.dataset.gradeKey);
-            return;
-        }
-        const themePlaceholder = e.target.closest('.theme-cell .placeholder-text');
-        if (themePlaceholder) {
-            e.stopPropagation();
-            detachActiveEditorDom();
-            const cell = themePlaceholder.closest('.theme-cell');
-            openThemeEditInline(cell, cell.dataset.gradeKey, '');
-            return;
-        }
-        const themeText = e.target.closest('.theme-cell .theme-text');
-        if (themeText) {
-            e.stopPropagation();
-            detachActiveEditorDom();
-            const cell = themeText.closest('.theme-cell');
-            openThemeEditInline(cell, cell.dataset.gradeKey, themeText.dataset.value || '');
-            return;
-        }
+        const onlineBtn = e.target.closest('.cell-online-btn'); if (onlineBtn) { e.stopPropagation(); showToast('Выдача онлайн-урока — в разработке'); return; }
+        const hwItem = e.target.closest('.hw-list-item'); if (hwItem) { e.stopPropagation(); detachActiveEditorDom(); const cell = hwItem.closest('.homework-cell'); const gradeKey = cell.dataset.gradeKey; const idx = parseInt(hwItem.dataset.idx, 10); openHwItemEdit(cell, gradeKey, idx, hwItem.dataset.value || ''); return; }
+        const addHwBtn = e.target.closest('.add-hw-btn'); if (addHwBtn) { e.stopPropagation(); detachActiveEditorDom(); const cell = addHwBtn.closest('.homework-cell'); openNewHwItem(cell, cell.dataset.gradeKey); return; }
+        const placeholderHw = e.target.closest('.homework-cell .placeholder-text'); if (placeholderHw) { e.stopPropagation(); detachActiveEditorDom(); const cell = placeholderHw.closest('.homework-cell'); openNewHwItem(cell, cell.dataset.gradeKey); return; }
+        const themePlaceholder = e.target.closest('.theme-cell .placeholder-text'); if (themePlaceholder) { e.stopPropagation(); detachActiveEditorDom(); const cell = themePlaceholder.closest('.theme-cell'); openThemeEditInline(cell, cell.dataset.gradeKey, ''); return; }
+        const themeText = e.target.closest('.theme-cell .theme-text'); if (themeText) { e.stopPropagation(); detachActiveEditorDom(); const cell = themeText.closest('.theme-cell'); openThemeEditInline(cell, cell.dataset.gradeKey, themeText.dataset.value || ''); return; }
     });
 });
 
 function renderThemeContent(cell, gradeKey, value) {
     cell.innerHTML = '';
-    if (!value) {
-        const ph = document.createElement('span');
-        ph.className = 'placeholder-text';
-        ph.textContent = 'Добавить тему';
-        cell.appendChild(ph);
-    } else {
-        const div = document.createElement('div');
-        div.className = 'theme-text';
-        div.textContent = value;
-        div.dataset.value = value;
-        div.style.cursor = 'pointer';
-        div.style.padding = '2px 6px';
-        div.style.borderRadius = '6px';
-        cell.appendChild(div);
-    }
+    if (!value) { const ph = document.createElement('span'); ph.className = 'placeholder-text'; ph.textContent = 'Добавить тему'; cell.appendChild(ph); }
+    else { const div = document.createElement('div'); div.className = 'theme-text'; div.textContent = value; div.dataset.value = value; div.style.cursor = 'pointer'; div.style.padding = '2px 6px'; div.style.borderRadius = '6px'; cell.appendChild(div); }
 }
 
 function openThemeEditInline(cell, gradeKey, value) {
-    commitActiveEditor();
-    const panelRight = document.getElementById('panelRight');
-    const prevScrollTop = panelRight ? panelRight.scrollTop : 0;
-
-    cell.innerHTML = '';
-    const bubble = document.createElement('div');
-    bubble.className = 'edit-bubble';
-    const ta = document.createElement('textarea');
-    ta.rows = 1;
-    ta.value = value || '';
-    const ok = document.createElement('button');
-    ok.type = 'button';
-    ok.className = 'confirm-btn';
-    ok.title = 'Сохранить';
-    ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-    bubble.appendChild(ta);
-    bubble.appendChild(ok);
-    cell.appendChild(bubble);
-    ta.style.height = '32px';
-    requestAnimationFrame(() => { autoGrow(ta); if (panelRight) panelRight.scrollTop = prevScrollTop; });
-    ta.focus();
-    ta.setSelectionRange(ta.value.length, ta.value.length);
-
-    const commit = () => {
-        const txt = ta.value.trim();
-        if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
-        JOURNAL.lessons[gradeKey].t = txt;
-        renderThemeContent(cell, gradeKey, txt);
-        saveJournal();
-        refillPlan();
-    };
-    const cancel = () => {
-        const current = (JOURNAL.lessons[gradeKey] && JOURNAL.lessons[gradeKey].t) || value || '';
-        renderThemeContent(cell, gradeKey, current);
-        refillPlan();
-    };
-
-    const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
-    activeEditor = ed;
-    const scheduleCommit = () => {
-        if (ed.timer) return;
-        ed.timer = setTimeout(() => {
-            ed.timer = null;
-            if (activeEditor !== ed) return;
-            try { ed.commit(); } catch (e) { console.error(e); }
-            if (activeEditor === ed) activeEditor = null;
-        }, EDIT_DELAY_MS);
-    };
-    ta.addEventListener('input', () => { autoGrow(ta); schedulePlanRefillDuringEdit(); });
-    ta.addEventListener('blur', () => { scheduleCommit(); });
-    ta.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); }
-        if (e.key === 'Escape') { e.preventDefault(); cancelActiveEditor(); }
-    });
-    ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-    ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
+    commitActiveEditor(); const panelRight = document.getElementById('panelRight'); const prevScrollTop = panelRight ? panelRight.scrollTop : 0;
+    cell.innerHTML = ''; const bubble = document.createElement('div'); bubble.className = 'edit-bubble'; const ta = document.createElement('textarea'); ta.rows = 1; ta.value = value || '';
+    const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'confirm-btn'; ok.title = 'Сохранить'; ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+    bubble.appendChild(ta); bubble.appendChild(ok); cell.appendChild(bubble); ta.style.height = '32px';
+    requestAnimationFrame(() => { autoGrow(ta); if (panelRight) panelRight.scrollTop = prevScrollTop; }); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+    const commit = () => { const txt = ta.value.trim(); if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] }; JOURNAL.lessons[gradeKey].t = txt; renderThemeContent(cell, gradeKey, txt); saveJournal(); refillPlan(); };
+    const cancel = () => { const current = (JOURNAL.lessons[gradeKey] && JOURNAL.lessons[gradeKey].t) || value || ''; renderThemeContent(cell, gradeKey, current); refillPlan(); };
+    const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null }; activeEditor = ed;
+    const scheduleCommit = () => { if (ed.timer) return; ed.timer = setTimeout(() => { ed.timer = null; if (activeEditor !== ed) return; try { ed.commit(); } catch (e) { console.error(e); } if (activeEditor === ed) activeEditor = null; }, EDIT_DELAY_MS); };
+    ta.addEventListener('input', () => { autoGrow(ta); schedulePlanRefillDuringEdit(); }); ta.addEventListener('blur', () => { scheduleCommit(); });
+    ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); } if (e.key === 'Escape') { e.preventDefault(); cancelActiveEditor(); } });
+    ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); }); ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
 }
 
 function renderHwContent(cell, gradeKey, hwList) {
-    const onlineBtn = cell.querySelector('.cell-online-btn');
-    cell.innerHTML = '';
-    if (onlineBtn) cell.appendChild(onlineBtn);
-    const listWrap = document.createElement('div');
-    listWrap.className = 'hw-list';
-    if (hwList.length === 0) {
-        const ph = document.createElement('span');
-        ph.className = 'placeholder-text';
-        ph.textContent = '+ ДЗ к след. уроку';
-        listWrap.appendChild(ph);
-    } else {
-        hwList.forEach((hw, idx) => {
-            const item = document.createElement('div');
-            item.className = 'hw-list-item';
-            item.textContent = hw;
-            item.dataset.idx = idx;
-            item.dataset.value = hw;
-            item.title = 'Нажмите, чтобы редактировать';
-            listWrap.appendChild(item);
-            const divider = document.createElement('span');
-            divider.className = 'hw-divider';
-            divider.dataset.afterIdx = idx;
-            listWrap.appendChild(divider);
-        });
-        const addBtn = document.createElement('button');
-        addBtn.type = 'button';
-        addBtn.className = 'add-hw-btn';
-        addBtn.textContent = '+ ДЗ к след. уроку';
-        listWrap.appendChild(addBtn);
-    }
+    const onlineBtn = cell.querySelector('.cell-online-btn'); cell.innerHTML = ''; if (onlineBtn) cell.appendChild(onlineBtn);
+    const listWrap = document.createElement('div'); listWrap.className = 'hw-list';
+    if (hwList.length === 0) { const ph = document.createElement('span'); ph.className = 'placeholder-text'; ph.textContent = '+ ДЗ к след. уроку'; listWrap.appendChild(ph); }
+    else { hwList.forEach((hw, idx) => { const item = document.createElement('div'); item.className = 'hw-list-item'; item.textContent = hw; item.dataset.idx = idx; item.dataset.value = hw; item.title = 'Нажмите, чтобы редактировать'; listWrap.appendChild(item); const divider = document.createElement('span'); divider.className = 'hw-divider'; divider.dataset.afterIdx = idx; listWrap.appendChild(divider); }); const addBtn = document.createElement('button'); addBtn.type = 'button'; addBtn.className = 'add-hw-btn'; addBtn.textContent = '+ ДЗ к след. уроку'; listWrap.appendChild(addBtn); }
     cell.appendChild(listWrap);
 }
 
-function findHwItemByIndex(listWrap, idx) {
-    const items = listWrap.querySelectorAll('.hw-list-item');
-    return items[idx] || null;
-}
+function findHwItemByIndex(listWrap, idx) { const items = listWrap.querySelectorAll('.hw-list-item'); return items[idx] || null; }
 
 function openHwItemEdit(cell, gradeKey, idx, value) {
-    commitActiveEditor();
-    hwEditing = true;
-    const listWrap = cell.querySelector('.hw-list');
-    if (!listWrap) { hwEditing = false; return; }
-    const target = findHwItemByIndex(listWrap, idx);
-    if (!target) { hwEditing = false; return; }
-    const panelRight = document.getElementById('panelRight');
-    const prevScrollTop = panelRight ? panelRight.scrollTop : 0;
-
-    const bubble = document.createElement('div');
-    bubble.className = 'edit-bubble';
-    const ta = document.createElement('textarea');
-    ta.rows = 1;
-    ta.value = value || '';
-    const ok = document.createElement('button');
-    ok.type = 'button';
-    ok.className = 'confirm-btn';
-    ok.title = 'Сохранить';
-    ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-    bubble.appendChild(ta);
-    bubble.appendChild(ok);
-    target.replaceWith(bubble);
-    ta.style.height = '32px';
-    requestAnimationFrame(() => { autoGrow(ta); if (panelRight) panelRight.scrollTop = prevScrollTop; });
-    ta.focus();
-    ta.setSelectionRange(ta.value.length, ta.value.length);
-
+    commitActiveEditor(); hwEditing = true; const listWrap = cell.querySelector('.hw-list'); if (!listWrap) { hwEditing = false; return; }
+    const target = findHwItemByIndex(listWrap, idx); if (!target) { hwEditing = false; return; }
+    const panelRight = document.getElementById('panelRight'); const prevScrollTop = panelRight ? panelRight.scrollTop : 0;
+    const bubble = document.createElement('div'); bubble.className = 'edit-bubble'; const ta = document.createElement('textarea'); ta.rows = 1; ta.value = value || '';
+    const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'confirm-btn'; ok.title = 'Сохранить'; ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+    bubble.appendChild(ta); bubble.appendChild(ok); target.replaceWith(bubble); ta.style.height = '32px';
+    requestAnimationFrame(() => { autoGrow(ta); if (panelRight) panelRight.scrollTop = prevScrollTop; }); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
     const finalize = (commitChanges) => {
-        if (commitChanges) {
-            const txt = ta.value.trim();
-            if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
-            const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-            if (txt === '') arr.splice(idx, 1); else arr[idx] = txt;
-            JOURNAL.lessons[gradeKey].h = arr;
-            renderHwContent(cell, gradeKey, arr);
-            saveJournal();
-        } else {
-            const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []);
-            renderHwContent(cell, gradeKey, arr);
-        }
-        hwEditing = false;
-        refillPlan();
+        if (commitChanges) { const txt = ta.value.trim(); if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] }; const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h); if (txt === '') arr.splice(idx, 1); else arr[idx] = txt; JOURNAL.lessons[gradeKey].h = arr; renderHwContent(cell, gradeKey, arr); saveJournal(); }
+        else { const arr = normalizeHwList(JOURNAL.lessons[gradeKey] ? JOURNAL.lessons[gradeKey].h : []); renderHwContent(cell, gradeKey, arr); }
+        hwEditing = false; refillPlan();
     };
-    const commit = () => finalize(true);
-    const cancel = () => finalize(false);
-    const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
-    activeEditor = ed;
-    const scheduleCommit = () => {
-        if (ed.timer) return;
-        ed.timer = setTimeout(() => {
-            ed.timer = null;
-            if (activeEditor !== ed) return;
-            try { ed.commit(); } catch (e) { console.error(e); }
-            if (activeEditor === ed) activeEditor = null;
-        }, EDIT_DELAY_MS);
-    };
-    ta.addEventListener('input', () => { autoGrow(ta); schedulePlanRefillDuringEdit(); });
-    ta.addEventListener('blur', () => { scheduleCommit(); });
-    ta.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); }
-        if (e.key === 'Escape') { e.preventDefault(); cancelActiveEditor(); }
-    });
-    ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-    ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
+    const commit = () => finalize(true); const cancel = () => finalize(false); const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null }; activeEditor = ed;
+    const scheduleCommit = () => { if (ed.timer) return; ed.timer = setTimeout(() => { ed.timer = null; if (activeEditor !== ed) return; try { ed.commit(); } catch (e) { console.error(e); } if (activeEditor === ed) activeEditor = null; }, EDIT_DELAY_MS); };
+    ta.addEventListener('input', () => { autoGrow(ta); schedulePlanRefillDuringEdit(); }); ta.addEventListener('blur', () => { scheduleCommit(); });
+    ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); } if (e.key === 'Escape') { e.preventDefault(); cancelActiveEditor(); } });
+    ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); }); ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
 }
 
 function openNewHwItem(cell, gradeKey) {
-    commitActiveEditor();
-    hwEditing = true;
-    if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
-    const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-    const listWrap = cell.querySelector('.hw-list');
-    if (!listWrap) { hwEditing = false; return; }
-    let target = null;
-    if (arr.length === 0) target = listWrap.querySelector('.placeholder-text');
-    else target = listWrap.querySelector('.add-hw-btn');
-    if (!target) { hwEditing = false; return; }
-    const panelRight = document.getElementById('panelRight');
-    const prevScrollTop = panelRight ? panelRight.scrollTop : 0;
-
-    const bubble = document.createElement('div');
-    bubble.className = 'edit-bubble';
-    const ta = document.createElement('textarea');
-    ta.rows = 1;
-    ta.value = '';
-    const ok = document.createElement('button');
-    ok.type = 'button';
-    ok.className = 'confirm-btn';
-    ok.title = 'Сохранить';
-    ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-    bubble.appendChild(ta);
-    bubble.appendChild(ok);
-    target.replaceWith(bubble);
-    ta.style.height = '32px';
-    requestAnimationFrame(() => { autoGrow(ta); if (panelRight) panelRight.scrollTop = prevScrollTop; });
-    ta.focus();
-    ta.setSelectionRange(0, 0);
-
+    commitActiveEditor(); hwEditing = true; if (!JOURNAL.lessons[gradeKey]) JOURNAL.lessons[gradeKey] = { t: '', h: [] };
+    const arr = normalizeHwList(JOURNAL.lessons[gradeKey].h); const listWrap = cell.querySelector('.hw-list'); if (!listWrap) { hwEditing = false; return; }
+    let target = null; if (arr.length === 0) target = listWrap.querySelector('.placeholder-text'); else target = listWrap.querySelector('.add-hw-btn'); if (!target) { hwEditing = false; return; }
+    const panelRight = document.getElementById('panelRight'); const prevScrollTop = panelRight ? panelRight.scrollTop : 0;
+    const bubble = document.createElement('div'); bubble.className = 'edit-bubble'; const ta = document.createElement('textarea'); ta.rows = 1; ta.value = '';
+    const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'confirm-btn'; ok.title = 'Сохранить'; ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+    bubble.appendChild(ta); bubble.appendChild(ok); target.replaceWith(bubble); ta.style.height = '32px';
+    requestAnimationFrame(() => { autoGrow(ta); if (panelRight) panelRight.scrollTop = prevScrollTop; }); ta.focus(); ta.setSelectionRange(0, 0);
     const finalize = (commitChanges) => {
         const current = normalizeHwList(JOURNAL.lessons[gradeKey].h);
-        if (commitChanges) {
-            const txt = ta.value.trim();
-            if (txt === '') {
-                renderHwContent(cell, gradeKey, current);
-            } else {
-                current.push(txt);
-                JOURNAL.lessons[gradeKey].h = current;
-                renderHwContent(cell, gradeKey, current);
-                saveJournal();
-            }
-        } else {
-            renderHwContent(cell, gradeKey, current);
-        }
-        hwEditing = false;
-        refillPlan();
+        if (commitChanges) { const txt = ta.value.trim(); if (txt === '') { renderHwContent(cell, gradeKey, current); } else { current.push(txt); JOURNAL.lessons[gradeKey].h = current; renderHwContent(cell, gradeKey, current); saveJournal(); } }
+        else { renderHwContent(cell, gradeKey, current); }
+        hwEditing = false; refillPlan();
     };
-    const commit = () => finalize(true);
-    const cancel = () => finalize(false);
-    const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null };
-    activeEditor = ed;
-    const scheduleCommit = () => {
-        if (ed.timer) return;
-        ed.timer = setTimeout(() => {
-            ed.timer = null;
-            if (activeEditor !== ed) return;
-            try { ed.commit(); } catch (e) { console.error(e); }
-            if (activeEditor === ed) activeEditor = null;
-        }, EDIT_DELAY_MS);
-    };
-    ta.addEventListener('input', () => { autoGrow(ta); schedulePlanRefillDuringEdit(); });
-    ta.addEventListener('blur', () => { scheduleCommit(); });
-    ta.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); }
-        if (e.key === 'Escape') { e.preventDefault(); cancelActiveEditor(); }
-    });
-    ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
-    ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
+    const commit = () => finalize(true); const cancel = () => finalize(false); const ed = { commit, cancel, dom: bubble, textarea: ta, timer: null }; activeEditor = ed;
+    const scheduleCommit = () => { if (ed.timer) return; ed.timer = setTimeout(() => { ed.timer = null; if (activeEditor !== ed) return; try { ed.commit(); } catch (e) { console.error(e); } if (activeEditor === ed) activeEditor = null; }, EDIT_DELAY_MS); };
+    ta.addEventListener('input', () => { autoGrow(ta); schedulePlanRefillDuringEdit(); }); ta.addEventListener('blur', () => { scheduleCommit(); });
+    ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitActiveEditor(); } if (e.key === 'Escape') { e.preventDefault(); cancelActiveEditor(); } });
+    ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); }); ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
 }
 
-function autoGrow(el) {
-    el.style.height = 'auto';
-    el.style.height = Math.max(32, el.scrollHeight) + 'px';
-}
+function autoGrow(el) { el.style.height = 'auto'; el.style.height = Math.max(32, el.scrollHeight) + 'px'; }
 
 function fillFillers() {
-    document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
-    document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
-    const journalScroll = document.getElementById('journalScroll');
-    if (!journalScroll) return;
-    if (isMobileView() && MOBILE_VIEW !== 'journal') return;
-    const scrollWidth = journalScroll.clientWidth;
-    const fioWrapper = document.querySelector('.fio-table-wrapper');
-    const fioWidth = fioWrapper ? Math.ceil(fioWrapper.getBoundingClientRect().width) : 210;
-    const marksWrapper = document.querySelector('.marks-table-wrapper');
-    if (!marksWrapper) return;
-    const marksWidth = Math.ceil(marksWrapper.getBoundingClientRect().width);
-    const freeSpace = scrollWidth - fioWidth - marksWidth;
-    if (freeSpace <= 0) return;
-    const colW = getFillerColWidth();
-    const fullCols = Math.floor(freeSpace / colW);
-    const remainder = Math.round(freeSpace - fullCols * colW);
-    const mRow = document.getElementById('mRow');
-    const sRow = document.getElementById('sRow');
-    const jBody = document.getElementById('jBody');
-    if (!mRow || !sRow || !jBody) return;
-    for (let i = 0; i < fullCols; i++) {
-        [mRow, sRow].forEach(row => {
-            const th = document.createElement('th');
-            th.className = 'col-filler-head';
-            th.style.width = colW + 'px';
-            th.style.minWidth = colW + 'px';
-            th.style.maxWidth = colW + 'px';
-            row.appendChild(th);
-        });
-    }
-    jBody.querySelectorAll('tr').forEach(tr => {
-        for (let i = 0; i < fullCols; i++) {
-            const td = document.createElement('td');
-            td.className = 'col-filler-body';
-            td.style.width = colW + 'px';
-            td.style.minWidth = colW + 'px';
-            td.style.maxWidth = colW + 'px';
-            tr.appendChild(td);
-        }
-    });
-    if (remainder >= 2) {
-        const rw = remainder + 'px';
-        [mRow, sRow].forEach(row => {
-            const th = document.createElement('th');
-            th.className = 'col-filler-head col-filler-last';
-            th.style.width = rw;
-            th.style.minWidth = rw;
-            th.style.maxWidth = rw;
-            row.appendChild(th);
-        });
-        jBody.querySelectorAll('tr').forEach(tr => {
-            const td = document.createElement('td');
-            td.className = 'col-filler-body col-filler-last';
-            td.style.width = rw;
-            td.style.minWidth = rw;
-            td.style.maxWidth = rw;
-            tr.appendChild(td);
-        });
-    }
+    document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove()); document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
+    const journalScroll = document.getElementById('journalScroll'); if (!journalScroll) return; if (isMobileView() && MOBILE_VIEW !== 'journal') return;
+    const scrollWidth = journalScroll.clientWidth; const fioWrapper = document.querySelector('.fio-table-wrapper'); const fioWidth = fioWrapper ? Math.ceil(fioWrapper.getBoundingClientRect().width) : 210;
+    const marksWrapper = document.querySelector('.marks-table-wrapper'); if (!marksWrapper) return; const marksWidth = Math.ceil(marksWrapper.getBoundingClientRect().width);
+    const freeSpace = scrollWidth - fioWidth - marksWidth; if (freeSpace <= 0) return;
+    const colW = getFillerColWidth(); const fullCols = Math.floor(freeSpace / colW); const remainder = Math.round(freeSpace - fullCols * colW);
+    const mRow = document.getElementById('mRow'); const sRow = document.getElementById('sRow'); const jBody = document.getElementById('jBody'); if (!mRow || !sRow || !jBody) return;
+    for (let i = 0; i < fullCols; i++) { [mRow, sRow].forEach(row => { const th = document.createElement('th'); th.className = 'col-filler-head'; th.style.width = colW + 'px'; th.style.minWidth = colW + 'px'; th.style.maxWidth = colW + 'px'; row.appendChild(th); }); }
+    jBody.querySelectorAll('tr').forEach(tr => { for (let i = 0; i < fullCols; i++) { const td = document.createElement('td'); td.className = 'col-filler-body'; td.style.width = colW + 'px'; td.style.minWidth = colW + 'px'; td.style.maxWidth = colW + 'px'; tr.appendChild(td); } });
+    if (remainder >= 2) { const rw = remainder + 'px'; [mRow, sRow].forEach(row => { const th = document.createElement('th'); th.className = 'col-filler-head col-filler-last'; th.style.width = rw; th.style.minWidth = rw; th.style.maxWidth = rw; row.appendChild(th); }); jBody.querySelectorAll('tr').forEach(tr => { const td = document.createElement('td'); td.className = 'col-filler-body col-filler-last'; td.style.width = rw; td.style.minWidth = rw; td.style.maxWidth = rw; tr.appendChild(td); }); }
 }
 
 function fillFillersSummary() {
-    document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
-    document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
-    const journalScroll = document.getElementById('journalScroll');
-    if (!journalScroll) return;
-    const scrollWidth = journalScroll.clientWidth;
-    const fioWrapper = document.querySelector('.fio-table-wrapper');
-    const fioWidth = fioWrapper ? Math.ceil(fioWrapper.getBoundingClientRect().width) : 210;
-    const marksWrapper = document.querySelector('.marks-table-wrapper');
-    if (!marksWrapper) return;
-    const marksWidth = Math.ceil(marksWrapper.getBoundingClientRect().width);
-    const freeSpace = scrollWidth - fioWidth - marksWidth;
-    if (freeSpace <= 0) return;
-    const colW = getFillerColWidth();
-    const fullCols = Math.floor(freeSpace / colW);
-    const remainder = Math.round(freeSpace - fullCols * colW);
-    const mRow = document.getElementById('mRow');
-    const jBody = document.getElementById('jBody');
-    if (!mRow || !jBody) return;
-    for (let i = 0; i < fullCols; i++) {
-        const th = document.createElement('th');
-        th.className = 'col-filler-head';
-        th.setAttribute('rowspan', '2');
-        th.style.width = colW + 'px';
-        th.style.minWidth = colW + 'px';
-        th.style.maxWidth = colW + 'px';
-        mRow.appendChild(th);
-    }
-    jBody.querySelectorAll('tr').forEach(tr => {
-        for (let i = 0; i < fullCols; i++) {
-            const td = document.createElement('td');
-            td.className = 'col-filler-body';
-            td.style.width = colW + 'px';
-            td.style.minWidth = colW + 'px';
-            td.style.maxWidth = colW + 'px';
-            tr.appendChild(td);
-        }
-    });
-    if (remainder >= 2) {
-        const rw = remainder + 'px';
-        const th = document.createElement('th');
-        th.className = 'col-filler-head col-filler-last';
-        th.setAttribute('rowspan', '2');
-        th.style.width = rw;
-        th.style.minWidth = rw;
-        th.style.maxWidth = rw;
-        mRow.appendChild(th);
-        jBody.querySelectorAll('tr').forEach(tr => {
-            const td = document.createElement('td');
-            td.className = 'col-filler-body col-filler-last';
-            td.style.width = rw;
-            td.style.minWidth = rw;
-            td.style.maxWidth = rw;
-            tr.appendChild(td);
-        });
-    }
+    document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove()); document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
+    const journalScroll = document.getElementById('journalScroll'); if (!journalScroll) return;
+    const scrollWidth = journalScroll.clientWidth; const fioWrapper = document.querySelector('.fio-table-wrapper'); const fioWidth = fioWrapper ? Math.ceil(fioWrapper.getBoundingClientRect().width) : 210;
+    const marksWrapper = document.querySelector('.marks-table-wrapper'); if (!marksWrapper) return; const marksWidth = Math.ceil(marksWrapper.getBoundingClientRect().width);
+    const freeSpace = scrollWidth - fioWidth - marksWidth; if (freeSpace <= 0) return;
+    const colW = getFillerColWidth(); const fullCols = Math.floor(freeSpace / colW); const remainder = Math.round(freeSpace - fullCols * colW);
+    const mRow = document.getElementById('mRow'); const jBody = document.getElementById('jBody'); if (!mRow || !jBody) return;
+    for (let i = 0; i < fullCols; i++) { const th = document.createElement('th'); th.className = 'col-filler-head'; th.setAttribute('rowspan', '2'); th.style.width = colW + 'px'; th.style.minWidth = colW + 'px'; th.style.maxWidth = colW + 'px'; mRow.appendChild(th); }
+    jBody.querySelectorAll('tr').forEach(tr => { for (let i = 0; i < fullCols; i++) { const td = document.createElement('td'); td.className = 'col-filler-body'; td.style.width = colW + 'px'; td.style.minWidth = colW + 'px'; td.style.maxWidth = colW + 'px'; tr.appendChild(td); } });
+    if (remainder >= 2) { const rw = remainder + 'px'; const th = document.createElement('th'); th.className = 'col-filler-head col-filler-last'; th.setAttribute('rowspan', '2'); th.style.width = rw; th.style.minWidth = rw; th.style.maxWidth = rw; mRow.appendChild(th); jBody.querySelectorAll('tr').forEach(tr => { const td = document.createElement('td'); td.className = 'col-filler-body col-filler-last'; td.style.width = rw; td.style.minWidth = rw; td.style.maxWidth = rw; tr.appendChild(td); }); }
 }
 
 let resizeTimer = null;
@@ -2235,15 +1015,7 @@ window.addEventListener('resize', () => {
     resizeTimer = setTimeout(() => {
         if (hwEditing) return;
         if (SUMMARY_MODE) safeCall(fillFillersSummary);
-        else {
-            if (isMobileView()) {
-                if (MOBILE_VIEW === 'journal') safeCall(fillFillers);
-                else safeCall(fillPlanFillers);
-            } else {
-                safeCall(fillFillers);
-                safeCall(fillPlanFillers);
-            }
-        }
+        else { if (isMobileView()) { if (MOBILE_VIEW === 'journal') safeCall(fillFillers); else safeCall(fillPlanFillers); } else { safeCall(fillFillers); safeCall(fillPlanFillers); } }
     }, 100);
 });
 
@@ -2258,13 +1030,9 @@ function getGradeClass(value) {
 
 function makeGradeDisplay(v) {
     if (!v) return '';
-    let up = v.toUpperCase().trim();
-    if (!up) return '';
-    let letterPart = '';
-    const foundLetter = up.match(/^(Н|О|Б|П|СП)/);
-    if (foundLetter) letterPart = '<span class="status-letter">' + foundLetter[0] + '</span>';
-    let gradePart = up.replace(/^(Н|О|Б|П|СП)/, '').trim();
-    if (!gradePart) return letterPart;
+    let up = v.toUpperCase().trim(); if (!up) return '';
+    let letterPart = ''; const foundLetter = up.match(/^(Н|О|Б|П|СП)/); if (foundLetter) letterPart = '<span class="status-letter">' + foundLetter[0] + '</span>';
+    let gradePart = up.replace(/^(Н|О|Б|П|СП)/, '').trim(); if (!gradePart) return letterPart;
     if (gradePart.includes('/')) {
         const parts = gradePart.split('/');
         return letterPart + '<div class="grade-display">' +
@@ -2300,226 +1068,94 @@ function hlQtr(input, active) {
     setTimeout(fillFillers, 0);
 }
 
-function getEditableCellsInRow(tr) {
-    return Array.from(tr.querySelectorAll('td')).filter(td => td.dataset.col !== undefined || td.classList.contains('col-qtr') || td.classList.contains('col-period'));
-}
-
+function getEditableCellsInRow(tr) { return Array.from(tr.querySelectorAll('td')).filter(td => td.dataset.col !== undefined || td.classList.contains('col-qtr') || td.classList.contains('col-period')); }
 function navigateGradeCell(input, direction) {
-    const td = input.closest('td');
-    if (!td) return;
-    const tr = td.closest('tr');
-    if (!tr) return;
-    const jBody = document.getElementById('jBody');
-    const rows = Array.from(jBody.querySelectorAll('tr'));
-    const rowIdx = rows.indexOf(tr);
-    if (rowIdx === -1) return;
-    const cellsInRow = getEditableCellsInRow(tr);
-    const colIdx = cellsInRow.indexOf(td);
-    if (colIdx === -1) return;
+    const td = input.closest('td'); if (!td) return; const tr = td.closest('tr'); if (!tr) return;
+    const jBody = document.getElementById('jBody'); const rows = Array.from(jBody.querySelectorAll('tr')); const rowIdx = rows.indexOf(tr); if (rowIdx === -1) return;
+    const cellsInRow = getEditableCellsInRow(tr); const colIdx = cellsInRow.indexOf(td); if (colIdx === -1) return;
     let targetTd = null;
-    if (direction === 'left' || direction === 'right') {
-        const nextCol = direction === 'left' ? colIdx - 1 : colIdx + 1;
-        if (nextCol < 0 || nextCol >= cellsInRow.length) return;
-        targetTd = cellsInRow[nextCol];
-    } else {
-        const nextRow = direction === 'up' ? rowIdx - 1 : rowIdx + 1;
-        if (nextRow < 0 || nextRow >= rows.length) return;
-        const targetCells = getEditableCellsInRow(rows[nextRow]);
-        targetTd = targetCells[colIdx] || null;
-    }
-    if (!targetTd) return;
-    const targetInput = targetTd.querySelector('input');
-    if (!targetInput) return;
-    targetInput.focus();
-    setTimeout(() => { try { targetInput.select(); } catch (e) {} }, 0);
+    if (direction === 'left' || direction === 'right') { const nextCol = direction === 'left' ? colIdx - 1 : colIdx + 1; if (nextCol < 0 || nextCol >= cellsInRow.length) return; targetTd = cellsInRow[nextCol]; }
+    else { const nextRow = direction === 'up' ? rowIdx - 1 : rowIdx + 1; if (nextRow < 0 || nextRow >= rows.length) return; const targetCells = getEditableCellsInRow(rows[nextRow]); targetTd = targetCells[colIdx] || null; }
+    if (!targetTd) return; const targetInput = targetTd.querySelector('input'); if (!targetInput) return;
+    targetInput.focus(); setTimeout(() => { try { targetInput.select(); } catch (e) {} }, 0);
 }
 
 function handleGradeKeydown(e, input) {
-    const key = e.key;
-    if (key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'ArrowUp' && key !== 'ArrowDown') return;
-    const val = input.value || '';
-    const start = input.selectionStart || 0;
-    const end = input.selectionEnd || 0;
-    const atStart = start === 0 && end === 0;
-    const atEnd = start === val.length && end === val.length;
-    if (key === 'ArrowLeft' && !atStart) return;
-    if (key === 'ArrowRight' && !atEnd) return;
-    e.preventDefault();
-    navigateGradeCell(input, key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : key === 'ArrowUp' ? 'up' : 'down');
+    const key = e.key; if (key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'ArrowUp' && key !== 'ArrowDown') return;
+    const val = input.value || ''; const start = input.selectionStart || 0; const end = input.selectionEnd || 0;
+    const atStart = start === 0 && end === 0; const atEnd = start === val.length && end === val.length;
+    if (key === 'ArrowLeft' && !atStart) return; if (key === 'ArrowRight' && !atEnd) return;
+    e.preventDefault(); navigateGradeCell(input, key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : key === 'ArrowUp' ? 'up' : 'down');
 }
 
 async function upg(studentId, gradeKey, inputElement) {
-    const v = inputElement.value.trim();
-    const up = v.toUpperCase();
+    const v = inputElement.value.trim(); const up = v.toUpperCase();
     const validRegex = /^(([НОБП]|СП)\s*)?([1-5][+-]?(\/([1-5][+-]?)?)?)?$/i;
-    if (!validRegex.test(up)) {
-        alert('Используйте оценки от 1 до 5 (можно с + или -, двойные через /), буквы отсутствия (Н, О, Б, П, СП)');
-        inputElement.value = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
-        return;
-    }
-    const displayLayer = inputElement.previousElementSibling;
-    const cellTd = inputElement.closest('td');
-    if (cellTd) cellTd.classList.add('saving-outline');
-
+    if (!validRegex.test(up)) { alert('Используйте оценки от 1 до 5 (можно с + или -, двойные через /), буквы отсутствия (Н, О, Б, П, СП)'); inputElement.value = (JOURNAL.grades[studentId] || {})[gradeKey] || ''; return; }
+    const displayLayer = inputElement.previousElementSibling; const cellTd = inputElement.closest('td'); if (cellTd) cellTd.classList.add('saving-outline');
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
-        if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
-        JOURNAL.grades[studentId][gradeKey] = up;
-
-        /* === ТАЙМСТЕМП ВЫСТАВЛЕНИЯ ОЦЕНКИ === */
-        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
-        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
-        if (!up) {
-            delete JOURNAL.gradeTimestamps[studentId][gradeKey];
-        } else {
-            JOURNAL.gradeTimestamps[studentId][gradeKey] = Date.now();
-        }
-        /* ===================================== */
-
-        await saveJournal();
-        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-        if (cellTd) cellTd.classList.remove('saving-outline');
+        if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {}; JOURNAL.grades[studentId][gradeKey] = up;
+        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {}; if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
+        if (!up) { delete JOURNAL.gradeTimestamps[studentId][gradeKey]; } else { JOURNAL.gradeTimestamps[studentId][gradeKey] = Date.now(); }
+        await saveJournal(); if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up); if (cellTd) cellTd.classList.remove('saving-outline');
     }, EDIT_DELAY_MS);
 }
 
 async function upqtr(studentId, inputElement) {
-    const v = inputElement.value.trim();
-    const up = v.toUpperCase();
-    if (!/^([1-5][+-]?)?$/.test(up)) {
-        alert('Для итоговой оценки используйте баллы от 1 до 5');
-        inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[ACTIVE_PERIOD_INDEX] || '';
-        return;
-    }
-    const displayLayer = inputElement.previousElementSibling;
-    const cellTd = inputElement.closest('td');
-    if (cellTd) cellTd.classList.add('saving-outline');
-
+    const v = inputElement.value.trim(); const up = v.toUpperCase();
+    if (!/^([1-5][+-]?)?$/.test(up)) { alert('Для итоговой оценки используйте баллы от 1 до 5'); inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[ACTIVE_PERIOD_INDEX] || ''; return; }
+    const displayLayer = inputElement.previousElementSibling; const cellTd = inputElement.closest('td'); if (cellTd) cellTd.classList.add('saving-outline');
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
     setTimeout(async () => {
-        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
-        JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
-
-        /* === ТАЙМСТЕМП ДЛЯ ИТОГОВОЙ ОЦЕНКИ ТЕКУЩЕГО ПЕРИОДА === */
-        const qKey = 'qtr:' + ACTIVE_PERIOD_INDEX;
-        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
-        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
-        if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
-        /* =================================================== */
-
-        await saveJournal();
-        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
-        if (cellTd) cellTd.classList.remove('saving-outline');
+        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {}; JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
+        const qKey = 'qtr:' + ACTIVE_PERIOD_INDEX; if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {}; if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
+        if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey]; else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
+        await saveJournal(); if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up); if (cellTd) cellTd.classList.remove('saving-outline');
     }, EDIT_DELAY_MS);
 }
 
 async function saveJournal() {
     let fresh = null;
-    try { fresh = await loadJournalNormalized(); }
-    catch (e) { console.warn('loadJournalNormalized failed', e); }
-
+    try { fresh = await loadJournalNormalized(); } catch (e) { console.warn('loadJournalNormalized failed', e); }
     if (fresh) {
         const visibleKeys = new Set(DATES.map(d => d.gradeKey));
-
-        const mergedGrades = {};
-        const allSids = new Set([...Object.keys(fresh.grades), ...Object.keys(JOURNAL.grades)]);
+        const mergedGrades = {}; const allSids = new Set([...Object.keys(fresh.grades), ...Object.keys(JOURNAL.grades)]);
         allSids.forEach(sid => {
-            const fromFresh = fresh.grades[sid] || {};
-            const fromLocal = JOURNAL.grades[sid] || {};
-            const out = {};
-            
+            const fromFresh = fresh.grades[sid] || {}; const fromLocal = JOURNAL.grades[sid] || {}; const out = {};
             Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
-            
-            visibleKeys.forEach(k => {
-                if (Object.prototype.hasOwnProperty.call(fromLocal, k)) out[k] = fromLocal[k];
-                else delete out[k];
-            });
-            
-            Object.keys(fromFresh).forEach(k => {
-                if (!Object.prototype.hasOwnProperty.call(fromLocal, k)) {
-                    delete out[k];
-                }
-            });
-            
+            visibleKeys.forEach(k => { if (Object.prototype.hasOwnProperty.call(fromLocal, k)) out[k] = fromLocal[k]; else delete out[k]; });
+            Object.keys(fromFresh).forEach(k => { if (!Object.prototype.hasOwnProperty.call(fromLocal, k)) { delete out[k]; } });
             if (Object.keys(out).length > 0) mergedGrades[sid] = out;
         });
-
         const mergedLessons = {};
-        Object.keys(fresh.lessons).forEach(k => {
-            mergedLessons[k] = { t: fresh.lessons[k].t || '', h: normalizeHwList(fresh.lessons[k].h) };
-        });
-        Object.keys(JOURNAL.lessons).forEach(k => {
-            mergedLessons[k] = {
-                t: JOURNAL.lessons[k].t || '',
-                h: normalizeHwList(JOURNAL.lessons[k].h)
-            };
-        });
+        Object.keys(fresh.lessons).forEach(k => { mergedLessons[k] = { t: fresh.lessons[k].t || '', h: normalizeHwList(fresh.lessons[k].h) }; });
+        Object.keys(JOURNAL.lessons).forEach(k => { mergedLessons[k] = { t: JOURNAL.lessons[k].t || '', h: normalizeHwList(JOURNAL.lessons[k].h) }; });
         const localLessonKeys = new Set(Object.keys(JOURNAL.lessons));
-        Object.keys(fresh.lessons).forEach(k => {
-            if (!localLessonKeys.has(k)) delete mergedLessons[k];
-        });
-
+        Object.keys(fresh.lessons).forEach(k => { if (!localLessonKeys.has(k)) delete mergedLessons[k]; });
         const mergedTypes = {};
         Object.keys(fresh.lessonTypes).forEach(k => { mergedTypes[k] = fresh.lessonTypes[k]; });
         Object.keys(JOURNAL.lessonTypes).forEach(k => { mergedTypes[k] = JOURNAL.lessonTypes[k]; });
         const localTypeKeys = new Set(Object.keys(JOURNAL.lessonTypes));
-        Object.keys(fresh.lessonTypes).forEach(k => {
-            if (!localTypeKeys.has(k)) delete mergedTypes[k];
-        });
-
+        Object.keys(fresh.lessonTypes).forEach(k => { if (!localTypeKeys.has(k)) delete mergedTypes[k]; });
         const mergedQtr = {};
         const allQtrSids = new Set([...Object.keys(fresh.qtrGrades), ...Object.keys(JOURNAL.qtrGrades)]);
-        allQtrSids.forEach(sid => {
-            const fromFresh = fresh.qtrGrades[sid] || {};
-            const fromLocal = JOURNAL.qtrGrades[sid] || {};
-            const out = {};
-            Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
-            Object.keys(fromLocal).forEach(k => { out[k] = fromLocal[k]; });
-            if (Object.keys(out).length > 0) mergedQtr[sid] = out;
-        });
-
-        /* === MERGE TIMESTAMPS === */
+        allQtrSids.forEach(sid => { const fromFresh = fresh.qtrGrades[sid] || {}; const fromLocal = JOURNAL.qtrGrades[sid] || {}; const out = {}; Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; }); Object.keys(fromLocal).forEach(k => { out[k] = fromLocal[k]; }); if (Object.keys(out).length > 0) mergedQtr[sid] = out; });
+        
         const mergedTs = {};
-        const freshTs = fresh.gradeTimestamps || {};
-        const localTs = JOURNAL.gradeTimestamps || {};
+        const freshTs = fresh.gradeTimestamps || {}; const localTs = JOURNAL.gradeTimestamps || {};
         const allTsSids = new Set([...Object.keys(freshTs), ...Object.keys(localTs)]);
-        allTsSids.forEach(sid => {
-            const fromFresh = freshTs[sid] || {};
-            const fromLocal = localTs[sid] || {};
-            const out = {};
-            Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
-            Object.keys(fromLocal).forEach(k => { out[k] = fromLocal[k]; });
-            Object.keys(out).forEach(k => {
-                if (k.startsWith('qtr:')) {
-                    if (!(mergedQtr[sid] && mergedQtr[sid][k.slice(4)])) delete out[k];
-                } else {
-                    if (!(mergedGrades[sid] && mergedGrades[sid][k])) delete out[k];
-                }
-            });
-            if (Object.keys(out).length > 0) mergedTs[sid] = out;
-        });
+        allTsSids.forEach(sid => { const fromFresh = freshTs[sid] || {}; const fromLocal = localTs[sid] || {}; const out = {}; Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; }); Object.keys(fromLocal).forEach(k => { out[k] = fromLocal[k]; }); Object.keys(out).forEach(k => { if (k.startsWith('qtr:')) { if (!(mergedQtr[sid] && mergedQtr[sid][k.slice(4)])) delete out[k]; } else { if (!(mergedGrades[sid] && mergedGrades[sid][k])) delete out[k]; } }); if (Object.keys(out).length > 0) mergedTs[sid] = out; });
         JOURNAL.gradeTimestamps = mergedTs;
-        /* ====================== */
-
-        JOURNAL.grades = mergedGrades;
-        JOURNAL.lessons = mergedLessons;
-        JOURNAL.qtrGrades = mergedQtr;
-        JOURNAL.lessonTypes = mergedTypes;
-
+        
+        JOURNAL.grades = mergedGrades; JOURNAL.lessons = mergedLessons; JOURNAL.qtrGrades = mergedQtr; JOURNAL.lessonTypes = mergedTypes;
+        
         await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
-            grades: mergedGrades,
-            lessons: mergedLessons,
-            qtr_grades: mergedQtr,
-            lesson_types: mergedTypes,
-            grade_timestamps: mergedTs
+            grades: mergedGrades, lessons: mergedLessons, qtr_grades: mergedQtr, lesson_types: mergedTypes, grade_timestamps: mergedTs
         });
     } else {
         await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
-            grades: JOURNAL.grades,
-            lessons: JOURNAL.lessons,
-            qtr_grades: JOURNAL.qtrGrades,
-            lesson_types: JOURNAL.lessonTypes,
-            grade_timestamps: JOURNAL.gradeTimestamps || {}
+            grades: JOURNAL.grades, lessons: JOURNAL.lessons, qtr_grades: JOURNAL.qtrGrades, lesson_types: JOURNAL.lessonTypes, grade_timestamps: JOURNAL.gradeTimestamps || {}
         });
     }
 }
@@ -2528,274 +1164,113 @@ let currentLessonTypeContext = { gradeKey: null, baseGradeKey: null, date: null 
 let popupJustOpened = false;
 
 function openLessonTypePopup(anchorEl, gradeKey) {
-    commitActiveEditor();
-    const popup = document.getElementById('lessonTypePopup');
-    const search = document.getElementById('lessonTypePopupSearch');
-    if (!popup || !search) return;
-    const dateObj = DATES.find(d => d.gradeKey === gradeKey);
-    const baseGradeKey = dateObj ? dateObj.baseGradeKey : gradeKey.replace(/_\d+$/, '');
+    commitActiveEditor(); const popup = document.getElementById('lessonTypePopup'); const search = document.getElementById('lessonTypePopupSearch'); if (!popup || !search) return;
+    const dateObj = DATES.find(d => d.gradeKey === gradeKey); const baseGradeKey = dateObj ? dateObj.baseGradeKey : gradeKey.replace(/_\d+$/, '');
     currentLessonTypeContext = { gradeKey, baseGradeKey, date: dateObj ? dateObj.iso : null };
-    popupJustOpened = true;
-    search.value = '';
-    renderLessonTypePopupList();
-    popup.classList.add('show');
-    const rect = anchorEl.getBoundingClientRect();
-    const popupWidth = 280, popupMaxHeight = 400;
+    popupJustOpened = true; search.value = ''; renderLessonTypePopupList(); popup.classList.add('show');
+    const rect = anchorEl.getBoundingClientRect(); const popupWidth = 280, popupMaxHeight = 400;
     let left = rect.left + rect.width / 2 - popupWidth / 2;
-    if (left < 8) left = 8;
-    if (left + popupWidth > window.innerWidth - 8) left = window.innerWidth - popupWidth - 8;
-    let top = rect.bottom + 4;
-    if (top + popupMaxHeight > window.innerHeight - 8) { top = rect.top - popupMaxHeight - 4; if (top < 8) top = 8; }
-    popup.style.left = left + 'px';
-    popup.style.top = top + 'px';
-    setTimeout(() => search.focus(), 50);
-    setTimeout(() => { popupJustOpened = false; }, 100);
+    if (left < 8) left = 8; if (left + popupWidth > window.innerWidth - 8) left = window.innerWidth - popupWidth - 8;
+    let top = rect.bottom + 4; if (top + popupMaxHeight > window.innerHeight - 8) { top = rect.top - popupMaxHeight - 4; if (top < 8) top = 8; }
+    popup.style.left = left + 'px'; popup.style.top = top + 'px'; setTimeout(() => search.focus(), 50); setTimeout(() => { popupJustOpened = false; }, 100);
 }
 
 function renderLessonTypePopupList() {
-    const list = document.getElementById('lessonTypePopupList');
-    const searchEl = document.getElementById('lessonTypePopupSearch');
-    if (!list || !searchEl) return;
-    const search = (searchEl.value || '').toLowerCase().trim();
-    const currentAbbr = (JOURNAL.lessonTypes || {})[currentLessonTypeContext.gradeKey] || 'ОТВ';
-    list.innerHTML = '';
-    const filtered = LESSON_TYPES.filter(t => !search || t.abbr.toLowerCase().includes(search) || t.full.toLowerCase().includes(search));
+    const list = document.getElementById('lessonTypePopupList'); const searchEl = document.getElementById('lessonTypePopupSearch'); if (!list || !searchEl) return;
+    const search = (searchEl.value || '').toLowerCase().trim(); const currentAbbr = (JOURNAL.lessonTypes || {})[currentLessonTypeContext.gradeKey] || 'ОТВ';
+    list.innerHTML = ''; const filtered = LESSON_TYPES.filter(t => !search || t.abbr.toLowerCase().includes(search) || t.full.toLowerCase().includes(search));
     if (filtered.length === 0) { list.innerHTML = '<div class="lesson-type-popup-empty">Ничего не найдено</div>'; return; }
     filtered.forEach(t => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'lesson-type-popup-item' + (t.abbr === currentAbbr ? ' active' : '');
+        const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'lesson-type-popup-item' + (t.abbr === currentAbbr ? ' active' : '');
         btn.innerHTML = '<span class="abbr">' + escapeHtml(t.abbr) + '</span><span class="full">' + escapeHtml(t.full) + '</span>';
-        btn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); selectLessonType(t.abbr); });
-        list.appendChild(btn);
+        btn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); selectLessonType(t.abbr); }); list.appendChild(btn);
     });
 }
 
 async function selectLessonType(abbr) {
-    const { gradeKey } = currentLessonTypeContext;
-    if (!gradeKey) return;
-    JOURNAL.lessonTypes[gradeKey] = abbr;
-    await saveJournal();
-    const th = document.querySelector('th.type-lesson-col[data-grade-key="' + gradeKey + '"]');
-    if (th) th.textContent = abbr;
+    const { gradeKey } = currentLessonTypeContext; if (!gradeKey) return;
+    JOURNAL.lessonTypes[gradeKey] = abbr; await saveJournal();
+    const th = document.querySelector('th.type-lesson-col[data-grade-key="' + gradeKey + '"]'); if (th) th.textContent = abbr;
     closeLessonTypePopup();
 }
 
 async function addLessonColumn() {
-    const { baseGradeKey } = currentLessonTypeContext;
-    if (!baseGradeKey) return;
-    let count = 1;
-    while (JOURNAL.lessons[baseGradeKey + '_' + count]) count++;
+    const { baseGradeKey } = currentLessonTypeContext; if (!baseGradeKey) return;
+    let count = 1; while (JOURNAL.lessons[baseGradeKey + '_' + count]) count++;
     if (count >= 5) { showToast('Нельзя добавить больше 5 уроков на один день'); return; }
-    const newKey = baseGradeKey + '_' + count;
-    if (!JOURNAL.lessons[newKey]) JOURNAL.lessons[newKey] = { t: '', h: [] };
-    if (!JOURNAL.lessonTypes) JOURNAL.lessonTypes = {};
-    JOURNAL.lessonTypes[newKey] = 'ОТВ';
-    DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-    await saveJournal();
-    closeLessonTypePopup();
-    renderMainTable();
-    safeCall(fillFillers);
-    requestAnimationFrame(() => {
-        safeCall(fillFillers);
-        safeCall(fillPlanFillers);
-        safeCall(centerOnToday);
-    });
+    const newKey = baseGradeKey + '_' + count; if (!JOURNAL.lessons[newKey]) JOURNAL.lessons[newKey] = { t: '', h: [] };
+    if (!JOURNAL.lessonTypes) JOURNAL.lessonTypes = {}; JOURNAL.lessonTypes[newKey] = 'ОТВ';
+    DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX); await saveJournal(); closeLessonTypePopup(); renderMainTable(); safeCall(fillFillers);
+    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); safeCall(centerOnToday); });
 }
 
 async function deleteLessonColumn() {
-    const { gradeKey } = currentLessonTypeContext;
-    if (!gradeKey) return;
+    const { gradeKey } = currentLessonTypeContext; if (!gradeKey) return;
     if (gradeKey.endsWith('_0')) { showToast('Базовый урок удалить нельзя'); return; }
-    
-    delete JOURNAL.lessons[gradeKey];
-    delete JOURNAL.lessonTypes[gradeKey];
-    
+    delete JOURNAL.lessons[gradeKey]; delete JOURNAL.lessonTypes[gradeKey];
     Object.keys(JOURNAL.grades).forEach(studentId => {
-        if (JOURNAL.grades[studentId]) {
-            Object.keys(JOURNAL.grades[studentId]).forEach(k => {
-                if (k === gradeKey || k.startsWith(gradeKey + '_')) {
-                    delete JOURNAL.grades[studentId][k];
-                }
-            });
-            if (Object.keys(JOURNAL.grades[studentId]).length === 0) {
-                delete JOURNAL.grades[studentId];
-            }
-        }
+        if (JOURNAL.grades[studentId]) { Object.keys(JOURNAL.grades[studentId]).forEach(k => { if (k === gradeKey || k.startsWith(gradeKey + '_')) { delete JOURNAL.grades[studentId][k]; } }); if (Object.keys(JOURNAL.grades[studentId]).length === 0) { delete JOURNAL.grades[studentId]; } }
     });
-
-    DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-    await saveJournal();
-    
-    closeLessonTypePopup();
-    renderMainTable();
-    safeCall(fillFillers);
-    requestAnimationFrame(() => {
-        safeCall(fillFillers);
-        safeCall(fillPlanFillers);
-        safeCall(centerOnToday);
-    });
+    DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX); await saveJournal(); closeLessonTypePopup(); renderMainTable(); safeCall(fillFillers);
+    requestAnimationFrame(() => { safeCall(fillFillers); safeCall(fillPlanFillers); safeCall(centerOnToday); });
 }
 
-function closeLessonTypePopup() {
-    const popup = document.getElementById('lessonTypePopup');
-    if (popup) popup.classList.remove('show');
-}
-
-document.addEventListener('click', (e) => {
-    const popup = document.getElementById('lessonTypePopup');
-    if (!popup || !popup.classList.contains('show') || popupJustOpened) return;
-    if (!popup.contains(e.target)) closeLessonTypePopup();
-});
-document.addEventListener('mousedown', (e) => {
-    const popup = document.getElementById('lessonTypePopup');
-    if (!popup || !popup.classList.contains('show') || popupJustOpened) return;
-    if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup();
-});
+function closeLessonTypePopup() { const popup = document.getElementById('lessonTypePopup'); if (popup) popup.classList.remove('show'); }
+document.addEventListener('click', (e) => { const popup = document.getElementById('lessonTypePopup'); if (!popup || !popup.classList.contains('show') || popupJustOpened) return; if (!popup.contains(e.target)) closeLessonTypePopup(); });
+document.addEventListener('mousedown', (e) => { const popup = document.getElementById('lessonTypePopup'); if (!popup || !popup.classList.contains('show') || popupJustOpened) return; if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
 
 function toggleLeftPanel() {
-    if (SUMMARY_MODE) return;
-    if (isMobileView()) { switchMobileView('plan'); return; }
-    const container = document.getElementById('panelsContainer');
-    const tabLeft = document.getElementById('tabLeft');
-    if (!container || !tabLeft) return;
-
-    const journalScroll = document.getElementById('journalScroll');
-    const panelRight = document.getElementById('panelRight');
-    const savedScrollLeft = journalScroll ? journalScroll.scrollLeft : 0;
-    const savedScrollTop = journalScroll ? journalScroll.scrollTop : 0;
-    const savedPlanTop = panelRight ? panelRight.scrollTop : 0;
-
-    if (journalObserver) journalObserver.disconnect();
-    if (planObserver) planObserver.disconnect();
-
-    leftCollapsed = !leftCollapsed;
-    container.classList.toggle('left-collapsed', leftCollapsed);
-    tabLeft.classList.toggle('active', leftCollapsed);
-    if (leftCollapsed) {
-        rightCollapsed = false;
-        container.classList.remove('right-collapsed');
-        const tr = document.getElementById('tabRight');
-        if (tr) tr.classList.remove('active');
-    }
+    if (SUMMARY_MODE) return; if (isMobileView()) { switchMobileView('plan'); return; }
+    const container = document.getElementById('panelsContainer'); const tabLeft = document.getElementById('tabLeft'); if (!container || !tabLeft) return;
+    const journalScroll = document.getElementById('journalScroll'); const panelRight = document.getElementById('panelRight');
+    const savedScrollLeft = journalScroll ? journalScroll.scrollLeft : 0; const savedScrollTop = journalScroll ? journalScroll.scrollTop : 0; const savedPlanTop = panelRight ? panelRight.scrollTop : 0;
+    if (journalObserver) journalObserver.disconnect(); if (planObserver) planObserver.disconnect();
+    leftCollapsed = !leftCollapsed; container.classList.toggle('left-collapsed', leftCollapsed); tabLeft.classList.toggle('active', leftCollapsed);
+    if (leftCollapsed) { rightCollapsed = false; container.classList.remove('right-collapsed'); const tr = document.getElementById('tabRight'); if (tr) tr.classList.remove('active'); }
     updateTabIcons();
-
     if (toggleRestoreTimer) clearTimeout(toggleRestoreTimer);
-    toggleRestoreTimer = setTimeout(() => {
-        toggleRestoreTimer = null;
-        safeCall(fillFillers);
-        safeCall(fillPlanFillers);
-        if (journalScroll) {
-            journalScroll.scrollLeft = savedScrollLeft;
-            journalScroll.scrollTop = savedScrollTop;
-        }
-        if (panelRight) panelRight.scrollTop = savedPlanTop;
-        if (journalObserver) {
-            const jw = document.getElementById('journalScroll');
-            if (jw) journalObserver.observe(jw);
-        }
-        if (planObserver) {
-            const prw = document.getElementById('panelRightWrapper');
-            if (prw) planObserver.observe(prw);
-        }
-    }, 350);
+    toggleRestoreTimer = setTimeout(() => { toggleRestoreTimer = null; safeCall(fillFillers); safeCall(fillPlanFillers); if (journalScroll) { journalScroll.scrollLeft = savedScrollLeft; journalScroll.scrollTop = savedScrollTop; } if (panelRight) panelRight.scrollTop = savedPlanTop; if (journalObserver) { const jw = document.getElementById('journalScroll'); if (jw) journalObserver.observe(jw); } if (planObserver) { const prw = document.getElementById('panelRightWrapper'); if (prw) planObserver.observe(prw); } }, 350);
 }
 
 function toggleRightPanel() {
-    if (SUMMARY_MODE) return;
-    if (isMobileView()) { switchMobileView('journal'); return; }
-    const container = document.getElementById('panelsContainer');
-    const tabRight = document.getElementById('tabRight');
-    if (!container || !tabRight) return;
-
-    const journalScroll = document.getElementById('journalScroll');
-    const panelRight = document.getElementById('panelRight');
-    const savedScrollLeft = journalScroll ? journalScroll.scrollLeft : 0;
-    const savedScrollTop = journalScroll ? journalScroll.scrollTop : 0;
-    const savedPlanTop = panelRight ? panelRight.scrollTop : 0;
-
-    if (journalObserver) journalObserver.disconnect();
-    if (planObserver) planObserver.disconnect();
-
-    rightCollapsed = !rightCollapsed;
-    container.classList.toggle('right-collapsed', rightCollapsed);
-    tabRight.classList.toggle('active', rightCollapsed);
-    if (rightCollapsed) {
-        leftCollapsed = false;
-        container.classList.remove('left-collapsed');
-        const tl = document.getElementById('tabLeft');
-        if (tl) tl.classList.remove('active');
-    }
+    if (SUMMARY_MODE) return; if (isMobileView()) { switchMobileView('journal'); return; }
+    const container = document.getElementById('panelsContainer'); const tabRight = document.getElementById('tabRight'); if (!container || !tabRight) return;
+    const journalScroll = document.getElementById('journalScroll'); const panelRight = document.getElementById('panelRight');
+    const savedScrollLeft = journalScroll ? journalScroll.scrollLeft : 0; const savedScrollTop = journalScroll ? journalScroll.scrollTop : 0; const savedPlanTop = panelRight ? panelRight.scrollTop : 0;
+    if (journalObserver) journalObserver.disconnect(); if (planObserver) planObserver.disconnect();
+    rightCollapsed = !rightCollapsed; container.classList.toggle('right-collapsed', rightCollapsed); tabRight.classList.toggle('active', rightCollapsed);
+    if (rightCollapsed) { leftCollapsed = false; container.classList.remove('left-collapsed'); const tl = document.getElementById('tabLeft'); if (tl) tl.classList.remove('active'); }
     updateTabIcons();
-
     if (toggleRestoreTimer) clearTimeout(toggleRestoreTimer);
-    toggleRestoreTimer = setTimeout(() => {
-        toggleRestoreTimer = null;
-        safeCall(fillFillers);
-        safeCall(fillPlanFillers);
-        if (journalScroll) {
-            journalScroll.scrollLeft = savedScrollLeft;
-            journalScroll.scrollTop = savedScrollTop;
-        }
-        if (panelRight) panelRight.scrollTop = savedPlanTop;
-        if (journalObserver) {
-            const jw = document.getElementById('journalScroll');
-            if (jw) journalObserver.observe(jw);
-        }
-        if (planObserver) {
-            const prw = document.getElementById('panelRightWrapper');
-            if (prw) planObserver.observe(prw);
-        }
-    }, 350);
+    toggleRestoreTimer = setTimeout(() => { toggleRestoreTimer = null; safeCall(fillFillers); safeCall(fillPlanFillers); if (journalScroll) { journalScroll.scrollLeft = savedScrollLeft; journalScroll.scrollTop = savedScrollTop; } if (panelRight) panelRight.scrollTop = savedPlanTop; if (journalObserver) { const jw = document.getElementById('journalScroll'); if (jw) journalObserver.observe(jw); } if (planObserver) { const prw = document.getElementById('panelRightWrapper'); if (prw) planObserver.observe(prw); } }, 350);
 }
 
 function updateTabIcons() {
-    const tabLeft = document.getElementById('tabLeft');
-    const tabRight = document.getElementById('tabRight');
-    if (!tabLeft || !tabRight) return;
-    const iconLeft = leftCollapsed
-        ? '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>'
-        : '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>';
-    const iconRight = rightCollapsed
-        ? '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>'
-        : '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>';
-    tabLeft.innerHTML = '<svg viewBox="0 0 24 24">' + iconLeft + '</svg>Раскрыть журнал';
-    tabRight.innerHTML = '<svg viewBox="0 0 24 24">' + iconRight + '</svg>Раскрыть поуроч. план';
+    const tabLeft = document.getElementById('tabLeft'); const tabRight = document.getElementById('tabRight'); if (!tabLeft || !tabRight) return;
+    const iconLeft = leftCollapsed ? '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>' : '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>';
+    const iconRight = rightCollapsed ? '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>' : '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>';
+    tabLeft.innerHTML = '<svg viewBox="0 0 24 24">' + iconLeft + '</svg>Раскрыть журнал'; tabRight.innerHTML = '<svg viewBox="0 0 24 24">' + iconRight + '</svg>Раскрыть поуроч. план';
 }
 
 function showEmpty(title, text) {
-    const mc = document.getElementById('mainContent');
-    if (mc) mc.style.display = 'none';
-    const empty = document.getElementById('emptyState');
-    if (!empty) return;
-    empty.style.display = 'block';
-    const t = document.getElementById('emptyTitle');
-    const p = document.getElementById('emptyText');
-    if (t) t.textContent = title;
-    if (p) p.textContent = text;
+    const mc = document.getElementById('mainContent'); if (mc) mc.style.display = 'none';
+    const empty = document.getElementById('emptyState'); if (!empty) return; empty.style.display = 'block';
+    const t = document.getElementById('emptyTitle'); const p = document.getElementById('emptyText'); if (t) t.textContent = title; if (p) p.textContent = text;
 }
 
 function goBack() { window.location.href = 'admin.html'; }
 
-init().catch(err => {
-    console.error('Ошибка init:', err);
-    showEmpty('Ошибка', 'Не удалось загрузить журнал. Проверьте консоль (F12).');
-});
+init().catch(err => { console.error('Ошибка init:', err); showEmpty('Ошибка', 'Не удалось загрузить журнал. Проверьте консоль (F12).'); });
 updateTabIcons();
 
 window.addEventListener('pageshow', () => {
     if (!CLASS_ID || !SUBJECT_ID) return;
     (async () => {
         try {
-            JOURNAL = await loadJournalNormalized();
-            DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-            if (SUMMARY_MODE) renderSummaryTable();
-            else renderMainTable();
-            requestAnimationFrame(() => {
-                safeCall(SUMMARY_MODE ? fillFillersSummary : fillFillers);
-                safeCall(fillPlanFillers);
-            });
+            JOURNAL = await loadJournalNormalized(); DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
+            if (SUMMARY_MODE) renderSummaryTable(); else renderMainTable();
+            requestAnimationFrame(() => { safeCall(SUMMARY_MODE ? fillFillersSummary : fillFillers); safeCall(fillPlanFillers); });
         } catch (e) { console.warn(e); }
     })();
 });
