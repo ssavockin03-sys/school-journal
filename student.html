@@ -100,6 +100,18 @@
         .grade-square.g2, .grade-square.g1 { background: #d9534f; }
         .grade-square.gn { background: #94a3b8; }
 
+        /* Итоговые оценки (за период) */
+        .grade-square.is-quarter { border: 2px solid #fff; box-shadow: 0 0 0 2px #0273b2; }
+        .grade-square.is-quarter::after {
+            content: '★';
+            position: absolute;
+            top: 2px; right: 4px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.8);
+            line-height: 1;
+        }
+        .grade-subject.is-quarter { color: #0273b2; font-weight: 700; }
+
         .grade-icon { position: absolute; right: -16px; bottom: -16px; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; pointer-events: none; color: #fff; opacity: 0.45; line-height: 0; z-index: 1; }
         .grade-icon svg { width: 70px; height: 70px; display: block; }
         .grade-value { position: relative; z-index: 2; text-shadow: 0 1px 3px rgba(0,0,0,0.25); }
@@ -356,6 +368,7 @@
     const MONTHS_GEN  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
     const MONTHS_SHORT = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
     const DEFAULT_LESSON_TYPE = 'ОТВ';
+    const PERIOD_NAMES = { 'Четверти': 'четверть', 'Семестры': 'семестр', 'Триместры': 'триместр', 'Полугодия': 'полугодие' };
 
     const PROFILE_ICONS = {
         'Точные науки': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="1.8"/><rect x="7" y="4" width="10" height="4.4" rx="0.6"/><rect x="7" y="10" width="4" height="2.6" rx="0.5"/><rect x="13" y="10" width="4" height="2.6" rx="0.5"/><rect x="7" y="13.4" width="4" height="2.6" rx="0.5"/><rect x="13" y="13.4" width="4" height="2.6" rx="0.5"/><rect x="7" y="16.8" width="4" height="2.6" rx="0.5"/><rect x="13" y="16.8" width="4" height="2.6" rx="0.5"/><rect x="7" y="20.2" width="4" height="1.4" rx="0.4"/><rect x="13" y="20.2" width="4" height="1.4" rx="0.4"/><path d="M14.4 11.3h1.2M15 10.7v1.2"/><path d="M14.4 14.7h1.2"/><path d="M14.4 17.6l1.2 1.2M15.6 17.6l-1.2 1.2"/></svg>',
@@ -380,6 +393,7 @@
     let ALL_STUDENTS = [];
     let ALL_WORKLOADS = [];
     let ALL_PERIODS = [];
+    let CURRENT_PERIOD_SYSTEM = '';
     let CURRENT_SCHEDULES = [];
     let ALL_ROOMS = [];
     let TODAY_DATE = new Date(); TODAY_DATE.setHours(0, 0, 0, 0);
@@ -458,6 +472,7 @@
         ALL_ROOMS = rooms;
         ALL_WORKLOADS = workloads;
         ALL_PERIODS = periods[0] && periods[0].periods ? periods[0].periods : [];
+        CURRENT_PERIOD_SYSTEM = periods[0] && periods[0].system ? periods[0].system : '';
         
         CURRENT_CLASS = classes.find(c => c.id === CURRENT_STUDENT.class_id) || null;
         ALL_SUBJECTS = subjects;
@@ -481,7 +496,8 @@
                 id: j.id,
                 grades: j.grades,
                 grade_timestamps: j.grade_timestamps,
-                lesson_types: j.lesson_types
+                lesson_types: j.lesson_types,
+                qtr_grades: j.qtr_grades
             })));
         } catch (e) { return String(Date.now()); }
     }
@@ -537,27 +553,63 @@
         return null;
     }
 
+    // Собираем ВСЕ оценки (и за уроки, и итоговые)
     function collectAllStudentGrades() {
         const result = [];
         ALL_JOURNALS.forEach(journal => {
-            const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
             const subjObj = ALL_SUBJECTS.find(s => s.id === journal.subject_id);
             if (!subjObj) return;
+
+            // 1. Обычные оценки за уроки
+            const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
             Object.entries(sg).forEach(([key, val]) => {
                 if (val === '' || val === null || val === undefined) return;
                 const parsed = parseKey(key);
                 const type = (journal.lesson_types && journal.lesson_types[key]) || DEFAULT_LESSON_TYPE;
                 const cell = parseCell(val);
-                const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson, type, journal };
+                const base = { subject: subjObj.name, subjectObj: subjObj, key, date: parsed.date, dateRu: parsed.dateRu, lesson: parsed.lesson, type, journal, isQuarter: false, quarterLabel: '' };
                 if (cell.grade) result.push({ ...base, kind: 'grade', grade: cell.grade, presence: '' });
                 if (cell.presence) result.push({ ...base, kind: 'presence', grade: '', presence: cell.presence });
+            });
+
+            // 2. Итоговые оценки (за четверть/семестр/триместр/год)
+            const qtrs = (journal.qtr_grades && journal.qtr_grades[CURRENT_STUDENT.id]) || {};
+            Object.entries(qtrs).forEach(([qKey, val]) => {
+                if (val === '' || val === null || val === undefined) return;
+                
+                let label = '';
+                if (qKey === 'final') {
+                    label = 'Год';
+                } else {
+                    const pIdx = parseInt(qKey, 10);
+                    const pName = PERIOD_NAMES[CURRENT_PERIOD_SYSTEM] || 'четверть';
+                    label = (isNaN(pIdx) ? qKey : (pIdx + 1)) + ' ' + pName;
+                }
+
+                result.push({
+                    subject: subjObj.name,
+                    subjectObj: subjObj,
+                    key: 'qtr:' + qKey,
+                    date: null,
+                    dateRu: '',
+                    lesson: '',
+                    type: 'Итоговая',
+                    journal: journal,
+                    isQuarter: true,
+                    quarterLabel: label,
+                    kind: 'grade',
+                    grade: val,
+                    presence: ''
+                });
             });
         });
         return result;
     }
 
+    // Лента последних 15 выставленных оценок (включая итоговые)
     function collectRecentGrades(limit) {
         const all = collectAllStudentGrades();
+        // Берём и оценки за уроки, и итоговые (kind === 'grade')
         const grades = all.filter(g => g.kind === 'grade' && g.grade);
 
         const withTs = grades.map(g => {
@@ -572,151 +624,22 @@
             const bHas = b.gradedAt !== null;
 
             if (aHas !== bHas) return aHas ? -1 : 1;
+            if (aHas && bHas && a.gradedAt !== b.gradedAt) return b.gradedAt - a.gradedAt;
 
-            if (aHas && bHas && a.gradedAt !== b.gradedAt) {
-                return b.gradedAt - a.gradedAt;
-            }
-
+            // Fallback если нет таймстемпов:
+            // Сначала итоговые (они важнее)
+            if (a.isQuarter !== b.isQuarter) return a.isQuarter ? -1 : 1;
+            
             const aParts = String(a.key).split('_');
             const bParts = String(b.key).split('_');
             const aDate = aParts[0] || '';
             const bDate = bParts[0] || '';
             if (aDate !== bDate) return bDate.localeCompare(aDate);
-            const aNum = parseInt(aParts[1], 10) || 0;
-            const bNum = parseInt(bParts[1], 10) || 0;
-            if (aNum !== bNum) return bNum - aNum;
             return String(b.key).localeCompare(String(a.key));
         });
 
         return withTs.slice(0, limit || 15);
     }
-
-    /* ============================================================ */
-    /* ЛОГИКА ОБЪЯВЛЕНИЯ (2/Н и т.д.) — ИСПРАВЛЕННАЯ                 */
-    /* ============================================================ */
-
-    // Регулярка для "красных" оценок: 1, 2 с любыми модификаторами
-    function isRedGrade(gradeStr) {
-        if (!gradeStr) return false;
-        const s = String(gradeStr).toUpperCase().replace(/\s/g, '');
-        if (s.includes('/')) {
-            const parts = s.split('/');
-            return parts.some(p => /^[12][+-]?$/.test(p) || /^[12]$/.test(p));
-        }
-        return /^[12][+-]?$/.test(s) || /^[12]$/.test(s);
-    }
-
-    // Ищем самое свежее событие (красная оценка или Н) за последние 3 дня
-    function findLatestAlertEvent() {
-        if (!CURRENT_STUDENT) return null;
-        
-        const now = Date.now();
-        const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
-        
-        // Собираем ВСЕ оценки и отметки Н
-        const events = [];
-
-        collectAllStudentGrades().forEach(g => {
-            let isAlert = false;
-            let alertType = ''; 
-            let gradeValue = '';
-
-            if (g.kind === 'grade') {
-                if (isRedGrade(g.grade)) {
-                    isAlert = true;
-                    alertType = 'red';
-                    gradeValue = g.grade;
-                }
-            } else if (g.kind === 'presence') {
-                if (g.presence === 'Н' || g.presence.startsWith('Н')) {
-                    isAlert = true;
-                    alertType = 'N';
-                    gradeValue = 'Н';
-                }
-            }
-
-            if (!isAlert) return;
-
-            // Получаем таймстемп сохранения
-            const j = g.journal;
-            const tsMap = j && j.grade_timestamps && j.grade_timestamps[CURRENT_STUDENT.id];
-            const ts = tsMap && tsMap[g.key];
-
-            // Определяем время события: таймстемп сохранения ИЛИ дата урока (если нет таймстемпа)
-            let eventTs = null;
-            if (ts) {
-                eventTs = ts;
-            } else if (g.date) {
-                eventTs = g.date.getTime();
-            } else {
-                return; // нет ни того, ни другого
-            }
-
-            // Фильтр: только за последние 3 дня
-            if (now - eventTs > THREE_DAYS_MS) return;
-
-            events.push({
-                ts: eventTs,
-                type: alertType,
-                grade: gradeValue,
-                subject: g.subject
-            });
-        });
-
-        // Если событий нет — возвращаем null
-        if (events.length === 0) return null;
-
-        // Сортируем по времени СОХРАНЕНИЯ (сначала самые новые)
-        events.sort((a, b) => b.ts - a.ts);
-
-        // Возвращаем самое первое (самое новое)
-        return events[0];
-    }
-
-    function renderNewsAlert() {
-        const container = document.getElementById('newsPlaceholder');
-        if (!container) return;
-
-        const event = findLatestAlertEvent();
-
-        if (!event) {
-            container.className = 'news-placeholder';
-            container.innerHTML = `
-                <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M100 20L120 60H80L100 20Z" fill="#65a3e3"/>
-                    <circle cx="100" cy="60" r="15" fill="#4b9a25"/>
-                    <rect x="70" y="70" width="60" height="10" rx="3" fill="#d9534f"/>
-                    <path d="M40 110C40 110 60 90 100 90C140 90 160 110 160 110" stroke="#cbd5e1" stroke-width="2"/>
-                    <circle cx="50" cy="130" r="10" fill="#e2e8f0"/>
-                    <circle cx="150" cy="130" r="10" fill="#e2e8f0"/>
-                </svg>
-                <div class="news-placeholder-text">Здесь появятся объявления и новости</div>
-            `;
-            return;
-        }
-
-        container.className = 'news-alert-card';
-        if (event.type === 'red') {
-            container.innerHTML = `
-                <div class="news-alert-icon">😟</div>
-                <div class="news-alert-title">Тебе поставили <b>${escapeHtml(event.grade)}</b> по предмету «${escapeHtml(event.subject)}»</div>
-                <div class="news-alert-body">Обычно оценку можно исправить. Спроси учителя, что ты можешь для этого сделать.</div>
-                <div class="news-alert-sub">
-                    Это уведомление <b>исчезнет через 3 дня</b>.
-                </div>
-            `;
-        } else {
-            container.innerHTML = `
-                <div class="news-alert-icon">📌</div>
-                <div class="news-alert-title">Тебя не было на уроке «${escapeHtml(event.subject)}»</div>
-                <div class="news-alert-body">Если есть уважительная причина для отсутствия, сообщи о ней учителю.</div>
-                <div class="news-alert-sub">
-                    Это уведомление <b>исчезнет через 3 дня</b>.
-                </div>
-            `;
-        }
-    }
-    /* ============================================================ */
 
     function shiftDay(delta) {
         const next = new Date(TODAY_DATE);
@@ -754,8 +677,10 @@
 
         records.forEach(g => {
             const cls = gradeClass(g.grade);
-            const typeLabel = getLessonTypeFullName(g.type);
             const icon = profileIconHtml(g.subjectObj);
+            
+            const subjectText = escapeHtml(g.subject);
+            const typeText = g.isQuarter ? escapeHtml(g.quarterLabel) : escapeHtml(getLessonTypeFullName(g.type));
 
             let freshTag = '';
             if (g.gradedAt) {
@@ -767,13 +692,13 @@
             }
 
             html += `
-                <div class="grade-block" onclick="openStatModal('${escapeHtml(g.subject)}', '${escapeHtml(g.key)}')">
-                    <div class="grade-square ${cls}">
+                <div class="grade-block" onclick="${g.isQuarter ? '' : `openStatModal('${escapeHtml(g.subject)}', '${escapeHtml(g.key)}')`}">
+                    <div class="grade-square ${cls} ${g.isQuarter ? 'is-quarter' : ''}">
                         ${icon}
                         <span class="grade-value">${escapeHtml(g.grade)}</span>
                     </div>
-                    <div class="grade-subject">${escapeHtml(g.subject)}</div>
-                    <div class="grade-type">${escapeHtml(typeLabel)}</div>
+                    <div class="grade-subject ${g.isQuarter ? 'is-quarter' : ''}">${subjectText}</div>
+                    <div class="grade-type">${typeText}</div>
                     ${freshTag}
                 </div>
             `;
@@ -1071,7 +996,122 @@
     
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStatModal(); });
 
-    // ЧАТ
+    /* ============================================================ */
+    /* ЛОГИКА ОБЪЯВЛЕНИЯ (2/Н и т.д.)                               */
+    /* ============================================================ */
+    function isRedGrade(gradeStr) {
+        if (!gradeStr) return false;
+        const s = String(gradeStr).toUpperCase().replace(/\s/g, '');
+        if (s.includes('/')) {
+            const parts = s.split('/');
+            return parts.some(p => /^[12][+-]?$/.test(p) || /^[12]$/.test(p));
+        }
+        return /^[12][+-]?$/.test(s) || /^[12]$/.test(s);
+    }
+
+    function findLatestAlertEvent() {
+        if (!CURRENT_STUDENT) return null;
+        const now = Date.now();
+        const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+        const events = [];
+
+        collectAllStudentGrades().forEach(g => {
+            let isAlert = false;
+            let alertType = ''; 
+            let gradeValue = '';
+            let finalSubjectName = g.subject;
+
+            if (g.kind === 'grade') {
+                if (isRedGrade(g.grade)) {
+                    isAlert = true;
+                    alertType = 'red';
+                    gradeValue = g.grade;
+                }
+            } else if (g.kind === 'presence') {
+                if (g.presence === 'Н' || g.presence.startsWith('Н')) {
+                    isAlert = true;
+                    alertType = 'N';
+                    gradeValue = 'Н';
+                }
+            }
+
+            if (!isAlert) return;
+
+            const j = g.journal;
+            const tsMap = j && j.grade_timestamps && j.grade_timestamps[CURRENT_STUDENT.id];
+            let ts = tsMap && tsMap[g.key];
+
+            let eventTs = null;
+            if (ts) {
+                eventTs = ts;
+            } else if (g.date) {
+                eventTs = g.date.getTime();
+            } else {
+                return;
+            }
+
+            if (now - eventTs > THREE_DAYS_MS) return;
+
+            events.push({
+                ts: eventTs,
+                type: alertType,
+                grade: gradeValue,
+                subject: finalSubjectName
+            });
+        });
+
+        if (events.length === 0) return null;
+        events.sort((a, b) => b.ts - a.ts);
+        return events[0];
+    }
+
+    function renderNewsAlert() {
+        const container = document.getElementById('newsPlaceholder');
+        if (!container) return;
+
+        const event = findLatestAlertEvent();
+
+        if (!event) {
+            container.className = 'news-placeholder';
+            container.innerHTML = `
+                <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 20L120 60H80L100 20Z" fill="#65a3e3"/>
+                    <circle cx="100" cy="60" r="15" fill="#4b9a25"/>
+                    <rect x="70" y="70" width="60" height="10" rx="3" fill="#d9534f"/>
+                    <path d="M40 110C40 110 60 90 100 90C140 90 160 110 160 110" stroke="#cbd5e1" stroke-width="2"/>
+                    <circle cx="50" cy="130" r="10" fill="#e2e8f0"/>
+                    <circle cx="150" cy="130" r="10" fill="#e2e8f0"/>
+                </svg>
+                <div class="news-placeholder-text">Здесь появятся объявления и новости</div>
+            `;
+            return;
+        }
+
+        container.className = 'news-alert-card';
+        if (event.type === 'red') {
+            container.innerHTML = `
+                <div class="news-alert-icon">😟</div>
+                <div class="news-alert-title">Тебе поставили <b>${escapeHtml(event.grade)}</b> по предмету «${escapeHtml(event.subject)}»</div>
+                <div class="news-alert-body">Обычно оценку можно исправить. Спроси учителя, что ты можешь для этого сделать.</div>
+                <div class="news-alert-sub">
+                    Это уведомление <b>исчезнет через 3 дня</b>.
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="news-alert-icon">📌</div>
+                <div class="news-alert-title">Тебя не было на уроке «${escapeHtml(event.subject)}»</div>
+                <div class="news-alert-body">Если есть уважительная причина для отсутствия, сообщи о ней учителю.</div>
+                <div class="news-alert-sub">
+                    Это уведомление <b>исчезнет через 3 дня</b>.
+                </div>
+            `;
+        }
+    }
+
+    /* ============================================================ */
+    /* ЧАТ                                                          */
+    /* ============================================================ */
     (function () {
         let contacts = [], contactsLoaded = false, activeContact = null, lastSeenTs = null, pollTimer = null, unreadByContact = {}, panelOpen = false;
         function getMyId() { return (window.CURRENT_STUDENT && window.CURRENT_STUDENT.id) || null; }
