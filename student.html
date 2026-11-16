@@ -91,7 +91,7 @@
         .grade-block { display: flex; flex-direction: column; flex-shrink: 0; width: 90px; cursor: pointer; }
         .grade-square {
             position: relative; width: 100%; height: 64px; background: #5cb85c; 
-            border-radius: 4px; /* === ОКРУГЛИЛИ УГЛЫ === */
+            border-radius: 4px;
             display: flex; align-items: center; justify-content: center;
             color: #fff; font-size: 36px; font-weight: 400; margin-bottom: 8px;
             transition: background 0.2s; overflow: hidden;
@@ -680,8 +680,11 @@
                 }
             }
 
+            // Передаём isQuarter в модалку, чтобы она знала, как рендерить
+            const clickAction = `openStatModal('${escapeHtml(g.subject)}', '${escapeHtml(g.key)}', ${g.isQuarter ? `'${escapeHtml(g.quarterLabel)}'` : 'null'})`;
+
             html += `
-                <div class="grade-block" onclick="${g.isQuarter ? '' : `openStatModal('${escapeHtml(g.subject)}', '${escapeHtml(g.key)}')`}">
+                <div class="grade-block" onclick="${clickAction}">
                     <div class="grade-square ${cls}">
                         ${icon}
                         <span class="grade-value">${escapeHtml(g.grade)}</span>
@@ -882,59 +885,131 @@
         }).join('');
     }
 
-    window.openStatModal = function(subjectName, lessonKey) {
+    // Функция открытия модалки (теперь с поддержкой итоговых)
+    window.openStatModal = function(subjectName, lessonKey, quarterLabel) {
         const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
         const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
-        const parsed = parseKey(lessonKey);
-        const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
-        const typeFullName = getLessonTypeFullName(lessonType);
-
-        const rawCell = (journal && journal.grades && journal.grades[CURRENT_STUDENT.id] && journal.grades[CURRENT_STUDENT.id][lessonKey]) || null;
-        const parsedCell = parseCell(rawCell);
-        const myGrade = parsedCell.grade;
-        const myDigits = parseGradeDigits(myGrade);
-        const isDouble = myDigits.length === 2;
-
+        
         let teacherName = '—';
-        const grid = getGridForDate(parsed.date);
-        if (grid) {
-            const dowKey = JS_DAY_MAP[parsed.date.getDay()];
-            if (dowKey) {
-                const dayGrid = grid[dowKey] || {};
-                const lessonInGrid = dayGrid[parsed.lesson] || dayGrid[String(parsed.lesson)];
-                if (lessonInGrid) {
-                    teacherName = lessonInGrid.teacherName || '—';
-                    if (!teacherName && lessonInGrid.teacherId) {
-                        const t = ALL_TEACHERS.find(x => x.id === lessonInGrid.teacherId);
-                        if (t) teacherName = t.full_name;
+        let metaStr = '';
+        let myGrade = '';
+        let isQuarter = !!quarterLabel;
+        
+        const grid = getGridForDate(new Date());
+        
+        if (isQuarter) {
+            // Это итоговая оценка
+            const rawQtrKey = lessonKey.replace('qtr:', '');
+            const qtrs = (journal && journal.qtr_grades && journal.qtr_grades[CURRENT_STUDENT.id]) || {};
+            myGrade = qtrs[rawQtrKey] || '';
+            metaStr = escapeHtml(quarterLabel);
+            
+            // Ищем учителя по журналу
+            if (grid) {
+                // Ищем по любому уроку этого предмета
+                outer: for (const dowKey in grid) {
+                    const dayGrid = grid[dowKey] || {};
+                    for (const num in dayGrid) {
+                        if (dayGrid[num].subject === subjectName) {
+                            teacherName = dayGrid[num].teacherName || '—';
+                            if (!teacherName && dayGrid[num].teacherId) {
+                                const t = ALL_TEACHERS.find(x => x.id === dayGrid[num].teacherId);
+                                if (t) teacherName = t.full_name;
+                            }
+                            break outer;
+                        }
+                    }
+                }
+            }
+        } else {
+            // Это обычная оценка за урок
+            const parsed = parseKey(lessonKey);
+            const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
+            const typeFullName = getLessonTypeFullName(lessonType);
+            metaStr = typeFullName + ', ' + formatDateHuman(parsed.date);
+            
+            const rawCell = (journal && journal.grades && journal.grades[CURRENT_STUDENT.id] && journal.grades[CURRENT_STUDENT.id][lessonKey]) || null;
+            const parsedCell = parseCell(rawCell);
+            myGrade = parsedCell.grade;
+            
+            if (grid) {
+                const dowKey = JS_DAY_MAP[parsed.date.getDay()];
+                if (dowKey) {
+                    const dayGrid = grid[dowKey] || {};
+                    const lessonInGrid = dayGrid[parsed.lesson] || dayGrid[String(parsed.lesson)];
+                    if (lessonInGrid) {
+                        teacherName = lessonInGrid.teacherName || '—';
+                        if (!teacherName && lessonInGrid.teacherId) {
+                            const t = ALL_TEACHERS.find(x => x.id === lessonInGrid.teacherId);
+                            if (t) teacherName = t.full_name;
+                        }
                     }
                 }
             }
         }
 
+        const myDigits = parseGradeDigits(myGrade);
+        const isDouble = myDigits.length === 2;
+        
+        // Для рейтинга итоговых: берем распределение оценок за этот предмет за этот период
         let currentPeriod = null;
-        if (parsed.date) {
-            const dStr = isoDate(parsed.date);
-            currentPeriod = ALL_PERIODS.find(p => dStr >= p.start && dStr <= p.end);
+        if (!isQuarter) {
+            const parsed = parseKey(lessonKey);
+            if (parsed.date) {
+                const dStr = isoDate(parsed.date);
+                currentPeriod = ALL_PERIODS.find(p => dStr >= p.start && dStr <= p.end);
+            }
+        } else {
+            // Для итоговой — берем текущий период (или по индексу)
+            const rawQtrKey = lessonKey.replace('qtr:', '');
+            if (rawQtrKey !== 'final') {
+                const pIdx = parseInt(rawQtrKey, 10);
+                if (!isNaN(pIdx) && ALL_PERIODS[pIdx]) currentPeriod = ALL_PERIODS[pIdx];
+            }
         }
 
         const classStudentIds = CURRENT_CLASS ? ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id) : [];
         let bodyHtml = '';
 
+        // Для итоговых оценок мы считаем рейтинг по всем оценкам за период (или по годовым)
+        const isQuarterRating = isQuarter;
+        
         if (!isDouble) {
             const myDigit = myDigits.length ? myDigits[0] : 0;
-            const avg = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 0);
-            const classCounts = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
+            let avg = null;
+            let classCounts = {5:0,4:0,3:0,2:0,1:0};
+            
+            if (isQuarterRating) {
+                // Рейтинг для итоговой: считаем средние и распределение по этому предмету за период
+                const rawQtrKey = lessonKey.replace('qtr:', '');
+                classStudentIds.forEach(sid => {
+                    const studentQtrs = (journal && journal.qtr_grades && journal.qtr_grades[sid]) || {};
+                    const v = studentQtrs[rawQtrKey];
+                    const digits = parseGradeDigits(v);
+                    if (digits.length > 0) {
+                        const d = digits[0];
+                        if (d >= 1 && d <= 5) classCounts[d]++;
+                    }
+                });
+                // Средний балл ученика за этот предмет по итоговым (только за этот период)
+                // Для простоты считаем как среднее всех итоговых ученика по этому предмету (или можно просто вывести его оценку)
+                // Сделаем: avg = его оценка (т.к. это итоговая)
+                avg = myDigit ? myDigit : null;
+            } else {
+                avg = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 0);
+                classCounts = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
+            }
+
             const ringGradient = buildClassDistributionGradient(classCounts);
             
             bodyHtml = `
                 <div class="stat-card">
                     <div class="stat-left">
-                        <div class="stat-title">Ваша оценка</div>
+                        <div class="stat-title">${isQuarterRating ? 'Итоговая оценка' : 'Ваша оценка'}</div>
                         <div class="stat-circle" style="background: ${ringGradient};">
                             <div class="stat-circle-value">${myDigit || '—'}</div>
                         </div>
-                        <div class="stat-avg">ср. балл <div class="stat-avg-pill ${myDigit >= 3 ? 'up' : ''}">${formatAvg(avg)}</div></div>
+                        <div class="stat-avg">${isQuarterRating ? 'балл' : 'ср. балл'} <div class="stat-avg-pill ${myDigit >= 3 ? 'up' : ''}">${formatAvg(avg)}</div></div>
                     </div>
                     <div class="stat-right">
                         <div class="stat-right-title">Одноклассники</div>
@@ -942,11 +1017,25 @@
                     </div>
                 </div>`;
         } else {
+            // Двойная итоговая (редкость, но обработаем)
             const [d1, d2] = myDigits;
-            const avg1 = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 0);
-            const avg2 = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 1);
-            const counts1 = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
-            const counts2 = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 1);
+            let counts1 = {5:0,4:0,3:0,2:0,1:0};
+            let counts2 = {5:0,4:0,3:0,2:0,1:0};
+            
+            if (isQuarterRating) {
+                const rawQtrKey = lessonKey.replace('qtr:', '');
+                classStudentIds.forEach(sid => {
+                    const studentQtrs = (journal && journal.qtr_grades && journal.qtr_grades[sid]) || {};
+                    const v = studentQtrs[rawQtrKey];
+                    const digits = parseGradeDigits(v);
+                    if (digits.length >= 1) { if (digits[0] >= 1 && digits[0] <= 5) counts1[digits[0]]++; }
+                    if (digits.length >= 2) { if (digits[1] >= 1 && digits[1] <= 5) counts2[digits[1]]++; }
+                });
+            } else {
+                counts1 = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
+                counts2 = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 1);
+            }
+
             const ring1 = buildClassDistributionGradient(counts1);
             const ring2 = buildClassDistributionGradient(counts2);
 
@@ -955,13 +1044,11 @@
                     <div class="stat-dual-col">
                         <div class="stat-dual-col-title">1-я оценка</div>
                         <div class="stat-dual-circle" style="background: ${ring1};"><div class="stat-dual-value">${d1}</div></div>
-                        <div class="stat-dual-avg">ср. балл <span class="stat-avg-pill ${d1 >= 3 ? 'up' : ''}">${formatAvg(avg1)}</span></div>
                         <div class="stat-dual-legend">${renderCountsRows(counts1)}</div>
                     </div>
                     <div class="stat-dual-col">
                         <div class="stat-dual-col-title">2-я оценка</div>
                         <div class="stat-dual-circle" style="background: ${ring2};"><div class="stat-dual-value">${d2}</div></div>
-                        <div class="stat-dual-avg">ср. балл <span class="stat-avg-pill ${d2 >= 3 ? 'up' : ''}">${formatAvg(avg2)}</span></div>
                         <div class="stat-dual-legend">${renderCountsRows(counts2)}</div>
                     </div>
                 </div>`;
@@ -970,7 +1057,7 @@
         document.getElementById('statModalContent').innerHTML = `
             <button class="stat-modal-close" onclick="closeStatModal()">×</button>
             <div class="stat-modal-subject">${escapeHtml(subjectName)}</div>
-            <div class="stat-modal-meta">${escapeHtml(typeFullName)}, ${formatDateHuman(parsed.date)}.</div>
+            <div class="stat-modal-meta">${metaStr}.</div>
             <div class="stat-modal-divider"></div>
             <div class="stat-modal-teacher"><span>Учитель:</span> <b>${escapeHtml(teacherName)}</b></div>
             ${bodyHtml}
