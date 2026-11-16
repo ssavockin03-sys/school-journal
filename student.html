@@ -90,7 +90,8 @@
         
         .grade-block { display: flex; flex-direction: column; flex-shrink: 0; width: 90px; cursor: pointer; }
         .grade-square {
-            position: relative; width: 100%; height: 64px; background: #5cb85c; border-radius: 2px;
+            position: relative; width: 100%; height: 64px; background: #5cb85c; 
+            border-radius: 4px; /* === ОКРУГЛИЛИ УГЛЫ === */
             display: flex; align-items: center; justify-content: center;
             color: #fff; font-size: 36px; font-weight: 400; margin-bottom: 8px;
             transition: background 0.2s; overflow: hidden;
@@ -99,18 +100,6 @@
         .grade-square.g3 { background: #f0ad4e; }
         .grade-square.g2, .grade-square.g1 { background: #d9534f; }
         .grade-square.gn { background: #94a3b8; }
-
-        /* Итоговые оценки (за период) */
-        .grade-square.is-quarter { border: 2px solid #fff; box-shadow: 0 0 0 2px #0273b2; }
-        .grade-square.is-quarter::after {
-            content: '★';
-            position: absolute;
-            top: 2px; right: 4px;
-            font-size: 10px;
-            color: rgba(255,255,255,0.8);
-            line-height: 1;
-        }
-        .grade-subject.is-quarter { color: #0273b2; font-weight: 700; }
 
         .grade-icon { position: absolute; right: -16px; bottom: -16px; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; pointer-events: none; color: #fff; opacity: 0.45; line-height: 0; z-index: 1; }
         .grade-icon svg { width: 70px; height: 70px; display: block; }
@@ -693,11 +682,11 @@
 
             html += `
                 <div class="grade-block" onclick="${g.isQuarter ? '' : `openStatModal('${escapeHtml(g.subject)}', '${escapeHtml(g.key)}')`}">
-                    <div class="grade-square ${cls} ${g.isQuarter ? 'is-quarter' : ''}">
+                    <div class="grade-square ${cls}">
                         ${icon}
                         <span class="grade-value">${escapeHtml(g.grade)}</span>
                     </div>
-                    <div class="grade-subject ${g.isQuarter ? 'is-quarter' : ''}">${subjectText}</div>
+                    <div class="grade-subject">${subjectText}</div>
                     <div class="grade-type">${typeText}</div>
                     ${freshTag}
                 </div>
