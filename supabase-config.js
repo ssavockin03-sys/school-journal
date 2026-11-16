@@ -121,29 +121,3 @@ const DB = {
     }
 };
 window.DB = DB;
-    async forceTestWrite(classId, subjectId, studentId) {
-        try {
-            const fb = await loadFirebase();
-            const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'journals'), fb.where('class_id', '==', classId), fb.where('subject_id', '==', subjectId)));
-            if (snap.empty) return console.log('Журнал не найден');
-            
-            const docId = snap.docs[0].id;
-            const docRef = fb.doc(fb.db, 'journals', docId);
-            const data = snap.docs[0].data();
-            
-            // Принудительно пишем двойку с текущим таймстемпом
-            const key = new Date().toISOString().split('T')[0] + '_99_0'; 
-            if (!data.grades) data.grades = {};
-            if (!data.grades[studentId]) data.grades[studentId] = {};
-            data.grades[studentId][key] = '2';
-            
-            if (!data.grade_timestamps) data.grade_timestamps = {};
-            if (!data.grade_timestamps[studentId]) data.grade_timestamps[studentId] = {};
-            data.grade_timestamps[studentId][key] = Date.now();
-            
-            await fb.setDoc(docRef, data, { merge: true });
-            console.log('✅ УСПЕШНО ЗАПИСАНО С КОМПЬЮТЕРА!', data);
-        } catch (e) {
-            console.error('❌ ОШИБКА ЗАПИСИ:', e);
-        }
-    }
