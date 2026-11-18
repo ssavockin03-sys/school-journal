@@ -114,11 +114,11 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 2000; }
 .fio-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 210px; }
-.fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; line-height: 1.2; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
+.fio-table th, .fio-table td { padding: 0; text-align: left !important; font-size: 13px; height: 38px; min-height: 38px; max-height: 38px; line-height: 1.2; vertical-align: middle; border: none; border-bottom: 1px solid #CFD8E3; box-sizing: border-box; background: #FFFFFF; }
 .fio-table thead { position: sticky; top: 0; z-index: 200; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .fio-table thead th { background: #EBF0F6 !important; font-weight: 400; color: #334155; font-size: 13px !important; text-align: center !important; height: 76px; line-height: 1.2; padding: 0 10px; border-bottom: 1px solid #CFD8E3; vertical-align: middle; }
 .fio-table tbody { transform: translateZ(0); }
-.fio-table tbody tr { height: 38px; }
+.fio-table tbody tr { height: 38px; min-height: 38px; max-height: 38px; }
 .fio-table td { padding: 0 10px; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fio-table .student-number-text { display: inline-block; width: 22px; margin-right: 6px; font-size: 13.65px; text-align: right; }
 .fio-table .student-name-text { display: inline-block; font-size: 13.65px; }
@@ -142,7 +142,7 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     position: relative;
 }
 .marks-table tbody { transform: translateZ(0); }
-.marks-table tbody tr { height: 38px; }
+.marks-table tbody tr { height: 38px; min-height: 38px; max-height: 38px; }
 
 .marks-table thead tr#mRow th { height: 38px; }
 .marks-table thead tr#sRow th { height: 38px; }
@@ -1315,6 +1315,7 @@ function renderSummaryTable() {
     const fioBody = document.getElementById('fioBody');
     const pBody = document.getElementById('pBody');
     const marksTable = document.getElementById('marksTable');
+    
     if (!mRow || !sRow || !jBody || !fioBody || !pBody || !marksTable) return;
 
     marksTable.classList.add('period-mode');
@@ -1341,6 +1342,8 @@ function renderSummaryTable() {
     thFinal.textContent = 'Итог';
     mRow.appendChild(thFinal);
 
+    sRow.innerHTML = '';
+
     STUDENTS.forEach((student, sIdx) => {
         const fioTr = document.createElement('tr');
         const fioTd = document.createElement('td');
@@ -1354,7 +1357,7 @@ function renderSummaryTable() {
         const qtrs = JOURNAL.qtrGrades[student.id] || {};
 
         PERIODS.forEach((p, idx) => {
-            const val = qtrs[idx] || qtrs[String(idx)] || '';
+            const val = qtrs[idx] !== undefined ? qtrs[idx] : (qtrs[String(idx)] || '');
             const td = document.createElement('td');
             td.className = 'col-period';
             td.dataset.periodIdx = idx;
@@ -1383,6 +1386,10 @@ function renderSummaryTable() {
         tr.appendChild(tdFinal);
 
         jBody.appendChild(tr);
+    });
+
+    requestAnimationFrame(() => {
+        safeCall(fillFillersSummary);
     });
 }
 
