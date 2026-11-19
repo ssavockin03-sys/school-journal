@@ -177,8 +177,8 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     display: none !important;
 }
 
-.marks-table.period-mode thead th.col-period-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px; color: #334155; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
-.marks-table.period-mode thead th.col-final-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px; color: #1E293B; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; }
+.marks-table.period-mode thead th.col-period-header { width: 46px; min-width: 46px; max-width: 46px; height: 38px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px; color: #334155; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
+.marks-table.period-mode thead th.col-final-header { width: 46px; min-width: 46px; max-width: 46px; height: 38px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px; color: #1E293B; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; }
 .marks-table.period-mode tbody td.col-period { font-size: 13px; background: #FFFFFF; vertical-align: middle; height: 38px; width: 46px; min-width: 46px; max-width: 46px; }
 .marks-table.period-mode tbody td.col-final { background: #FFFFFF; font-weight: 600; color: #1E293B; }
 
@@ -1298,16 +1298,19 @@ function renderPeriodTabs() {
             if (mvt) mvt.style.display = 'none';
         }
         renderSummaryTable();
-        requestAnimationFrame(() => {
-            safeCall(fillFillersSummary);
-            requestAnimationFrame(() => safeCall(fillFillersSummary));
-        });
-        setTimeout(() => safeCall(fillFillersSummary), 50);
-        setTimeout(() => safeCall(fillFillersSummary), 200);
+        requestAnimationFrame(() => safeCall(fillFillersSummary));
+        setTimeout(() => safeCall(fillFillersSummary), 80);
     });
     container.appendChild(summaryTab);
 }
 
+/* ============================================================
+   ИТОГОВАЯ ТАБЛИЦА — ИСПРАВЛЕНА
+   Шапка — ОДНА строка (sRow скрыт), все th без rowspan.
+   Тело — по одному td на период + "Итог".
+   Колонки шапки и тела всегда 1:1, филлеры добавляются
+   только в mRow и в тело, без rowspan.
+   ============================================================ */
 function renderSummaryTable() {
     const mRow = document.getElementById('mRow');
     const sRow = document.getElementById('sRow');
@@ -1315,17 +1318,26 @@ function renderSummaryTable() {
     const fioBody = document.getElementById('fioBody');
     const pBody = document.getElementById('pBody');
     const marksTable = document.getElementById('marksTable');
-    
+
     if (!mRow || !sRow || !jBody || !fioBody || !pBody || !marksTable) return;
 
     marksTable.classList.add('period-mode');
 
-    mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
+    mRow.innerHTML = '';
+    sRow.innerHTML = '';
+    jBody.innerHTML = '';
+    fioBody.innerHTML = '';
+    pBody.innerHTML = '';
 
+    /* Ключевое: в summary вторая строка шапки не нужна.
+       Скрываем и полностью очищаем — она больше не участвует в сетке. */
+    sRow.style.display = 'none';
+
+    /* ---- Шапка: одна строка, без rowspan ---- */
     PERIODS.forEach((p, idx) => {
         const th = document.createElement('th');
         th.className = 'col-period col-period-header';
-        th.setAttribute('rowspan', '2');
+        th.dataset.periodIdx = String(idx);
         const name = (idx + 1) + ' ' + (PERIOD_NAMES[PERIOD_SYSTEM] || 'период');
         const sp = name.indexOf(' ');
         if (sp > 0) {
@@ -1338,18 +1350,20 @@ function renderSummaryTable() {
 
     const thFinal = document.createElement('th');
     thFinal.className = 'col-period col-final-header';
-    thFinal.setAttribute('rowspan', '2');
     thFinal.textContent = 'Итог';
     mRow.appendChild(thFinal);
 
-    sRow.innerHTML = '';
-
+    /* ---- Тело: ровно по одному td на период + итог ---- */
     STUDENTS.forEach((student, sIdx) => {
         const fioTr = document.createElement('tr');
         const fioTd = document.createElement('td');
         fioTd.style.cursor = 'pointer';
-        fioTd.innerHTML = '<span class="student-number-text">' + (sIdx + 1) + '</span><span class="student-name-text">' + escapeHtml(formatShortName(student.full_name)) + '</span>';
-        fioTd.addEventListener('click', () => { window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id); });
+        fioTd.innerHTML =
+            '<span class="student-number-text">' + (sIdx + 1) + '</span>' +
+            '<span class="student-name-text">' + escapeHtml(formatShortName(student.full_name)) + '</span>';
+        fioTd.addEventListener('click', () => {
+            window.location.href = 'student-view.html?id=' + encodeURIComponent(student.id);
+        });
         fioTr.appendChild(fioTd);
         fioBody.appendChild(fioTr);
 
@@ -1360,37 +1374,44 @@ function renderSummaryTable() {
             const val = qtrs[idx] !== undefined ? qtrs[idx] : (qtrs[String(idx)] || '');
             const td = document.createElement('td');
             td.className = 'col-period';
-            td.dataset.periodIdx = idx;
-            td.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
-                '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(val) + '</div>' +
-                '<input type="text" value="' + escapeHtml(val) + '"' +
-                    ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
-                    ' onblur="hlSum(this, false); this.style.color=\'transparent\';"' +
-                    ' onkeydown="handleGradeKeydown(event, this)"' +
-                    ' onchange="upqtrSummary(\'' + student.id + '\', ' + idx + ', this)">' +
-            '</div>';
+            td.dataset.periodIdx = String(idx);
+            td.innerHTML =
+                '<div class="focus-outline"></div>' +
+                '<div class="grade-cell">' +
+                    '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' +
+                        makeGradeDisplay(val) +
+                    '</div>' +
+                    '<input type="text" value="' + escapeHtml(val) + '"' +
+                        ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
+                        ' onblur="hlSum(this, false); this.style.color=\'transparent\';"' +
+                        ' onkeydown="handleGradeKeydown(event, this)"' +
+                        ' onchange="upqtrSummary(\'' + student.id + '\', ' + idx + ', this)">' +
+                '</div>';
             tr.appendChild(td);
         });
 
         const finalVal = qtrs['final'] || '';
         const tdFinal = document.createElement('td');
         tdFinal.className = 'col-period col-final';
-        tdFinal.innerHTML = '<div class="focus-outline"></div><div class="grade-cell">' +
-            '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' + makeGradeDisplay(finalVal) + '</div>' +
-            '<input type="text" value="' + escapeHtml(finalVal) + '"' +
-                ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
-                ' onblur="hlSum(this, false); this.style.color=\'transparent\';"' +
-                ' onkeydown="handleGradeKeydown(event, this)"' +
-                ' onchange="upFinal(\'' + student.id + '\', this)">' +
-        '</div>';
+        tdFinal.innerHTML =
+            '<div class="focus-outline"></div>' +
+            '<div class="grade-cell">' +
+                '<div class="display-layer" style="width:100%;height:100%;pointer-events:none;">' +
+                    makeGradeDisplay(finalVal) +
+                '</div>' +
+                '<input type="text" value="' + escapeHtml(finalVal) + '"' +
+                    ' onfocus="hlSum(this, true); this.style.color=\'#1E293B\';"' +
+                    ' onblur="hlSum(this, false); this.style.color=\'transparent\';"' +
+                    ' onkeydown="handleGradeKeydown(event, this)"' +
+                    ' onchange="upFinal(\'' + student.id + '\', this)">' +
+            '</div>';
         tr.appendChild(tdFinal);
 
         jBody.appendChild(tr);
     });
 
-    requestAnimationFrame(() => {
-        safeCall(fillFillersSummary);
-    });
+    /* Один пересчёт филлеров после полной перестройки таблицы */
+    requestAnimationFrame(() => safeCall(fillFillersSummary));
 }
 
 function hlSum(input, active) {
@@ -1488,6 +1509,9 @@ function renderMainTable() {
     const fioBody = document.getElementById('fioBody');
     const pBody = document.getElementById('pBody');
     if (!mRow || !sRow || !jBody || !fioBody || !pBody) return;
+
+    /* В обычном режиме вторая строка шапки обязательна — возвращаем её */
+    sRow.style.display = '';
 
     mRow.innerHTML = ''; sRow.innerHTML = ''; jBody.innerHTML = ''; fioBody.innerHTML = ''; pBody.innerHTML = '';
 
@@ -2172,11 +2196,21 @@ function fillFillers() {
     }
 }
 
+/* ============================================================
+   ФИЛЛЕРЫ ДЛЯ ИТОГОВОЙ ТАБЛИЦЫ — ИСПРАВЛЕНЫ
+   Работаем ТОЛЬКО с mRow (одна строка шапки) и телом.
+   sRow не трогаем — он скрыт и очищен.
+   ============================================================ */
 function fillFillersSummary() {
-    document.querySelectorAll('.marks-table .col-filler-head').forEach(el => el.remove());
-    document.querySelectorAll('.marks-table tbody td.col-filler-body').forEach(el => el.remove());
+    const mRow = document.getElementById('mRow');
+    const jBody = document.getElementById('jBody');
     const journalScroll = document.getElementById('journalScroll');
-    if (!journalScroll) return;
+    if (!mRow || !jBody || !journalScroll) return;
+
+    /* Чистим филлеры только в mRow и теле; sRow скрыт и пуст */
+    mRow.querySelectorAll('.col-filler-head').forEach(el => el.remove());
+    jBody.querySelectorAll('td.col-filler-body').forEach(el => el.remove());
+
     const scrollWidth = journalScroll.clientWidth;
     const fioWrapper = document.querySelector('.fio-table-wrapper');
     const fioWidth = fioWrapper ? Math.ceil(fioWrapper.getBoundingClientRect().width) : 210;
@@ -2185,21 +2219,20 @@ function fillFillersSummary() {
     const marksWidth = Math.ceil(marksWrapper.getBoundingClientRect().width);
     const freeSpace = scrollWidth - fioWidth - marksWidth;
     if (freeSpace <= 0) return;
+
     const colW = getFillerColWidth();
     const fullCols = Math.floor(freeSpace / colW);
     const remainder = Math.round(freeSpace - fullCols * colW);
-    const mRow = document.getElementById('mRow');
-    const jBody = document.getElementById('jBody');
-    if (!mRow || !jBody) return;
+
     for (let i = 0; i < fullCols; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
-        th.setAttribute('rowspan', '2');
         th.style.width = colW + 'px';
         th.style.minWidth = colW + 'px';
         th.style.maxWidth = colW + 'px';
         mRow.appendChild(th);
     }
+
     jBody.querySelectorAll('tr').forEach(tr => {
         for (let i = 0; i < fullCols; i++) {
             const td = document.createElement('td');
@@ -2210,11 +2243,11 @@ function fillFillersSummary() {
             tr.appendChild(td);
         }
     });
+
     if (remainder >= 2) {
         const rw = remainder + 'px';
         const th = document.createElement('th');
         th.className = 'col-filler-head col-filler-last';
-        th.setAttribute('rowspan', '2');
         th.style.width = rw;
         th.style.minWidth = rw;
         th.style.maxWidth = rw;
@@ -2424,20 +2457,20 @@ async function saveJournal() {
             const fromFresh = fresh.grades[sid] || {};
             const fromLocal = JOURNAL.grades[sid] || {};
             const out = {};
-            
+
             Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
-            
+
             visibleKeys.forEach(k => {
                 if (Object.prototype.hasOwnProperty.call(fromLocal, k)) out[k] = fromLocal[k];
                 else delete out[k];
             });
-            
+
             Object.keys(fromFresh).forEach(k => {
                 if (!Object.prototype.hasOwnProperty.call(fromLocal, k)) {
                     delete out[k];
                 }
             });
-            
+
             if (Object.keys(out).length > 0) mergedGrades[sid] = out;
         });
 
@@ -2602,10 +2635,10 @@ async function deleteLessonColumn() {
     const { gradeKey } = currentLessonTypeContext;
     if (!gradeKey) return;
     if (gradeKey.endsWith('_0')) { showToast('Базовый урок удалить нельзя'); return; }
-    
+
     delete JOURNAL.lessons[gradeKey];
     delete JOURNAL.lessonTypes[gradeKey];
-    
+
     Object.keys(JOURNAL.grades).forEach(studentId => {
         if (JOURNAL.grades[studentId]) {
             Object.keys(JOURNAL.grades[studentId]).forEach(k => {
@@ -2621,7 +2654,7 @@ async function deleteLessonColumn() {
 
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
     await saveJournal();
-    
+
     closeLessonTypePopup();
     renderMainTable();
     safeCall(fillFillers);
