@@ -479,13 +479,6 @@
 
         _refreshTimer = setInterval(refreshJournalsOnly, 4000);
 
-        window.addEventListener('focus', refreshJournalsOnly);
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) refreshJournalsOnly();
-        });
-    }
-    /* ============================================================ */
-
     function getPeriodIndexForDate(date) {
         if (!date || !ALL_PERIODS.length) return null;
         const dStr = isoDate(date);
