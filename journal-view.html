@@ -2374,6 +2374,17 @@ function handleGradeKeydown(e, input) {
     navigateGradeCell(input, key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : key === 'ArrowUp' ? 'up' : 'down');
 }
 
+function getSafeNow() {
+    let maxTs = 0;
+    const tsAll = JOURNAL.gradeTimestamps || {};
+    Object.values(tsAll).forEach(map => {
+        Object.values(map || {}).forEach(v => {
+            if (typeof v === 'number' && v > maxTs) maxTs = v;
+        });
+    });
+    return Math.max(Date.now(), maxTs + 1);
+}
+
 async function upg(studentId, gradeKey, inputElement) {
     const v = inputElement.value.trim();
     const up = v.toUpperCase();
