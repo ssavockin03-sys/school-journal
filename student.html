@@ -959,6 +959,9 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
             }
 
             const ringGradient = buildClassDistributionGradient(classCounts);
+            const avgColorClass = (avg === null || avg === undefined)
+                ? ''
+                : (avg < 2.5 ? 'red' : (avg < 3.5 ? 'orange' : 'up'));
             
             bodyHtml = `
                 <div class="stat-card">
@@ -967,8 +970,9 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
                         <div class="stat-circle" style="background: ${ringGradient};">
                             <div class="stat-circle-value">${myDigit || '—'}</div>
                         </div>
-                        <div class="stat-avg">${isQuarterRating ? 'балл' : 'ср. балл'} <div class="stat-avg-pill ${myDigit >= 3 ? 'up' : ''}">${formatAvg(avg)}</div></div>
+                        <div class="stat-avg">${isQuarterRating ? 'балл' : 'ср. балл'} <div class="stat-avg-pill ${avgColorClass}">${formatAvg(avg)}</div></div>
                     </div>
+
                     <div class="stat-right">
                         <div class="stat-right-title">Одноклассники</div>
                         ${renderCountsRows(classCounts)}
