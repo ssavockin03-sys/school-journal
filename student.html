@@ -1131,20 +1131,15 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
                 <div class="news-alert-icon">😟</div>
                 <div class="news-alert-title">Тебе поставили <b>${escapeHtml(event.grade)}</b> по предмету «${escapeHtml(event.subject)}»</div>
                 <div class="news-alert-body">Обычно оценку можно исправить. Спроси учителя, что ты можешь для этого сделать.</div>
-                <div class="news-alert-sub">
-                    Это уведомление <b>исчезнет через 3 дня</b>.
-                </div>
             `;
         } else {
             container.innerHTML = `
                 <div class="news-alert-icon">📌</div>
                 <div class="news-alert-title">Тебя не было на уроке «${escapeHtml(event.subject)}»</div>
                 <div class="news-alert-body">Если есть уважительная причина для отсутствия, сообщи о ней учителю.</div>
-                <div class="news-alert-sub">
-                    Это уведомление <b>исчезнет через 3 дня</b>.
-                </div>
             `;
         }
+
     }
 
     /* ============================================================ */
