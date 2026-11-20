@@ -1002,6 +1002,7 @@ async function init() {
 
     const periodDocs = await DB.getAll('educational_periods');
     const periodDoc = periodDocs[0] || null;
+
     PERIODS = periodDoc ? (periodDoc.periods || []) : [];
     PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
 
