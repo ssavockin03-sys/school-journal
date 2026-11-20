@@ -474,47 +474,6 @@
         CURRENT_SCHEDULES = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
     }
 
-    /* ============================================================ */
-    /* АВТООБНОВЛЕНИЕ ЖУРНАЛОВ (polling)                             */
-    /* ============================================================ */
-    let _refreshTimer = null;
-    let _lastJournalsHash = null;
-
-    function computeJournalsHash(arr) {
-        try {
-            return JSON.stringify((arr || []).map(j => ({
-                id: j.id,
-                grades: j.grades,
-                grade_timestamps: j.grade_timestamps,
-                lesson_types: j.lesson_types,
-                qtr_grades: j.qtr_grades
-            })));
-        } catch (e) { return String(Date.now()); }
-    }
-
-    async function refreshJournalsOnly() {
-        const backdrop = document.getElementById('statModalBackdrop');
-        if (backdrop && backdrop.classList.contains('show')) return;
-        if (!CURRENT_STUDENT) return;
-
-        try {
-            const journals = await DB.getAll('journals');
-            let fresh = journals.filter(j => j.class_id === CURRENT_STUDENT.class_id);
-            const withData = journals.filter(j => j.grades && j.grades[CURRENT_STUDENT.id] && Object.keys(j.grades[CURRENT_STUDENT.id]).length > 0);
-            if (withData.length > 0) fresh = withData;
-
-            const newHash = computeJournalsHash(fresh);
-            if (newHash === _lastJournalsHash) return;
-
-            ALL_JOURNALS = fresh;
-            _lastJournalsHash = newHash;
-            renderToday();
-        } catch (e) {
-            console.warn('[auto-refresh] journals:', e);
-        }
-    }
-
-    function startAutoRefresh() {
         if (_refreshTimer) clearInterval(_refreshTimer);
         _lastJournalsHash = computeJournalsHash(ALL_JOURNALS);
 
