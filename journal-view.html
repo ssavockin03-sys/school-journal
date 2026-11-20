@@ -1485,7 +1485,7 @@ async function upFinal(studentId, inputElement) {
         if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
         if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
         if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
+        else JOURNAL.gradeTimestamps[studentId][qKey] = await getSafeNow();
 
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
@@ -2412,7 +2412,7 @@ async function upg(studentId, gradeKey, inputElement) {
         if (!up) {
             delete JOURNAL.gradeTimestamps[studentId][gradeKey];
         } else {
-            JOURNAL.gradeTimestamps[studentId][gradeKey] = Date.now();
+            JOURNAL.gradeTimestamps[studentId][gradeKey] = await getSafeNow();
         }
 
         await saveJournal();
@@ -2442,7 +2442,7 @@ async function upqtr(studentId, inputElement) {
         if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
         if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
         if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = Date.now();
+        else JOURNAL.gradeTimestamps[studentId][qKey] = await getSafeNow();
 
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
