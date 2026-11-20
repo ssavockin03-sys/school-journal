@@ -1456,7 +1456,7 @@ async function upqtrSummary(studentId, periodIdx, inputElement) {
         if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
         if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
         if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = getSafeNow();
+        else JOURNAL.gradeTimestamps[studentId][qKey] = await getSafeNow();
 
         await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
