@@ -2386,7 +2386,7 @@ async function getSafeNow() {
             });
         });
     } catch (e) {}
-    return Math.max(Date.now(), maxTs + 1);
+return maxTs + 1;
 }
 
 async function upg(studentId, gradeKey, inputElement) {
