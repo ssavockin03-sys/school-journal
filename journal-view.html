@@ -2219,7 +2219,6 @@ function fillFillersSummary() {
     for (let i = 0; i < fullCols; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
-        th.setAttribute('rowspan', '2'); // <-- ВАЖНО: добавляем rowspan, чтобы сетка не съезжала
         th.style.width = colW + 'px';
         th.style.minWidth = colW + 'px';
         th.style.maxWidth = colW + 'px';
@@ -2241,7 +2240,6 @@ function fillFillersSummary() {
         const rw = remainder + 'px';
         const th = document.createElement('th');
         th.className = 'col-filler-head col-filler-last';
-        th.setAttribute('rowspan', '2'); // <-- ВАЖНО
         th.style.width = rw;
         th.style.minWidth = rw;
         th.style.maxWidth = rw;
