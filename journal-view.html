@@ -767,7 +767,8 @@ function getPlanFillerRowHeight() {
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
     const s = String(text);
-    return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": ''' })[c]);
+return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
 }
 function formatShortName(fullName) {
     if (!fullName) return '';
