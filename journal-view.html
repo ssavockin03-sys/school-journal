@@ -1337,7 +1337,6 @@ function renderSummaryTable() {
         const th = document.createElement('th');
         th.className = 'col-period col-period-header';
         th.dataset.periodIdx = String(idx);
-        th.setAttribute('rowspan', '2');
         const name = (idx + 1) + ' ' + (PERIOD_NAMES[PERIOD_SYSTEM] || 'период');
         const sp = name.indexOf(' ');
         if (sp > 0) {
@@ -1350,7 +1349,6 @@ function renderSummaryTable() {
 
     const thFinal = document.createElement('th');
     thFinal.className = 'col-period col-final-header';
-    thFinal.setAttribute('rowspan', '2');
     thFinal.textContent = 'Итог';
     mRow.appendChild(thFinal);
 
