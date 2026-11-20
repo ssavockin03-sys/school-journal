@@ -673,12 +673,9 @@
             const typeText = g.isQuarter ? escapeHtml(g.quarterLabel) : escapeHtml(getLessonTypeFullName(g.type));
 
             let freshTag = '';
-            if (g.gradedAt) {
-                const saved = new Date(g.gradedAt);
-                const now = new Date();
-                if (saved.toDateString() === now.toDateString()) {
-                    freshTag = '<div class="grade-fresh">сегодня</div>';
-                }
+            if (!g.isQuarter && g.date) {
+                const dateLabel = `${g.date.getDate()} ${MONTHS_SHORT[g.date.getMonth()]}.`;
+                freshTag = `<div style="font-size:11px; color:#888; margin-top:2px;">${escapeHtml(dateLabel)}</div>`;
             }
 
             // Передаём isQuarter в модалку, чтобы она знала, как рендерить
