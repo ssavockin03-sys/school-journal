@@ -177,8 +177,9 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
     display: none !important;
 }
 
-.marks-table.period-mode thead th.col-period-header { width: 46px; min-width: 46px; max-width: 46px; height: 38px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px; color: #334155; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
-.marks-table.period-mode thead th.col-final-header { width: 46px; min-width: 46px; max-width: 46px; height: 38px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px; color: #1E293B; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; }
+/* ИСПРАВЛЕНО: Высота шапки в режиме итогов 76px, чтобы совпадала с левой колонкой */
+.marks-table.period-mode thead th.col-period-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px; color: #334155; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
+.marks-table.period-mode thead th.col-final-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px; color: #1E293B; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; }
 .marks-table.period-mode tbody td.col-period { font-size: 13px; background: #FFFFFF; vertical-align: middle; height: 38px; width: 46px; min-width: 46px; max-width: 46px; }
 .marks-table.period-mode tbody td.col-final { background: #FFFFFF; font-weight: 600; color: #1E293B; }
 
@@ -1306,10 +1307,8 @@ function renderPeriodTabs() {
 
 /* ============================================================
    ИТОГОВАЯ ТАБЛИЦА — ИСПРАВЛЕНА
-   Шапка — ОДНА строка (sRow скрыт), все th без rowspan.
-   Тело — по одному td на период + "Итог".
-   Колонки шапки и тела всегда 1:1, филлеры добавляются
-   только в mRow и в тело, без rowspan.
+   Шапка — одна строка (sRow скрыт). Все th имеют rowspan="2",
+   чтобы высота шапки была ровно 76px (как у левой таблицы).
    ============================================================ */
 function renderSummaryTable() {
     const mRow = document.getElementById('mRow');
@@ -1329,15 +1328,15 @@ function renderSummaryTable() {
     fioBody.innerHTML = '';
     pBody.innerHTML = '';
 
-    /* Ключевое: в summary вторая строка шапки не нужна.
-       Скрываем и полностью очищаем — она больше не участвует в сетке. */
+    // Вторая строка шапки скрыта, но заголовки растянуты на 2 строки
     sRow.style.display = 'none';
 
-    /* ---- Шапка: одна строка, без rowspan ---- */
+    /* ---- Шапка: одна визуальная строка, rowspan=2 для 76px ---- */
     PERIODS.forEach((p, idx) => {
         const th = document.createElement('th');
         th.className = 'col-period col-period-header';
         th.dataset.periodIdx = String(idx);
+        th.setAttribute('rowspan', '2');
         const name = (idx + 1) + ' ' + (PERIOD_NAMES[PERIOD_SYSTEM] || 'период');
         const sp = name.indexOf(' ');
         if (sp > 0) {
@@ -1350,10 +1349,11 @@ function renderSummaryTable() {
 
     const thFinal = document.createElement('th');
     thFinal.className = 'col-period col-final-header';
+    thFinal.setAttribute('rowspan', '2');
     thFinal.textContent = 'Итог';
     mRow.appendChild(thFinal);
 
-    /* ---- Тело: ровно по одному td на период + итог ---- */
+    /* ---- Тело ---- */
     STUDENTS.forEach((student, sIdx) => {
         const fioTr = document.createElement('tr');
         const fioTd = document.createElement('td');
@@ -1410,7 +1410,6 @@ function renderSummaryTable() {
         jBody.appendChild(tr);
     });
 
-    /* Один пересчёт филлеров после полной перестройки таблицы */
     requestAnimationFrame(() => safeCall(fillFillersSummary));
 }
 
@@ -2196,18 +2195,12 @@ function fillFillers() {
     }
 }
 
-/* ============================================================
-   ФИЛЛЕРЫ ДЛЯ ИТОГОВОЙ ТАБЛИЦЫ — ИСПРАВЛЕНЫ
-   Работаем ТОЛЬКО с mRow (одна строка шапки) и телом.
-   sRow не трогаем — он скрыт и очищен.
-   ============================================================ */
 function fillFillersSummary() {
     const mRow = document.getElementById('mRow');
     const jBody = document.getElementById('jBody');
     const journalScroll = document.getElementById('journalScroll');
     if (!mRow || !jBody || !journalScroll) return;
 
-    /* Чистим филлеры только в mRow и теле; sRow скрыт и пуст */
     mRow.querySelectorAll('.col-filler-head').forEach(el => el.remove());
     jBody.querySelectorAll('td.col-filler-body').forEach(el => el.remove());
 
@@ -2227,6 +2220,7 @@ function fillFillersSummary() {
     for (let i = 0; i < fullCols; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
+        th.setAttribute('rowspan', '2'); // <-- ВАЖНО: добавляем rowspan, чтобы сетка не съезжала
         th.style.width = colW + 'px';
         th.style.minWidth = colW + 'px';
         th.style.maxWidth = colW + 'px';
@@ -2248,6 +2242,7 @@ function fillFillersSummary() {
         const rw = remainder + 'px';
         const th = document.createElement('th');
         th.className = 'col-filler-head col-filler-last';
+        th.setAttribute('rowspan', '2'); // <-- ВАЖНО
         th.style.width = rw;
         th.style.minWidth = rw;
         th.style.maxWidth = rw;
