@@ -474,11 +474,6 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
         CURRENT_SCHEDULES = schedules.filter(s => s.class_id === CURRENT_STUDENT.class_id);
     }
 
-        if (_refreshTimer) clearInterval(_refreshTimer);
-        _lastJournalsHash = computeJournalsHash(ALL_JOURNALS);
-
-        _refreshTimer = setInterval(refreshJournalsOnly, 4000);
-
     function getPeriodIndexForDate(date) {
         if (!date || !ALL_PERIODS.length) return null;
         const dStr = isoDate(date);
