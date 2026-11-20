@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Журнал — Дневник.ру</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://googleapis.com">
+<link rel="preconnect" href="https://gstatic.com" crossorigin>
+<link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
 html { -webkit-font-smoothing: antialiased; height: 100%; }
@@ -55,7 +55,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .icon-action-btn:hover { background: #F1F5F9; color: #1E293B; }
 .icon-action-btn svg { width: 15px; height: 15px; fill: currentColor; }
 .icon-action-btn .excel-icon { fill: #217346; }
-
 .mobile-view-tabs { display: none; }
 
 #mainContent { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
@@ -109,7 +108,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 
 .journal-scroll { width: 100%; height: 100%; overflow: auto; position: relative; scrollbar-gutter: stable; }
 .journal-tables-wrapper { display: flex; width: max-content; min-width: 100%; }
-
 .fio-table-wrapper { flex-shrink: 0; width: 210px; background: #FFFFFF; position: sticky; left: 0; z-index: 3000; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 
 .fio-table-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #CFD8E3; pointer-events: none; z-index: 2000; }
@@ -171,13 +169,13 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table th.col-today::after, .marks-table td.col-today::after { content: ''; position: absolute; top: 0; bottom: -1px; right: -1px; width: 1px; background: #1E40AF; pointer-events: none; z-index: 8; }
 .marks-table thead tr:first-child th.col-today { border-top: 1px solid #1E40AF !important; }
 .marks-table tbody tr:last-child td.col-today { border-bottom: 1px solid #1E40AF !important; }
-
 .marks-table th.col-today.col-added-lesson::before,
 .marks-table td.col-today.col-added-lesson::before {
     display: none !important;
 }
 
 /* ИСПРАВЛЕНО: Высота шапки в режиме итогов 76px, чтобы совпадала с левой колонкой */
+.marks-table.period-mode thead tr#mRow th { height: 76px; }
 .marks-table.period-mode thead th.col-period-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 600; font-size: 11px; color: #334155; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
 .marks-table.period-mode thead th.col-final-header { width: 46px; min-width: 46px; max-width: 46px; height: 76px; line-height: 16px; padding: 4px 2px; vertical-align: middle; font-weight: 700; font-size: 11px; color: #1E293B; background: #EBF0F6 !important; white-space: normal; word-wrap: break-word; }
 .marks-table.period-mode tbody td.col-period { font-size: 13px; background: #FFFFFF; vertical-align: middle; height: 38px; width: 46px; min-width: 46px; max-width: 46px; }
@@ -249,7 +247,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .marks-table td:first-child .focus-outline {
     left: 0;
 }
-
 .marks-table tbody tr:first-child td .focus-outline {
     top: 0;
 }
@@ -447,7 +444,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
 .lesson-action-btn.delete-btn:hover {
     background: #FEF2F2;
 }
-
 @media (max-width: 1100px) {
     body { overflow: auto; height: auto; min-height: 100vh; display: block; }
     #mainContent { display: block; }
@@ -614,7 +610,6 @@ body { background: #FFFFFF; color: #1E293B; min-height: 100vh; height: 100vh; fo
         </div>
     </div>
 </div>
-
 <div class="empty-state" id="emptyState" style="display:none;">
     <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
     <h2 id="emptyTitle">Журнал пуст</h2>
@@ -772,7 +767,7 @@ function getPlanFillerRowHeight() {
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
     const s = String(text);
-    return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": ''' })[c]);
 }
 function formatShortName(fullName) {
     if (!fullName) return '';
@@ -802,7 +797,6 @@ let JOURNAL = null;
 let ALL_CLASSES = [];
 let ALL_CLASS_SUBJECTS = [];
 let ALL_SCHEDULES = [];
-
 let leftCollapsed = false;
 let rightCollapsed = false;
 let MOBILE_VIEW = 'journal';
@@ -925,7 +919,6 @@ function normalizeTimestampsMap(ts) {
     Object.keys(src).forEach(sid => { out[sid] = toPlainObject(src[sid]); });
     return out;
 }
-
 async function loadJournalNormalized() {
     let rec = null;
     try { rec = await DB.getJournal(CLASS_ID, SUBJECT_ID); }
@@ -1044,7 +1037,6 @@ async function init() {
         try { runLoadingSequence(); } catch (e) { console.warn('[loading]', e); }
     }, 0);
 }
-
 let planObserver = null;
 let journalObserver = null;
 function setupObservers() {
@@ -1137,7 +1129,6 @@ async function buildDatesForPeriod(periodIndex) {
 function formatIso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function formatDateNoYear(d) { return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0'); }
 function formatDateFull(d) { return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear(); }
-
 function renderHeader() {
     const elClass = document.getElementById('classDropdownName');
     const elSubj = document.getElementById('subjectDropdownName');
@@ -1304,11 +1295,11 @@ function renderPeriodTabs() {
     });
     container.appendChild(summaryTab);
 }
-
 /* ============================================================
    ИТОГОВАЯ ТАБЛИЦА — ИСПРАВЛЕНА
-   Шапка — одна строка (sRow скрыт). Все th имеют rowspan="2",
-   чтобы высота шапки была ровно 76px (как у левой таблицы).
+   Шапка — одна строка (sRow скрыт). Убрали rowspan="2",
+   высота шапки 76px задана через CSS (.marks-table.period-mode thead tr#mRow th),
+   чтобы сетка и строки учеников идеально совпадали с левой таблицей.
    ============================================================ */
 function renderSummaryTable() {
     const mRow = document.getElementById('mRow');
@@ -1328,15 +1319,14 @@ function renderSummaryTable() {
     fioBody.innerHTML = '';
     pBody.innerHTML = '';
 
-    // Вторая строка шапки скрыта, но заголовки растянуты на 2 строки
+    // Вторая строка шапки скрыта
     sRow.style.display = 'none';
 
-    /* ---- Шапка: одна визуальная строка, rowspan=2 для 76px ---- */
+    /* ---- Шапка: одна визуальная строка высотой 76px ---- */
     PERIODS.forEach((p, idx) => {
         const th = document.createElement('th');
         th.className = 'col-period col-period-header';
         th.dataset.periodIdx = String(idx);
-        th.setAttribute('rowspan', '2');
         const name = (idx + 1) + ' ' + (PERIOD_NAMES[PERIOD_SYSTEM] || 'период');
         const sp = name.indexOf(' ');
         if (sp > 0) {
@@ -1349,7 +1339,6 @@ function renderSummaryTable() {
 
     const thFinal = document.createElement('th');
     thFinal.className = 'col-period col-final-header';
-    thFinal.setAttribute('rowspan', '2');
     thFinal.textContent = 'Итог';
     mRow.appendChild(thFinal);
 
@@ -1412,7 +1401,6 @@ function renderSummaryTable() {
 
     requestAnimationFrame(() => safeCall(fillFillersSummary));
 }
-
 function hlSum(input, active) {
     const td = input.closest('td');
     const tr = input.closest('tr');
@@ -1526,7 +1514,6 @@ function renderMainTable() {
         tr.appendChild(td);
         fioBody.appendChild(tr);
     });
-
     DATES.forEach((d) => {
         const th = document.createElement('th');
         th.className = 'col-date clickable-date';
@@ -1695,7 +1682,6 @@ function renderLessonPlanRows() {
 
     safeCall(fillPlanFillers);
 }
-
 function openLessonPage(d) {
     const params = new URLSearchParams();
     params.set('class', CLASS_ID);
@@ -1889,7 +1875,6 @@ function renderThemeContent(cell, gradeKey, value) {
         cell.appendChild(div);
     }
 }
-
 function openThemeEditInline(cell, gradeKey, value) {
     commitActiveEditor();
     const panelRight = document.getElementById('panelRight');
@@ -2054,7 +2039,6 @@ function openHwItemEdit(cell, gradeKey, idx, value) {
     ok.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); });
     ok.addEventListener('click', (e) => { e.stopPropagation(); commitActiveEditor(); });
 }
-
 function openNewHwItem(cell, gradeKey) {
     commitActiveEditor();
     hwEditing = true;
@@ -2220,7 +2204,6 @@ function fillFillersSummary() {
     for (let i = 0; i < fullCols; i++) {
         const th = document.createElement('th');
         th.className = 'col-filler-head';
-        th.setAttribute('rowspan', '2'); // <-- ВАЖНО: добавляем rowspan, чтобы сетка не съезжала
         th.style.width = colW + 'px';
         th.style.minWidth = colW + 'px';
         th.style.maxWidth = colW + 'px';
@@ -2242,7 +2225,6 @@ function fillFillersSummary() {
         const rw = remainder + 'px';
         const th = document.createElement('th');
         th.className = 'col-filler-head col-filler-last';
-        th.setAttribute('rowspan', '2'); // <-- ВАЖНО
         th.style.width = rw;
         th.style.minWidth = rw;
         th.style.maxWidth = rw;
@@ -2257,7 +2239,6 @@ function fillFillersSummary() {
         });
     }
 }
-
 let resizeTimer = null;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -2376,7 +2357,6 @@ function handleGradeKeydown(e, input) {
     e.preventDefault();
     navigateGradeCell(input, key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : key === 'ArrowUp' ? 'up' : 'down');
 }
-
 async function upg(studentId, gradeKey, inputElement) {
     const v = inputElement.value.trim();
     const up = v.toUpperCase();
@@ -2437,7 +2417,6 @@ async function upqtr(studentId, inputElement) {
         if (cellTd) cellTd.classList.remove('saving-outline');
     }, EDIT_DELAY_MS);
 }
-
 async function saveJournal() {
     let fresh = null;
     try { fresh = await loadJournalNormalized(); }
@@ -2546,7 +2525,6 @@ async function saveJournal() {
         });
     }
 }
-
 let currentLessonTypeContext = { gradeKey: null, baseGradeKey: null, date: null };
 let popupJustOpened = false;
 
@@ -2676,7 +2654,6 @@ document.addEventListener('mousedown', (e) => {
     if (!popup.contains(e.target) && !e.target.closest('.type-lesson-col')) closeLessonTypePopup();
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLessonTypePopup(); });
-
 function toggleLeftPanel() {
     if (SUMMARY_MODE) return;
     if (isMobileView()) { switchMobileView('plan'); return; }
