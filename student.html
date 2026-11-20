@@ -788,7 +788,8 @@
             if (!lesson || !lesson.subject) continue;
             const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
             const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id) : null;
-            const key = isoDate(date) + '_' + n;
+            const baseKey = isoDate(date) + '_' + n;
+            const key = baseKey + '_0';
             let teacherName = lesson.teacherName || '—';
             if (!teacherName && lesson.teacherId) {
                 const t = ALL_TEACHERS.find(x => x.id === lesson.teacherId);
@@ -797,10 +798,20 @@
             let roomName = lesson.roomName || '';
             if (!roomName && lesson.roomId) { const r = ALL_ROOMS.find(x => x.id === lesson.roomId); if (r) roomName = r.number + (r.name ? ' (' + r.name + ')' : ''); }
             let topic = '', homework = '';
-            if (journal && journal.lessons && journal.lessons[key]) { topic = journal.lessons[key].t || ''; homework = journal.lessons[key].h || ''; }
-            const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
-            const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
-            const type = (journal && journal.lesson_types && journal.lesson_types[key]) || '';
+            const lessonData = journal && journal.lessons ? (journal.lessons[key] || journal.lessons[baseKey]) : null;
+            if (lessonData) {
+                topic = lessonData.t || '';
+                const rawH = lessonData.h;
+                if (Array.isArray(rawH)) {
+                    homework = rawH.filter(x => x && String(x).trim() !== '').join('; ');
+                } else if (typeof rawH === 'string') {
+                    homework = rawH.trim();
+                }
+            }
+            const gradeRec = all.find(g => g.subject === lesson.subject && (g.key === key || g.key === baseKey) && g.kind === 'grade');
+            const presRec  = all.find(g => g.subject === lesson.subject && (g.key === key || g.key === baseKey) && g.kind === 'presence');
+            const type = (journal && journal.lesson_types && (journal.lesson_types[key] || journal.lesson_types[baseKey])) || '';
+
             
             result.push({ num: n, subject: lesson.subject, subjectObj: subjObj || null, teacherName, roomName, start: lesson.start, end: lesson.end, topic, homework, type, grade: gradeRec ? gradeRec.grade : null, presence: presRec ? presRec.presence : null });
         }
