@@ -1163,7 +1163,8 @@ function renderClassDropdownMenu() {
             const subjList = collectSubjectsFromSchedule(schedules, c.id);
             if (subjList.length === 0) { showToast('В классе нет расписания'); return; }
             const subjects = await DB.getAll('subjects');
-            const firstSubjObj = subjects.find(s => s.name === subjList[0].name);
+    const firstSubjObj = subjects.find(s => s.name === subjList[0].name);
+
             if (!firstSubjObj) { showToast('Предмет не найден'); return; }
             window.location.href = 'journal-view.html?class=' + encodeURIComponent(c.id) + '&subject=' + encodeURIComponent(firstSubjObj.id);
         });
