@@ -2374,14 +2374,18 @@ function handleGradeKeydown(e, input) {
     navigateGradeCell(input, key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : key === 'ArrowUp' ? 'up' : 'down');
 }
 
-function getSafeNow() {
+async function getSafeNow() {
     let maxTs = 0;
-    const tsAll = JOURNAL.gradeTimestamps || {};
-    Object.values(tsAll).forEach(map => {
-        Object.values(map || {}).forEach(v => {
-            if (typeof v === 'number' && v > maxTs) maxTs = v;
+    try {
+        const allJournals = await DB.getAll('journals');
+        (allJournals || []).forEach(j => {
+            Object.values(j.grade_timestamps || {}).forEach(map => {
+                Object.values(map || {}).forEach(v => {
+                    if (typeof v === 'number' && v > maxTs) maxTs = v;
+                });
+            });
         });
-    });
+    } catch (e) {}
     return Math.max(Date.now(), maxTs + 1);
 }
 
