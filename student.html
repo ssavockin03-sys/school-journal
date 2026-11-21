@@ -831,22 +831,28 @@
         const container = document.getElementById('miniCardsSection');
         if (!container) return;
 
-        const items = [];
-        Object.keys(SUBJECTS_DATA).forEach(subjKey => {
-            const subjObj = SUBJECTS_DATA[subjKey];
-            const subjName = subjObj.name || subjKey;
-            const grades = [];
+        const allGrades = collectAllStudentGrades();
+        const bySubject = {};
 
-            if (Array.isArray(subjObj.grades)) {
-                subjObj.grades.forEach(item => {
-                    const num = parseFloat(String(item.grade || '').replace(',', '.'));
-                    if (!isNaN(num) && num >= 1 && num <= 5) grades.push(num);
-                });
+        allGrades.forEach(item => {
+            if (item.isQuarter) return;
+            const num = parseFloat(String(item.grade || '').replace(',', '.'));
+            if (isNaN(num) || num < 1 || num > 5) return;
+
+            if (!bySubject[item.subject]) {
+                bySubject[item.subject] = {
+                    name: item.subject,
+                    key: item.key,
+                    grades: []
+                };
             }
+            bySubject[item.subject].grades.push(num);
+        });
 
-            if (grades.length === 0) return;
-
-            const avg = grades.reduce((sum, v) => sum + v, 0) / grades.length;
+        const items = [];
+        Object.values(bySubject).forEach(subj => {
+            if (subj.grades.length === 0) return;
+            const avg = subj.grades.reduce((sum, v) => sum + v, 0) / subj.grades.length;
             if (avg >= 4.5) return;
 
             let fromGrade = 4;
@@ -866,13 +872,15 @@
             }
 
             items.push({
-                key: subjKey,
-                name: subjName,
+                key: subj.key,
+                name: subj.name,
                 avg,
                 fromGrade,
                 toGrade
             });
         });
+
+        const periodWord = CURRENT_PERIOD_SYSTEM === 'semester' ? 'семестр' : (CURRENT_PERIOD_SYSTEM === 'trimester' ? 'триместр' : 'четверть');
 
         if (items.length === 0) {
             container.innerHTML = `
@@ -894,7 +902,7 @@
                         <span class="improve-arrow">&rarr;</span>
                         <span class="improve-num g${item.toGrade}">${item.toGrade}</span>
                     </div>
-                    <div class="improve-desc">Можно улучшить<br>оценку за семестр</div>
+                    <div class="improve-desc">Можно улучшить<br>оценку за ${periodWord}</div>
                 </div>
             `;
         });
@@ -915,6 +923,7 @@
             </div>
         `;
     }
+
 
     function renderSchedule(lessons, date) {
         document.getElementById('scheduleDateLabel').textContent = formatDateShort(date);
