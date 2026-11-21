@@ -818,58 +818,74 @@
         renderNewsAlert();
     }
 
-    function renderGradesList(records) {
-        const container = document.getElementById('gradesSection');
-        if (records.length === 0) {
-            container.innerHTML = `<div style="color:#999; font-size:13px; text-align:center; padding:20px 0;">Оценок пока нет</div>`;
-            return;
+const MONTHS_UPPER = [
+    'ЯНВАРЯ', 'ФЕВРАЛЯ', 'МАРТА', 'АПРЕЛЯ', 'МАЯ', 'ИЮНЯ',
+    'ИЮЛЯ', 'АВГУСТА', 'СЕНТЯБРЯ', 'ОКТЯБРЯ', 'НОЯБРЯ', 'ДЕКАБРЯ'
+];
+
+function formatPostedDate(g) {
+    const raw = (typeof g.gradedAt === 'number') ? new Date(g.gradedAt) : (g.date instanceof Date ? g.date : null);
+    if (!raw || isNaN(raw.getTime())) return '';
+    return `${raw.getDate()} ${MONTHS_UPPER[raw.getMonth()]}`;
+}
+
+function renderGradesList(records) {
+    const container = document.getElementById('gradesSection');
+    if (records.length === 0) {
+        container.innerHTML = `<div style="color:#999; font-size:13px; text-align:center; padding:20px 0;">Оценок пока нет</div>`;
+        return;
+    }
+
+    let html = `
+        <div class="grades-scroll-wrapper">
+            <div class="grades-scroll">
+    `;
+
+    let lastPostedLabel = null;
+
+    records.forEach(g => {
+        const cls = gradeClass(g.grade);
+        const icon = profileIconHtml(g.subjectObj);
+
+        const subjectText = escapeHtml(g.subject);
+        const typeText = g.isQuarter ? escapeHtml(g.quarterLabel) : escapeHtml(g.type || DEFAULT_LESSON_TYPE);
+        let sublineText = typeText;
+        if (!g.isQuarter && g.date) {
+            const dateLabel = `${g.date.getDate()} ${MONTHS_SHORT[g.date.getMonth()]}.`;
+            sublineText = typeText ? `${typeText} за ${dateLabel}` : `за ${dateLabel}`;
         }
 
-        let html = `
-            <div class="grades-dates">
-                <span></span>
-                <span style="color:#333; font-weight:600;">Последние оценки</span>
-                <span></span>
-            </div>
-            <div class="grades-scroll-wrapper">
-                <div class="grades-scroll">
-        `;
+        // Дата физического выставления: показываем только у первой (самой левой) оценки за день
+        const postedLabel = formatPostedDate(g);
+        const showPostedLabel = postedLabel && postedLabel !== lastPostedLabel;
+        if (postedLabel) {
+            lastPostedLabel = postedLabel;
+        }
 
-        records.forEach(g => {
-            const cls = gradeClass(g.grade);
-            const icon = profileIconHtml(g.subjectObj);
-            
-            const subjectText = escapeHtml(g.subject);
-            const typeText = g.isQuarter ? escapeHtml(g.quarterLabel) : escapeHtml(g.type || DEFAULT_LESSON_TYPE);
-            let subLineText = typeText;
-            if (!g.isQuarter && g.date) {
-                const dateLabel = `${g.date.getDate()} ${MONTHS_SHORT[g.date.getMonth()]}.`;
-                subLineText = typeText ? `${typeText} за ${dateLabel}` : `за ${dateLabel}`;
-            }
-
-            // Передаём isQuarter в модалку, чтобы она знала, как рендерить
-            const clickAction = `openStatModal('${escapeHtml(g.subject)}', '${escapeHtml(g.key)}', ${g.isQuarter ? `'${escapeHtml(g.quarterLabel)}'` : 'null'})`;
-
-            html += `
-                <div class="grade-block" onclick="${clickAction}">
-                    <div class="grade-square ${cls}">
-                        ${icon}
-                        <span class="grade-value">${escapeHtml(g.grade)}</span>
-                    </div>
-                    <div class="grade-subject">${subjectText}</div>
-                    <div class="grade-type">${escapeHtml(subLineText)}</div>
-                </div>
-            `;
-        });
+        // Передаём isQuarter в модалку, чтобы она знала, как рендерить
+        const clickAction = `openStatModal('${escapeHtml(g.subject)}', '${escapeHtml(g.key)}', ${g.isQuarter ? `'${escapeHtml(g.quarterLabel)}'` : 'null'})`;
 
         html += `
+            <div class="grade-block" onclick="${clickAction}">
+                <div class="grade-posted-date">${showPostedLabel ? escapeHtml(postedLabel) : '&nbsp;'}</div>
+                <div class="grade-square ${cls}">
+                    ${icon}
+                    <span class="grade-value">${escapeHtml(g.grade)}</span>
                 </div>
-                <button class="scroll-arrow-btn right" onclick="document.querySelector('.grades-scroll').scrollBy({left: 150, behavior: 'smooth'})">›</button>
+                <div class="grade-subject">${subjectText}</div>
+                <div class="grade-type">${escapeHtml(sublineText)}</div>
             </div>
-            <div class="info-hint">ⓘ <span onclick="showToast('Рейтинг — в разработке')">При нажатии на оценку отобразится рейтинг</span></div>
         `;
-        container.innerHTML = html;
-    }
+    });
+
+    html += `
+            </div>
+            <button class="scroll-arrow-btn right" onclick="document.querySelector('.grades-scroll').scrollBy({left: 150, behavior: 'smooth'})"></button>
+        </div>
+        <div class="info-hint">ⓘ <span onclick="showToast('Рейтинг — в разработке')">При нажатии на оценку отобразится рейтинг</span></div>
+    `;
+    container.innerHTML = html;
+}
 
     function getStudentInitials2(fullName) {
         const parts = String(fullName || '').trim().split(/\s+/).filter(Boolean);
