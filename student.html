@@ -880,18 +880,17 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
             const parts = [];
             if (lesson.grade) {
                 const cls = gradeClass(lesson.grade);
-                const typeTitle = lesson.type ? getLessonTypeFullName(lesson.type) : 'Оценка за урок';
-                const fullKey = `${dateStr}_${lesson.num}_0`;
+                const typeTitle = getLessonTypeFullName(lesson.type || DEFAULT_LESSON_TYPE);
                 parts.push(`
-                    <div class="ld-grade-row" onclick="openStatModal('${escapeHtml(lesson.subject)}', '${escapeHtml(fullKey)}', null)">
+                    <div class="ld-grade-row">
                         <div class="ld-grade-box ${cls}">${escapeHtml(lesson.grade)}</div>
                         <div class="ld-grade-info">
                             <div class="ld-grade-type">${escapeHtml(typeTitle)}</div>
-                            <div class="ld-grade-hint">Нажмите, чтобы посмотреть рейтинг</div>
                         </div>
                     </div>
                 `);
             }
+
             if (lesson.presence) {
                 const presMap = { 'Н': 'Неуважительный пропуск', 'Б': 'Болезнь', 'У': 'Уважительный пропуск', 'СП': 'Справка', 'О': 'Опоздание', 'П': 'Пропуск' };
                 const presLabel = presMap[lesson.presence] || `Отметка: ${lesson.presence}`;
