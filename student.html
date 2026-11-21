@@ -190,24 +190,6 @@
         .news-placeholder img { width: 200px; margin-bottom: 24px; }
         .news-placeholder-text { font-size: 18px; color: #555; }
 
-        .news-alert-card {
-            display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
-            max-width: 420px; padding: 24px 28px; border-radius: 16px;
-            background: linear-gradient(180deg, #fff1f2 0%, #fff 100%);
-            border: 1px solid #fecdd3; box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
-            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .news-alert-icon { font-size: 36px; line-height: 1; }
-        .news-alert-title { font-size: 18px; font-weight: 700; color: #1e293b; }
-        .news-alert-title b { color: #dc2626; }
-        .news-alert-body { font-size: 14px; line-height: 1.55; color: #334155; }
-        .news-alert-sub { font-size: 13px; line-height: 1.5; color: #64748b; padding-top: 10px; border-top: 1px solid #fee2e2; width: 100%; }
-        .news-alert-sub b { color: #475569; }
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(24px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
         /* ===================== МОДАЛКИ ===================== */
         .stat-modal-backdrop { position: fixed; inset: 0; background: rgba(26, 43, 74, 0.45); backdrop-filter: blur(2px); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.2s ease; }
         .stat-modal-backdrop.show { display: flex; opacity: 1; }
