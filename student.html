@@ -338,6 +338,35 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
         .chat-send-btn:hover { opacity: 0.9; }
         .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .chat-send-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        .lesson-mid-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .lesson-mid-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .lesson-grade-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .lesson-grade-box.g5, .lesson-grade-box.g4 { background: #5cb85c; }
+        .lesson-grade-box.g3 { background: #f0ad4e; }
+        .lesson-grade-box.g2, .lesson-grade-box.g1 { background: #d9534f; }
+        .lesson-grade-box.gn { background: #94a3b8; }
+
+
     </style>
 </head>
 <body>
