@@ -271,9 +271,19 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
 
         .ld-grade-row { display: flex; align-items: center; gap: 10px; }
         .ld-grade-box {
-            width: 30px; height: 30px; border-radius: 5px; color: #fff;
-            font-size: 16px; font-weight: 600; display: flex; align-items: center;
-            justify-content: center; flex-shrink: 0;
+            min-width: 30px;
+            width: auto;
+            height: 30px;
+            padding: 0 7px;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .ld-grade-box.g5, .ld-grade-box.g4 { background: #5cb85c; }
