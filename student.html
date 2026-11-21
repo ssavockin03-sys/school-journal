@@ -949,7 +949,7 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
             }
 
             if (lesson.presence) {
-                const presMap = { 'Н': 'Неуважительный пропуск', 'Б': 'Болезнь', 'У': 'Уважительный пропуск', 'СП': 'Справка', 'О': 'Опоздание', 'П': 'Пропуск' };
+                const presMap = { 'Н': 'Пропуск по неуваж. причине', 'Б': 'Пропуск по болезни', 'СП': 'Свободное посещение', 'О': 'Опоздание', 'П': 'Пропуск по уваж. причине' };
                 const presLabel = presMap[lesson.presence] || `Отметка: ${lesson.presence}`;
                 parts.push(`
                     <div class="ld-grade-row" style="cursor:default; ${lesson.grade ? 'margin-top:10px;' : ''}">
