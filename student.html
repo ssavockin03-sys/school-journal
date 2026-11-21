@@ -508,7 +508,7 @@
 
     function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
     function formatDateHuman(d) { return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`; }
-    function formatDateShort(d) { return `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}, ${DAYS_SHORT[JS_DAY_MAP[d.getDay()]]}`; }
+    function formatDateShort(d) { return `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}., ${DAYS_FULL[JS_DAY_MAP[d.getDay()]]}`; }
     function isoDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
     function parseKey(key) { const p = String(key).split('_'); const d = new Date(p[0] + 'T00:00:00'); return { date: isNaN(d.getTime()) ? null : d, dateRu: isNaN(d.getTime()) ? p[0] : formatDateHuman(d), lesson: p[1] || '' }; }
     function parseCell(raw) { if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' }; const s = String(raw).toUpperCase().trim(); const m = s.match(/^(СП|Н|О|Б|П)/); let presence = ''; let grade = s; if (m) { presence = m[0]; grade = s.slice(presence.length).trim(); } return { grade, presence }; }
