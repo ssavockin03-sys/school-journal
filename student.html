@@ -933,7 +933,7 @@
 
         const ratingInfo = calculateClassRating();
         const p1Init = (ratingInfo.ranked[0] && ratingInfo.ranked[0].initials) || '1';
-        const p2Init = ratingInfo.myInitials;
+        const p2Init = (ratingInfo.ranked[1] && ratingInfo.ranked[1].initials) || '2';
         const p3Init = (ratingInfo.ranked[2] && ratingInfo.ranked[2].initials) || '3';
 
         const ratingCardHtml = `
