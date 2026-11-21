@@ -90,12 +90,13 @@
         
         .grade-block { display: flex; flex-direction: column; flex-shrink: 0; width: 90px; cursor: pointer; }
         .grade-square {
-            position: relative; width: 100%; height: 50px; background: #5cb85c; 
-            border-radius: 4px;
+            position: relative; width: 100%; min-height: 51px; padding: 0 6px; background: #5cb85c;
+            border-radius: 5px;
             display: flex; align-items: center; justify-content: center;
-color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
-            transition: background 0.2s; overflow: hidden;
+            color: #fff; font-size: 38px; letter-spacing: -.65px; font-weight: 400; margin-bottom: 8px;
+            transition: background 0.2s; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
         }
+
         .grade-square.g5, .grade-square.g4 { background: #5cb85c; }
         .grade-square.g3 { background: #f0ad4e; }
         .grade-square.g2, .grade-square.g1 { background: #d9534f; }
