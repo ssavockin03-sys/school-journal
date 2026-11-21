@@ -158,21 +158,65 @@
         .info-hint span { color: #007baf; cursor: pointer; }
 
         /* ===================== МИНИ-КАРТОЧКИ ===================== */
-        .mini-cards-section { display: flex; gap: 12px; padding: 16px 20px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #e0e0e0; }
-        .mini-cards-section::-webkit-scrollbar { display: none; }
-        .mini-card { width: 140px; flex-shrink: 0; border: 1px solid #e0e0e0; border-radius: 4px; padding: 12px; display: flex; flex-direction: column; position: relative; }
-        .mini-card-title { font-size: 12px; font-weight: 600; color: #333; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .mini-card-btn { background: #0273b2; color: #fff; border: none; border-radius: 4px; padding: 6px 0; font-size: 12px; cursor: pointer; text-align: center; margin-top: auto; }
-        .mini-card-btn:hover { background: #015b8e; }
-        .rating-card { display: flex; flex-direction: column; align-items: flex-start; }
-        .rating-badge { background: #f0ad4e; color: #fff; font-weight: 700; font-size: 16px; padding: 4px 8px; border-radius: 4px; margin-bottom: 8px; transform: rotate(-5deg); }
-        .rating-stars { color: #f0ad4e; font-size: 14px; margin-bottom: 4px; }
-        .rating-status { font-size: 12px; color: #888; }
-        .improve-card { align-items: center; text-align: center; }
-        .improve-icon { font-size: 24px; margin-bottom: 8px; }
-        .improve-text { font-size: 12px; color: #333; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 4px; }
-        .improve-arrow { color: #5cb85c; }
-        .improve-desc { font-size: 11px; color: #888; }
+        .mini-cards-section { padding: 14px 0 16px; border-bottom: 1px solid #e0e0e0; background: #fff; position: relative; }
+        .mini-cards-scroll-wrap { position: relative; display: flex; align-items: center; }
+        .mini-cards-track { display: flex; overflow-x: auto; scrollbar-width: none; width: 100%; scroll-behavior: smooth; }
+        .mini-cards-track::-webkit-scrollbar { display: none; }
+        .mini-card {
+            width: 146px;
+            flex-shrink: 0;
+            padding: 2px 14px 4px;
+            border-right: 1px solid #e8e8e8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .mini-card:last-child { border-right: none; }
+        .mini-card:hover { background: #fafbfc; }
+        .mini-card-title { width: 100%; font-size: 15px; font-weight: 400; color: #000; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+        .improve-icon { font-size: 26px; line-height: 1; margin-bottom: 8px; }
+        .improve-text { font-size: 20px; font-weight: 400; display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 6px; line-height: 1.1; }
+        .improve-num.g1, .improve-num.g2 { color: #d0021b; }
+        .improve-num.g3 { color: #f5a623; }
+        .improve-num.g4, .improve-num.g5 { color: #417505; }
+        .improve-arrow { color: #0273b2; font-size: 16px; font-weight: 600; }
+        .improve-desc { font-size: 12px; color: #333; line-height: 1.35; }
+        .mini-cards-arrow {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(110, 110, 110, 0.75);
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+        }
+        .mini-cards-arrow:hover { background: rgba(80, 80, 80, 0.9); }
+        .mini-cards-footer { display: flex; justify-content: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+        .rating-pill-btn {
+            background: #2688eb;
+            color: #fff;
+            border: none;
+            border-radius: 18px;
+            padding: 8px 22px;
+            font-size: 13.5px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .rating-pill-btn:hover { background: #1c77d6; }
+
 
         /* ===================== РАСПИСАНИЕ ===================== */
         .schedule-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #f7f9fa; border-bottom: 1px solid #e0e0e0; font-size: 14px; font-weight: 600; color: #333; }
