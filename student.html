@@ -932,9 +932,33 @@
         if (!container) return;
 
         const ratingInfo = calculateClassRating();
-        const p1Init = (ratingInfo.ranked[0] && ratingInfo.ranked[0].initials) || '1';
-        const p2Init = (ratingInfo.ranked[1] && ratingInfo.ranked[1].initials) || '2';
-        const p3Init = (ratingInfo.ranked[2] && ratingInfo.ranked[2].initials) || '3';
+        const myIdx = Math.max(0, ratingInfo.myPlace - 1);
+        const total = ratingInfo.ranked.length;
+
+        let topIdx = 0;
+        let midIdx = 1;
+        let lowIdx = 2;
+
+        if (total <= 3 || myIdx === 0) {
+            topIdx = 0;
+            midIdx = 1;
+            lowIdx = 2;
+        } else if (myIdx >= total - 1) {
+            topIdx = total - 3;
+            midIdx = total - 2;
+            lowIdx = total - 1;
+        } else {
+            topIdx = myIdx - 1;
+            midIdx = myIdx;
+            lowIdx = myIdx + 1;
+        }
+
+        const p1 = ratingInfo.ranked[topIdx];
+        const p2 = ratingInfo.ranked[midIdx];
+        const p3 = ratingInfo.ranked[lowIdx];
+
+        const meId = CURRENT_STUDENT && CURRENT_STUDENT.id;
+        const meStyle = 'background:#8e90f6; color:#fff; width:20px; height:20px; font-size:8.5px;';
 
         const ratingCardHtml = `
             <div class="mini-card rating-summary-card" onclick="showToast('Место в классе: ${ratingInfo.myPlace} из ${ratingInfo.total}')">
@@ -944,15 +968,15 @@
                     <div class="rating-rhombus"><span>${ratingInfo.myPlace}</span></div>
                     <div class="rating-podium">
                         <div class="podium-col p3">
-                            <div class="podium-avatar">${escapeHtml(p3Init)}</div>
+                            <div class="podium-avatar" style="${p3 && p3.id === meId ? meStyle : ''}">${escapeHtml((p3 && p3.initials) || '')}</div>
                             <div class="podium-bar"></div>
                         </div>
                         <div class="podium-col p2">
-                            <div class="podium-avatar">${escapeHtml(p2Init)}</div>
+                            <div class="podium-avatar" style="${p2 && p2.id === meId ? meStyle : ''}">${escapeHtml((p2 && p2.initials) || '')}</div>
                             <div class="podium-bar"></div>
                         </div>
                         <div class="podium-col p1">
-                            <div class="podium-avatar">${escapeHtml(p1Init)}</div>
+                            <div class="podium-avatar" style="${p1 && p1.id === meId ? meStyle : ''}">${escapeHtml((p1 && p1.initials) || '')}</div>
                             <div class="podium-bar"></div>
                         </div>
                     </div>
