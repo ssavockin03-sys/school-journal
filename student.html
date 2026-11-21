@@ -944,13 +944,16 @@
                 typeStr = `<div class="lesson-topic">${escapeHtml(l.topic)}</div>`;
             }
 
-            let badgeHtml = '';
+            let badges = '';
+            if (l.presence) {
+                badges += `<div class="lesson-grade-box gn">${escapeHtml(l.presence)}</div>`;
+            }
             if (l.grade) {
                 const cls = gradeClass(l.grade);
-                badgeHtml = `<div class="lesson-grade-box ${cls}">${escapeHtml(l.grade)}</div>`;
-            } else if (l.presence) {
-                badgeHtml = `<div class="lesson-grade-box gn">${escapeHtml(l.presence)}</div>`;
+                badges += `<div class="lesson-grade-box ${cls}">${escapeHtml(l.grade)}</div>`;
             }
+            const badgeHtml = badges ? `<div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">${badges}</div>` : '';
+
 
             html += `
                 <div class="lesson-item" onclick="openLessonPage('${escapeHtml(l.subject)}', '${isoDate(date)}_${l.num}')">
