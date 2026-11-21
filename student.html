@@ -747,7 +747,7 @@
             const icon = profileIconHtml(g.subjectObj);
             
             const subjectText = escapeHtml(g.subject);
-            const typeText = g.isQuarter ? escapeHtml(g.quarterLabel) : escapeHtml(getLessonTypeFullName(g.type));
+            const typeText = g.isQuarter ? escapeHtml(g.quarterLabel) : escapeHtml(g.type || DEFAULT_LESSON_TYPE);
             let subLineText = typeText;
             if (!g.isQuarter && g.date) {
                 const dateLabel = `${g.date.getDate()} ${MONTHS_SHORT[g.date.getMonth()]}.`;
