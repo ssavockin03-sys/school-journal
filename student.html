@@ -570,7 +570,7 @@
             
             document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
             document.getElementById('profileName').textContent = student.full_name;
-            document.getElementById('profileAvatar').textContent = student.full_name.charAt(0);
+            document.getElementById('profileAvatar').textContent = (student.full_name || '').trim().split(/\s+/).slice(0, 2).map(p => p.charAt(0).toUpperCase()).join('');
 
             await loadAll();
             document.getElementById('profileClass').textContent = CURRENT_CLASS ? CURRENT_CLASS.name : 'Класс не найден';
