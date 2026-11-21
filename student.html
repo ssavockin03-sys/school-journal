@@ -871,9 +871,94 @@
         container.innerHTML = html;
     }
 
+    function getStudentInitials2(fullName) {
+        const parts = String(fullName || '').trim().split(/\s+/).filter(Boolean);
+        if (parts.length === 0) return 'У';
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+
+    function calculateClassRating() {
+        const classId = CURRENT_STUDENT && CURRENT_STUDENT.class_id;
+        const classmates = ALL_STUDENTS.filter(st => st.class_id === classId);
+        const list = classmates.length > 0 ? classmates : (CURRENT_STUDENT ? [CURRENT_STUDENT] : []);
+
+        const ranked = list.map(st => {
+            const subjAvgs = [];
+            ALL_JOURNALS.forEach(journal => {
+                if (journal.class_id && classId && journal.class_id !== classId) return;
+                const sg = (journal.grades && journal.grades[st.id]) || {};
+                const nums = [];
+                Object.values(sg).forEach(val => {
+                    if (val === '' || val === null || val === undefined) return;
+                    const cell = parseCell(val);
+                    const n = parseFloat(String(cell.grade || '').replace(',', '.'));
+                    if (!isNaN(n) && n >= 1 && n <= 5) nums.push(n);
+                });
+                if (nums.length > 0) {
+                    const avg = nums.reduce((a, b) => a + b, 0) / nums.length;
+                    subjAvgs.push(avg);
+                }
+            });
+
+            const overallAvg = subjAvgs.length > 0
+                ? subjAvgs.reduce((a, b) => a + b, 0) / subjAvgs.length
+                : 0;
+
+            return {
+                id: st.id,
+                full_name: st.full_name || '',
+                initials: getStudentInitials2(st.full_name),
+                overallAvg
+            };
+        });
+
+        ranked.sort((a, b) => {
+            if (Math.abs(b.overallAvg - a.overallAvg) > 1e-6) return b.overallAvg - a.overallAvg;
+            if (CURRENT_STUDENT && a.id === CURRENT_STUDENT.id) return -1;
+            if (CURRENT_STUDENT && b.id === CURRENT_STUDENT.id) return 1;
+            return String(a.full_name).localeCompare(String(b.full_name), 'ru');
+        });
+
+        const myIndex = CURRENT_STUDENT ? ranked.findIndex(r => r.id === CURRENT_STUDENT.id) : 0;
+        const myPlace = myIndex >= 0 ? myIndex + 1 : 1;
+        const myInitials = CURRENT_STUDENT ? getStudentInitials2(CURRENT_STUDENT.full_name) : 'У';
+
+        return { ranked, myPlace, total: ranked.length, myInitials };
+    }
+
     function renderMiniCards() {
         const container = document.getElementById('miniCardsSection');
         if (!container) return;
+
+        const ratingInfo = calculateClassRating();
+        const p1Init = (ratingInfo.ranked[0] && ratingInfo.ranked[0].initials) || '1';
+        const p2Init = ratingInfo.myInitials;
+        const p3Init = (ratingInfo.ranked[2] && ratingInfo.ranked[2].initials) || '3';
+
+        const ratingCardHtml = `
+            <div class="mini-card rating-summary-card" onclick="showToast('Место в классе: ${ratingInfo.myPlace} из ${ratingInfo.total}')">
+                <div class="rating-summary-title">Ваш рейтинг в<br>классе</div>
+                <div class="rating-summary-status">стабилен</div>
+                <div class="rating-summary-visual">
+                    <div class="rating-rhombus"><span>${ratingInfo.myPlace}</span></div>
+                    <div class="rating-podium">
+                        <div class="podium-col p3">
+                            <div class="podium-avatar">${escapeHtml(p3Init)}</div>
+                            <div class="podium-bar"></div>
+                        </div>
+                        <div class="podium-col p2">
+                            <div class="podium-avatar">${escapeHtml(p2Init)}</div>
+                            <div class="podium-bar"></div>
+                        </div>
+                        <div class="podium-col p1">
+                            <div class="podium-avatar">${escapeHtml(p1Init)}</div>
+                            <div class="podium-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
 
         const allGrades = collectAllStudentGrades();
         const bySubject = {};
@@ -926,16 +1011,7 @@
 
         const periodWord = CURRENT_PERIOD_SYSTEM === 'semester' ? 'семестр' : (CURRENT_PERIOD_SYSTEM === 'trimester' ? 'триместр' : 'четверть');
 
-        if (items.length === 0) {
-            container.innerHTML = `
-                <div class="mini-cards-footer" style="margin-top:0; padding-top:0; border-top:none;">
-                    <button class="rating-pill-btn" onclick="showToast('Рейтинг — в разработке')">Узнать рейтинг</button>
-                </div>
-            `;
-            return;
-        }
-
-        let cardsHtml = '';
+        let cardsHtml = ratingCardHtml;
         items.forEach(item => {
             cardsHtml += `
                 <div class="mini-card" onclick="openStatModal('${escapeHtml(item.name)}', '${escapeHtml(item.key)}', null)">
@@ -951,7 +1027,8 @@
             `;
         });
 
-        const arrowHtml = items.length > 3
+        const totalCards = 1 + items.length;
+        const arrowHtml = totalCards > 3
             ? `<button class="mini-cards-arrow" onclick="document.getElementById('miniCardsTrack').scrollBy({left: 146, behavior: 'smooth'})">&rsaquo;</button>`
             : '';
 
@@ -963,10 +1040,11 @@
                 ${arrowHtml}
             </div>
             <div class="mini-cards-footer">
-                <button class="rating-pill-btn" onclick="showToast('Рейтинг — в разработке')">Узнать рейтинг</button>
+                <button class="rating-pill-btn" onclick="showToast('Ваш средний балл: ' + (calculateClassRating().ranked.find(r => r.id === CURRENT_STUDENT.id)?.overallAvg.toFixed(2) || '0.00'))">Узнать рейтинг</button>
             </div>
         `;
     }
+
 
 
     function renderSchedule(lessons, date) {
