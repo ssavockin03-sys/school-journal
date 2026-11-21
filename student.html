@@ -804,20 +804,34 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
                 typeStr = `<div class="lesson-topic">${l.topic}</div>`;
             }
 
+            let badgeHtml = '';
+            if (l.grade) {
+                const cls = gradeClass(l.grade);
+                badgeHtml = `<div class="lesson-grade-box ${cls}">${escapeHtml(l.grade)}</div>`;
+            } else if (l.presence) {
+                badgeHtml = `<div class="lesson-grade-box gn">${escapeHtml(l.presence)}</div>`;
+            }
+
             html += `
                 <div class="lesson-item" onclick="openLessonPage('${escapeHtml(l.subject)}', '${isoDate(date)}_${l.num}')">
                     <div class="lesson-top">
                         <div class="lesson-num-room">${l.num} ЗАНЯТИЕ ${roomStr ? ', ' + escapeHtml(roomStr) : ''}</div>
                         <div class="lesson-time">${timeStr} <span>›</span></div>
                     </div>
-                    <div class="lesson-name">${escapeHtml(l.subject)}</div>
-                    ${typeStr}
+                    <div class="lesson-mid-row">
+                        <div class="lesson-mid-info">
+                            <div class="lesson-name">${escapeHtml(l.subject)}</div>
+                            ${typeStr}
+                        </div>
+                        ${badgeHtml}
+                    </div>
                     <div class="lesson-hw-row">
                         <div class="lesson-hw-text">${l.homework ? escapeHtml(l.homework) : 'Нет домашнего задания'}</div>
                         ${l.homework ? '<span class="lesson-paperclip">📎</span>' : ''}
                     </div>
                 </div>
             `;
+
         });
         container.innerHTML = html;
     }
