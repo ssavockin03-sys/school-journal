@@ -1380,17 +1380,22 @@
         container.className = 'news-alert-card';
         if (event.type === 'red') {
             container.innerHTML = `
-                <div class="news-alert-icon">😟</div>
-                <div class="news-alert-title">Тебе поставили <b>${escapeHtml(event.grade)}</b> по предмету «${escapeHtml(event.subject)}»</div>
-                <div class="news-alert-body">Обычно оценку можно исправить. Спроси учителя, что ты можешь для этого сделать.</div>
+                <div class="news-alert-badge red">${escapeHtml(event.grade)}</div>
+                <div class="news-alert-content">
+                    <div class="news-alert-title">Тебе поставили ${escapeHtml(event.grade)} по предмету «${escapeHtml(event.subject)}»</div>
+                    <div class="news-alert-body">Обычно оценку можно исправить. Спроси учителя, что ты можешь для этого сделать.</div>
+                </div>
             `;
         } else {
             container.innerHTML = `
-                <div class="news-alert-icon">📌</div>
-                <div class="news-alert-title">Тебя не было на уроке «${escapeHtml(event.subject)}»</div>
-                <div class="news-alert-body">Если есть уважительная причина для отсутствия, сообщи о ней учителю.</div>
+                <div class="news-alert-badge gray">${escapeHtml(event.presence || 'Н')}</div>
+                <div class="news-alert-content">
+                    <div class="news-alert-title">Тебя не было на уроке «${escapeHtml(event.subject)}»</div>
+                    <div class="news-alert-body">Если есть уважительная причина для отсутствия, сообщи о ней учителю.</div>
+                </div>
             `;
         }
+
 
     }
 
