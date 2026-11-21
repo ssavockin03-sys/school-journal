@@ -812,10 +812,8 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
             const roomStr = l.roomName ? l.roomName : '';
             
             let typeStr = '';
-            if (l.type) {
-                typeStr = `<div class="lesson-topic"><span class="lesson-marker"></span>${getLessonTypeFullName(l.type)}</div>`;
-            } else if (l.topic) {
-                typeStr = `<div class="lesson-topic">${l.topic}</div>`;
+            if (l.topic) {
+                typeStr = `<div class="lesson-topic">${escapeHtml(l.topic)}</div>`;
             }
 
             let badgeHtml = '';
