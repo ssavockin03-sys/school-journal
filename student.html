@@ -748,11 +748,10 @@
             
             const subjectText = escapeHtml(g.subject);
             const typeText = g.isQuarter ? escapeHtml(g.quarterLabel) : escapeHtml(getLessonTypeFullName(g.type));
-
-            let freshTag = '';
+            let subLineText = typeText;
             if (!g.isQuarter && g.date) {
                 const dateLabel = `${g.date.getDate()} ${MONTHS_SHORT[g.date.getMonth()]}.`;
-                freshTag = `<div style="font-size:11px; color:#888; margin-top:2px;">${escapeHtml(dateLabel)}</div>`;
+                subLineText = typeText ? `${typeText} за ${dateLabel}` : `за ${dateLabel}`;
             }
 
             // Передаём isQuarter в модалку, чтобы она знала, как рендерить
@@ -765,8 +764,7 @@
                         <span class="grade-value">${escapeHtml(g.grade)}</span>
                     </div>
                     <div class="grade-subject">${subjectText}</div>
-                    <div class="grade-type">${typeText}</div>
-                    ${freshTag}
+                    <div class="grade-type">${escapeHtml(subLineText)}</div>
                 </div>
             `;
         });
