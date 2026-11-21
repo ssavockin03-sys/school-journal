@@ -829,32 +829,91 @@
 
     function renderMiniCards() {
         const container = document.getElementById('miniCardsSection');
-        const randomRank = Math.floor(Math.random() * 5) + 1;
-        
-        let html = `
-            <div class="mini-card rating-card">
-                <div class="mini-card-title">Ваш рейтинг в классе</div>
-                <div class="rating-badge">${randomRank}</div>
-                <div class="rating-stars">★★★★☆</div>
-                <div class="rating-status">стабилен</div>
-                <button class="mini-card-btn" onclick="showToast('Рейтинг — в разработке')">Узнать рейтинг</button>
-            </div>
-        `;
+        if (!container) return;
 
-        const subjectsToImprove = ['Информатика', 'Обществознание'];
-        subjectsToImprove.forEach(subj => {
-            html += `
-                <div class="mini-card improve-card">
-                    <div class="mini-card-title">${subj}</div>
+        const items = [];
+        Object.keys(SUBJECTS_DATA).forEach(subjKey => {
+            const subjObj = SUBJECTS_DATA[subjKey];
+            const subjName = subjObj.name || subjKey;
+            const grades = [];
+
+            if (Array.isArray(subjObj.grades)) {
+                subjObj.grades.forEach(item => {
+                    const num = parseFloat(String(item.grade || '').replace(',', '.'));
+                    if (!isNaN(num) && num >= 1 && num <= 5) grades.push(num);
+                });
+            }
+
+            if (grades.length === 0) return;
+
+            const avg = grades.reduce((sum, v) => sum + v, 0) / grades.length;
+            if (avg >= 4.5) return;
+
+            let fromGrade = 4;
+            let toGrade = 5;
+            if (avg < 1.5) {
+                fromGrade = 1;
+                toGrade = 2;
+            } else if (avg < 2.5) {
+                fromGrade = 2;
+                toGrade = 3;
+            } else if (avg < 3.5) {
+                fromGrade = 3;
+                toGrade = 4;
+            } else {
+                fromGrade = 4;
+                toGrade = 5;
+            }
+
+            items.push({
+                key: subjKey,
+                name: subjName,
+                avg,
+                fromGrade,
+                toGrade
+            });
+        });
+
+        if (items.length === 0) {
+            container.innerHTML = `
+                <div class="mini-cards-footer" style="margin-top:0; padding-top:0; border-top:none;">
+                    <button class="rating-pill-btn" onclick="showToast('Рейтинг — в разработке')">Узнать рейтинг</button>
+                </div>
+            `;
+            return;
+        }
+
+        let cardsHtml = '';
+        items.forEach(item => {
+            cardsHtml += `
+                <div class="mini-card" onclick="openStatModal('${escapeHtml(item.name)}', '${escapeHtml(item.key)}', null)">
+                    <div class="mini-card-title" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
                     <div class="improve-icon">🚀</div>
-                    <div class="improve-text">4 <span class="improve-arrow">→</span> 5</div>
-                    <div class="improve-desc">Можно улучшить оценку за семестр</div>
-                    <button class="mini-card-btn" onclick="showToast('Подробности — в разработке')">Подробнее</button>
+                    <div class="improve-text">
+                        <span class="improve-num g${item.fromGrade}">${item.fromGrade}</span>
+                        <span class="improve-arrow">&rarr;</span>
+                        <span class="improve-num g${item.toGrade}">${item.toGrade}</span>
+                    </div>
+                    <div class="improve-desc">Можно улучшить<br>оценку за семестр</div>
                 </div>
             `;
         });
 
-        container.innerHTML = html;
+        const arrowHtml = items.length > 3
+            ? `<button class="mini-cards-arrow" onclick="document.getElementById('miniCardsTrack').scrollBy({left: 146, behavior: 'smooth'})">&rsaquo;</button>`
+            : '';
+
+        container.innerHTML = `
+            <div class="mini-cards-scroll-wrap">
+                <div class="mini-cards-track" id="miniCardsTrack">
+                    ${cardsHtml}
+                </div>
+                ${arrowHtml}
+            </div>
+            <div class="mini-cards-footer">
+                <button class="rating-pill-btn" onclick="showToast('Рейтинг — в разработке')">Узнать рейтинг</button>
+            </div>
+        `;
     }
 
     function renderSchedule(lessons, date) {
