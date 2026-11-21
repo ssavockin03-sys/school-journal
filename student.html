@@ -225,9 +225,9 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
                 /* ===================== БОКОВАЯ ПАНЕЛЬ УРОКА ===================== */
         .lesson-drawer-backdrop {
             position: fixed; inset: 0; background: rgba(15, 23, 42, 0.2);
-            z-index: 9990; display: none; opacity: 0; transition: opacity 0.2s ease;
+            z-index: 9990; display: none;
         }
-        .lesson-drawer-backdrop.show { display: block; opacity: 1; }
+        .lesson-drawer-backdrop.show { display: block; }
 
         .lesson-drawer {
             position: fixed; top: 0; right: 0; bottom: 0;
@@ -235,12 +235,10 @@ color: #fff; font-size: 32px; font-weight: 400; margin-bottom: 8px;
             background: #f1f5f9;
             box-shadow: -4px 0 24px rgba(15, 23, 42, 0.14);
             z-index: 9995;
-            display: flex; flex-direction: column;
-            transform: translateX(100%);
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: none; flex-direction: column;
             overflow-y: auto;
         }
-        .lesson-drawer.show { transform: translateX(0); }
+        .lesson-drawer.show { display: flex; }
 
         .ld-header {
             background: #fff; padding: 18px 20px 16px; position: relative; overflow: hidden;
