@@ -957,11 +957,13 @@
             if (!user) { document.getElementById('studentName').textContent = 'Нет пользователя. Войдите.'; return; }
 
             const login = user.email.split('@')[0];
-            const [classes, subjects, teachers, journals, students, schedules, rooms, periodDocs] = await Promise.all([
+            const [classes, subjects, teachers, journals, students, schedules, rooms, periodDocs, lessonTypesDocs] = await Promise.all([
                 DB.getAll('classes'), DB.getAll('subjects'), DB.getAll('teachers'),
                 DB.getAll('journals'), DB.getAll('students'), DB.getAll('class_schedules'),
-                DB.getAll('rooms'), DB.getAll('educational_periods')
+                DB.getAll('rooms'), DB.getAll('educational_periods'),
+                DB.getAll('lesson_types').catch(() => [])
             ]);
+            window.ALL_LESSON_TYPES = lessonTypesDocs || [];
 
             const student = students.find(s => s.login === login);
             if (!student) { document.getElementById('studentName').textContent = 'Ученик не найден.'; return; }
