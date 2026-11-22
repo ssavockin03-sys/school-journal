@@ -2173,25 +2173,12 @@ function renderGradesList(records) {
         async function loadContacts() {
             const myId = getMyId(), myClassId = getMyClassId();
             if (!myId || !myClassId) return [];
-            const [
-                students,
-                teachers,
-                workloads,
-                journals,
-                schedule,
-                class_schedules,
-                lessons,
-                timetable,
-                classes
-            ] = await Promise.all([
+            const [students, teachers, workloads, journals, class_schedules, classes] = await Promise.all([
                 DB.getAll('students').catch(() => []),
                 DB.getAll('teachers').catch(() => []),
                 DB.getAll('workloads').catch(() => []),
                 DB.getAll('journals').catch(() => []),
-                DB.getAll('schedule').catch(() => []),
                 DB.getAll('class_schedules').catch(() => []),
-                DB.getAll('lessons').catch(() => []),
-                DB.getAll('timetable').catch(() => []),
                 DB.getAll('classes').catch(() => [])
             ]);
             const list = [], seen = new Set();
@@ -2200,11 +2187,10 @@ function renderGradesList(records) {
             const myClassName = myClassObj ? String(myClassObj.name || myClassObj.title || '').trim() : '';
 
             const isMyClass = (item) => {
-                if (!item) return false;
+                if (!item || typeof item !== 'object') return false;
                 if (item.class_id != null && String(item.class_id) === String(myClassId)) return true;
                 if (item.classId != null && String(item.classId) === String(myClassId)) return true;
                 if (item.group_id != null && String(item.group_id) === String(myClassId)) return true;
-                if (item.groupId != null && String(item.groupId) === String(myClassId)) return true;
                 const rowClassName = String(item.class_name || item.className || item.group_name || '').trim();
                 if (myClassName && rowClassName && rowClassName === myClassName) return true;
                 return false;
@@ -2213,16 +2199,29 @@ function renderGradesList(records) {
             const teacherIds = new Set();
             const teacherNames = new Set();
 
-            const collectTeacherFromRow = (row) => {
-                if (!isMyClass(row)) return;
-                if (row.teacher_id != null) teacherIds.add(String(row.teacher_id));
-                if (row.teacherId != null) teacherIds.add(String(row.teacherId));
-                const tName = String(row.teacher_name || row.teacherName || row.teacher || row.teacher_fio || '').trim();
+            // Рекурсивно собираем все teacher_id / имена учителей на любой глубине (дни недели -> уроки -> подгруппы)
+            const extractTeachersDeep = (node, depth = 0) => {
+                if (!node || typeof node !== 'object' || depth > 6) return;
+                if (Array.isArray(node)) {
+                    node.forEach(el => extractTeachersDeep(el, depth + 1));
+                    return;
+                }
+                if (node.teacher_id != null) teacherIds.add(String(node.teacher_id));
+                if (node.teacherId != null) teacherIds.add(String(node.teacherId));
+                if (Array.isArray(node.teacher_ids)) node.teacher_ids.forEach(id => teacherIds.add(String(id)));
+                const tName = String(node.teacher_name || node.teacherName || node.teacher || node.teacher_fio || '').trim();
                 if (tName) teacherNames.add(tName);
+
+                Object.values(node).forEach(val => {
+                    if (val && typeof val === 'object') extractTeachersDeep(val, depth + 1);
+                });
             };
 
-            [workloads, journals, schedule, class_schedules, lessons, timetable].forEach(arr => {
-                if (Array.isArray(arr)) arr.forEach(collectTeacherFromRow);
+            [workloads, journals, class_schedules].forEach(arr => {
+                if (!Array.isArray(arr)) return;
+                arr.forEach(doc => {
+                    if (isMyClass(doc)) extractTeachersDeep(doc);
+                });
             });
 
             if (myClassObj) {
@@ -2256,6 +2255,7 @@ function renderGradesList(records) {
             contactsLoaded = true;
             return list;
         }
+
 
 
         async function refreshUnread() {
