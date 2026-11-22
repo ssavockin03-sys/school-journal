@@ -771,6 +771,16 @@
         renderGradesTable();
         renderRating();
     }
+    let DIARY_ZOOM = 100;
+    function changeDiaryZoom(delta) {
+        DIARY_ZOOM = Math.min(130, Math.max(80, DIARY_ZOOM + delta));
+        const lbl = document.getElementById('diaryZoomLabel');
+        if (lbl) lbl.textContent = DIARY_ZOOM + ' %';
+        const grid = document.getElementById('weekGrid');
+        if (grid) {
+            grid.style.zoom = (DIARY_ZOOM / 100);
+        }
+    }
 
     function renderDiary() {
         const container = document.getElementById('diaryContent');
