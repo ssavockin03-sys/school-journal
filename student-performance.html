@@ -502,16 +502,37 @@
 </div>
 
 <div class="content-wrap">
-    <div class="top-toolbar">
-        <div class="student-name" id="studentName">Загрузка...</div>
-        <div class="toolbar-center">
-            <div class="view-switch" id="viewSwitch">
-                <button class="view-btn active" data-view="current" type="button">Текущая</button>
-                <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
-                <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
+    <div class="toolbar-outer">
+        <div class="feedback-row">
+            <a href="#" class="feedback-link" onclick="event.preventDefault()">Поделиться мнением о странице</a>
+        </div>
+        <div class="top-toolbar">
+            <div class="student-name" id="studentName">Загрузка...</div>
+            <div class="toolbar-center">
+                <div class="view-switch" id="viewSwitch">
+                    <button class="view-btn active" data-view="current" type="button">Текущая</button>
+                    <button class="view-btn" data-view="semesters" id="btnSemesters" type="button">По периодам</button>
+                    <button class="view-btn" data-view="rating" type="button">Рейтинг</button>
+                </div>
+                <div class="zoom-pill">
+                    <button type="button" class="zoom-btn" onclick="changeDiaryZoom(-10)">−</button>
+                    <span id="diaryZoomLabel">100 %</span>
+                    <button type="button" class="zoom-btn" onclick="changeDiaryZoom(10)">+</button>
+                </div>
+            </div>
+            <div class="toolbar-right-tools">
+                <button type="button" class="calendar-icon-btn" title="Текущая неделя" onclick="CURRENT_WEEK_START = getMondayOfCurrentWeek(); renderDiary();">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
+
 
     <div class="view-pane active" id="pane-current">
         <div id="diaryContent"></div>
