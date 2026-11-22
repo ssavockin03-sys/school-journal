@@ -596,6 +596,54 @@
         }
         .ld-teacher-name { font-size: 14px; font-weight: 600; color: #0f172a; }
 
+        /* Кнопка "Открыть чат" в оповещении (оригинал Дневник.ру) */
+        .news-alert-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .news-alert-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .news-alert-chat-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 148px;
+            height: 34px;
+            padding: 0 14px;
+            margin: 0;
+            font-family: 'Open Sans Semibold', 'Open Sans', Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+            text-align: center;
+            text-decoration: none;
+            text-shadow: 0 -1px 0 #008fb3;
+            color: #fff;
+            white-space: nowrap;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            border-radius: 3px;
+            border: thin solid #0097ba;
+            background-image: linear-gradient(to bottom, #00c3e8 0, #00b0e1 100%);
+            cursor: pointer;
+            outline: none;
+            flex-shrink: 0;
+        }
+        .news-alert-chat-btn:hover {
+            background-image: linear-gradient(to bottom, #00b8dc 0, #00a2d0 100%);
+        }
+        .news-alert-chat-btn:active {
+            background-image: linear-gradient(to bottom, #00a2d0 0, #00b8dc 100%);
+        }
+        .news-alert-chat-btn svg {
+            width: 17px;
+            height: 17px;
+            flex-shrink: 0;
+        }
 
         /* ===================== ЧАТ (ВИДЖЕТ ДНЕВНИК.РУ) ===================== */
         #chatFab { display: none !important; }
