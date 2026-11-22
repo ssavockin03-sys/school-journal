@@ -2130,6 +2130,16 @@ function renderGradesList(records) {
             return;
         }
 
+        const chatBtnHtml = `
+            <button type="button" class="news-alert-chat-btn" onclick="openTeacherChatBySubject('${escapeHtml(event.subject)}')">
+                <span>Открыть чат</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        `;
+
         container.className = 'news-alert-card';
         if (event.type === 'red') {
             container.innerHTML = `
@@ -2138,6 +2148,7 @@ function renderGradesList(records) {
                     <div class="news-alert-title">Тебе поставили ${escapeHtml(event.grade)} по предмету «${escapeHtml(event.subject)}»</div>
                     <div class="news-alert-body">Обычно оценку можно исправить. Спроси учителя, что ты можешь для этого сделать.</div>
                 </div>
+                ${chatBtnHtml}
             `;
         } else {
             container.innerHTML = `
@@ -2146,11 +2157,11 @@ function renderGradesList(records) {
                     <div class="news-alert-title">Тебя не было на уроке «${escapeHtml(event.subject)}»</div>
                     <div class="news-alert-body">Если есть уважительная причина для отсутствия, сообщи о ней учителю.</div>
                 </div>
+                ${chatBtnHtml}
             `;
         }
-
-
     }
+
 
     /* ============================================================ */
     /* ЧАТ                                                          */
