@@ -1420,10 +1420,13 @@
                         html += `<span class="dnevnik-grade-tile-table ${cls}" style="cursor:default;transform:none;">${escapeHtml(item.val)}</span>`;
                         return;
                     }
-                    const safeSubj = escapeHtml(subjectName).replace(/'/g, "\\'");
-                    const safeVal = escapeHtml(item.val).replace(/'/g, "\\'");
-                    const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
-                    html += `<span class="dnevnik-grade-tile-table ${cls}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${item.val}</span>`;
+                 const rawType = (journal && journal.lesson_types && journal.lesson_types[item.key]) || DEFAULT_LESSON_TYPE;
+                 const workTypeFull = getLessonTypeFullName(rawType);
+                 const safeSubj = escapeHtml(subjectName).replace(/'/g, "\\'");
+                 const safeVal = escapeHtml(item.val).replace(/'/g, "\\'");
+                 const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
+                 html += `<span class="dnevnik-grade-tile-table ${cls}" data-work-type="${escapeHtml(workTypeFull)}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${item.val}</span>`;
+
                 });
 
                 html += '</td>';
