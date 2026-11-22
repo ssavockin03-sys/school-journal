@@ -1028,11 +1028,17 @@
         const rightBtn = document.getElementById('scrollRightBtn');
 
         if (gridEl && centerEl) {
-            const targetScroll = centerEl.offsetLeft - (gridEl.clientWidth / 2) + (centerEl.offsetWidth / 2);
             gridEl.style.scrollBehavior = 'auto';
-            gridEl.scrollLeft = Math.max(0, targetScroll);
-            requestAnimationFrame(() => { gridEl.style.scrollBehavior = 'smooth'; });
+            requestAnimationFrame(() => {
+                const zoomFactor = parseFloat(getComputedStyle(document.querySelector('.content-wrap')).zoom) || 1;
+                const gridRect = gridEl.getBoundingClientRect();
+                const centerRect = centerEl.getBoundingClientRect();
+                const delta = ((centerRect.left + centerRect.width / 2) - (gridRect.left + gridRect.width / 2)) / zoomFactor;
+                gridEl.scrollLeft = Math.max(0, gridEl.scrollLeft + delta);
+                requestAnimationFrame(() => { gridEl.style.scrollBehavior = 'smooth'; });
+            });
         }
+
 
         leftBtn.style.display = 'flex';
         rightBtn.style.display = 'flex';
