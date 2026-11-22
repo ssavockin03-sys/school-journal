@@ -1358,8 +1358,12 @@
 
                         let hwHtml = '';
                         if (homework) {
-                            hwHtml = `<div class="lesson-hw"><input type="checkbox"> <span>${escapeHtml(homework)}</span></div>`;
+                            const hwStorageKey = `${CURRENT_STUDENT.id}_${dateStr}_${subjLower}_${n}`;
+                            const isDone = isHwCompleted(hwStorageKey);
+                            const safeHwKey = escapeHtml(hwStorageKey).replace(/'/g, "\\'");
+                            hwHtml = `<div class="lesson-hw ${isDone ? 'done' : ''}" onclick="toggleDiaryHw(this, '${safeHwKey}')"><input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation(); toggleDiaryHw(this.parentElement, '${safeHwKey}')"> <span>${escapeHtml(homework)}</span></div>`;
                         }
+
 
                         lessonsHtml += `<div class="lesson-card">
                             ${gradesWrap}
