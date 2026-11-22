@@ -896,15 +896,32 @@
                         : ALL_JOURNALS.find(j => String(j.subject_name || j.subject || '').trim().toLowerCase() === String(lesson.subject || '').trim().toLowerCase());
 
                     if (journal) {
-                        const lData = (journal.lessons && (journal.lessons[key] || journal.lessons[dateStr])) || null;
-                        if (lData) {
-                            homework = lData.h || lData.hw || lData.homework || '';
+                        const extractHwText = (val) => {
+                            if (!val) return '';
+                            if (typeof val === 'string') return val.trim();
+                            if (Array.isArray(val)) return val.map(extractHwText).filter(Boolean).join('; ');
+                            return String(val.h || val.hw || val.homework || val.text || val.task || '').trim();
+                        };
+
+                        if (journal.lessons) {
+                            const exactLesson = journal.lessons[key] || journal.lessons[dateStr];
+                            homework = extractHwText(exactLesson);
+                            if (!homework) {
+                                const byDateKey = Object.keys(journal.lessons).find(k => String(k).startsWith(dateStr));
+                                if (byDateKey) homework = extractHwText(journal.lessons[byDateKey]);
+                            }
                         }
+
                         if (!homework && journal.homework) {
-                            const hwVal = journal.homework[key] || journal.homework[dateStr];
-                            homework = typeof hwVal === 'string' ? hwVal : (hwVal && (hwVal.text || hwVal.h || hwVal.hw) || '');
+                            const exactHw = journal.homework[key] || journal.homework[dateStr];
+                            homework = extractHwText(exactHw);
+                            if (!homework) {
+                                const byDateKey = Object.keys(journal.homework).find(k => String(k).startsWith(dateStr));
+                                if (byDateKey) homework = extractHwText(journal.homework[byDateKey]);
+                            }
                         }
                     }
+
 
 
                     const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
