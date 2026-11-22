@@ -929,33 +929,29 @@ function formatPostedDate(g) {
 
 function toggleProfileDropdown(e) {
     if (e) e.stopPropagation();
+    const wrap = document.getElementById('profileDropdownWrap');
     const card = document.getElementById('profileDropdownCard');
-    if (!card) return;
+    if (!wrap || !card) return;
 
     const isOpen = card.classList.contains('open');
     if (isOpen) {
-        card.classList.remove('open');
+        closeProfileDropdown();
         return;
     }
 
-    // Синхронизируем аватар, имя и класс с текущей шапкой
-    const srcAvatar = document.getElementById('profileAvatar');
-    const srcName = document.getElementById('profileName');
     const srcClass = document.getElementById('profileClass');
-
-    if (srcAvatar) document.getElementById('profileDdAvatar').innerHTML = srcAvatar.innerHTML;
-    if (srcName) document.getElementById('profileDdName').textContent = srcName.textContent.trim();
     if (srcClass) {
-        const clsText = srcClass.textContent.trim();
-        document.getElementById('profileDdClass').textContent = clsText;
-        document.getElementById('profileDdClassRight').textContent = clsText;
+        document.getElementById('profileDdClassRight').textContent = srcClass.textContent.trim();
     }
 
+    wrap.classList.add('open');
     card.classList.add('open');
 }
 
 function closeProfileDropdown() {
+    const wrap = document.getElementById('profileDropdownWrap');
     const card = document.getElementById('profileDropdownCard');
+    if (wrap) wrap.classList.remove('open');
     if (card) card.classList.remove('open');
 }
 
