@@ -941,14 +941,24 @@
 
 
 
-                    const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
-                    const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
-                    const gradeVal = gradeRec ? gradeRec.grade : null;
-                    const presVal  = presRec ? presRec.presence : null;
+                    const subjLower = String(lesson.subject || '').trim().toLowerCase();
+                    const dayItems = all.filter(g =>
+                        String(g.subject || '').trim().toLowerCase() === subjLower &&
+                        (g.key === key || String(g.key || '').startsWith(dateStr))
+                    );
 
                     let gradesWrap = '';
-                    if (presVal)  gradesWrap += `<span class="dnevnik-grade-tile ${gradeClass(presVal)}">${presVal}</span>`;
-                    if (gradeVal) gradesWrap += `<span class="dnevnik-grade-tile ${gradeClass(gradeVal)}">${gradeVal}</span>`;
+                    if (dayItems.length > 0) {
+                        const tilesHtml = dayItems.map(item => {
+                            const val = item.kind === 'presence' ? item.presence : item.grade;
+                            const safeSubj = escapeHtml(lesson.subject).replace(/'/g, "\\'");
+                            const safeVal = escapeHtml(val).replace(/'/g, "\\'");
+                            const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
+                            return `<span class="dnevnik-grade-tile ${gradeClass(val)}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${escapeHtml(val)}</span>`;
+                        }).join('');
+                        gradesWrap = `<div class="lesson-grades-wrap">${tilesHtml}</div>`;
+                    }
+
 
                     let hwHtml = '';
                     if (homework) {
