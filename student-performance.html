@@ -201,19 +201,29 @@
         #pane-semesters, #pane-rating { width: 940px; margin: 0 auto; }
 
         /* ===================== ТЕКУЩАЯ (ДНЕВНИК 1-В-1) ===================== */
-        .diary-container { background-color: #cbd9f3; padding: 18px 0 22px; position: relative; width: 100%; overflow: hidden; }
+        .diary-container { background-color: #eff6ff; padding: 0; position: relative; width: 100%; overflow: hidden; }
         .week-grid-wrapper { position: relative; width: 100%; }
 
         .week-grid {
             display: flex;
             justify-content: flex-start;
             align-items: stretch;
-            padding: 0 24px;
+            padding: 0;
             width: 100%;
             overflow-x: auto;
             scroll-behavior: smooth;
             scrollbar-width: none;
         }
+        .week-band {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            padding: 18px 6px 22px;
+            flex-shrink: 0;
+        }
+        .week-band.even { background-color: #cbd9f3; }
+        .week-band.odd  { background-color: #eff6ff; }
+
 
         .week-grid::-webkit-scrollbar { display: none; }
 
