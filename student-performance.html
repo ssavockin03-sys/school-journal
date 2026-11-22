@@ -987,7 +987,22 @@
         CURRENT_WEEK_START = picked;
         const pop = document.getElementById('diaryCalendarPopover');
         if (pop) pop.classList.remove('open');
-        renderDiary();
+
+        const targetIso = isoDate(picked);
+        const existingCard = document.querySelector(`.day-column[data-date="${targetIso}"]`);
+        const gridEl = document.getElementById('weekGrid');
+
+        if (existingCard && gridEl) {
+            document.querySelectorAll('.day-column').forEach(el => el.removeAttribute('id'));
+            existingCard.id = 'centerDayColumn';
+            const zoomFactor = parseFloat(getComputedStyle(document.querySelector('.content-wrap')).zoom) || 1;
+            const gridRect = gridEl.getBoundingClientRect();
+            const cardRect = existingCard.getBoundingClientRect();
+            const delta = ((cardRect.left + cardRect.width / 2) - (gridRect.left + gridRect.width / 2)) / zoomFactor;
+            gridEl.scrollTo({ left: Math.max(0, gridEl.scrollLeft + delta), behavior: 'smooth' });
+        } else {
+            renderDiary(true);
+        }
     }
 
     function renderDiaryCalendarPopover() {
