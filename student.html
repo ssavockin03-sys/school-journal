@@ -2173,29 +2173,43 @@ function renderGradesList(records) {
         async function loadContacts() {
             const myId = getMyId(), myClassId = getMyClassId();
             if (!myId || !myClassId) return [];
-            const [students, teachers, workloads, journals, schedule, classes] = await Promise.all([
+            const [
+                students,
+                teachers,
+                workloads,
+                journals,
+                schedule,
+                schedules,
+                lessons,
+                timetable,
+                classes
+            ] = await Promise.all([
                 DB.getAll('students').catch(() => []),
                 DB.getAll('teachers').catch(() => []),
                 DB.getAll('workloads').catch(() => []),
                 DB.getAll('journals').catch(() => []),
                 DB.getAll('schedule').catch(() => []),
+                DB.getAll('schedules').catch(() => []),
+                DB.getAll('lessons').catch(() => []),
+                DB.getAll('timetable').catch(() => []),
                 DB.getAll('classes').catch(() => [])
             ]);
             const list = [], seen = new Set();
 
             const myClassObj = classes.find(c => String(c.id) === String(myClassId));
-            const myClassName = myClassObj ? String(myClassObj.name || '').trim() : '';
+            const myClassName = myClassObj ? String(myClassObj.name || myClassObj.title || '').trim() : '';
 
             const isMyClass = (item) => {
                 if (!item) return false;
                 if (item.class_id != null && String(item.class_id) === String(myClassId)) return true;
                 if (item.classId != null && String(item.classId) === String(myClassId)) return true;
                 if (item.group_id != null && String(item.group_id) === String(myClassId)) return true;
-                if (myClassName && item.class_name && String(item.class_name).trim() === myClassName) return true;
+                if (item.groupId != null && String(item.groupId) === String(myClassId)) return true;
+                const rowClassName = String(item.class_name || item.className || item.group_name || '').trim();
+                if (myClassName && rowClassName && rowClassName === myClassName) return true;
                 return false;
             };
 
-            // 1. Собираем всех учителей, ведущих уроки/журналы в вашем классе
             const teacherIds = new Set();
             const teacherNames = new Set();
 
@@ -2203,13 +2217,13 @@ function renderGradesList(records) {
                 if (!isMyClass(row)) return;
                 if (row.teacher_id != null) teacherIds.add(String(row.teacher_id));
                 if (row.teacherId != null) teacherIds.add(String(row.teacherId));
-                if (row.teacher_name) teacherNames.add(String(row.teacher_name).trim());
-                if (row.teacher) teacherNames.add(String(row.teacher).trim());
+                const tName = String(row.teacher_name || row.teacherName || row.teacher || row.teacher_fio || '').trim();
+                if (tName) teacherNames.add(tName);
             };
 
-            workloads.forEach(collectTeacherFromRow);
-            journals.forEach(collectTeacherFromRow);
-            schedule.forEach(collectTeacherFromRow);
+            [workloads, journals, schedule, schedules, lessons, timetable].forEach(arr => {
+                if (Array.isArray(arr)) arr.forEach(collectTeacherFromRow);
+            });
 
             if (myClassObj) {
                 if (myClassObj.teacher_id != null) teacherIds.add(String(myClassObj.teacher_id));
@@ -2226,7 +2240,6 @@ function renderGradesList(records) {
                 list.push({ id: t.id, name: displayName, full_name: displayName, role: 'teacher', roleLabel: 'Учитель' });
             });
 
-            // 2. Ваши одноклассники / одногруппники (кроме вас самих)
             students
                 .filter(s => String(s.class_id) === String(myClassId) && String(s.id) !== String(myId))
                 .forEach(s => {
@@ -2243,6 +2256,7 @@ function renderGradesList(records) {
             contactsLoaded = true;
             return list;
         }
+
 
         async function refreshUnread() {
             const myId = getMyId(); if (!myId) return;
