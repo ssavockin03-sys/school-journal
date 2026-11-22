@@ -846,9 +846,9 @@
         DIARY_ZOOM = Math.min(130, Math.max(80, DIARY_ZOOM + delta));
         const lbl = document.getElementById('diaryZoomLabel');
         if (lbl) lbl.textContent = DIARY_ZOOM + ' %';
-        const grid = document.getElementById('weekGrid');
-        if (grid) {
-            grid.style.zoom = (DIARY_ZOOM / 100);
+        const content = document.querySelector('.content-wrap');
+        if (content) {
+            content.style.zoom = (DIARY_ZOOM / 100) * 1.1;
         }
     }
 
