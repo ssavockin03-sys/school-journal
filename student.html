@@ -2120,33 +2120,66 @@ function renderGradesList(records) {
         async function loadContacts() {
             const myId = getMyId(), myClassId = getMyClassId();
             if (!myId || !myClassId) return [];
-            const [students, teachers, workloads] = await Promise.all([
-                DB.getAll('students'),
-                DB.getAll('teachers'),
-                DB.getAll('workloads')
+            const [students, teachers, workloads, journals, schedule, classes] = await Promise.all([
+                DB.getAll('students').catch(() => []),
+                DB.getAll('teachers').catch(() => []),
+                DB.getAll('workloads').catch(() => []),
+                DB.getAll('journals').catch(() => []),
+                DB.getAll('schedule').catch(() => []),
+                DB.getAll('classes').catch(() => [])
             ]);
             const list = [], seen = new Set();
 
-            // 1. Учителя, которые ведут предметы в вашем классе/группе
-            const teacherIds = new Set();
-            workloads
-                .filter(w => w.class_id === myClassId && w.teacher_id)
-                .forEach(w => teacherIds.add(w.teacher_id));
+            const myClassObj = classes.find(c => String(c.id) === String(myClassId));
+            const myClassName = myClassObj ? String(myClassObj.name || '').trim() : '';
 
-            teacherIds.forEach(tid => {
-                const t = teachers.find(x => x.id === tid);
-                if (!t || seen.has(t.id)) return;
-                seen.add(t.id);
-                const fullName = t.full_name || t.name || 'Учитель';
-                list.push({ id: t.id, name: fullName, full_name: fullName, role: 'teacher', roleLabel: 'Учитель' });
+            const isMyClass = (item) => {
+                if (!item) return false;
+                if (item.class_id != null && String(item.class_id) === String(myClassId)) return true;
+                if (item.classId != null && String(item.classId) === String(myClassId)) return true;
+                if (item.group_id != null && String(item.group_id) === String(myClassId)) return true;
+                if (myClassName && item.class_name && String(item.class_name).trim() === myClassName) return true;
+                return false;
+            };
+
+            // 1. Собираем всех учителей, ведущих уроки/журналы в вашем классе
+            const teacherIds = new Set();
+            const teacherNames = new Set();
+
+            const collectTeacherFromRow = (row) => {
+                if (!isMyClass(row)) return;
+                if (row.teacher_id != null) teacherIds.add(String(row.teacher_id));
+                if (row.teacherId != null) teacherIds.add(String(row.teacherId));
+                if (row.teacher_name) teacherNames.add(String(row.teacher_name).trim());
+                if (row.teacher) teacherNames.add(String(row.teacher).trim());
+            };
+
+            workloads.forEach(collectTeacherFromRow);
+            journals.forEach(collectTeacherFromRow);
+            schedule.forEach(collectTeacherFromRow);
+
+            if (myClassObj) {
+                if (myClassObj.teacher_id != null) teacherIds.add(String(myClassObj.teacher_id));
+                if (myClassObj.class_teacher_id != null) teacherIds.add(String(myClassObj.class_teacher_id));
+            }
+
+            teachers.forEach(t => {
+                const tid = String(t.id);
+                const tFullName = String(t.full_name || t.name || '').trim();
+                const matched = teacherIds.has(tid) || (tFullName && teacherNames.has(tFullName));
+                if (!matched || seen.has(tid)) return;
+                seen.add(tid);
+                const displayName = tFullName || 'Учитель';
+                list.push({ id: t.id, name: displayName, full_name: displayName, role: 'teacher', roleLabel: 'Учитель' });
             });
 
             // 2. Ваши одноклассники / одногруппники (кроме вас самих)
             students
-                .filter(s => s.class_id === myClassId && s.id !== myId)
+                .filter(s => String(s.class_id) === String(myClassId) && String(s.id) !== String(myId))
                 .forEach(s => {
-                    if (seen.has(s.id)) return;
-                    seen.add(s.id);
+                    const sid = String(s.id);
+                    if (seen.has(sid)) return;
+                    seen.add(sid);
                     const fullName = s.full_name || s.name || 'Ученик';
                     list.push({ id: s.id, name: fullName, full_name: fullName, role: 'student', roleLabel: 'Одноклассник' });
                 });
