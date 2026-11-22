@@ -1094,6 +1094,45 @@ document.addEventListener('click', function (e) {
         closeProfileDropdown();
     }
 });
+function formatShortFio(fullName) {
+    const parts = (fullName || '').trim().split(/\s+/).filter(Boolean);
+    if (parts.length >= 3) return parts.slice(0, 1).join('') + ' ' + parts.slice(1, 2).join('').charAt(0) + '.' + parts.slice(2, 3).join('').charAt(0) + '.';
+    if (parts.length === 2) return parts.slice(0, 1).join('') + ' ' + parts.slice(1, 2).join('').charAt(0) + '.';
+    return fullName;
+}
+
+function toggleTopUserMenu(e) {
+    if (e) e.stopPropagation();
+    const box = document.getElementById('topUserProfileBox');
+    if (box) box.classList.toggle('open');
+}
+
+function closeTopUserMenu() {
+    const box = document.getElementById('topUserProfileBox');
+    if (box) box.classList.remove('open');
+}
+
+document.addEventListener('click', function (e) {
+    const box = document.getElementById('topUserProfileBox');
+    if (box && !box.contains(e.target)) {
+        closeTopUserMenu();
+    }
+});
+
+// Автоматически приводим #userName к формату "Фамилия И.О." после загрузки данных ученика
+(function syncShortHeaderName() {
+    const el = document.getElementById('userName');
+    if (!el) return;
+    const applyShort = () => {
+        const raw = el.textContent.trim();
+        if (raw && raw.split(/\s+/).length >= 2) {
+            const short = formatShortFio(raw);
+            if (raw !== short) el.textContent = short;
+        }
+    };
+    applyShort();
+    new MutationObserver(applyShort).observe(el, { childList: true, characterData: true, subtree: true });
+})();
     
 function renderGradesList(records) {
     const container = document.getElementById('gradesSection');
