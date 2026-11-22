@@ -816,9 +816,31 @@
     function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate() + days); return d; }
     function getLessonTypeFullName(abbr) {
         if (!abbr) return 'Ответ на уроке';
-        const raw = typeof abbr === 'object' ? (abbr.name || abbr.title || abbr.type || abbr.code || '') : String(abbr);
-        const key = raw.trim().toUpperCase();
+        const raw = typeof abbr === 'object' ? (abbr.full_name || abbr.fullName || abbr.name || abbr.title || abbr.type || abbr.code || '') : String(abbr);
+        const clean = raw.trim();
+        const key = clean.toUpperCase();
+
+        // 1. Ищем в справочнике типов работ из базы (ALL_LESSON_TYPES)
+        if (Array.isArray(window.ALL_LESSON_TYPES)) {
+            const found = window.ALL_LESSON_TYPES.find(lt =>
+                String(lt.id || '').toUpperCase() === key ||
+                String(lt.code || lt.abbr || lt.short || lt.short_name || '').trim().toUpperCase() === key ||
+                String(lt.name || lt.title || '').trim().toUpperCase() === key
+            );
+            if (found) {
+                const full = found.full_name || found.fullName || found.title || found.description || found.name;
+                if (full && String(full).trim().toUpperCase() !== key) return String(full).trim();
+            }
+        }
+
         const map = {
+            'КП': 'Курсовой проект',
+            'К/П': 'Курсовой проект',
+            'ПЗ': 'Практическое занятие',
+            'П/З': 'Практическое занятие',
+            'ТЗ': 'Творческое задание',
+            'Т/З': 'Творческое задание',
+
             'ОТВ': 'Ответ на уроке',
             'К/Р': 'Контрольная работа',
             'КР': 'Контрольная работа',
