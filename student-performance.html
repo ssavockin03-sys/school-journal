@@ -1199,6 +1199,36 @@
         };
         return map[key] || key;
     }
+    function getCompletedHwMap() {
+        try {
+            return JSON.parse(localStorage.getItem('dnevnik_done_hw_v1') || '{}');
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function isHwCompleted(hwKey) {
+        const map = getCompletedHwMap();
+        return Boolean(map[hwKey]);
+    }
+
+    function toggleDiaryHw(el, hwKey) {
+        if (!el || !hwKey) return;
+        const map = getCompletedHwMap();
+        const nextState = !map[hwKey];
+        if (nextState) {
+            map[hwKey] = true;
+            el.classList.add('done');
+        } else {
+            delete map[hwKey];
+            el.classList.remove('done');
+        }
+        const cb = el.querySelector('input[type="checkbox"]');
+        if (cb) cb.checked = nextState;
+        try {
+            localStorage.setItem('dnevnik_done_hw_v1', JSON.stringify(map));
+        } catch (e) {}
+    }
 
     function renderDiary(smoothStart = false) {
         const container = document.getElementById('diaryContent');
