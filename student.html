@@ -2120,17 +2120,42 @@ function renderGradesList(records) {
         async function loadContacts() {
             const myId = getMyId(), myClassId = getMyClassId();
             if (!myId || !myClassId) return [];
-            const [students, teachers, workloads, people] = await Promise.all([DB.getAll('students'), DB.getAll('teachers'), DB.getAll('workloads'), DB.getAll('people').catch(() => [])]);
+            const [students, teachers, workloads] = await Promise.all([
+                DB.getAll('students'),
+                DB.getAll('teachers'),
+                DB.getAll('workloads')
+            ]);
             const list = [], seen = new Set();
-            students.filter(s => s.class_id === myClassId && s.id !== myId).forEach(s => { if (seen.has(s.id)) return; seen.add(s.id); list.push({ id: s.id, full_name: s.full_name, role: 'student', roleLabel: 'Ученик' }); });
-            const teacherIds = new Set(); workloads.filter(w => w.class_id === myClassId && w.teacher_id).forEach(w => teacherIds.add(w.teacher_id));
-            teacherIds.forEach(tid => { const t = teachers.find(x => x.id === tid); if (!t || seen.has(t.id)) return; seen.add(t.id); list.push({ id: t.id, full_name: t.full_name, role: 'teacher', roleLabel: 'Учитель' + (t.subject ? ' · ' + t.subject : '') }); });
-            list.push({ id: '__admin__', full_name: 'Администратор', role: 'admin', roleLabel: 'Администрация' });
-            const classStudentNames = new Set(students.filter(s => s.class_id === myClassId).map(s => s.full_name));
-            people.filter(p => p.role === 'parent' && p.child_name && classStudentNames.has(p.child_name)).forEach(p => { if (seen.has(p.id)) return; seen.add(p.id); const childShort = (p.child_name || '').split(' ').slice(0, 2).join(' '); list.push({ id: p.id, full_name: p.full_name, role: 'parent', roleLabel: 'Родитель · ' + childShort }); });
-            const order = { teacher: 0, student: 1, parent: 2, admin: 3 };
-            list.sort((a, b) => (order[a.role] - order[b.role]) || a.full_name.localeCompare(b.full_name, 'ru'));
-            contacts = list; contactsLoaded = true; return list;
+
+            // 1. Учителя, которые ведут предметы в вашем классе/группе
+            const teacherIds = new Set();
+            workloads
+                .filter(w => w.class_id === myClassId && w.teacher_id)
+                .forEach(w => teacherIds.add(w.teacher_id));
+
+            teacherIds.forEach(tid => {
+                const t = teachers.find(x => x.id === tid);
+                if (!t || seen.has(t.id)) return;
+                seen.add(t.id);
+                const fullName = t.full_name || t.name || 'Учитель';
+                list.push({ id: t.id, name: fullName, full_name: fullName, role: 'teacher', roleLabel: 'Учитель' });
+            });
+
+            // 2. Ваши одноклассники / одногруппники (кроме вас самих)
+            students
+                .filter(s => s.class_id === myClassId && s.id !== myId)
+                .forEach(s => {
+                    if (seen.has(s.id)) return;
+                    seen.add(s.id);
+                    const fullName = s.full_name || s.name || 'Ученик';
+                    list.push({ id: s.id, name: fullName, full_name: fullName, role: 'student', roleLabel: 'Одноклассник' });
+                });
+
+            const order = { teacher: 0, student: 1 };
+            list.sort((a, b) => (order[a.role] - order[b.role]) || a.name.localeCompare(b.name, 'ru'));
+            contacts = list;
+            contactsLoaded = true;
+            return list;
         }
 
         async function refreshUnread() {
