@@ -967,6 +967,45 @@ function formatPostedDate(g) {
     return `${day} ${MONTHS_UPPER[monthIndex]}`;
 }
 
+function toggleProfileDropdown(e) {
+    if (e) e.stopPropagation();
+    const card = document.getElementById('profileDropdownCard');
+    if (!card) return;
+
+    const isOpen = card.classList.contains('open');
+    if (isOpen) {
+        card.classList.remove('open');
+        return;
+    }
+
+    // Синхронизируем аватар, имя и класс с текущей шапкой
+    const srcAvatar = document.getElementById('profileAvatar');
+    const srcName = document.getElementById('profileName');
+    const srcClass = document.getElementById('profileClass');
+
+    if (srcAvatar) document.getElementById('profileDdAvatar').innerHTML = srcAvatar.innerHTML;
+    if (srcName) document.getElementById('profileDdName').textContent = srcName.textContent.trim();
+    if (srcClass) {
+        const clsText = srcClass.textContent.trim();
+        document.getElementById('profileDdClass').textContent = clsText;
+        document.getElementById('profileDdClassRight').textContent = clsText;
+    }
+
+    card.classList.add('open');
+}
+
+function closeProfileDropdown() {
+    const card = document.getElementById('profileDropdownCard');
+    if (card) card.classList.remove('open');
+}
+
+document.addEventListener('click', function (e) {
+    const wrap = document.getElementById('profileDropdownWrap');
+    if (wrap && !wrap.contains(e.target)) {
+        closeProfileDropdown();
+    }
+});
+    
 function renderGradesList(records) {
     const container = document.getElementById('gradesSection');
     if (records.length === 0) {
