@@ -599,12 +599,11 @@
         /* Кнопка "Открыть чат" в оповещении (оригинал Дневник.ру) */
         .news-alert-card {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-start;
         }
         .news-alert-content {
-            flex: 1;
+            flex: 1 1 calc(100% - 56px);
             min-width: 0;
         }
         .news-alert-chat-btn {
@@ -613,9 +612,9 @@
             justify-content: center;
             gap: 8px;
             min-width: 148px;
-            height: 34px;
+            height: 32px;
             padding: 0 14px;
-            margin: 0;
+            margin: 10px 0 0 46px;
             font-family: 'Open Sans Semibold', 'Open Sans', Arial, sans-serif;
             font-size: 14px;
             font-weight: 600;
@@ -631,18 +630,6 @@
             background-image: linear-gradient(to bottom, #00c3e8 0, #00b0e1 100%);
             cursor: pointer;
             outline: none;
-            flex-shrink: 0;
-        }
-        .news-alert-chat-btn:hover {
-            background-image: linear-gradient(to bottom, #00b8dc 0, #00a2d0 100%);
-        }
-        .news-alert-chat-btn:active {
-            background-image: linear-gradient(to bottom, #00a2d0 0, #00b8dc 100%);
-        }
-        .news-alert-chat-btn svg {
-            width: 17px;
-            height: 17px;
-            flex-shrink: 0;
         }
 
         /* ===================== ЧАТ (ВИДЖЕТ ДНЕВНИК.РУ) ===================== */
