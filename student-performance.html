@@ -1240,9 +1240,12 @@
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
         const typeFullName = getLessonTypeFullName(lessonType);
 
-        const parsedCell = parseCell(value);
-        const myGrade = parsedCell.grade;
-        const myDigit = firstDigit(myGrade) || 0;
+     const parsedCell = parseCell(value);
+     const myGrade = parsedCell.grade;
+     const gradeDigits = String(myGrade || '').split('/').map(p => firstDigit(p)).filter(d => d !== null);
+     const myDigit = gradeDigits.length > 0 ? Math.round(gradeDigits.reduce((a, b) => a + b, 0) / gradeDigits.length) : 0;
+     const myDisplayGrade = myGrade || parsedCell.presence || '—';
+
 
         let teacherName = '—';
         const grid = getGridForDate(parsed.date);
