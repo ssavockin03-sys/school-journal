@@ -891,13 +891,11 @@
 
         const all = collectAllStudentGrades();
 
-        // Вычисляем понедельник текущей недели (для чередования фона недель) и понедельник опорной недели
         const baseMonday = getMondayOfCurrentWeek();
         const centerMonday = new Date(centerDate);
         const cDow = centerMonday.getDay();
         centerMonday.setDate(centerMonday.getDate() - (cDow === 0 ? 6 : cDow - 1));
 
-        // 7 целых недель подряд (-3 .. +3 недели от опорной), каждая в своём блоке .week-band с чередующимся фоном
         for (let w = -3; w <= 3; w++) {
             const weekMonday = addDays(centerMonday, w * 7);
             const weeksDiff = Math.round((weekMonday.getTime() - baseMonday.getTime()) / (7 * 24 * 60 * 60 * 1000));
@@ -1017,122 +1015,7 @@
             html += `</div>`;
         }
 
-            const dayKey = JS_DAY_MAP[date.getDay()];
-            const isWeekend = (dayKey === 'sun');
-            const isToday = date.getTime() === today.getTime();
-            const isCenter = offset === 0;
-
-            const grid = getGridForDate(date);
-            const dayGrid = (grid && grid[dayKey]) || {};
-
-            let lessonsHtml = '';
-
-            if (isWeekend) {
-                lessonsHtml = `<div class="weekend-text">Выходной день</div>`;
-            } else {
-                for (let n = 1; n <= maxLesson; n++) {
-                    const lesson = dayGrid[n] || dayGrid[String(n)];
-                    if (!lesson || !lesson.subject) continue;
-
-                    let roomName = lesson.roomName || '';
-                    if (!roomName && lesson.roomId) {
-                        const r = ALL_ROOMS.find(x => x.id === lesson.roomId);
-                        if (r) roomName = r.number;
-                    }
-
-                    const timeStr = lesson.start && lesson.end ? `${lesson.start} - ${lesson.end}` : '';
-                    const roomStr = roomName ? `, ${roomName} каб.` : '';
-                    const metaText = `${timeStr}${roomStr}`.replace(/^,\s*/, '');
-
-                    const dateStr = isoDate(date);
-                    const key = dateStr + '_' + n;
-                    let homework = '';
-                    const subjObj = ALL_SUBJECTS.find(s => String(s.name || '').trim().toLowerCase() === String(lesson.subject || '').trim().toLowerCase());
-                    const journal = subjObj
-                        ? ALL_JOURNALS.find(j => String(j.subject_id) === String(subjObj.id))
-                        : ALL_JOURNALS.find(j => String(j.subject_name || j.subject || '').trim().toLowerCase() === String(lesson.subject || '').trim().toLowerCase());
-
-                    if (journal) {
-                        const extractHwText = (val) => {
-                            if (!val) return '';
-                            if (typeof val === 'string') return val.trim();
-                            if (Array.isArray(val)) return val.map(extractHwText).filter(Boolean).join('; ');
-                            return String(val.h || val.hw || val.homework || val.text || val.task || '').trim();
-                        };
-
-                        if (journal.lessons) {
-                            const exactLesson = journal.lessons[key] || journal.lessons[dateStr];
-                            homework = extractHwText(exactLesson);
-                            if (!homework) {
-                                const byDateKey = Object.keys(journal.lessons).find(k => String(k).startsWith(dateStr));
-                                if (byDateKey) homework = extractHwText(journal.lessons[byDateKey]);
-                            }
-                        }
-
-                        if (!homework && journal.homework) {
-                            const exactHw = journal.homework[key] || journal.homework[dateStr];
-                            homework = extractHwText(exactHw);
-                            if (!homework) {
-                                const byDateKey = Object.keys(journal.homework).find(k => String(k).startsWith(dateStr));
-                                if (byDateKey) homework = extractHwText(journal.homework[byDateKey]);
-                            }
-                        }
-                    }
-
-
-
-                    const subjLower = String(lesson.subject || '').trim().toLowerCase();
-                    const dayItems = all.filter(g =>
-                        String(g.subject || '').trim().toLowerCase() === subjLower &&
-                        (g.key === key || String(g.key || '').startsWith(dateStr))
-                    ).sort((a, b) => {
-                        const orderA = a.kind === 'presence' ? 0 : 1;
-                        const orderB = b.kind === 'presence' ? 0 : 1;
-                        return orderA - orderB;
-                    });
-
-
-                    let gradesWrap = '';
-                    if (dayItems.length > 0) {
-                        const tilesHtml = dayItems.map(item => {
-                            const val = item.kind === 'presence' ? item.presence : item.grade;
-                            const safeSubj = escapeHtml(lesson.subject).replace(/'/g, "\\'");
-                            const safeVal = escapeHtml(val).replace(/'/g, "\\'");
-                            const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
-                            return `<span class="dnevnik-grade-tile ${gradeClass(val)}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${escapeHtml(val)}</span>`;
-                        }).join('');
-                        gradesWrap = `<div class="lesson-grades-wrap">${tilesHtml}</div>`;
-                    }
-
-
-                    let hwHtml = '';
-                    if (homework) {
-                        hwHtml = `<div class="lesson-hw"><input type="checkbox"> <span>${escapeHtml(homework)}</span></div>`;
-                    }
-
-
-                    lessonsHtml += `<div class="lesson-card">
-                        ${gradesWrap}
-                        <div class="lesson-title"><b>${n}.</b> ${lesson.subject}</div>
-                        <div class="lesson-meta">${metaText}</div>
-                        ${hwHtml}
-                    </div>`;
-                }
-            }
-
-            const headerBg = isWeekend ? 'background-color:#c4d0e0;' : (isToday ? 'background-color:#2f80ed;' : '');
-            const todayTag = isToday ? ', сегодня' : '';
-
-                html += `<div class="day-column ${isWeekend ? 'weekend' : ''} ${isToday ? 'today' : ''}" ${isCenter ? 'id="centerDayColumn"' : ''}>
-                    <div class="day-header" style="${headerBg}">${DAYS_RU[dayKey].toUpperCase()}, ${formatDateShort(date)}${todayTag}</div>
-                    <div class="day-body">${lessonsHtml}</div>
-                </div>`;
-            }
-
-            html += `</div>`;
-
         html += `
-
                 </div>
                 <button class="scroll-arrow right" id="scrollRightBtn">›</button>
             </div>
@@ -1144,7 +1027,6 @@
         const leftBtn = document.getElementById('scrollLeftBtn');
         const rightBtn = document.getElementById('scrollRightBtn');
 
-        // Мгновенно ставим сегодняшний день ровно по центру экрана (как ВС, 22 нояб., сегодня на скриншоте)
         if (gridEl && centerEl) {
             const targetScroll = centerEl.offsetLeft - (gridEl.clientWidth / 2) + (centerEl.offsetWidth / 2);
             gridEl.style.scrollBehavior = 'auto';
@@ -1152,7 +1034,6 @@
             requestAnimationFrame(() => { gridEl.style.scrollBehavior = 'smooth'; });
         }
 
-        // Плавная прокрутка ленты на 3 карточки влево/вправо (234px * 3 = 702px)
         leftBtn.style.display = 'flex';
         rightBtn.style.display = 'flex';
         leftBtn.addEventListener('click', () => { gridEl.scrollBy({ left: -702, behavior: 'smooth' }); });
