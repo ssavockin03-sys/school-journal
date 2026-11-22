@@ -1321,7 +1321,7 @@
                 <div class="stat-left">
                     <div class="stat-title">Ваша оценка</div>
                     <div class="stat-circle" style="background: ${ringGradient};">
-                        <div class="stat-circle-value">${myDigit || '—'}</div>
+<div class="stat-circle-value" style="${String(myDisplayGrade).includes('/') ? 'font-size:24px;' : ''}">${escapeHtml(myDisplayGrade)}</div>
                     </div>
                     <div class="stat-avg">
                         ср. балл <div class="stat-avg-pill ${myDigit >= 3 ? 'up' : ''}">${avg}</div>
