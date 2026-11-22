@@ -815,6 +815,18 @@
     function getMondayOfCurrentWeek() { const t = new Date(); t.setHours(0,0,0,0); const dow = t.getDay(); const diff = (dow === 0 ? -6 : 1 - dow); const m = new Date(t); m.setDate(t.getDate() + diff); return m; }
     function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate() + days); return d; }
     function getLessonTypeFullName(abbr) {
+        function getPresenceFullName(code) {
+        const key = String(code || '').trim().toUpperCase();
+        const map = {
+            'Н': 'Неявка',
+            'Б': 'Болеет',
+            'О': 'Опоздание',
+            'СП': 'Свободное посещение',
+            'П': 'Пропуск'
+        };
+        return map[key] || key;
+    }
+
         if (!abbr) return 'Ответ на уроке';
         const raw = typeof abbr === 'object' ? (abbr.full || abbr.full_name || abbr.name || abbr.title || abbr.abbr || '') : String(abbr);
         const key = raw.trim().toUpperCase();
