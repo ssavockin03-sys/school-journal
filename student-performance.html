@@ -1300,11 +1300,13 @@
 
                         let gradesWrap = '';
                         if (dayItems.length > 0) {
-                         const tilesHtml = dayItems.map(item => {
-                             const val = item.kind === 'presence' ? item.presence : item.grade;
-                             if (item.kind === 'presence') {
-                                 return `<span class="dnevnik-grade-tile ${gradeClass(val)}" style="cursor:default;">${escapeHtml(val)}</span>`;
-                             }
+                            const tilesHtml = dayItems.map(item => {
+                                const val = item.kind === 'presence' ? item.presence : item.grade;
+                                if (item.kind === 'presence') {
+                                    const presFull = getPresenceFullName(val);
+                                    return `<span class="dnevnik-grade-tile ${gradeClass(val)}" data-work-type="${escapeHtml(presFull)}" style="cursor:default;">${escapeHtml(val)}</span>`;
+                                }
+
                              const rawType = (journal && journal.lesson_types && journal.lesson_types[item.key]) || DEFAULT_LESSON_TYPE;
                              const workTypeFull = getLessonTypeFullName(rawType);
                              const safeSubj = escapeHtml(lesson.subject).replace(/'/g, "\\'");
