@@ -2453,7 +2453,11 @@ function renderGradesList(records) {
         function startPolling() {
             if (pollTimer) clearInterval(pollTimer);
             pollTimer = setInterval(async () => {
+                const prevCount = contacts.length;
+                await loadContacts();
+                if (contacts.length !== prevCount && !activeContact) renderContactsList();
                 await refreshUnread();
+
                 if (panelOpen && activeContact) {
                     const myId = getMyId(), cid = chatIdFor(myId, activeContact.id);
                     const all = await DB.getAll('chat_messages');
