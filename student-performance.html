@@ -440,6 +440,40 @@
             margin-left: 0;
         }
 
+        /* Тёмно-синее облачко типа работы при наведении на оценку (1-в-1 со скриншотом) */
+        #gradeTooltip {
+            position: fixed;
+            z-index: 9999;
+            background: #0f3159;
+            color: #fff;
+            font-family: "Open Sans", Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.3;
+            padding: 8px 14px;
+            border-radius: 10px;
+            white-space: nowrap;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(15, 49, 89, 0.22);
+            transform: translate(-50%, -100%);
+            opacity: 0;
+            transition: opacity 0.12s ease;
+        }
+        #gradeTooltip.show {
+            opacity: 1;
+        }
+        #gradeTooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0 6px;
+            border-style: solid;
+            border-color: #0f3159 transparent transparent transparent;
+        }
+
+
         .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4, .dnevnik-grade-tile-table.g5, .dnevnik-grade-tile-table.g4 { background-color: #4b9a25; }
         .dnevnik-grade-tile.g3, .dnevnik-grade-tile-table.g3 { background-color: #ff8f00; }
         .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1, .dnevnik-grade-tile-table.g2, .dnevnik-grade-tile-table.g1 { background-color: #cf3838; }
