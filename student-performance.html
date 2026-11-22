@@ -1651,6 +1651,29 @@
     function initChat() {
         console.log('Chat init');
     }
+ (function initGradeTooltip() {
+     const tip = document.getElementById('gradeTooltip');
+     if (!tip) return;
+     document.addEventListener('mouseover', (e) => {
+         const tile = e.target.closest('[data-work-type]');
+         if (!tile) return;
+         const text = tile.getAttribute('data-work-type');
+         if (!text) return;
+         const rect = tile.getBoundingClientRect();
+         tip.textContent = text;
+         tip.style.left = (rect.left + rect.width / 2) + 'px';
+         tip.style.top = (rect.top - 9) + 'px';
+         tip.classList.add('show');
+     });
+     document.addEventListener('mouseout', (e) => {
+         const tile = e.target.closest('[data-work-type]');
+         if (tile && (!e.relatedTarget || !tile.contains(e.relatedTarget))) {
+             tip.classList.remove('show');
+         }
+     });
+     window.addEventListener('scroll', () => tip.classList.remove('show'), true);
+ })();
+
 </script>
 </body>
 </html>
