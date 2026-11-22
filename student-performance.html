@@ -1178,11 +1178,16 @@
                 html += '<td>';
                 displayGrades.forEach(item => {
                     const cls = gradeClass(item.val);
+                    if (item.kind === 'presence') {
+                        html += `<span class="dnevnik-grade-tile-table ${cls}" style="cursor:default;transform:none;">${escapeHtml(item.val)}</span>`;
+                        return;
+                    }
                     const safeSubj = escapeHtml(subjectName).replace(/'/g, "\\'");
                     const safeVal = escapeHtml(item.val).replace(/'/g, "\\'");
                     const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
                     html += `<span class="dnevnik-grade-tile-table ${cls}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${item.val}</span>`;
                 });
+
                 html += '</td>';
             }
             
