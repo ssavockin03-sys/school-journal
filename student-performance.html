@@ -297,24 +297,41 @@
         }
 
 
-        /* Плитки оценок в дневнике (22x22px) */
+        /* Контейнер и плитки оценок в дневнике (оригинал DevTools) */
+        .lesson-grades-wrap {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
         .dnevnik-grade-tile {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 22px;
+            min-width: 22px;
             height: 22px;
             padding: 0 4px;
-            margin: 0 0 6px;
-            border-radius: 4px;
+            margin: 0 6px 6px 0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
             color: #fff;
+            font-family: "Open Sans", Arial, sans-serif;
             font-size: 12px;
             font-weight: 600;
-            position: absolute;
-            top: 0;
-            right: 0;
             cursor: pointer;
         }
+        .dnevnik-grade-tile:last-child {
+            margin-right: 0;
+        }
+        .dnevnik-grade-tile:first-child {
+            margin-left: 0;
+        }
+
         .dnevnik-grade-tile.g5, .dnevnik-grade-tile.g4, .dnevnik-grade-tile-table.g5, .dnevnik-grade-tile-table.g4 { background-color: #4b9a25; }
         .dnevnik-grade-tile.g3, .dnevnik-grade-tile-table.g3 { background-color: #ff8f00; }
         .dnevnik-grade-tile.g2, .dnevnik-grade-tile.g1, .dnevnik-grade-tile-table.g2, .dnevnik-grade-tile-table.g1 { background-color: #cf3838; }
