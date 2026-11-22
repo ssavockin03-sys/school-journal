@@ -20,14 +20,127 @@
         .header-top { display: flex; align-items: center; justify-content: space-between; width: 940px; margin: 0 auto; padding: 0; height: 93px; }
         .logo { font-size: 26px; color: #0273b2; font-weight: 700; text-decoration: none; }
         .logo span { font-weight: 400; color: #777; }
-        .user-zone { display: flex; align-items: center; gap: 20px; }
-        .user-info { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.3; }
-        .user-name { font-weight: 700; font-size: 14px; }
-        .user-role { font-size: 11px; color: #777; text-transform: uppercase; }
-        .user-actions { display: flex; gap: 12px; font-size: 13px; }
-        .user-actions a { color: #0273b2; text-decoration: none; cursor: pointer; background: none; border: none; font-family: inherit; }
-        .user-actions a.logout { color: #d9534f; }
-        .user-actions a:hover { text-decoration: underline; }
+        /* Оригинальный блок профиля в шапке (.user-profile-box) */
+        .user-zone { display: flex; align-items: center; gap: 18px; position: relative; }
+        .user-profile-box {
+            display: flex;
+            align-items: center;
+            max-width: 229px;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+        .user-profile-box__avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 3px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .user-profile-box__avatar svg {
+            width: 24px;
+            height: 24px;
+            color: #d6dae0;
+        }
+        .user-profile-box__info {
+            display: inline-block;
+            position: relative;
+            z-index: 90;
+            margin: 1px;
+            padding: 5px 10px 5px 10px;
+            line-height: 1.35;
+        }
+        .user-profile-box__row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .user-name {
+            font-weight: 400;
+            font-size: 14px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 155px;
+        }
+        .user-profile-box:hover .user-name {
+            color: #0273b2;
+        }
+        .user-profile-box__caret {
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid #757575;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: transform 0.15s ease;
+        }
+        .user-profile-box.open .user-profile-box__caret {
+            transform: rotate(180deg);
+        }
+        .user-profile-box__category {
+            display: block;
+            color: rgba(117, 117, 117, .7);
+            font-size: 12px;
+            max-width: 160px;
+            margin-top: 1px;
+        }
+        /* Выпадающее меню верхнего профиля */
+        .top-profile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 190px;
+            background: #fff;
+            border: 1px solid #e2e5e8;
+            border-radius: 3px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+            z-index: 250;
+            padding: 4px 0;
+        }
+        .user-profile-box.open .top-profile-menu {
+            display: block;
+        }
+        .top-profile-menu a {
+            display: block;
+            padding: 8px 14px;
+            font-size: 13px;
+            color: #444;
+            text-decoration: none;
+        }
+        .top-profile-menu a:hover {
+            background: #f5f7f9;
+            color: #0273b2;
+        }
+        /* Ссылки Помощь / Выход столбиком */
+        .user-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 3px;
+            font-size: 13px;
+            line-height: 1.35;
+        }
+        .user-actions a {
+            color: #666;
+            text-decoration: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+        .user-actions a:hover {
+            color: #0273b2;
+            text-decoration: underline;
+        }
+
 
         /* ===================== МЕНЮ ===================== */
         .header-menu { box-sizing: border-box; height: 52px; width: 940px; background-color: #0273b2; border-radius: 5px 5px 0 0; margin: 0; display: block; padding-left: 0; list-style: none; position: relative; flex-shrink: 0; }
