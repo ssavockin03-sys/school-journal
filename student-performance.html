@@ -945,7 +945,12 @@
                     const dayItems = all.filter(g =>
                         String(g.subject || '').trim().toLowerCase() === subjLower &&
                         (g.key === key || String(g.key || '').startsWith(dateStr))
-                    );
+                    ).sort((a, b) => {
+                        const orderA = a.kind === 'presence' ? 0 : 1;
+                        const orderB = b.kind === 'presence' ? 0 : 1;
+                        return orderA - orderB;
+                    });
+
 
                     let gradesWrap = '';
                     if (dayItems.length > 0) {
