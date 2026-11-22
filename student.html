@@ -2189,7 +2189,7 @@ function renderGradesList(records) {
                 DB.getAll('workloads').catch(() => []),
                 DB.getAll('journals').catch(() => []),
                 DB.getAll('schedule').catch(() => []),
-                DB.getAll('schedules').catch(() => []),
+                DB.getAll('class_schedules').catch(() => []),
                 DB.getAll('lessons').catch(() => []),
                 DB.getAll('timetable').catch(() => []),
                 DB.getAll('classes').catch(() => [])
@@ -2221,7 +2221,7 @@ function renderGradesList(records) {
                 if (tName) teacherNames.add(tName);
             };
 
-            [workloads, journals, schedule, schedules, lessons, timetable].forEach(arr => {
+            [workloads, journals, schedule, class_schedules, lessons, timetable].forEach(arr => {
                 if (Array.isArray(arr)) arr.forEach(collectTeacherFromRow);
             });
 
