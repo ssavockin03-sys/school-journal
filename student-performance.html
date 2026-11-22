@@ -881,24 +881,14 @@
         </div>`;
         container.innerHTML = html;
 
-        const gridEl = document.getElementById('weekGrid');
         const leftBtn = document.getElementById('scrollLeftBtn');
         const rightBtn = document.getElementById('scrollRightBtn');
 
-        const checkScroll = () => {
-            if (gridEl.scrollWidth <= gridEl.clientWidth) {
-                leftBtn.style.display = 'none';
-                rightBtn.style.display = 'none';
-            } else {
-                leftBtn.style.display = 'flex';
-                rightBtn.style.display = 'flex';
-            }
-        };
-        checkScroll();
-        window.addEventListener('resize', checkScroll);
+        leftBtn.style.display = 'flex';
+        rightBtn.style.display = 'flex';
+        leftBtn.addEventListener('click', () => { CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, -7); renderDiary(); });
+        rightBtn.addEventListener('click', () => { CURRENT_WEEK_START = addDays(CURRENT_WEEK_START, 7); renderDiary(); });
 
-        leftBtn.addEventListener('click', () => { gridEl.scrollBy({ left: -250, behavior: 'smooth' }); });
-        rightBtn.addEventListener('click', () => { gridEl.scrollBy({ left: 250, behavior: 'smooth' }); });
     }
 
     function renderWarnings() {
