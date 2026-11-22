@@ -1514,9 +1514,11 @@
                 displayGrades.forEach(item => {
                     const cls = gradeClass(item.val);
                     if (item.kind === 'presence') {
-                        html += `<span class="dnevnik-grade-tile-table ${cls}" style="cursor:default;transform:none;">${escapeHtml(item.val)}</span>`;
+                        const presFull = getPresenceFullName(item.val);
+                        html += `<span class="dnevnik-grade-tile-table ${cls}" data-work-type="${escapeHtml(presFull)}" style="cursor:default;transform:none;">${escapeHtml(item.val)}</span>`;
                         return;
                     }
+
                  const rawType = (journal && journal.lesson_types && journal.lesson_types[item.key]) || DEFAULT_LESSON_TYPE;
                  const workTypeFull = getLessonTypeFullName(rawType);
                  const safeSubj = escapeHtml(subjectName).replace(/'/g, "\\'");
