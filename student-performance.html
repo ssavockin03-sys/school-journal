@@ -1201,7 +1201,7 @@
                 const headerBg = isWeekend ? 'background-color:#c4d0e0;' : (isToday ? 'background-color:#2f80ed;' : '');
                 const todayTag = isToday ? ', сегодня' : '';
 
-                html += `<div class="day-column ${isWeekend ? 'weekend' : ''} ${isToday ? 'today' : ''}" ${isCenter ? 'id="centerDayColumn"' : ''}>
+                html += `<div class="day-column ${isWeekend ? 'weekend' : ''} ${isToday ? 'today' : ''}" data-date="${isoDate(date)}" ${isCenter ? 'id="centerDayColumn"' : ''}>
                     <div class="day-header" style="${headerBg}">${DAYS_RU[dayKey].toUpperCase()}, ${formatDateShort(date)}${todayTag}</div>
                     <div class="day-body">${lessonsHtml}</div>
                 </div>`;
