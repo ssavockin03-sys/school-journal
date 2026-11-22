@@ -887,16 +887,25 @@
                     const roomStr = roomName ? `, ${roomName} каб.` : '';
                     const metaText = `${timeStr}${roomStr}`.replace(/^,\s*/, '');
 
-                    const key = isoDate(date) + '_' + n;
-                    let topic = '', homework = '';
-                    const subjObj = ALL_SUBJECTS.find(s => s.name === lesson.subject);
-                    if (subjObj) {
-                        const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id);
-                        if (journal && journal.lessons && journal.lessons[key]) {
-                            topic = journal.lessons[key].t || '';
-                            homework = journal.lessons[key].h || '';
+                    const dateStr = isoDate(date);
+                    const key = dateStr + '_' + n;
+                    let homework = '';
+                    const subjObj = ALL_SUBJECTS.find(s => String(s.name || '').trim().toLowerCase() === String(lesson.subject || '').trim().toLowerCase());
+                    const journal = subjObj
+                        ? ALL_JOURNALS.find(j => String(j.subject_id) === String(subjObj.id))
+                        : ALL_JOURNALS.find(j => String(j.subject_name || j.subject || '').trim().toLowerCase() === String(lesson.subject || '').trim().toLowerCase());
+
+                    if (journal) {
+                        const lData = (journal.lessons && (journal.lessons[key] || journal.lessons[dateStr])) || null;
+                        if (lData) {
+                            homework = lData.h || lData.hw || lData.homework || '';
+                        }
+                        if (!homework && journal.homework) {
+                            const hwVal = journal.homework[key] || journal.homework[dateStr];
+                            homework = typeof hwVal === 'string' ? hwVal : (hwVal && (hwVal.text || hwVal.h || hwVal.hw) || '');
                         }
                     }
+
 
                     const gradeRec = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'grade');
                     const presRec  = all.find(g => g.subject === lesson.subject && g.key === key && g.kind === 'presence');
