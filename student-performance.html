@@ -1182,6 +1182,17 @@
             pop.classList.remove('open');
         }
     });
+    function getPresenceFullName(code) {
+        const key = String(code || '').trim().toUpperCase();
+        const map = {
+            'Н': 'Неявка',
+            'Б': 'Болеет',
+            'О': 'Опоздание',
+            'СП': 'Свободное посещение',
+            'П': 'Пропуск'
+        };
+        return map[key] || key;
+    }
 
     function renderDiary(smoothStart = false) {
         const container = document.getElementById('diaryContent');
