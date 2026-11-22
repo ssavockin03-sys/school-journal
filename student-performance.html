@@ -659,7 +659,7 @@
             ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
 
             CURRENT_WEEK_START = getMondayOfCurrentWeek();
-            document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
+            document.getElementById('userName').textContent = formatShortFio(student.full_name);
             document.getElementById('studentName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
 
             const semLabel = PERIOD_SYSTEM === 'Семестры' ? 'По семестрам' : 
