@@ -1222,17 +1222,26 @@
         const leftBtn = document.getElementById('scrollLeftBtn');
         const rightBtn = document.getElementById('scrollRightBtn');
 
-        if (gridEl && centerEl) {
-            gridEl.style.scrollBehavior = 'auto';
-            requestAnimationFrame(() => {
-                const zoomFactor = parseFloat(getComputedStyle(document.querySelector('.content-wrap')).zoom) || 1;
-                const gridRect = gridEl.getBoundingClientRect();
-                const centerRect = centerEl.getBoundingClientRect();
-                const delta = ((centerRect.left + centerRect.width / 2) - (gridRect.left + gridRect.width / 2)) / zoomFactor;
-                gridEl.scrollLeft = Math.max(0, gridEl.scrollLeft + delta);
-                requestAnimationFrame(() => { gridEl.style.scrollBehavior = 'smooth'; });
-            });
-        }
+     if (gridEl && centerEl) {
+         gridEl.style.scrollBehavior = 'auto';
+         requestAnimationFrame(() => {
+             const zoomFactor = parseFloat(getComputedStyle(document.querySelector('.content-wrap')).zoom) || 1;
+             const gridRect = gridEl.getBoundingClientRect();
+             const centerRect = centerEl.getBoundingClientRect();
+             const delta = ((centerRect.left + centerRect.width / 2) - (gridRect.left + gridRect.width / 2)) / zoomFactor;
+             const targetX = Math.max(0, gridEl.scrollLeft + delta);
+             if (smoothStart) {
+                 gridEl.scrollLeft = Math.max(0, targetX - 350);
+                 requestAnimationFrame(() => {
+                     gridEl.scrollTo({ left: targetX, behavior: 'smooth' });
+                 });
+             } else {
+                 gridEl.scrollLeft = targetX;
+                 requestAnimationFrame(() => { gridEl.style.scrollBehavior = 'smooth'; });
+             }
+         });
+     }
+
 
 
         leftBtn.style.display = 'flex';
