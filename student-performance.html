@@ -798,7 +798,7 @@
             PERIOD_SYSTEM = pd ? (pd.system || '') : '';
             ACTIVE_PERIOD_INDEX = findActivePeriodIndex();
 
-            CURRENT_WEEK_START = getMondayOfCurrentWeek();
+            CURRENT_WEEK_START = new Date(); CURRENT_WEEK_START.setHours(0, 0, 0, 0);
             document.getElementById('userName').textContent = formatShortFio(student.full_name);
             document.getElementById('studentName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
 
