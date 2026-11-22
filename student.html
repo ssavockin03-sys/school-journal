@@ -823,10 +823,23 @@ const MONTHS_UPPER = [
     'ИЮЛЯ', 'АВГУСТА', 'СЕНТЯБРЯ', 'ОКТЯБРЯ', 'НОЯБРЯ', 'ДЕКАБРЯ'
 ];
 
+const KHABAROVSK_TZ = 'Asia/Vladivostok';
+
 function formatPostedDate(g) {
     const raw = (typeof g.gradedAt === 'number') ? new Date(g.gradedAt) : (g.date instanceof Date ? g.date : null);
     if (!raw || isNaN(raw.getTime())) return '';
-    return `${raw.getDate()} ${MONTHS_UPPER[raw.getMonth()]}`;
+
+    const parts = new Intl.DateTimeFormat('ru-RU', {
+        timeZone: KHABAROVSK_TZ,
+        day: 'numeric',
+        month: 'numeric'
+    }).formatToParts(raw);
+
+    const day = parts.find(p => p.type === 'day')?.value;
+    const monthIndex = Number(parts.find(p => p.type === 'month')?.value) - 1;
+    if (!day || monthIndex < 0 || monthIndex > 11) return '';
+
+    return `${day} ${MONTHS_UPPER[monthIndex]}`;
 }
 
 function renderGradesList(records) {
