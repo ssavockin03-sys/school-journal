@@ -670,12 +670,32 @@
         <div class="header-top">
             <a href="#" class="logo">Дневник<span>.ру</span></a>
             <div class="user-zone">
-                <div class="user-info">
-                    <span class="user-name" id="userName">&nbsp;</span>
-                    <span class="user-role">Ученик</span>
+                <div class="user-profile-box" id="topUserProfileBox" onclick="toggleTopUserMenu(event)">
+                    <div class="user-profile-box__avatar" id="topUserAvatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9.5"></circle>
+                            <circle cx="9" cy="9.5" r="0.9" fill="currentColor" stroke="none"></circle>
+                            <circle cx="15" cy="9.5" r="0.9" fill="currentColor" stroke="none"></circle>
+                            <path d="M8.5 14.2c.9 1.4 2.1 2.1 3.5 2.1s2.6-.7 3.5-2.1"></path>
+                        </svg>
+                    </div>
+                    <div class="user-profile-box__info">
+                        <div class="user-profile-box__row">
+                            <span class="user-name" id="userName">&nbsp;</span>
+                            <span class="user-profile-box__caret"></span>
+                        </div>
+                        <span class="user-profile-box__category">Ученик</span>
+                    </div>
+
+                    <div class="top-profile-menu" onclick="event.stopPropagation()">
+                        <a href="#" onclick="event.preventDefault(); closeTopUserMenu(); showToast('Мой профиль — в разработке')">Мой профиль</a>
+                        <a href="#" onclick="event.preventDefault(); closeTopUserMenu(); showToast('Настройки — в разработке')">Настройки</a>
+                        <a href="#" onclick="event.preventDefault(); logout()">Выход</a>
+                    </div>
                 </div>
+
                 <div class="user-actions">
-                    <a href="#" onclick="return false">Помощь</a>
+                    <a href="#" onclick="event.preventDefault(); showToast('Помощь — в разработке')">Помощь</a>
                     <a href="#" class="logout" onclick="logout()">Выход</a>
                 </div>
             </div>
