@@ -597,6 +597,17 @@
         .ld-teacher-name { font-size: 14px; font-weight: 600; color: #0f172a; }
 
         /* Кнопка "Открыть чат" в оповещении (оригинал Дневник.ру) */
+                .news-alert-card {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        .news-alert-content {
+            flex: 0 0 calc(100% - 46px);
+            max-width: calc(100% - 46px);
+            min-width: 0;
+        }
+
         .news-alert-chat-btn {
             display: inline-flex;
             align-items: center;
