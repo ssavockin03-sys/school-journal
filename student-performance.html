@@ -954,6 +954,89 @@
             content.style.zoom = (DIARY_ZOOM / 100) * 1.1;
         }
     }
+    const MONTHS_NOM = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+    let CAL_VIEW_YEAR = new Date().getFullYear();
+    let CAL_VIEW_MONTH = new Date().getMonth();
+
+    function toggleDiaryCalendar(e) {
+        if (e) e.stopPropagation();
+        const pop = document.getElementById('diaryCalendarPopover');
+        if (!pop) return;
+        const willOpen = !pop.classList.contains('open');
+        if (willOpen) {
+            const base = CURRENT_WEEK_START ? new Date(CURRENT_WEEK_START) : new Date();
+            CAL_VIEW_YEAR = base.getFullYear();
+            CAL_VIEW_MONTH = base.getMonth();
+            renderDiaryCalendarPopover();
+            pop.classList.add('open');
+        } else {
+            pop.classList.remove('open');
+        }
+    }
+
+    function shiftDiaryCalendarMonth(delta) {
+        CAL_VIEW_MONTH += delta;
+        if (CAL_VIEW_MONTH < 0) { CAL_VIEW_MONTH = 11; CAL_VIEW_YEAR--; }
+        if (CAL_VIEW_MONTH > 11) { CAL_VIEW_MONTH = 0; CAL_VIEW_YEAR++; }
+        renderDiaryCalendarPopover();
+    }
+
+    function selectDiaryCalendarDate(year, month, day) {
+        const picked = new Date(year, month, day);
+        picked.setHours(0, 0, 0, 0);
+        CURRENT_WEEK_START = picked;
+        const pop = document.getElementById('diaryCalendarPopover');
+        if (pop) pop.classList.remove('open');
+        renderDiary();
+    }
+
+    function renderDiaryCalendarPopover() {
+        const pop = document.getElementById('diaryCalendarPopover');
+        if (!pop) return;
+
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const selected = CURRENT_WEEK_START ? new Date(CURRENT_WEEK_START) : today;
+        selected.setHours(0, 0, 0, 0);
+
+        const firstDay = new Date(CAL_VIEW_YEAR, CAL_VIEW_MONTH, 1);
+        const startOffset = (firstDay.getDay() + 6) % 7; // Пн = 0 ... Вс = 6
+        const daysInMonth = new Date(CAL_VIEW_YEAR, CAL_VIEW_MONTH + 1, 0).getDate();
+
+        let daysHtml = '';
+        for (let i = 0; i < startOffset; i++) {
+            daysHtml += `<span class="cal-pop-day empty"></span>`;
+        }
+        for (let d = 1; d <= daysInMonth; d++) {
+            const cellDate = new Date(CAL_VIEW_YEAR, CAL_VIEW_MONTH, d);
+            cellDate.setHours(0, 0, 0, 0);
+            const isSel = cellDate.getTime() === selected.getTime();
+            const isTod = cellDate.getTime() === today.getTime();
+            const cls = 'cal-pop-day' + (isSel ? ' is-selected' : '') + (isTod ? ' is-today' : '');
+            daysHtml += `<button type="button" class="${cls}" onclick="selectDiaryCalendarDate(${CAL_VIEW_YEAR}, ${CAL_VIEW_MONTH}, ${d})">${d}</button>`;
+        }
+
+        pop.innerHTML = `
+            <div class="cal-pop-header">
+                <div class="cal-pop-title">${MONTHS_NOM[CAL_VIEW_MONTH]} ${CAL_VIEW_YEAR}</div>
+                <div class="cal-pop-nav">
+                    <button type="button" onclick="shiftDiaryCalendarMonth(-1)">‹</button>
+                    <button type="button" onclick="shiftDiaryCalendarMonth(1)">›</button>
+                </div>
+            </div>
+            <div class="cal-pop-weekdays">
+                <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+            </div>
+            <div class="cal-pop-days">${daysHtml}</div>
+        `;
+    }
+
+    document.addEventListener('click', function(e) {
+        const wrap = document.getElementById('diaryCalendarWrap');
+        const pop = document.getElementById('diaryCalendarPopover');
+        if (wrap && pop && !wrap.contains(e.target)) {
+            pop.classList.remove('open');
+        }
+    });
 
     function renderDiary() {
         const container = document.getElementById('diaryContent');
