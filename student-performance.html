@@ -246,8 +246,26 @@
         .day-body { padding: 8px 12px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
         .lesson-card { display: flex; flex-direction: column; border-bottom: 1px solid #f0f3f7; padding-bottom: 8px; position: relative; padding-right: 26px; }
         .lesson-card:last-child { border-bottom: none; }
-        .lesson-title { font-size: 12px; font-weight: 400; color: #0f3159; line-height: 18px; margin-bottom: 2px; }
-        .lesson-title b { font-weight: 600; color: #0f3159; margin-right: 3px; }
+        .lesson-title {
+            display: flex;
+            align-items: center;
+            font-family: "Open Sans", Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0f3159;
+            line-height: 18px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .lesson-title b {
+            font-weight: 600;
+            color: #0f3159;
+            margin-right: 4px;
+            flex-shrink: 0;
+        }
+
         .lesson-meta { font-size: 11px; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase; }
         .lesson-hw { font-size: 12px; color: #334155; background: #f4f7fb; padding: 6px 8px; border-radius: 6px; margin-top: 4px; margin-right: -26px; display: flex; align-items: flex-start; gap: 6px; line-height: 1.35; }
         .lesson-hw input { margin-top: 2px; cursor: pointer; accent-color: #2f80ed; }
