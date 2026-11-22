@@ -1250,9 +1250,15 @@
                 if (isWeekend) {
                     lessonsHtml = `<div class="weekend-text">Выходной день</div>`;
                 } else {
+                    const subjectOccurrenceCounter = {};
+
                     for (let n = 1; n <= maxLesson; n++) {
                         const lesson = dayGrid[n] || dayGrid[String(n)];
                         if (!lesson || !lesson.subject) continue;
+
+                        const subjLower = String(lesson.subject || '').trim().toLowerCase();
+                        const occurrenceIdx = subjectOccurrenceCounter[subjLower] || 0;
+                        subjectOccurrenceCounter[subjLower] = occurrenceIdx + 1;
 
                         let roomName = lesson.roomName || '';
                         if (!roomName && lesson.roomId) {
@@ -1267,10 +1273,35 @@
                         const dateStr = isoDate(date);
                         const key = dateStr + '_' + n;
                         let homework = '';
-                        const subjObj = ALL_SUBJECTS.find(s => String(s.name || '').trim().toLowerCase() === String(lesson.subject || '').trim().toLowerCase());
+                        const subjObj = ALL_SUBJECTS.find(s => String(s.name || '').trim().toLowerCase() === subjLower);
                         const journal = subjObj
                             ? ALL_JOURNALS.find(j => String(j.subject_id) === String(subjObj.id))
-                            : ALL_JOURNALS.find(j => String(j.subject_name || j.subject || '').trim().toLowerCase() === String(lesson.subject || '').trim().toLowerCase());
+                            : ALL_JOURNALS.find(j => String(j.subject_name || j.subject || '').trim().toLowerCase() === subjLower);
+
+                        const dateKeysSet = new Set();
+                        if (journal) {
+                            [journal.lessons, journal.homework, journal.lesson_types].forEach(obj => {
+                                if (!obj) return;
+                                Object.keys(obj).forEach(k => {
+                                    if (String(k).startsWith(dateStr)) dateKeysSet.add(k);
+                                });
+                            });
+                            if (journal.grades && journal.grades[CURRENT_STUDENT.id]) {
+                                Object.keys(journal.grades[CURRENT_STUDENT.id]).forEach(k => {
+                                    if (String(k).startsWith(dateStr)) dateKeysSet.add(k);
+                                });
+                            }
+                        }
+                        const sortedDateKeys = Array.from(dateKeysSet).sort((a, b) => {
+                            const numA = parseInt(String(a).split('_')[1], 10);
+                            const numB = parseInt(String(b).split('_')[1], 10);
+                            if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                            return String(a).localeCompare(String(b));
+                        });
+
+                        const matchedJournalKey = sortedDateKeys.includes(key)
+                            ? key
+                            : (sortedDateKeys[occurrenceIdx] || null);
 
                         if (journal) {
                             const extractHwText = (val) => {
@@ -1281,29 +1312,21 @@
                             };
 
                             if (journal.lessons) {
-                                const exactLesson = journal.lessons[key] || journal.lessons[dateStr];
-                                homework = extractHwText(exactLesson);
-                                if (!homework) {
-                                    const byDateKey = Object.keys(journal.lessons).find(k => String(k).startsWith(dateStr));
-                                    if (byDateKey) homework = extractHwText(journal.lessons[byDateKey]);
-                                }
+                                const targetLessonObj = matchedJournalKey ? journal.lessons[matchedJournalKey] : (occurrenceIdx === 0 ? journal.lessons[dateStr] : null);
+                                homework = extractHwText(targetLessonObj);
                             }
 
                             if (!homework && journal.homework) {
-                                const exactHw = journal.homework[key] || journal.homework[dateStr];
-                                homework = extractHwText(exactHw);
-                                if (!homework) {
-                                    const byDateKey = Object.keys(journal.homework).find(k => String(k).startsWith(dateStr));
-                                    if (byDateKey) homework = extractHwText(journal.homework[byDateKey]);
-                                }
+                                const targetHwObj = matchedJournalKey ? journal.homework[matchedJournalKey] : (occurrenceIdx === 0 ? journal.homework[dateStr] : null);
+                                homework = extractHwText(targetHwObj);
                             }
                         }
 
-                        const subjLower = String(lesson.subject || '').trim().toLowerCase();
-                        const dayItems = all.filter(g =>
-                            String(g.subject || '').trim().toLowerCase() === subjLower &&
-                            (g.key === key || String(g.key || '').startsWith(dateStr))
-                        ).sort((a, b) => {
+                        const dayItems = all.filter(g => {
+                            if (String(g.subject || '').trim().toLowerCase() !== subjLower) return false;
+                            if (matchedJournalKey) return g.key === matchedJournalKey;
+                            return occurrenceIdx === 0 && g.key === dateStr;
+                        }).sort((a, b) => {
                             const orderA = a.kind === 'presence' ? 0 : 1;
                             const orderB = b.kind === 'presence' ? 0 : 1;
                             return orderA - orderB;
@@ -1317,16 +1340,13 @@
                                     const presFull = getPresenceFullName(val);
                                     return `<span class="dnevnik-grade-tile ${gradeClass(val)}" data-work-type="${escapeHtml(presFull)}" style="cursor:default;">${escapeHtml(val)}</span>`;
                                 }
-
-                             const rawType = (journal && journal.lesson_types && journal.lesson_types[item.key]) || DEFAULT_LESSON_TYPE;
-                             const workTypeFull = getLessonTypeFullName(rawType);
-                             const safeSubj = escapeHtml(lesson.subject).replace(/'/g, "\\'");
-                             const safeVal = escapeHtml(val).replace(/'/g, "\\'");
-                             const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
-                             return `<span class="dnevnik-grade-tile ${gradeClass(val)}" data-work-type="${escapeHtml(workTypeFull)}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${escapeHtml(val)}</span>`;
-                         }).join('');
-
-
+                                const rawType = (journal && journal.lesson_types && journal.lesson_types[item.key]) || DEFAULT_LESSON_TYPE;
+                                const workTypeFull = getLessonTypeFullName(rawType);
+                                const safeSubj = escapeHtml(lesson.subject).replace(/'/g, "\\'");
+                                const safeVal = escapeHtml(val).replace(/'/g, "\\'");
+                                const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
+                                return `<span class="dnevnik-grade-tile ${gradeClass(val)}" data-work-type="${escapeHtml(workTypeFull)}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${escapeHtml(val)}</span>`;
+                            }).join('');
                             gradesWrap = `<div class="lesson-grades-wrap">${tilesHtml}</div>`;
                         }
 
@@ -1342,6 +1362,7 @@
                             ${hwHtml}
                         </div>`;
                     }
+
                 }
 
                 const headerBg = isWeekend ? 'background-color:#c4d0e0;' : (isToday ? 'background-color:#2f80ed;' : '');
