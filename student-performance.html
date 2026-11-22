@@ -918,10 +918,9 @@
 
                     let hwHtml = '';
                     if (homework) {
-                        hwHtml = `<div class="lesson-hw"><input type="checkbox"> <span>${homework}</span></div>`;
-                    } else if (topic) {
-                        hwHtml = `<div class="lesson-hw"><input type="checkbox"> <span>${topic}</span></div>`;
+                        hwHtml = `<div class="lesson-hw"><input type="checkbox"> <span>${escapeHtml(homework)}</span></div>`;
                     }
+
 
                     lessonsHtml += `<div class="lesson-card">
                         ${gradesWrap}
