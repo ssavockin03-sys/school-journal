@@ -1205,16 +1205,19 @@
 
                         let gradesWrap = '';
                         if (dayItems.length > 0) {
-                            const tilesHtml = dayItems.map(item => {
-                                const val = item.kind === 'presence' ? item.presence : item.grade;
-                                if (item.kind === 'presence') {
-                                    return `<span class="dnevnik-grade-tile ${gradeClass(val)}" style="cursor:default;">${escapeHtml(val)}</span>`;
-                                }
-                                const safeSubj = escapeHtml(lesson.subject).replace(/'/g, "\\'");
-                                const safeVal = escapeHtml(val).replace(/'/g, "\\'");
-                                const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
-                                return `<span class="dnevnik-grade-tile ${gradeClass(val)}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${escapeHtml(val)}</span>`;
-                            }).join('');
+                         const tilesHtml = dayItems.map(item => {
+                             const val = item.kind === 'presence' ? item.presence : item.grade;
+                             if (item.kind === 'presence') {
+                                 return `<span class="dnevnik-grade-tile ${gradeClass(val)}" style="cursor:default;">${escapeHtml(val)}</span>`;
+                             }
+                             const rawType = (journal && journal.lesson_types && journal.lesson_types[item.key]) || DEFAULT_LESSON_TYPE;
+                             const workTypeFull = getLessonTypeFullName(rawType);
+                             const safeSubj = escapeHtml(lesson.subject).replace(/'/g, "\\'");
+                             const safeVal = escapeHtml(val).replace(/'/g, "\\'");
+                             const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
+                             return `<span class="dnevnik-grade-tile ${gradeClass(val)}" data-work-type="${escapeHtml(workTypeFull)}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${escapeHtml(val)}</span>`;
+                         }).join('');
+
 
                             gradesWrap = `<div class="lesson-grades-wrap">${tilesHtml}</div>`;
                         }
