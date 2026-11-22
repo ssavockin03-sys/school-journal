@@ -1053,7 +1053,7 @@
         }
     });
 
-    function renderDiary() {
+    function renderDiary(smoothStart = false) {
         const container = document.getElementById('diaryContent');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
 
