@@ -194,7 +194,98 @@
         .zoom-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #0f3159; user-select: none; }
         .zoom-btn { width: 20px; height: 20px; border-radius: 50%; border: 1px solid #dce3ec; background: #fff; color: #94a3b8; font-size: 14px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
         .zoom-btn:hover { border-color: #2f80ed; color: #2f80ed; }
-        .calendar-icon-btn { background: none; border: none; color: #2f80ed; cursor: pointer; display: inline-flex; align-items: center; padding: 4px; }
+        .toolbar-right-tools { position: relative; display: flex; align-items: center; gap: 12px; color: #2f80ed; }
+        .calendar-icon-btn { background: none; border: none; color: #2f80ed; cursor: pointer; display: inline-flex; align-items: center; padding: 4px; border-radius: 6px; }
+        .calendar-icon-btn:hover { background: #eff6ff; }
+
+        /* Выпадающий календарь (1-в-1 со скриншотом) */
+        .diary-calendar-popover {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 310px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(15, 49, 89, 0.16);
+            border: 1px solid #e6ecf5;
+            padding: 18px 18px 16px;
+            z-index: 300;
+            color: #0f3159;
+            font-family: "Open Sans", Arial, sans-serif;
+            user-select: none;
+        }
+        .diary-calendar-popover.open { display: block; }
+        .cal-pop-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+        .cal-pop-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f3159;
+        }
+        .cal-pop-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cal-pop-nav button {
+            background: none;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            color: #0f3159;
+            font-size: 18px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cal-pop-nav button:hover { background: #f1f5f9; color: #2f80ed; }
+        .cal-pop-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f3159;
+            margin-bottom: 10px;
+        }
+        .cal-pop-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            row-gap: 4px;
+            text-align: center;
+        }
+        .cal-pop-day {
+            width: 34px;
+            height: 34px;
+            margin: 0 auto;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 400;
+            color: #0f3159;
+            cursor: pointer;
+            border: 1px solid transparent;
+            background: transparent;
+        }
+        .cal-pop-day:hover { background: #eff6ff; color: #2f80ed; }
+        .cal-pop-day.is-today { border-color: #2f80ed; font-weight: 600; }
+        .cal-pop-day.is-selected {
+            background: #2f80ed;
+            color: #fff;
+            font-weight: 600;
+        }
+        .cal-pop-day.empty { cursor: default; pointer-events: none; }
+
 
         .view-pane { display: none; }
         .view-pane.active { display: block; }
