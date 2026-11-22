@@ -144,6 +144,100 @@
         .grade-subject { color: #000; font-size: 14px; font-weight: 600; line-height: 18px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
         .grade-type { color: #929292; font-size: 13px; letter-spacing: -.22px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .grade-posted-date { color: #929292; font-size: 13px; letter-spacing: -.22px; line-height: 16px; height: 16px; text-align: left; text-transform: uppercase; white-space: nowrap; margin-bottom: 4px; user-select: none; }
+/* Выпадающая карточка профиля ученика */
+.profile-dropdown-wrap {
+    position: relative;
+}
+.profile-dropdown-card {
+    display: none;
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    background: #fff;
+    border: 1px solid #e2e6ea;
+    border-radius: 6px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    z-index: 200;
+    overflow: hidden;
+}
+.profile-dropdown-card.open {
+    display: block;
+}
+.profile-dd-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    cursor: pointer;
+}
+.profile-dd-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #c5d3de;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.profile-dd-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.profile-dd-info {
+    flex: 1;
+    min-width: 0;
+}
+.profile-dd-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: #222;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.profile-dd-class {
+    font-size: 13px;
+    color: #8c96a0;
+    margin-top: 2px;
+}
+.profile-dd-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px 13px 78px; /* 16px + 48px аватар + 14px отступ = ровно под текстом имени */
+    border-top: 1px solid #eceff2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.profile-dd-item:hover {
+    background: #f7f9fb;
+}
+.profile-dd-title {
+    font-size: 15px;
+    color: #1c7cd6;
+}
+.profile-dd-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #8c96a0;
+}
+.profile-dd-chevron {
+    color: #1c7cd6;
+    display: flex;
+    align-items: center;
+}
+        
         .grade-fresh { display: inline-block; margin-top: 2px; padding: 0 6px; height: 14px; line-height: 14px; border-radius: 7px; background: #e3f2fd; color: #166a94; font-size: 10px; font-weight: 700; white-space: nowrap; }
         
 .scroll-arrow-btn {
@@ -524,14 +618,45 @@
 
     <div class="main-layout-wrapper">
         <div class="left-panel">
-            <div class="profile-card" onclick="showToast('Профиль ученика — в разработке')">
-                <div class="profile-avatar" id="profileAvatar">И</div>
-                <div class="profile-info">
-                    <div class="profile-name" id="profileName">Иван Иванов</div>
-                    <div class="profile-class" id="profileClass">11-А класс</div>
-                </div>
-                <div class="profile-arrow">⌄</div>
+<div class="profile-dropdown-wrap" id="profileDropdownWrap">
+    <div class="profile-card" onclick="toggleProfileDropdown(event)">
+        <div class="profile-avatar" id="profileAvatar">И</div>
+        <div class="profile-info">
+            <div class="profile-name" id="profileName">Иван Иванов</div>
+            <div class="profile-class" id="profileClass">11-А класс</div>
+        </div>
+        <div class="profile-arrow">⌄</div>
+    </div>
+
+    <div class="profile-dropdown-card" id="profileDropdownCard">
+        <div class="profile-dd-header" onclick="toggleProfileDropdown(event)">
+            <div class="profile-dd-avatar" id="profileDdAvatar">И</div>
+            <div class="profile-dd-info">
+                <div class="profile-dd-name" id="profileDdName">Иван Иванов</div>
+                <div class="profile-dd-class" id="profileDdClass">11-А</div>
             </div>
+        </div>
+
+        <a href="#" class="profile-dd-item" onclick="event.preventDefault(); closeProfileDropdown(); showToast('Страница школы — в разработке')">
+            <span class="profile-dd-title">Страница школы</span>
+            <span class="profile-dd-right">
+                <span class="profile-dd-chevron">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </span>
+            </span>
+        </a>
+
+        <a href="student-group.html" class="profile-dd-item">
+            <span class="profile-dd-title">Страница класса</span>
+            <span class="profile-dd-right">
+                <span id="profileDdClassRight">11-А</span>
+                <span class="profile-dd-chevron">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </span>
+            </span>
+        </a>
+    </div>
+</div>
 
             <div class="grades-section" id="gradesSection"></div>
             <div class="mini-cards-section" id="miniCardsSection"></div>
