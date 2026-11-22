@@ -267,8 +267,35 @@
         }
 
         .lesson-meta { font-size: 11px; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase; }
-        .lesson-hw { font-size: 12px; color: #334155; background: #f4f7fb; padding: 6px 8px; border-radius: 6px; margin-top: 4px; margin-right: -26px; display: flex; align-items: flex-start; gap: 6px; line-height: 1.35; }
-        .lesson-hw input { margin-top: 2px; cursor: pointer; accent-color: #2f80ed; }
+        .lesson-hw {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 6px;
+            background: #eff6ff;
+            border-radius: 8px;
+            padding: 4px;
+            font-family: "Open Sans", Arial, sans-serif;
+            font-size: 12px;
+            color: #0f3159;
+            line-height: 1.35;
+            margin-top: 4px;
+            margin-right: -26px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .lesson-hw input[type="checkbox"] {
+            margin: 2px 0 0 2px;
+            cursor: pointer;
+            accent-color: #2f80ed;
+            flex-shrink: 0;
+        }
+        .lesson-hw span {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+        }
+
 
         /* Плитки оценок в дневнике (22x22px) */
         .dnevnik-grade-tile {
