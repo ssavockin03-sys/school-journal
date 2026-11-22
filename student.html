@@ -2459,7 +2459,68 @@ function renderGradesList(records) {
             }, 5000);
         }
 
+        window.openTeacherChatBySubject = async function(subjectName) {
+            if (!contactsLoaded) await loadContacts();
+            const myClassId = getMyClassId();
+            const normSubj = String(subjectName || '').trim().toLowerCase();
+
+            let targetTeacherId = null;
+
+            if (normSubj && myClassId) {
+                const [workloads, journals, schedule, subjects] = await Promise.all([
+                    DB.getAll('workloads').catch(() => []),
+                    DB.getAll('journals').catch(() => []),
+                    DB.getAll('schedule').catch(() => []),
+                    DB.getAll('subjects').catch(() => [])
+                ]);
+
+                const subjIds = new Set(
+                    subjects
+                        .filter(s => String(s.name || s.title || '').trim().toLowerCase() === normSubj)
+                        .map(s => String(s.id))
+                );
+
+                const matchesSubjectAndClass = (row) => {
+                    if (!row) return false;
+                    const sameClass = (row.class_id != null && String(row.class_id) === String(myClassId)) ||
+                                      (row.classId != null && String(row.classId) === String(myClassId)) ||
+                                      (row.group_id != null && String(row.group_id) === String(myClassId));
+                    if (!sameClass) return false;
+
+                    const rowSubjName = String(row.subject_name || row.subject || '').trim().toLowerCase();
+                    if (rowSubjName && rowSubjName === normSubj) return true;
+                    if (row.subject_id != null && subjIds.has(String(row.subject_id))) return true;
+                    if (row.subjectId != null && subjIds.has(String(row.subjectId))) return true;
+                    return false;
+                };
+
+                const foundRow = workloads.find(matchesSubjectAndClass) ||
+                                 journals.find(matchesSubjectAndClass) ||
+                                 schedule.find(matchesSubjectAndClass);
+
+                if (foundRow) {
+                    targetTeacherId = foundRow.teacher_id != null ? String(foundRow.teacher_id) :
+                                      (foundRow.teacherId != null ? String(foundRow.teacherId) : null);
+                }
+            }
+
+            panelOpen = true;
+            document.getElementById('chatPanel').classList.add('show');
+
+            const teacherContact = (targetTeacherId && contacts.find(c => c.role === 'teacher' && String(c.id) === targetTeacherId)) ||
+                                   contacts.find(c => c.role === 'teacher');
+
+            if (teacherContact) {
+                await openChat(teacherContact.id);
+            } else {
+                activeContact = null;
+                renderContactsList();
+            }
+            refreshUnread();
+        };
+
         async function initChat() {
+
             renderContactsList();
             const myId = getMyId();
             if (!myId) { setTimeout(initChat, 500); return; }
