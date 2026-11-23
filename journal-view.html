@@ -2442,8 +2442,9 @@ async function upg(studentId, gradeKey, inputElement) {
         if (!up) {
             delete JOURNAL.gradeTimestamps[studentId][gradeKey];
         } else {
-            JOURNAL.gradeTimestamps[studentId][gradeKey] = = await getSafeNow();
+            JOURNAL.gradeTimestamps[studentId][gradeKey] = getSafeNow();
         }
+
 
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
