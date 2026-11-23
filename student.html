@@ -1696,35 +1696,34 @@ function renderGradesList(records) {
             ? `<div class="ld-topic">ТЕМА: ${escapeHtml(lesson.topic)}</div>`
             : '';
 
-        // Отметки / пропуск
+        // Отметки / пропуск (все работы за урок)
         let marksHtml = '<div class="ld-empty-text">Пока нет отметок</div>';
-        if (lesson.grade || lesson.presence) {
-            const parts = [];
-            if (lesson.grade) {
-                const cls = gradeClass(lesson.grade);
-                const typeTitle = getLessonTypeFullName(lesson.type || DEFAULT_LESSON_TYPE);
-                parts.push(`
-                    <div class="ld-grade-row">
-                        <div class="ld-grade-box ${cls}">${escapeHtml(lesson.grade)}</div>
+        if (lesson.marks && lesson.marks.length > 0) {
+            const presMap = { 'Н': 'Пропуск по неуваж. причине', 'Б': 'Пропуск по болезни', 'СП': 'Свободное посещение', 'О': 'Опоздание', 'П': 'Пропуск по уваж. причине' };
+            const parts = lesson.marks.map((m, idx) => {
+                const topMargin = idx > 0 ? 'margin-top:10px;' : '';
+                if (m.kind === 'presence') {
+                    const presLabel = presMap[m.presence] || `Отметка: ${m.presence}`;
+                    return `
+                        <div class="ld-grade-row" style="cursor:default; ${topMargin}">
+                            <div class="ld-grade-box gn">${escapeHtml(m.presence)}</div>
+                            <div class="ld-grade-info">
+                                <div class="ld-grade-type">${escapeHtml(presLabel)}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                const cls = gradeClass(m.grade);
+                const typeTitle = getLessonTypeFullName(m.type || DEFAULT_LESSON_TYPE);
+                return `
+                    <div class="ld-grade-row" style="${topMargin}">
+                        <div class="ld-grade-box ${cls}">${escapeHtml(m.grade)}</div>
                         <div class="ld-grade-info">
                             <div class="ld-grade-type">${escapeHtml(typeTitle)}</div>
                         </div>
                     </div>
-                `);
-            }
-
-            if (lesson.presence) {
-                const presMap = { 'Н': 'Пропуск по неуваж. причине', 'Б': 'Пропуск по болезни', 'СП': 'Свободное посещение', 'О': 'Опоздание', 'П': 'Пропуск по уваж. причине' };
-                const presLabel = presMap[lesson.presence] || `Отметка: ${lesson.presence}`;
-                parts.push(`
-                    <div class="ld-grade-row" style="cursor:default; ${lesson.grade ? 'margin-top:10px;' : ''}">
-                        <div class="ld-grade-box gn">${escapeHtml(lesson.presence)}</div>
-                        <div class="ld-grade-info">
-                            <div class="ld-grade-type">${escapeHtml(presLabel)}</div>
-                        </div>
-                    </div>
-                `);
-            }
+                `;
+            });
             marksHtml = parts.join('');
         }
 
