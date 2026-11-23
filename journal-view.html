@@ -2639,28 +2639,79 @@ async function addLessonColumn() {
 }
 
 async function deleteLessonColumn() {
-    const { gradeKey } = currentLessonTypeContext;
+    const { gradeKey, baseGradeKey } = currentLessonTypeContext;
     if (!gradeKey) return;
     if (gradeKey.endsWith('_0')) { showToast('Базовый урок удалить нельзя'); return; }
 
-    delete JOURNAL.lessons[gradeKey];
-    delete JOURNAL.lessonTypes[gradeKey];
+    const match = gradeKey.match(/_(\d+)$/);
+    const deletedIdx = match ? parseInt(match[1], 10) : -1;
+    const prefix = baseGradeKey || gradeKey.replace(/_\d+$/, '');
 
-    Object.keys(JOURNAL.grades).forEach(studentId => {
+    // 1. Удаляем сам урок, его тип, оценки и таймстемпы оценок
+    delete JOURNAL.lessons[gradeKey];
+    if (JOURNAL.lessonTypes) delete JOURNAL.lessonTypes[gradeKey];
+
+    Object.keys(JOURNAL.grades || {}).forEach(studentId => {
         if (JOURNAL.grades[studentId]) {
-            Object.keys(JOURNAL.grades[studentId]).forEach(k => {
-                if (k === gradeKey || k.startsWith(gradeKey + '_')) {
-                    delete JOURNAL.grades[studentId][k];
-                }
-            });
+            delete JOURNAL.grades[studentId][gradeKey];
             if (Object.keys(JOURNAL.grades[studentId]).length === 0) {
                 delete JOURNAL.grades[studentId];
             }
         }
     });
 
+    Object.keys(JOURNAL.gradeTimestamps || {}).forEach(studentId => {
+        if (JOURNAL.gradeTimestamps[studentId]) {
+            delete JOURNAL.gradeTimestamps[studentId][gradeKey];
+            if (Object.keys(JOURNAL.gradeTimestamps[studentId]).length === 0) {
+                delete JOURNAL.gradeTimestamps[studentId];
+            }
+        }
+    });
+
+    // 2. Если удалили колонку в середине (например, _1 при наличии _2), сдвигаем последующие индексы вниз (_2 -> _1)
+    if (deletedIdx >= 1) {
+        let nextIdx = deletedIdx + 1;
+        while (JOURNAL.lessons[prefix + '_' + nextIdx]) {
+            const fromKey = prefix + '_' + nextIdx;
+            const toKey = prefix + '_' + (nextIdx - 1);
+
+            JOURNAL.lessons[toKey] = JOURNAL.lessons[fromKey];
+            delete JOURNAL.lessons[fromKey];
+
+            if (JOURNAL.lessonTypes && Object.prototype.hasOwnProperty.call(JOURNAL.lessonTypes, fromKey)) {
+                JOURNAL.lessonTypes[toKey] = JOURNAL.lessonTypes[fromKey];
+                delete JOURNAL.lessonTypes[fromKey];
+            }
+
+            Object.keys(JOURNAL.grades || {}).forEach(studentId => {
+                if (JOURNAL.grades[studentId] && Object.prototype.hasOwnProperty.call(JOURNAL.grades[studentId], fromKey)) {
+                    JOURNAL.grades[studentId][toKey] = JOURNAL.grades[studentId][fromKey];
+                    delete JOURNAL.grades[studentId][fromKey];
+                }
+            });
+
+            Object.keys(JOURNAL.gradeTimestamps || {}).forEach(studentId => {
+                if (JOURNAL.gradeTimestamps[studentId] && Object.prototype.hasOwnProperty.call(JOURNAL.gradeTimestamps[studentId], fromKey)) {
+                    JOURNAL.gradeTimestamps[studentId][toKey] = JOURNAL.gradeTimestamps[studentId][fromKey];
+                    delete JOURNAL.gradeTimestamps[studentId][fromKey];
+                }
+            });
+
+            nextIdx++;
+        }
+    }
+
+    // 3. Сохраняем актуальное состояние напрямую в базу и перестраиваем таблицу
+    await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
+        grades: JOURNAL.grades,
+        lessons: JOURNAL.lessons,
+        qtr_grades: JOURNAL.qtrGrades,
+        lesson_types: JOURNAL.lessonTypes,
+        grade_timestamps: JOURNAL.gradeTimestamps || {}
+    });
+
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
-    await saveJournal();
 
     closeLessonTypePopup();
     renderMainTable();
@@ -2671,6 +2722,7 @@ async function deleteLessonColumn() {
         safeCall(centerOnToday);
     });
 }
+
 
 function closeLessonTypePopup() {
     const popup = document.getElementById('lessonTypePopup');
@@ -2837,3 +2889,4 @@ window.addEventListener('pageshow', () => {
 </script>
 </body>
 </html>
+
