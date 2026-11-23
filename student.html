@@ -1575,14 +1575,16 @@ function renderGradesList(records) {
             }
 
             let badges = '';
-            if (l.presence) {
-                badges += `<div class="lesson-grade-box gn">${escapeHtml(l.presence)}</div>`;
-            }
-            if (l.grade) {
-                const cls = gradeClass(l.grade);
-                badges += `<div class="lesson-grade-box ${cls}">${escapeHtml(l.grade)}</div>`;
-            }
-            const badgeHtml = badges ? `<div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">${badges}</div>` : '';
+            (l.marks || []).forEach(m => {
+                if (m.kind === 'presence') {
+                    badges += `<div class="lesson-grade-box gn">${escapeHtml(m.presence)}</div>`;
+                } else if (m.grade) {
+                    const cls = gradeClass(m.grade);
+                    badges += `<div class="lesson-grade-box ${cls}">${escapeHtml(m.grade)}</div>`;
+                }
+            });
+            const badgeHtml = badges ? `<div style="display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:6px; max-width:70px; flex-shrink:0;">${badges}</div>` : '';
+
 
 
             html += `
