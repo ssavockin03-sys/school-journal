@@ -2625,12 +2625,13 @@ async function addLessonColumn() {
     const { baseGradeKey } = currentLessonTypeContext;
     if (!baseGradeKey) return;
     let count = 1;
-    while (JOURNAL.lessons[baseGradeKey + '_' + count]) count++;
+    while (JOURNAL.lessons[baseGradeKey + '_' + count] && !JOURNAL.lessons[baseGradeKey + '_' + count].deleted) count++;
     if (count >= 5) { showToast('Нельзя добавить больше 5 уроков на один день'); return; }
     const newKey = baseGradeKey + '_' + count;
-    if (!JOURNAL.lessons[newKey]) JOURNAL.lessons[newKey] = { t: '', h: [] };
+    JOURNAL.lessons[newKey] = { t: '', h: [] };
     if (!JOURNAL.lessonTypes) JOURNAL.lessonTypes = {};
     JOURNAL.lessonTypes[newKey] = 'ОТВ';
+
     DATES = await buildDatesForPeriod(ACTIVE_PERIOD_INDEX);
     await saveJournal();
     closeLessonTypePopup();
@@ -2887,6 +2888,7 @@ window.addEventListener('pageshow', () => {
 </script>
 </body>
 </html>
+
 
 
 
