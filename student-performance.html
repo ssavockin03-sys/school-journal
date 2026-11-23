@@ -416,40 +416,30 @@
 
 
 
-        /* Контейнер и плитки оценок в дневнике (оригинал DevTools) */
-        .lesson-grades-wrap {
-            position: absolute;
-            top: 0;
-            right: 0;
+        .lesson-card { display: flex; flex-direction: column; border-bottom: 1px solid #f0f3f7; padding-bottom: 8px; position: relative; }
+        .lesson-card:last-child { border-bottom: none; }
+        .lesson-top-row {
             display: flex;
-            flex-direction: row;
-            align-items: center;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
         }
-        .dnevnik-grade-tile {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 22px;
-            height: 22px;
-            padding: 0 4px;
-            margin: 0 6px 6px 0;
-            border-radius: 6px;
-            box-sizing: border-box;
-            text-align: center;
-            text-decoration: none;
-            text-transform: uppercase;
-            color: #fff;
+        .lesson-info-col {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .lesson-title {
+            display: block;
             font-family: "Open Sans", Arial, sans-serif;
-            font-size: 12px;
+            font-size: 13.3px;
             font-weight: 600;
-            cursor: pointer;
+            color: #0f3159;
+            line-height: 17px;
+            margin-bottom: 2px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
-        .dnevnik-grade-tile:last-child {
-            margin-right: 0;
-        }
-        .dnevnik-grade-tile:first-child {
-            margin-left: 0;
-        }
+
 
         /* Тёмно-синее облачко типа работы при наведении на оценку (1-в-1 со скриншотом) */
         #gradeTooltip {
