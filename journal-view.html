@@ -2549,13 +2549,28 @@ async function saveJournal() {
         const mergedTs = {};
         const freshTs = fresh.gradeTimestamps || {};
         const localTs = JOURNAL.gradeTimestamps || {};
+
+        let maxDbTs = 0;
+        Object.values(freshTs).forEach(map => {
+            Object.values(map || {}).forEach(v => {
+                if (typeof v === 'number' && v > maxDbTs) maxDbTs = v;
+            });
+        });
+
         const allTsSids = new Set([...Object.keys(freshTs), ...Object.keys(localTs)]);
         allTsSids.forEach(sid => {
             const fromFresh = freshTs[sid] || {};
             const fromLocal = localTs[sid] || {};
             const out = {};
             Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
-            Object.keys(fromLocal).forEach(k => { out[k] = fromLocal[k]; });
+            Object.keys(fromLocal).forEach(k => {
+                let tsVal = fromLocal[k];
+                if (typeof tsVal === 'number' && fromFresh[k] !== tsVal && tsVal <= maxDbTs) {
+                    maxDbTs += 1;
+                    tsVal = maxDbTs;
+                }
+                out[k] = tsVal;
+            });
             Object.keys(out).forEach(k => {
                 if (k.startsWith('qtr:')) {
                     if (!(mergedQtr[sid] && mergedQtr[sid][k.slice(4)])) delete out[k];
@@ -2565,7 +2580,9 @@ async function saveJournal() {
             });
             if (Object.keys(out).length > 0) mergedTs[sid] = out;
         });
+        syncMaxGradeTs(mergedTs);
         JOURNAL.gradeTimestamps = mergedTs;
+
 
         JOURNAL.grades = mergedGrades;
         JOURNAL.lessons = mergedLessons;
