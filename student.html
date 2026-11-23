@@ -1646,12 +1646,17 @@ function renderGradesList(records) {
                     homework = rawH.trim();
                 }
             }
-            const gradeRec = all.find(g => g.subject === lesson.subject && (g.key === key || g.key === baseKey) && g.kind === 'grade');
-            const presRec  = all.find(g => g.subject === lesson.subject && (g.key === key || g.key === baseKey) && g.kind === 'presence');
-            const type = (journal && journal.lesson_types && (journal.lesson_types[key] || journal.lesson_types[baseKey])) || '';
+            const marks = all
+                .filter(g => g.subject === lesson.subject && (g.key === baseKey || g.key.startsWith(baseKey + '_')))
+                .sort((a, b) => {
+                    const subA = parseInt(String(a.key).split('_')[2] || '0', 10);
+                    const subB = parseInt(String(b.key).split('_')[2] || '0', 10);
+                    if (!isNaN(subA) && !isNaN(subB) && subA !== subB) return subA - subB;
+                    return (a.kind === 'presence' ? 0 : 1) - (b.kind === 'presence' ? 0 : 1);
+                });
 
-            
-            result.push({ num: n, subject: lesson.subject, subjectObj: subjObj || null, teacherName, roomName, start: lesson.start, end: lesson.end, topic, homework, type, grade: gradeRec ? gradeRec.grade : null, presence: presRec ? presRec.presence : null });
+            result.push({ num: n, subject: lesson.subject, subjectObj: subjObj || null, teacherName, roomName, start: lesson.start, end: lesson.end, topic, homework, marks });
+
         }
         return result;
     }
