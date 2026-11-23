@@ -1736,7 +1736,14 @@
                 if (cell.presence) displayGrades.push({ val: cell.presence, key, kind: 'presence' });
             });
             
-            displayGrades.sort((a, b) => a.key.localeCompare(b.key));
+            displayGrades.sort((a, b) => {
+                const [dA, lA = '0', sA = '0'] = String(a.key).split('_');
+                const [dB, lB = '0', sB = '0'] = String(b.key).split('_');
+                if (dA !== dB) return dA.localeCompare(dB);
+                if (Number(lA) !== Number(lB)) return Number(lA) - Number(lB);
+                return Number(sA) - Number(sB);
+            });
+
             const avg = calcAverageFromValues(displayGrades.map(x => x.val));
 
             const qtrGrades = journal.qtr_grades ? (journal.qtr_grades[CURRENT_STUDENT.id] || {}) : {};
