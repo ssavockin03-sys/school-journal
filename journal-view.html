@@ -1465,7 +1465,7 @@ async function upqtrSummary(studentId, periodIdx, inputElement) {
     if (cellTd) cellTd.classList.add('saving-outline');
 
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
-    setTimeout(async () => {
+    setTimeout(() => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId][periodIdx] = up;
 
@@ -1473,11 +1473,11 @@ async function upqtrSummary(studentId, periodIdx, inputElement) {
         if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
         if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
         if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = await getSafeNow();
+        else JOURNAL.gradeTimestamps[studentId][qKey] = getSafeNow();
 
-        await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
+        enqueueSaveJournal();
     }, EDIT_DELAY_MS);
 }
 
@@ -1494,7 +1494,7 @@ async function upFinal(studentId, inputElement) {
     if (cellTd) cellTd.classList.add('saving-outline');
 
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
-    setTimeout(async () => {
+    setTimeout(() => {
         if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
         JOURNAL.qtrGrades[studentId]['final'] = up;
 
@@ -1502,13 +1502,14 @@ async function upFinal(studentId, inputElement) {
         if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
         if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
         if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = await getSafeNow();
+        else JOURNAL.gradeTimestamps[studentId][qKey] = getSafeNow();
 
-        await saveJournal();
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
+        enqueueSaveJournal();
     }, EDIT_DELAY_MS);
 }
+
 
 function isAddedLessonKey(gradeKey) {
     return typeof gradeKey === 'string' && /_[1-9]\d*$/.test(gradeKey);
@@ -2902,6 +2903,7 @@ window.addEventListener('pageshow', () => {
 </script>
 </body>
 </html>
+
 
 
 
