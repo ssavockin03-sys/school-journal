@@ -1132,6 +1132,7 @@
             if (!student) { document.getElementById('studentName').textContent = 'Ученик не найден.'; return; }
             
             CURRENT_STUDENT = student;
+            window.CURRENT_STUDENT = student;
             CURRENT_CLASS = classes.find(c => c.id === student.class_id) || null;
             ALL_CLASSES = classes;
             ALL_STUDENTS = students;
