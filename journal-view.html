@@ -932,19 +932,31 @@ function normalizeTimestampsMap(ts) {
     return out;
 }
 
+let MAX_GRADE_TS = 0;
+function syncMaxGradeTs(tsMap) {
+    Object.values(tsMap || {}).forEach(map => {
+        Object.values(map || {}).forEach(v => {
+            if (typeof v === 'number' && v > MAX_GRADE_TS) MAX_GRADE_TS = v;
+        });
+    });
+}
+
 async function loadJournalNormalized() {
     let rec = null;
     try { rec = await DB.getJournal(CLASS_ID, SUBJECT_ID); }
     catch (e) { console.warn('DB.getJournal failed', e); }
     if (!rec) return { grades: {}, lessons: {}, qtrGrades: {}, lessonTypes: {}, gradeTimestamps: {} };
+    const ts = normalizeTimestampsMap(rec.grade_timestamps);
+    syncMaxGradeTs(ts);
     return {
         grades: normalizeGradesMap(rec.grades),
         lessons: normalizeLessonsMap(rec.lessons),
         qtrGrades: normalizeQtrMap(rec.qtr_grades),
         lessonTypes: normalizeTypesMap(rec.lesson_types),
-        gradeTimestamps: normalizeTimestampsMap(rec.grade_timestamps)
+        gradeTimestamps: ts
     };
 }
+
 
 let activeEditor = null;
 
@@ -2890,6 +2902,7 @@ window.addEventListener('pageshow', () => {
 </script>
 </body>
 </html>
+
 
 
 
