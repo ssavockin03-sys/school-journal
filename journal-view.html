@@ -2554,11 +2554,17 @@ async function saveJournal() {
         const localTs = JOURNAL.gradeTimestamps || {};
 
         let maxDbTs = 0;
-        Object.values(freshTs).forEach(map => {
-            Object.values(map || {}).forEach(v => {
-                if (typeof v === 'number' && v > maxDbTs) maxDbTs = v;
+        try {
+            const allJournals = await DB.getAll('journals');
+            (allJournals || []).forEach(j => {
+                Object.values(j.grade_timestamps || {}).forEach(map => {
+                    Object.values(map || {}).forEach(v => {
+                        const n = Number(v);
+                        if (!isNaN(n) && n > maxDbTs) maxDbTs = n;
+                    });
+                });
             });
-        });
+        } catch (e) {}
 
         const allTsSids = new Set([...Object.keys(freshTs), ...Object.keys(localTs)]);
         allTsSids.forEach(sid => {
@@ -2567,13 +2573,14 @@ async function saveJournal() {
             const out = {};
             Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
             Object.keys(fromLocal).forEach(k => {
-                let tsVal = fromLocal[k];
-                if (typeof tsVal === 'number' && fromFresh[k] !== tsVal && tsVal <= maxDbTs) {
+                let tsVal = Number(fromLocal[k]);
+                if (!isNaN(tsVal) && Number(fromFresh[k]) !== tsVal && tsVal <= maxDbTs) {
                     maxDbTs += 1;
                     tsVal = maxDbTs;
                 }
                 out[k] = tsVal;
             });
+
             Object.keys(out).forEach(k => {
                 if (k.startsWith('qtr:')) {
                     if (!(mergedQtr[sid] && mergedQtr[sid][k.slice(4)])) delete out[k];
