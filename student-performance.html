@@ -1468,16 +1468,37 @@
                                 });
                             }
                         }
-                        const sortedDateKeys = Array.from(dateKeysSet).sort((a, b) => {
-                            const numA = parseInt(String(a).split('_')[1], 10);
-                            const numB = parseInt(String(b).split('_')[1], 10);
-                            if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-                            return String(a).localeCompare(String(b));
+                        // Группируем все ключи дня по номеру урока: "2026-11-23_2" -> ["2026-11-23_2_0", "2026-11-23_2_1", ...]
+                        const lessonGroupsMap = new Map();
+                        Array.from(dateKeysSet).forEach(k => {
+                            const parts = String(k).split('_');
+                            const baseGroupKey = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : parts[0];
+                            if (!lessonGroupsMap.has(baseGroupKey)) lessonGroupsMap.set(baseGroupKey, []);
+                            lessonGroupsMap.get(baseGroupKey).push(k);
                         });
 
-                        const matchedJournalKey = sortedDateKeys.includes(key)
-                            ? key
-                            : (sortedDateKeys[occurrenceIdx] || null);
+                        // Сортируем группы по номеру урока, а внутри группы — по индексу работы (_0, _1, _2...)
+                        const sortedGroupEntries = Array.from(lessonGroupsMap.entries()).sort((a, b) => {
+                            const numA = parseInt(String(a[0]).split('_')[1], 10);
+                            const numB = parseInt(String(b[0]).split('_')[1], 10);
+                            if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                            return String(a[0]).localeCompare(String(b[0]));
+                        });
+
+                        sortedGroupEntries.forEach(([, keysArr]) => {
+                            keysArr.sort((a, b) => {
+                                const subA = parseInt(String(a).split('_')[2] || '0', 10);
+                                const subB = parseInt(String(b).split('_')[2] || '0', 10);
+                                if (!isNaN(subA) && !isNaN(subB)) return subA - subB;
+                                return String(a).localeCompare(String(b));
+                            });
+                        });
+
+                        const matchedGroupKeys = lessonGroupsMap.has(key)
+                            ? lessonGroupsMap.get(key)
+                            : (sortedGroupEntries[occurrenceIdx] ? sortedGroupEntries[occurrenceIdx][1] : []);
+
+                        const primaryKey = matchedGroupKeys.find(k => String(k).endsWith('_0')) || matchedGroupKeys[0] || null;
 
                         if (journal) {
                             const extractHwText = (val) => {
@@ -1488,25 +1509,30 @@
                             };
 
                             if (journal.lessons) {
-                                const targetLessonObj = matchedJournalKey ? journal.lessons[matchedJournalKey] : (occurrenceIdx === 0 ? journal.lessons[dateStr] : null);
+                                const targetLessonObj = primaryKey ? journal.lessons[primaryKey] : (occurrenceIdx === 0 ? journal.lessons[dateStr] : null);
                                 homework = extractHwText(targetLessonObj);
                             }
 
                             if (!homework && journal.homework) {
-                                const targetHwObj = matchedJournalKey ? journal.homework[matchedJournalKey] : (occurrenceIdx === 0 ? journal.homework[dateStr] : null);
+                                const targetHwObj = primaryKey ? journal.homework[primaryKey] : (occurrenceIdx === 0 ? journal.homework[dateStr] : null);
                                 homework = extractHwText(targetHwObj);
                             }
                         }
 
                         const dayItems = all.filter(g => {
                             if (String(g.subject || '').trim().toLowerCase() !== subjLower) return false;
-                            if (matchedJournalKey) return g.key === matchedJournalKey;
+                            if (matchedGroupKeys.length > 0) return matchedGroupKeys.includes(g.key);
                             return occurrenceIdx === 0 && g.key === dateStr;
                         }).sort((a, b) => {
+                            // Сначала сортируем по порядку работ на уроке (_0, _1, _2...), внутри одной колонки — пропуск перед оценкой
+                            const subA = parseInt(String(a.key).split('_')[2] || '0', 10);
+                            const subB = parseInt(String(b.key).split('_')[2] || '0', 10);
+                            if (!isNaN(subA) && !isNaN(subB) && subA !== subB) return subA - subB;
                             const orderA = a.kind === 'presence' ? 0 : 1;
                             const orderB = b.kind === 'presence' ? 0 : 1;
                             return orderA - orderB;
                         });
+
 
                         let gradesWrap = '';
                         if (dayItems.length > 0) {
