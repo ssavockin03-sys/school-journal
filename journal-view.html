@@ -2474,7 +2474,8 @@ async function upqtr(studentId, inputElement) {
         if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
         if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
         if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = = await getSafeNow();
+        else JOURNAL.gradeTimestamps[studentId][qKey] = getSafeNow();
+
 
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
