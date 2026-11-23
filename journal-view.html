@@ -1473,7 +1473,7 @@ async function upqtrSummary(studentId, periodIdx, inputElement) {
         if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
         if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
         if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = getSafeNow();
+        else JOURNAL.gradeTimestamps[studentId][qKey] = = await getSafeNow();
 
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
@@ -1502,7 +1502,7 @@ async function upFinal(studentId, inputElement) {
         if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
         if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
         if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = getSafeNow();
+        else JOURNAL.gradeTimestamps[studentId][qKey] = = await getSafeNow();
 
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
@@ -2454,7 +2454,7 @@ async function upg(studentId, gradeKey, inputElement) {
         if (!up) {
             delete JOURNAL.gradeTimestamps[studentId][gradeKey];
         } else {
-            JOURNAL.gradeTimestamps[studentId][gradeKey] = getSafeNow();
+            JOURNAL.gradeTimestamps[studentId][gradeKey] = = await getSafeNow();
         }
 
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
@@ -2484,7 +2484,7 @@ async function upqtr(studentId, inputElement) {
         if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
         if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
         if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = getSafeNow();
+        else JOURNAL.gradeTimestamps[studentId][qKey] = = await getSafeNow();
 
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
