@@ -1118,7 +1118,7 @@ async function buildDatesForPeriod(periodIndex) {
     baseLessons.forEach(base => {
         finalDates.push({ ...base, gradeKey: base.baseGradeKey + '_0' });
         let counter = 1;
-        while (JOURNAL.lessons[base.baseGradeKey + '_' + counter]) {
+        while (JOURNAL.lessons[base.baseGradeKey + '_' + counter] && !JOURNAL.lessons[base.baseGradeKey + '_' + counter].deleted) {
             finalDates.push({ ...base, gradeKey: base.baseGradeKey + '_' + counter });
             counter++;
         }
@@ -2889,4 +2889,5 @@ window.addEventListener('pageshow', () => {
 </script>
 </body>
 </html>
+
 
