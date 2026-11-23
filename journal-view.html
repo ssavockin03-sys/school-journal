@@ -2488,14 +2488,16 @@ async function saveJournal() {
 
         const mergedLessons = {};
         Object.keys(fresh.lessons).forEach(k => {
-            mergedLessons[k] = { t: fresh.lessons[k].t || '', h: normalizeHwList(fresh.lessons[k].h) };
+            mergedLessons[k] = fresh.lessons[k].deleted
+                ? { deleted: true }
+                : { t: fresh.lessons[k].t || '', h: normalizeHwList(fresh.lessons[k].h) };
         });
         Object.keys(JOURNAL.lessons).forEach(k => {
-            mergedLessons[k] = {
-                t: JOURNAL.lessons[k].t || '',
-                h: normalizeHwList(JOURNAL.lessons[k].h)
-            };
+            mergedLessons[k] = JOURNAL.lessons[k].deleted
+                ? { deleted: true }
+                : { t: JOURNAL.lessons[k].t || '', h: normalizeHwList(JOURNAL.lessons[k].h) };
         });
+
         const localLessonKeys = new Set(Object.keys(JOURNAL.lessons));
         Object.keys(fresh.lessons).forEach(k => {
             if (!localLessonKeys.has(k)) delete mergedLessons[k];
@@ -2888,6 +2890,7 @@ window.addEventListener('pageshow', () => {
 </script>
 </body>
 </html>
+
 
 
 
