@@ -1449,7 +1449,7 @@
 
                         const dateStr = isoDate(date);
                         const key = dateStr + '_' + n;
-                        let homework = '';
+                        let homeworkList = [];
                         const subjObj = ALL_SUBJECTS.find(s => String(s.name || '').trim().toLowerCase() === subjLower);
                         const journal = subjObj
                             ? ALL_JOURNALS.find(j => String(j.subject_id) === String(subjObj.id))
@@ -1502,21 +1502,27 @@
                         const primaryKey = matchedGroupKeys.find(k => String(k).endsWith('_0')) || matchedGroupKeys[0] || null;
 
                         if (journal) {
-                            const extractHwText = (val) => {
-                                if (!val) return '';
-                                if (typeof val === 'string') return val.trim();
-                                if (Array.isArray(val)) return val.map(extractHwText).filter(Boolean).join('; ');
-                                return String(val.h || val.hw || val.homework || val.text || val.task || '').trim();
+                            const extractHwItems = (val) => {
+                                if (!val) return [];
+                                if (typeof val === 'string') {
+                                    const s = val.trim();
+                                    return s ? [s] : [];
+                                }
+                                if (Array.isArray(val)) {
+                                    return val.flatMap(extractHwItems).filter(Boolean);
+                                }
+                                const raw = val.h ?? val.hw ?? val.homework ?? val.text ?? val.task ?? '';
+                                return extractHwItems(raw);
                             };
 
                             if (journal.lessons) {
                                 const targetLessonObj = primaryKey ? journal.lessons[primaryKey] : (occurrenceIdx === 0 ? journal.lessons[dateStr] : null);
-                                homework = extractHwText(targetLessonObj);
+                                homeworkList = extractHwItems(targetLessonObj);
                             }
 
-                            if (!homework && journal.homework) {
+                            if (homeworkList.length === 0 && journal.homework) {
                                 const targetHwObj = primaryKey ? journal.homework[primaryKey] : (occurrenceIdx === 0 ? journal.homework[dateStr] : null);
-                                homework = extractHwText(targetHwObj);
+                                homeworkList = extractHwItems(targetHwObj);
                             }
                         }
 
@@ -1554,12 +1560,15 @@
                         }
 
                         let hwHtml = '';
-                        if (homework) {
-                            const hwStorageKey = `${CURRENT_STUDENT.id}_${dateStr}_${subjLower}_${n}`;
-                            const isDone = isHwCompleted(hwStorageKey);
-                            const safeHwKey = escapeHtml(hwStorageKey).replace(/'/g, "\\'");
-                            hwHtml = `<div class="lesson-hw ${isDone ? 'done' : ''}" onclick="toggleDiaryHw(this, '${safeHwKey}')"><input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation(); toggleDiaryHw(this.parentElement, '${safeHwKey}')"> <span>${escapeHtml(homework)}</span></div>`;
+                        if (homeworkList.length > 0) {
+                            hwHtml = homeworkList.map((hwText, hwIdx) => {
+                                const hwStorageKey = `${CURRENT_STUDENT.id}_${dateStr}_${subjLower}_${n}_${hwIdx}`;
+                                const isDone = isHwCompleted(hwStorageKey);
+                                const safeHwKey = escapeHtml(hwStorageKey).replace(/'/g, "\\'");
+                                return `<div class="lesson-hw ${isDone ? 'done' : ''}" onclick="toggleDiaryHw(this, '${safeHwKey}')"><input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation(); toggleDiaryHw(this.parentElement, '${safeHwKey}')"> <span>${escapeHtml(hwText)}</span></div>`;
+                            }).join('');
                         }
+
 
 
                         lessonsHtml += `<div class="lesson-card">
