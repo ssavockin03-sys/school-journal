@@ -1563,11 +1563,16 @@
 
 
                         lessonsHtml += `<div class="lesson-card">
-                            ${gradesWrap}
-                            <div class="lesson-title"><b>${n}.</b> ${lesson.subject}</div>
-                            <div class="lesson-meta">${metaText}</div>
+                            <div class="lesson-top-row">
+                                <div class="lesson-info-col">
+                                    <div class="lesson-title"><b>${n}.</b> ${lesson.subject}</div>
+                                    <div class="lesson-meta">${metaText}</div>
+                                </div>
+                                ${gradesWrap}
+                            </div>
                             ${hwHtml}
                         </div>`;
+
                     }
 
                 }
