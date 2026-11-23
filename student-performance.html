@@ -1820,8 +1820,82 @@
     }
 
     // ============================================================
-    // МОДАЛКА РЕЙТИНГА
+    // МОДАЛКА РЕЙТИНГА (1-в-1 как на странице «Сегодня»)
     // ============================================================
+    function buildClassDistributionGradient(counts) {
+        let total = 0;
+        [5, 4, 3, 2, 1].forEach(g => total += (counts[g] || 0));
+        if (total === 0) return `conic-gradient(#e2e8f0 0deg 360deg)`;
+        let currentAngle = 0;
+        const parts = [];
+        const colors = { 5: '#65A30D', 4: '#65A30D', 3: '#FB923C', 2: '#DC2626', 1: '#DC2626' };
+        [5, 4, 3, 2, 1].forEach(g => {
+            const cnt = counts[g] || 0;
+            if (cnt === 0) return;
+            const angle = (cnt / total) * 360;
+            const endAngle = currentAngle + angle;
+            parts.push(`${colors[g]} ${currentAngle}deg ${endAngle}deg`);
+            currentAngle = endAngle;
+        });
+        return `conic-gradient(${parts.join(', ')})`;
+    }
+
+    function parseGradeDigits(grade) {
+        if (!grade) return [];
+        const s = String(grade);
+        const out = [];
+        for (let i = 0; i < s.length; i++) {
+            const c = s.charCodeAt(i);
+            if (c >= 49 && c <= 53) out.push(c - 48);
+        }
+        return out;
+    }
+
+    function computeStudentAvg(journal, studentId, period, position) {
+        if (!journal || !journal.grades || !journal.grades[studentId]) return null;
+        let sum = 0, count = 0;
+        Object.entries(journal.grades[studentId]).forEach(([key, val]) => {
+            if (period) {
+                const dPart = key.split('_')[0];
+                if (dPart < period.start || dPart > period.end) return;
+            }
+            const digits = parseGradeDigits(parseCell(val).grade);
+            if (!digits.length) return;
+            if (position === 0) { sum += digits[0]; count++; }
+            else if (position === 1 && digits.length >= 2) { sum += digits[1]; count++; }
+        });
+        return count ? (sum / count) : null;
+    }
+
+    function computeClassCountsForLesson(journal, classStudentIds, lessonKey, position) {
+        const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        if (!journal || !journal.grades) return counts;
+        classStudentIds.forEach(sid => {
+            const sg = journal.grades[sid];
+            if (!sg || !sg[lessonKey]) return;
+            const digits = parseGradeDigits(parseCell(sg[lessonKey]).grade);
+            if (!digits.length) return;
+            let digit = null;
+            if (position === 0) digit = digits[0];
+            else if (position === 1 && digits.length >= 2) digit = digits[1];
+            if (digit >= 1 && digit <= 5) counts[digit]++;
+        });
+        return counts;
+    }
+
+    function formatStatAvg(v) {
+        return (v === null || v === undefined) ? '—' : String(Number(v).toFixed(2)).replace('.', ',');
+    }
+
+    function renderCountsRows(counts) {
+        return [5, 4, 3, 2, 1].map(g => {
+            const cnt = counts[g] || 0;
+            const cls = g >= 4 ? 'g5' : (g === 3 ? 'g3' : 'g2');
+            const word = cnt % 10 === 1 && cnt % 100 !== 11 ? 'ученик' : (cnt % 10 >= 2 && cnt % 10 <= 4 && (cnt % 100 < 10 || cnt % 100 >= 20) ? 'ученика' : 'учеников');
+            return `<div class="stat-row"><div class="stat-row-badge ${cls}">${g}</div><div class="stat-row-text">${cnt} ${word}</div></div>`;
+        }).join('');
+    }
+
     window.openGradeStat = function(subjectName, value, lessonKey, kind) {
         if (!CURRENT_STUDENT) return;
 
@@ -1831,16 +1905,14 @@
         const lessonType = (journal && journal.lesson_types && journal.lesson_types[lessonKey]) || DEFAULT_LESSON_TYPE;
         const typeFullName = getLessonTypeFullName(lessonType);
 
-     const parsedCell = parseCell(value);
-     const myGrade = parsedCell.grade;
-     const gradeDigits = String(myGrade || '').split('/').map(p => firstDigit(p)).filter(d => d !== null);
-     const myDigit = gradeDigits.length > 0 ? Math.round(gradeDigits.reduce((a, b) => a + b, 0) / gradeDigits.length) : 0;
-     const myDisplayGrade = myGrade || parsedCell.presence || '—';
-
+        const rawCell = (journal && journal.grades && journal.grades[CURRENT_STUDENT.id] && journal.grades[CURRENT_STUDENT.id][lessonKey]) || value;
+        const myGrade = parseCell(rawCell).grade;
+        const myDigits = parseGradeDigits(myGrade);
+        const isDouble = myDigits.length === 2;
 
         let teacherName = '—';
         const grid = getGridForDate(parsed.date);
-        if (grid) {
+        if (grid && parsed.date) {
             const dowKey = JS_DAY_MAP[parsed.date.getDay()];
             if (dowKey) {
                 const dayGrid = grid[dowKey] || {};
@@ -1861,77 +1933,68 @@
             currentPeriod = PERIODS.find(p => dStr >= p.start && dStr <= p.end);
         }
 
-        let sum = 0, count = 0;
-        if (journal && journal.grades && journal.grades[CURRENT_STUDENT.id]) {
-            Object.entries(journal.grades[CURRENT_STUDENT.id]).forEach(([key, val]) => {
-                if (currentPeriod) {
-                    const dPart = key.split('_')[0];
-                    if (dPart < currentPeriod.start || dPart > currentPeriod.end) return;
-                }
-                const d = firstDigit(parseCell(val).grade);
-                if (d) { sum += d; count++; }
-            });
-        }
-        const avg = count > 0 ? (sum / count).toFixed(2).replace('.', ',') : '—';
+        const classStudentIds = CURRENT_CLASS ? ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id) : [];
+        let bodyHtml = '';
 
-        const classCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-        if (journal && journal.grades && CURRENT_CLASS) {
-            const classStudentIds = ALL_STUDENTS.filter(s => s.class_id === CURRENT_CLASS.id).map(s => s.id);
-            classStudentIds.forEach(sid => {
-                const sg = journal.grades[sid];
-                if (!sg || !sg[lessonKey]) return;
-                const digit = firstDigit(parseCell(sg[lessonKey]).grade);
-                if (digit >= 1 && digit <= 5) classCounts[digit]++;
-            });
-        }
+        if (!isDouble) {
+            const myDigit = myDigits.length ? myDigits[0] : 0;
+            const avg = computeStudentAvg(journal, CURRENT_STUDENT.id, currentPeriod, 0);
+            const classCounts = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
+            const ringGradient = buildClassDistributionGradient(classCounts);
+            const avgColorClass = (avg === null || avg === undefined)
+                ? ''
+                : (avg < 2.5 ? 'red' : (avg < 3.5 ? 'orange' : 'up'));
 
-        let ringGradient = '';
-        if (myDigit === 5) {
-            ringGradient = `conic-gradient(#65A30D 0deg 360deg)`;
-        } else if (myDigit === 4) {
-            ringGradient = `conic-gradient(#DC2626 0deg 30deg, #65A30D 30deg 288deg, #e2e8f0 288deg 360deg)`;
-        } else if (myDigit === 3) {
-            ringGradient = `conic-gradient(#DC2626 0deg 45deg, #FB923C 45deg 120deg, #65A30D 120deg 216deg, #e2e8f0 216deg 360deg)`;
-        } else if (myDigit === 2) {
-            ringGradient = `conic-gradient(#DC2626 0deg 144deg, #e2e8f0 144deg 360deg)`;
-        } else if (myDigit === 1) {
-            ringGradient = `conic-gradient(#DC2626 0deg 280deg, #e2e8f0 280deg 360deg)`;
+            bodyHtml = `
+                <div class="stat-card">
+                    <div class="stat-left">
+                        <div class="stat-title">Ваша оценка</div>
+                        <div class="stat-circle" style="background: ${ringGradient};">
+                            <div class="stat-circle-value">${myDigit || '—'}</div>
+                        </div>
+                        <div class="stat-avg">ср. балл <div class="stat-avg-pill ${avgColorClass}">${formatStatAvg(avg)}</div></div>
+                    </div>
+                    <div class="stat-right">
+                        <div class="stat-right-title">Одноклассники</div>
+                        ${renderCountsRows(classCounts)}
+                    </div>
+                </div>`;
         } else {
-            ringGradient = `conic-gradient(#e2e8f0 0deg 360deg)`;
+            const [d1, d2] = myDigits;
+            const counts1 = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 0);
+            const counts2 = computeClassCountsForLesson(journal, classStudentIds, lessonKey, 1);
+            const ring1 = buildClassDistributionGradient(counts1);
+            const ring2 = buildClassDistributionGradient(counts2);
+
+            bodyHtml = `
+                <div class="stat-dual">
+                    <div class="stat-dual-col">
+                        <div class="stat-dual-col-title">1-я оценка</div>
+                        <div class="stat-dual-circle" style="background: ${ring1};"><div class="stat-dual-value">${d1}</div></div>
+                        <div class="stat-dual-legend">${renderCountsRows(counts1)}</div>
+                    </div>
+                    <div class="stat-dual-col">
+                        <div class="stat-dual-col-title">2-я оценка</div>
+                        <div class="stat-dual-circle" style="background: ${ring2};"><div class="stat-dual-value">${d2}</div></div>
+                        <div class="stat-dual-legend">${renderCountsRows(counts2)}</div>
+                    </div>
+                </div>`;
         }
 
+        const dateLabel = parsed.date ? formatDateHuman(parsed.date) : parsed.dateRu;
         const modalContent = document.getElementById('statModalContent');
         modalContent.innerHTML = `
             <button class="stat-modal-close" onclick="document.getElementById('gradeStatModal').classList.remove('show')">×</button>
             <div class="stat-modal-subject">${escapeHtml(subjectName)}</div>
-            <div class="stat-modal-meta">${escapeHtml(typeFullName)}, ${formatDateHuman(parsed.date)}.</div>
+            <div class="stat-modal-meta">${escapeHtml(typeFullName)}, ${dateLabel}.</div>
             <div class="stat-modal-divider"></div>
             <div class="stat-modal-teacher"><span>Учитель:</span> <b>${escapeHtml(teacherName)}</b></div>
-            
-            <div class="stat-card">
-                <div class="stat-left">
-                    <div class="stat-title">Ваша оценка</div>
-                    <div class="stat-circle" style="background: ${ringGradient};">
-<div class="stat-circle-value" style="${String(myDisplayGrade).includes('/') ? 'font-size:24px;' : ''}">${escapeHtml(myDisplayGrade)}</div>
-                    </div>
-                    <div class="stat-avg">
-                        ср. балл <div class="stat-avg-pill ${myDigit >= 3 ? 'up' : ''}">${avg}</div>
-                    </div>
-                </div>
-                <div class="stat-right">
-                    <div class="stat-right-title">Одноклассники</div>
-                    ${[5, 4, 3, 2, 1].map(g => {
-                        const cnt = classCounts[g];
-                        const cls = g >= 4 ? 'g5' : (g === 3 ? 'g3' : 'g2');
-                        const word = cnt % 10 === 1 && cnt % 100 !== 11 ? 'ученик' : (cnt % 10 >= 2 && cnt % 10 <= 4 && (cnt % 100 < 10 || cnt % 100 >= 20) ? 'ученика' : 'учеников');
-                        return `<div class="stat-row"><div class="stat-row-badge ${cls}">${g}</div><div class="stat-row-text">${cnt} ${word}</div></div>`;
-                    }).join('')}
-                </div>
-            </div>
+            ${bodyHtml}
         `;
 
         document.getElementById('gradeStatModal').classList.add('show');
     };
+
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') document.getElementById('gradeStatModal').classList.remove('show');
