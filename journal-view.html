@@ -2392,11 +2392,25 @@ function handleGradeKeydown(e, input) {
     navigateGradeCell(input, key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : key === 'ArrowUp' ? 'up' : 'down');
 }
 
-function getSafeNow() {
-    const now = Date.now();
-    MAX_GRADE_TS = Math.max(MAX_GRADE_TS + 1, now);
+async function getSafeNow() {
+    let maxTs = 0;
+    const scanMap = (tsObj) => {
+        Object.values(tsObj || {}).forEach(map => {
+            Object.values(map || {}).forEach(v => {
+                const n = Number(v);
+                if (!isNaN(n) && n > maxTs) maxTs = n;
+            });
+        });
+    };
+    scanMap(JOURNAL && JOURNAL.gradeTimestamps);
+    try {
+        const allJournals = await DB.getAll('journals');
+        (allJournals || []).forEach(j => scanMap(j && j.grade_timestamps));
+    } catch (e) {}
+    MAX_GRADE_TS = Math.max(MAX_GRADE_TS + 1, maxTs + 1);
     return MAX_GRADE_TS;
 }
+
 
 let _saveInProgress = false;
 let _savePending = false;
