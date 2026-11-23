@@ -904,10 +904,15 @@ function normalizeLessonsMap(lessons) {
     const out = {};
     Object.keys(src).forEach(k => {
         const p = toPlainObject(src[k]);
-        out[k] = { t: typeof p.t === 'string' ? p.t : '', h: normalizeHwList(p.h) };
+        if (p && p.deleted) {
+            out[k] = { deleted: true };
+        } else {
+            out[k] = { t: typeof p.t === 'string' ? p.t : '', h: normalizeHwList(p.h) };
+        }
     });
     return out;
 }
+
 function normalizeQtrMap(qtr) {
     const src = toPlainObject(qtr);
     const out = {};
@@ -2889,5 +2894,6 @@ window.addEventListener('pageshow', () => {
 </script>
 </body>
 </html>
+
 
 
