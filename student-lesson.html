@@ -503,28 +503,27 @@
             white-space: pre-wrap;
         }
 
-        .hw-status-badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 3px;
-            font-size: 12.5px;
+        .lesson-grid-table td.hw-status-cell {
+            width: 90.31px;
+            padding: 0 2px;
+            text-align: center;
+            vertical-align: middle;
+            font-family: arial, helvetica, sans-serif;
+            font-size: 12px;
             font-weight: 400;
-            color: #ffffff;
+            color: #FFFFFF;
             cursor: pointer;
             user-select: none;
-            text-align: center;
-            min-width: 82px;
-            transition: opacity 0.15s ease;
+            white-space: nowrap;
+            transition: background-color 0.15s ease;
         }
-        .hw-status-badge:hover {
-            opacity: 0.9;
+        .lesson-grid-table td.hw-status-cell.issued {
+            background: #FF6666;
         }
-        .hw-status-badge.issued {
-            background: #d9534f;
+        .lesson-grid-table td.hw-status-cell.done {
+            background: #C2D23A;
         }
-        .hw-status-badge.done {
-            background: #5cb85c;
-        }
+
 
         /* Плашка оценки на «Странице занятия» (span.mark: 13.47 x 19, 17px arial) */
         .lesson-grade-square {
