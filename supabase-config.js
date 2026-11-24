@@ -66,9 +66,21 @@ const DB = {
             const snap = await fb.getDocs(fb.collection(fb.db, table));
             const res = [];
             snap.forEach(d => res.push({ id: d.id, ...d.data() }));
+            if (table === 'journals') {
+                const latestByKey = new Map();
+                res.forEach(item => {
+                    const key = item.class_id + '__' + item.subject_id;
+                    const prev = latestByKey.get(key);
+                    if (!prev || String(item.updated_at || '') >= String(prev.updated_at || '')) {
+                        latestByKey.set(key, item);
+                    }
+                });
+                return Array.from(latestByKey.values());
+            }
             return res;
         } catch (e) { console.error('DB.getAll(' + table + '):', e); return []; }
     },
+
     async insert(table, row) {
         try {
             const fb = await loadFirebase();
