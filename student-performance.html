@@ -1948,9 +1948,10 @@
         const shortPeriodLabel = getShortPeriodHeader();
 
         let html = '<div class="dnevnik-marks-wrapper">';
-        html += '<table class="dnevnik-marks-table">';
+        html += `<table class="dnevnik-marks-table ${SUMMARY_TAB_ACTIVE ? 'summary-grid-table' : ''}">`;
 
         if (SUMMARY_TAB_ACTIVE) {
+
             const pCount = PERIODS.length;
             const periodColW = 54;
             const avgColW = 74.95;
