@@ -1951,45 +1951,35 @@
         html += `<table class="dnevnik-marks-table ${SUMMARY_TAB_ACTIVE ? 'summary-grid-table' : ''}">`;
 
         if (SUMMARY_TAB_ACTIVE) {
-
             const pCount = PERIODS.length;
             const periodColW = 54;
-            const avgColW = 74.95;
             const finalColW = 52.66;
-            const subjColW = Math.max(226.11, 912 - pCount * periodColW - avgColW - finalColW);
+            const subjColW = Math.max(226.11, 912 - pCount * periodColW - finalColW);
 
             html += `<colgroup><col style="width:${subjColW}px">`;
             for (let i = 0; i < pCount; i++) html += `<col style="width:${periodColW}px">`;
-            html += `<col style="width:${avgColW}px"><col style="width:${finalColW}px"></colgroup>`;
+            html += `<col style="width:${finalColW}px"></colgroup>`;
 
             const shortMap = { 'Четверти': 'чтв', 'Семестры': 'сем', 'Триместры': 'трм', 'Полугодия': 'плг' };
             const unit = shortMap[PERIOD_SYSTEM] || 'пер';
             html += '<thead><tr><th class="th-subj-col">Предмет</th>';
             PERIODS.forEach((_, i) => { html += `<th class="center">${i + 1} ${unit}</th>`; });
-            html += '<th class="center">Ср. балл</th><th class="center">Итог</th></tr></thead><tbody>';
+            html += '<th class="center">Итог</th></tr></thead><tbody>';
 
             subjectsFromSchedule.forEach(subjectName => {
                 const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
                 const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id && j.class_id === CURRENT_STUDENT.class_id) : null;
                 const qtrGrades = (journal && journal.qtr_grades && journal.qtr_grades[CURRENT_STUDENT.id]) || {};
-                const allVals = [];
 
                 html += `<tr><td class="subject-name">${escapeHtml(subjectName)}</td>`;
                 PERIODS.forEach((_, idx) => {
                     const g = qtrGrades[idx] || qtrGrades[String(idx)] || null;
                     if (g) {
-                        allVals.push(g);
                         html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile ${gradeClass(g)}">${escapeHtml(g)}</span></td>`;
                     } else {
                         html += `<td class="qtr-cell"></td>`;
                     }
                 });
-                const avg = calcAverageFromValues(allVals);
-                if (avg !== null) {
-                    html += `<td class="avg-cell"><span class="dnevnik-avg-tile ${getAvgClass(avg)}">${formatAvgValue(avg)}</span></td>`;
-                } else {
-                    html += `<td class="avg-cell"></td>`;
-                }
                 const finalG = qtrGrades['final'] || null;
                 if (finalG) {
                     html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile ${gradeClass(finalG)}">${escapeHtml(finalG)}</span></td>`;
@@ -2002,6 +1992,7 @@
             container.innerHTML = html;
             return;
         }
+
 
         html += '<colgroup><col style="min-width:190px;white-space:nowrap;"><col style="width:auto;"><col style="width:75px;"><col style="width:56px;"></colgroup>';
         html += '<thead><tr><th colspan="2" class="th-subj-col">Предмет</th><th class="center" style="white-space:nowrap;">Ср. балл</th><th class="center" style="white-space:nowrap;">' + escapeHtml(shortPeriodLabel) + '</th></tr></thead><tbody>';
