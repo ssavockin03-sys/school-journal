@@ -1806,7 +1806,45 @@
         container.innerHTML = '';
     }
 
+    let SUMMARY_TAB_ACTIVE = false;
+    let SCHOOL_YEAR_OFFSET = 0;
+
+    function getBaseSchoolYearStart() {
+        if (PERIODS.length > 0 && PERIODS[0].start) {
+            const y = parseInt(String(PERIODS[0].start).slice(0, 4), 10);
+            if (!isNaN(y)) return y;
+        }
+        const now = new Date();
+        return now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+    }
+
+    function updateYearClassLabel() {
+        const lbl = document.getElementById('yearClassLabel');
+        if (!lbl) return;
+        const startYear = getBaseSchoolYearStart() + SCHOOL_YEAR_OFFSET;
+        const classSuffix = CURRENT_CLASS && CURRENT_CLASS.name ? ` (${CURRENT_CLASS.name})` : '';
+        lbl.textContent = `${startYear}/${startYear + 1}${classSuffix}`;
+    }
+
+    function shiftSchoolYear(delta) {
+        SCHOOL_YEAR_OFFSET += delta;
+        updateYearClassLabel();
+    }
+
+    function getShortPeriodHeader() {
+        if (SUMMARY_TAB_ACTIVE || PERIODS.length === 0 || !PERIODS[ACTIVE_PERIOD_INDEX]) return 'Итог';
+        const shortMap = {
+            'Четверти': 'чтв',
+            'Семестры': 'сем',
+            'Триместры': 'трм',
+            'Полугодия': 'плг'
+        };
+        const unit = shortMap[PERIOD_SYSTEM] || 'пер';
+        return `${ACTIVE_PERIOD_INDEX + 1} ${unit}`;
+    }
+
     function renderPeriodTabs() {
+        updateYearClassLabel();
         const container = document.getElementById('periodTabs');
         if (!container) return;
         container.innerHTML = '';
@@ -1821,7 +1859,7 @@
         PERIODS.forEach((p, idx) => {
             const tab = document.createElement('button');
             tab.type = 'button';
-            const isActive = (idx === ACTIVE_PERIOD_INDEX);
+            const isActive = (!SUMMARY_TAB_ACTIVE && idx === ACTIVE_PERIOD_INDEX);
             tab.className = 'tab-pill' + (isActive ? ' active' : '');
             
             if (isActive) {
@@ -1831,14 +1869,24 @@
                 tab.textContent = (idx + 1);
             }
             
-            tab.addEventListener('click', () => { ACTIVE_PERIOD_INDEX = idx; renderPeriodTabs(); renderGradesTable(); });
+            tab.addEventListener('click', () => {
+                SUMMARY_TAB_ACTIVE = false;
+                ACTIVE_PERIOD_INDEX = idx;
+                renderPeriodTabs();
+                renderGradesTable();
+            });
             container.appendChild(tab);
         });
 
         const totalTab = document.createElement('button');
         totalTab.type = 'button';
-        totalTab.className = 'tab-pill';
+        totalTab.className = 'tab-pill' + (SUMMARY_TAB_ACTIVE ? ' active' : '');
         totalTab.textContent = 'итог';
+        totalTab.addEventListener('click', () => {
+            SUMMARY_TAB_ACTIVE = true;
+            renderPeriodTabs();
+            renderGradesTable();
+        });
         container.appendChild(totalTab);
     }
 
@@ -1852,12 +1900,11 @@
     }
 
     function getPeriodRange() {
-        if (PERIODS.length === 0) return null;
+        if (SUMMARY_TAB_ACTIVE || PERIODS.length === 0) return null;
         const p = PERIODS[ACTIVE_PERIOD_INDEX];
         if (!p) return null;
         return { start: p.start, end: p.end };
     }
-
     function renderGradesTable() {
         const container = document.getElementById('gradesTableContainer');
         if (!CURRENT_STUDENT) { container.innerHTML = 'Загрузка...'; return; }
@@ -1869,41 +1916,84 @@
         }
         
         const range = getPeriodRange();
-        
-        let periodLabel = 'Итог';
-        if (PERIODS.length > 0 && PERIODS[ACTIVE_PERIOD_INDEX]) {
-            const pName = PERIOD_NAMES[PERIOD_SYSTEM] || 'Период';
-            periodLabel = (ACTIVE_PERIOD_INDEX + 1) + ' ' + pName;
-        }
+        const shortPeriodLabel = getShortPeriodHeader();
 
         let html = '<div class="dnevnik-marks-wrapper">';
-        html += '<div class="dnevnik-table-header">' + periodLabel + '</div>';
         html += '<table class="dnevnik-marks-table">';
-        html += '<colgroup><col style="width:40%"><col style="width:45%"><col style="width:8%"><col style="width:7%"></colgroup>';
-        html += '<thead><tr><th>Предмет</th><th>Оценки</th><th class="center">Ср. балл</th><th class="center">' + periodLabel + '</th></tr></thead><tbody>';
+
+        if (SUMMARY_TAB_ACTIVE) {
+            const pCount = PERIODS.length;
+            const periodColW = 54;
+            const avgColW = 74.95;
+            const finalColW = 52.66;
+            const subjColW = Math.max(226.11, 912 - pCount * periodColW - avgColW - finalColW);
+
+            html += `<colgroup><col style="width:${subjColW}px">`;
+            for (let i = 0; i < pCount; i++) html += `<col style="width:${periodColW}px">`;
+            html += `<col style="width:${avgColW}px"><col style="width:${finalColW}px"></colgroup>`;
+
+            const shortMap = { 'Четверти': 'чтв', 'Семестры': 'сем', 'Триместры': 'трм', 'Полугодия': 'плг' };
+            const unit = shortMap[PERIOD_SYSTEM] || 'пер';
+            html += '<thead><tr><th class="th-subj-col">Предмет</th>';
+            PERIODS.forEach((_, i) => { html += `<th class="center">${i + 1} ${unit}</th>`; });
+            html += '<th class="center">Ср. балл</th><th class="center">Итог</th></tr></thead><tbody>';
+
+            subjectsFromSchedule.forEach(subjectName => {
+                const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
+                const journal = subjObj ? ALL_JOURNALS.find(j => j.subject_id === subjObj.id && j.class_id === CURRENT_STUDENT.class_id) : null;
+                const qtrGrades = (journal && journal.qtr_grades && journal.qtr_grades[CURRENT_STUDENT.id]) || {};
+                const allVals = [];
+
+                html += `<tr><td class="subject-name">${escapeHtml(subjectName)}</td>`;
+                PERIODS.forEach((_, idx) => {
+                    const g = qtrGrades[idx] || qtrGrades[String(idx)] || null;
+                    if (g) {
+                        allVals.push(g);
+                        html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile ${gradeClass(g)}">${escapeHtml(g)}</span></td>`;
+                    } else {
+                        html += `<td class="qtr-cell"></td>`;
+                    }
+                });
+                const avg = calcAverageFromValues(allVals);
+                if (avg !== null) {
+                    html += `<td class="avg-cell"><span class="dnevnik-avg-tile ${getAvgClass(avg)}">${formatAvgValue(avg)}</span></td>`;
+                } else {
+                    html += `<td class="avg-cell"></td>`;
+                }
+                const finalG = qtrGrades['final'] || null;
+                if (finalG) {
+                    html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile ${gradeClass(finalG)}">${escapeHtml(finalG)}</span></td>`;
+                } else {
+                    html += `<td class="qtr-cell"></td>`;
+                }
+                html += '</tr>';
+            });
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+            return;
+        }
+
+        html += '<colgroup><col style="width:226.11px"><col style="width:558.28px"><col style="width:74.95px"><col style="width:52.66px"></colgroup>';
+        html += '<thead><tr><th colspan="2" class="th-subj-col">Предмет</th><th class="center">Ср. балл</th><th class="center">' + escapeHtml(shortPeriodLabel) + '</th></tr></thead><tbody>';
 
         subjectsFromSchedule.forEach(subjectName => {
             const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
             if (!subjObj) {
-                html += `<tr><td class="subject-name">${escapeHtml(subjectName)}</td><td colspan="3" style="color:#999;font-style:italic;">Журнал не найден</td></tr>`;
+                html += `<tr><td class="subject-name">${escapeHtml(subjectName)}</td><td colspan="3" style="color:#94a3b8;font-style:italic;font-size:13px;">Журнал не найден</td></tr>`;
                 return;
             }
 
-            // ЖЁСТКО: журнал только для этого предмета и нашего класса
             const journal = ALL_JOURNALS.find(j => j.subject_id === subjObj.id && j.class_id === CURRENT_STUDENT.class_id);
             
             if (!journal) {
-                html += `<tr><td class="subject-name">${escapeHtml(subjectName)}</td><td colspan="3" style="color:#999;font-style:italic;">Журнал не найден</td></tr>`;
+                html += `<tr><td class="subject-name">${escapeHtml(subjectName)}</td><td colspan="3" style="color:#94a3b8;font-style:italic;font-size:13px;">Журнал не найден</td></tr>`;
                 return;
             }
 
             let displayGrades = [];
-            
-            // БЕРЁМ ТОЛЬКО grades[CURRENT_STUDENT.id] ИЗ ЭТОГО ЖУРНАЛА
             const sg = (journal.grades && journal.grades[CURRENT_STUDENT.id]) || {};
             Object.entries(sg).forEach(([key, val]) => {
                 if (!val) return;
-                // Фильтр по дате периода
                 if (range) {
                     const dateStr = key.split('_')[0];
                     if (dateStr < range.start || dateStr > range.end) return;
@@ -1930,9 +2020,9 @@
             html += `<td class="subject-name">${escapeHtml(subjectName)}</td>`;
             
             if (displayGrades.length === 0) {
-                html += '<td><span style="color:#999;font-style:italic;font-size:12px;">Нет оценок</span></td>';
+                html += '<td><div class="grades-strip-wrap"></div></td>';
             } else {
-                html += '<td>';
+                html += '<td><div class="grades-strip-wrap">';
                 displayGrades.forEach(item => {
                     const cls = gradeClass(item.val);
                     if (item.kind === 'presence') {
@@ -1941,41 +2031,35 @@
                         return;
                     }
 
-                 const rawType = (journal && journal.lesson_types && journal.lesson_types[item.key]) || DEFAULT_LESSON_TYPE;
-                 const workTypeFull = getLessonTypeFullName(rawType);
-                 const safeSubj = escapeHtml(subjectName).replace(/'/g, "\\'");
-                 const safeVal = escapeHtml(item.val).replace(/'/g, "\\'");
-                 const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
-                 html += `<span class="dnevnik-grade-tile-table ${cls}" data-work-type="${escapeHtml(workTypeFull)}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${item.val}</span>`;
-
+                    const rawType = (journal && journal.lesson_types && journal.lesson_types[item.key]) || DEFAULT_LESSON_TYPE;
+                    const workTypeFull = getLessonTypeFullName(rawType);
+                    const safeSubj = escapeHtml(subjectName).replace(/'/g, "\\'");
+                    const safeVal = escapeHtml(item.val).replace(/'/g, "\\'");
+                    const safeKey = escapeHtml(item.key).replace(/'/g, "\\'");
+                    html += `<span class="dnevnik-grade-tile-table ${cls}" data-work-type="${escapeHtml(workTypeFull)}" onclick="openGradeStat('${safeSubj}','${safeVal}','${safeKey}','${item.kind}')">${item.val}</span>`;
                 });
-
-                html += '</td>';
+                html += '</div></td>';
             }
             
-            // ВЫВОДИМ СРЕДНИЙ БАЛЛ КАК МАЛЕНЬКУЮ ПЛАШКУ
             if (avg !== null) {
                 const avgCls = getAvgClass(avg);
                 const avgText = formatAvgValue(avg);
-                html += `<td class="avg-cell" style="text-align:center;">
-                    <span class="dnevnik-avg-tile ${avgCls}">${avgText}</span>
-                </td>`;
+                html += `<td class="avg-cell"><span class="dnevnik-avg-tile ${avgCls}">${avgText}</span></td>`;
             } else {
-                // Если среднего балла нет, оставляем ячейку ПУСТОЙ
                 html += `<td class="avg-cell"></td>`;
             }
 
-            // Оценка за период (четверть)
             if (periodQtr) {
-                html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile ${gradeClass(periodQtr)}">${periodQtr}</span></td>`;
+                html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile ${gradeClass(periodQtr)}">${escapeHtml(periodQtr)}</span></td>`;
             } else {
-                html += `<td class="qtr-cell"><span class="dnevnik-qtr-tile no-grade">-</span></td>`;
+                html += `<td class="qtr-cell"></td>`;
             }
             html += '</tr>';
         });
         html += '</tbody></table></div>';
         container.innerHTML = html;
     }
+
 
     function fmtScore(n) { return n == null ? '—' : Number(n).toFixed(2); }
 
