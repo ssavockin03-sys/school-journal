@@ -1056,16 +1056,19 @@
             const doneHwMap = getCompletedHwMap();
 
             const presenceText = presenceItems.map(p => getPresenceFullName(p)).join(', ');
+            const firstPresCode = String(presenceItems.at(0) || '').trim().toUpperCase();
+            const presColorClass = firstPresCode === 'Н' ? 'pres-n' : (firstPresCode === 'О' ? 'pres-o' : '');
             const presenceHtml = presenceItems.length === 0
                 ? `<div class="presence-empty-box">Данные не введены преподавателем.</div>`
                 : `<div class="presence-filled-box">
                     <table class="presence-status-table">
                         <tr>
-                            <td class="presence-status-cell">${escapeHtml(presenceText)}</td>
+                            <td class="presence-status-cell ${presColorClass}">${escapeHtml(presenceText)}</td>
                             <td class="presence-comment-cell">Комментария нет</td>
                         </tr>
                     </table>
                 </div>`;
+
 
 
             const hwBlockHtml = hwList.length === 0
