@@ -672,6 +672,13 @@
         .dnevnik-marks-table td.avg-cell { text-align: center; padding: 1px 8px; }
         .dnevnik-marks-table td.qtr-cell { text-align: center; padding: 1px 8px; }
 
+        /* Вертикальные линии между колонками во вкладке «Итог» */
+        .dnevnik-marks-table.summary-grid-table th:not(:last-child),
+        .dnevnik-marks-table.summary-grid-table td:not(:last-child) {
+            border-right: 1px solid #eef2f7;
+        }
+
+
         /* Квадратики оценок и пропусков во вкладке «По периодам» (16.49 x 18.7, 14px Open Sans, #FFFFFF) */
         .dnevnik-grade-tile-table {
             display: inline-flex;
