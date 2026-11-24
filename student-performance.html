@@ -1952,9 +1952,10 @@
 
         if (SUMMARY_TAB_ACTIVE) {
             const pCount = PERIODS.length;
-            const periodColW = 54;
-            const finalColW = 52.66;
-            const subjColW = Math.max(226.11, 912 - pCount * periodColW - finalColW);
+            const periodColW = 108;
+            const finalColW = 105;
+            const subjColW = Math.max(180, 912 - pCount * periodColW - finalColW);
+
 
             html += `<colgroup><col style="width:${subjColW}px">`;
             for (let i = 0; i < pCount; i++) html += `<col style="width:${periodColW}px">`;
