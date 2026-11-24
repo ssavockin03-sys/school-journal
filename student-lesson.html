@@ -826,23 +826,13 @@
     }
     function formatLessonDateLabel(dateStr, lessonNum) {
         const d = new Date(dateStr + 'T00:00:00');
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-
         let dayPart = dateStr;
         if (!isNaN(d.getTime())) {
-            d.setHours(0, 0, 0, 0);
-            if (d.getTime() === today.getTime()) dayPart = 'Сегодня';
-            else if (d.getTime() === tomorrow.getTime()) dayPart = 'Завтра';
-            else if (d.getTime() === yesterday.getTime()) dayPart = 'Вчера';
-            else dayPart = `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`;
+            dayPart = `${d.getDate()} ${MONTHS_GEN[d.getMonth()]} ${d.getFullYear()}`;
         }
         return `${dayPart}, ${lessonNum} занятие`;
     }
+
 
     (async function init() {
         try {
