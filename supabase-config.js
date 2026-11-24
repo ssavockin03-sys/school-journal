@@ -19,7 +19,8 @@ function loadFirebase() {
 
     _firebaseReady = new Promise((resolve, reject) => {
         const configJson = JSON.stringify(firebaseConfig);
-        const cdnBase = "https://www." + "://gstatic.com";
+        const host = ["www", "gstatic", "com"].join(".");
+        const cdnBase = "https://" + [host, "firebasejs", "10.7.1"].join("/") + "/";
         const blob = new Blob([`
             import { initializeApp } from '${cdnBase}firebase-app.js';
             import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, setDoc } from '${cdnBase}firebase-firestore.js';
