@@ -3,7 +3,7 @@
 // ============================================================
 const firebaseConfig = {
     apiKey: "AIzaSyD1d1JQioGL8lHON8ydgtpHU1EXEwD00SY",
-    authDomain: "school-journal-8f39a.firebaseapp.com",
+    authDomain: "://firebaseapp.com",
     projectId: "school-journal-8f39a",
     storageBucket: "school-journal-8f39a.firebasestorage.app",
     messagingSenderId: "254973926699",
@@ -20,9 +20,9 @@ function loadFirebase() {
     _firebaseReady = new Promise((resolve, reject) => {
         const configJson = JSON.stringify(firebaseConfig);
         const blob = new Blob([`
-            import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-            import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-            import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+            import { initializeApp } from 'https://gstatic.com';
+            import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, setDoc } from 'https://gstatic.com';
+            import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://gstatic.com';
 
             const app = initializeApp(${configJson});
             const db = getFirestore(app);
@@ -99,7 +99,7 @@ const DB = {
             const fb = await loadFirebase();
             const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'journals'), fb.where('class_id', '==', classId), fb.where('subject_id', '==', subjectId)));
             if (snap.empty) return null;
-            const d = snap.docs[0];
+            const d = snap.docs.at(0);
             return { id: d.id, ...d.data() };
         } catch (e) { console.error('DB.getJournal:', e); return null; }
     },
@@ -108,8 +108,10 @@ const DB = {
             const fb = await loadFirebase();
             const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'journals'), fb.where('class_id', '==', classId), fb.where('subject_id', '==', subjectId)));
             const data = { class_id: classId, subject_id: subjectId, ...payload, updated_at: new Date().toISOString() };
-            const docId = !snap.empty ? snap.docs[0].id : (classId + '__' + subjectId);
+            const docId = !snap.empty ? snap.docs.at(0).id : (classId + '__' + subjectId);
             await fb.setDoc(fb.doc(fb.db, 'journals', docId), data);
             return { id: docId, ...data };
         } catch (e) { console.error('DB.upsertJournal:', e); return null; }
     }
+};
+window.DB = DB;
