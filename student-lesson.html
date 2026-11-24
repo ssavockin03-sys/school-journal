@@ -1021,30 +1021,52 @@
             const doneHwMap = getCompletedHwMap();
 
             const presenceHtml = presenceItems.length === 0
-                ? `<div class="presence-empty-box">Данные не введены преподавателем</div>`
+                ? `<div class="presence-empty-box">Данные не введены преподавателем.</div>`
                 : `<div class="presence-filled-box">${presenceItems.map(p => `<span class="presence-badge-pill">${escapeHtml(p)}</span> <span>${escapeHtml(getPresenceFullName(p))}</span>`).join('&nbsp;&nbsp;')}</div>`;
 
-            const hwRowsHtml = hwList.length === 0
-                ? `<tr><td colspan="3" style="text-align:center;color:#9aa6b2;padding:16px;">Домашнее задание не задано</td></tr>`
-                : hwList.map((hwText, hwIdx) => {
-                    const hwKey = `${student.id}_${dateStr}_${subjLower}_${lessonNum}_${hwIdx}`;
-                    const isDone = Boolean(doneHwMap[hwKey]);
-                    const safeKey = escapeHtml(hwKey).replace(/'/g, "\\'");
-                    return `<tr>
-                        <td style="width:74%;"><span class="hw-task-link">${escapeHtml(hwText)}</span></td>
-                        <td style="width:13%;text-align:center;color:#7d8b99;">нет</td>
-                        <td style="width:13%;text-align:center;">
-                            <span class="hw-status-badge ${isDone ? 'done' : 'issued'}" onclick="toggleLessonPageHw(this, '${safeKey}')">${isDone ? 'Выполнено' : 'Выдано'}</span>
-                        </td>
-                    </tr>`;
-                }).join('');
+            const hwBlockHtml = hwList.length === 0
+                ? `<div class="presence-empty-box">На это занятие не задано ни одного домашнего задания.</div>`
+                : `<div class="lesson-rounded-box">
+                    <table class="lesson-grid-table">
+                        <thead>
+                            <tr>
+                                <th class="left" style="width:72%;">Задание</th>
+                                <th style="width:13%;">Оценка</th>
+                                <th style="width:15%;">Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>${hwList.map((hwText, hwIdx) => {
+                            const hwKey = `${student.id}_${dateStr}_${subjLower}_${lessonNum}_${hwIdx}`;
+                            const isDone = Boolean(doneHwMap[hwKey]);
+                            const safeKey = escapeHtml(hwKey).replace(/'/g, "\\'");
+                            return `<tr>
+                                <td style="width:72%;"><span class="hw-task-link">${escapeHtml(hwText)}</span></td>
+                                <td style="width:13%;text-align:center;color:#666666;">нет</td>
+                                <td style="width:15%;text-align:center;">
+                                    <span class="hw-status-badge ${isDone ? 'done' : 'issued'}" onclick="toggleLessonPageHw(this, '${safeKey}')">${isDone ? 'Выполнено' : 'Выдано'}</span>
+                                </td>
+                            </tr>`;
+                        }).join('')}</tbody>
+                    </table>
+                </div>`;
 
-            const gradeRowsHtml = gradeItems.length === 0
-                ? `<tr><td colspan="2" style="text-align:center;color:#9aa6b2;padding:16px;">Оценки за работу на занятии не выставлены</td></tr>`
-                : gradeItems.map(g => `<tr>
-                    <td style="width:87%;">${escapeHtml(g.typeFull)}</td>
-                    <td style="width:13%;text-align:center;"><span class="lesson-grade-square ${gradeClass(g.grade)}">${escapeHtml(g.grade)}</span></td>
-                </tr>`).join('');
+            const gradeBlockHtml = gradeItems.length === 0
+                ? `<div class="presence-empty-box">Оценки за работу на занятии не выставлены.</div>`
+                : `<div class="lesson-rounded-box">
+                    <table class="lesson-grid-table">
+                        <thead>
+                            <tr>
+                                <th class="left" style="width:512px;"></th>
+                                <th style="width:94px;">Оценка</th>
+                            </tr>
+                        </thead>
+                        <tbody>${gradeItems.map(g => `<tr>
+                            <td style="width:512px;"><div class="lesson-work-light">${escapeHtml(g.typeFull)}</div></td>
+                            <td style="width:94px;text-align:center;"><span class="lesson-grade-square ${gradeClass(g.grade)}">${escapeHtml(g.grade)}</span></td>
+                        </tr>`).join('')}</tbody>
+                    </table>
+                </div>`;
+
 
             const container = document.getElementById('lessonPageContent');
             container.innerHTML = `
