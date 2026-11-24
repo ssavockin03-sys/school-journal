@@ -1987,8 +1987,9 @@
             return;
         }
 
-        html += '<colgroup><col style="width:226.11px"><col style="width:558.28px"><col style="width:74.95px"><col style="width:52.66px"></colgroup>';
-        html += '<thead><tr><th colspan="2" class="th-subj-col">Предмет</th><th class="center">Ср. балл</th><th class="center">' + escapeHtml(shortPeriodLabel) + '</th></tr></thead><tbody>';
+        html += '<colgroup><col style="min-width:190px;white-space:nowrap;"><col style="width:auto;"><col style="width:75px;"><col style="width:56px;"></colgroup>';
+        html += '<thead><tr><th colspan="2" class="th-subj-col">Предмет</th><th class="center" style="white-space:nowrap;">Ср. балл</th><th class="center" style="white-space:nowrap;">' + escapeHtml(shortPeriodLabel) + '</th></tr></thead><tbody>';
+
 
         subjectsFromSchedule.forEach(subjectName => {
             const subjObj = ALL_SUBJECTS.find(s => s.name === subjectName);
