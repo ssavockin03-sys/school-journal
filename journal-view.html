@@ -2395,7 +2395,8 @@ function handleGradeKeydown(e, input) {
 }
 
 function getSafeNow() {
-    MAX_GRADE_TS = MAX_GRADE_TS + 1;
+    const now = Date.now();
+    MAX_GRADE_TS = now > MAX_GRADE_TS ? now : MAX_GRADE_TS + 1;
     return MAX_GRADE_TS;
 }
 
