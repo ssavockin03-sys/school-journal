@@ -668,20 +668,21 @@
         .dnevnik-marks-table td.avg-cell { text-align: center; padding: 1px 8px; }
         .dnevnik-marks-table td.qtr-cell { text-align: center; padding: 1px 8px; }
 
-        /* Квадратики оценок 22x22 в строке Y1p7l */
+        /* Квадратики оценок и пропусков во вкладке «По периодам» (16.49 x 18.7, 14px Open Sans, #FFFFFF) */
         .dnevnik-grade-tile-table {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 22px;
-            min-width: 22px;
+            height: 18.7px;
+            min-width: 16.49px;
             box-sizing: border-box;
-            color: #fff;
-            padding: 0 5px;
-            font-weight: 600;
-            font-size: 12px;
+            color: #FFFFFF;
+            padding: 0 4px;
+            font-family: "Open Sans", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 14px;
             line-height: 1;
-            border-radius: 5px;
+            border-radius: 2px;
             cursor: pointer;
             margin: 0;
             text-align: center;
@@ -689,48 +690,56 @@
             transition: transform 0.1s;
         }
         .dnevnik-grade-tile-table:hover { transform: scale(1.1); }
+        .dnevnik-grade-tile-table.g5, .dnevnik-grade-tile-table.g4 { background-color: #4B9A25; }
+        .dnevnik-grade-tile-table.g3 { background-color: #FF8F00; }
+        .dnevnik-grade-tile-table.g2, .dnevnik-grade-tile-table.g1 { background-color: #CF3838; }
+        .dnevnik-grade-tile-table.gn { background-color: #94ACC8; }
 
-        /* Плашка среднего балла */
+        /* Плашка среднего балла (тот же шрифт 14px, высота 18.7px и цвета) */
         .dnevnik-avg-tile {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 22px;
-            min-width: 34px;
+            height: 18.7px;
+            min-width: 16.49px;
             box-sizing: border-box;
-            color: #fff;
-            padding: 0 7px;
-            font-weight: 600;
-            font-size: 12px;
+            color: #FFFFFF;
+            padding: 0 5px;
+            font-family: "Open Sans", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 14px;
             line-height: 1;
-            border-radius: 5px;
+            border-radius: 2px;
             text-align: center;
             vertical-align: middle;
         }
 
-        .dnevnik-avg-tile.avg-green { background-color: #4b9a25; }
-        .dnevnik-avg-tile.avg-orange { background-color: #ff8f00; }
-        .dnevnik-avg-tile.avg-red { background-color: #cf3838; }
+        .dnevnik-avg-tile.avg-green { background-color: #4B9A25; }
+        .dnevnik-avg-tile.avg-orange { background-color: #FF8F00; }
+        .dnevnik-avg-tile.avg-red { background-color: #CF3838; }
 
-        /* Плашка итоговой оценки за четверть */
+        /* Плашка итоговой оценки за период */
         .dnevnik-qtr-tile {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 22px;
-            min-width: 22px;
-            padding: 0 6px;
-            border-radius: 5px;
-            font-weight: 600;
-            font-size: 12px;
-            color: #fff;
+            height: 18.7px;
+            min-width: 16.49px;
+            box-sizing: border-box;
+            padding: 0 4px;
+            border-radius: 2px;
+            font-family: "Open Sans", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            color: #FFFFFF;
             line-height: 1;
             vertical-align: middle;
         }
-        .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
-        .dnevnik-qtr-tile.g3 { background-color: #ff8f00; }
-        .dnevnik-qtr-tile.g2, .dnevnik-qtr-tile.g1 { background-color: #cf3838; }
-        .dnevnik-qtr-tile.gn { background-color: #94acc8; }
+        .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4B9A25; }
+        .dnevnik-qtr-tile.g3 { background-color: #FF8F00; }
+        .dnevnik-qtr-tile.g2, .dnevnik-qtr-tile.g1 { background-color: #CF3838; }
+        .dnevnik-qtr-tile.gn { background-color: #94ACC8; }
+
 
 
         /* ===================== МОДАЛКИ И ЧАТ ===================== */
