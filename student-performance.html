@@ -527,77 +527,211 @@
 
 
 
-        /* ===================== ТАБЛИЦА (ПО ПЕРИОДАМ) ===================== */
-        .period-tabs-wrapper { margin-bottom: 16px; }
-        .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; margin-right: auto; width: fit-content; }
-        .tab-pill { margin: 6px 0; padding: 0 8px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
+        /* ===================== ТАБЛИЦА (ПО ПЕРИОДАМ — ГЕОМЕТРИЯ ОРИГИНАЛА) ===================== */
+        .semesters-card {
+            width: 940px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 3.11111px 6.22222px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+        /* div.wyaa0: 940 x 73.44, padding: 20px 16px */
+        .semesters-top-bar {
+            width: 940px;
+            min-height: 73.44px;
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #eef2f7;
+            box-sizing: border-box;
+        }
+        .semesters-left-controls {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .year-class-switcher {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: "Open Sans", Arial, sans-serif;
+            font-size: 20px;
+            font-weight: 400;
+            color: #0f3159;
+            user-select: none;
+            line-height: 1.2;
+        }
+        .year-class-arrow {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 2px 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .year-class-arrow:hover {
+            color: #2f80ed;
+        }
+        .rating-hint-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 6px 14px 6px 10px;
+            font-family: "Open Sans", Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: #0f3159;
+            white-space: nowrap;
+        }
+        .rating-hint-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .period-tabs-wrapper { margin-bottom: 0; }
+        .period-tabs-group { display: flex; font-family: "Open Sans", sans-serif; border: 1px solid #e0e7ed; border-radius: 8px; font-weight: 400; font-size: 14px; line-height: 19px; background-color: #fff; align-items: center; width: fit-content; }
+        .tab-pill { margin: 6px 0; padding: 0 9px; border-style: solid; border-color: #e0e7ed; border-width: 0 1px 0 0; color: #0f3159; font-weight: 400; cursor: pointer; background: transparent; font-family: inherit; font-size: inherit; line-height: inherit; }
         .tab-pill:first-child { border-radius: 8px 0 0 8px; }
         .tab-pill:last-child { border-radius: 0 8px 8px 0; border-width: 0; }
-        .tab-pill.active { padding: 6px 8px; margin: -1px; border: 1px solid #2f80ed; border-radius: 8px; color: #2f80ed; z-index: 1; background: #fff; }
+        .tab-pill.active { padding: 6px 10px; margin: -1px; border: 1px solid #2f80ed; border-radius: 8px; color: #2f80ed; z-index: 1; background: #fff; }
 
-        .dnevnik-marks-wrapper { background: transparent; border-radius: 12px; border: 1px solid #e5eaf0; overflow: hidden; margin-bottom: 20px; }
-        .dnevnik-table-header { background: #f2f6fb; font-weight: 700; font-size: 15px; color: #0273b2; padding: 12px 16px; border-bottom: 1px solid #e5eaf0; }
-        .dnevnik-marks-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; table-layout: fixed; }
-        .dnevnik-marks-table th { background: #f9f9f9; font-weight: 600; font-size: 11px; color: #777; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; text-align: left; }
-        .dnevnik-marks-table th.center { text-align: center; }
-        .dnevnik-marks-table td { min-height: 28px; vertical-align: middle; padding: 10px 12px; border-bottom: 1px solid #e5eaf0; font-size: 12px; line-height: 1.4; }
-        .dnevnik-marks-table tr:last-child td { border-bottom: none; }
-        .dnevnik-marks-table td.subject-name { font-weight: 600; color: #333; font-size: 14px; }
-        .dnevnik-marks-table td.avg-cell { text-align: center; }
-        .dnevnik-marks-table td.qtr-cell { text-align: center; }
+        .dnevnik-marks-wrapper {
+            background: #ffffff;
+            padding: 0 14px 10px;
+        }
+        .dnevnik-marks-table {
+            width: 912px;
+            border-collapse: collapse;
+            font-family: "Open Sans", Arial, sans-serif;
+            table-layout: fixed;
+        }
+        /* th: высота 35.17px, 11px "Open Sans", #000000 */
+        .dnevnik-marks-table th {
+            background: #ffffff;
+            font-weight: 400;
+            font-size: 11px;
+            color: #000000;
+            text-transform: none;
+            height: 35.17px;
+            padding: 8px;
+            border-bottom: 1px solid #eef2f7;
+            text-align: left;
+            box-sizing: border-box;
+        }
+        .dnevnik-marks-table th.th-subj-col {
+            padding: 8px 8px 8px 12px;
+        }
+        .dnevnik-marks-table th.center {
+            text-align: center;
+        }
+        .dnevnik-marks-table tbody tr {
+            min-height: 45.07px;
+            border-bottom: 1px solid #eef2f7;
+        }
+        .dnevnik-marks-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        .dnevnik-marks-table td {
+            vertical-align: middle;
+            padding: 1px;
+            font-size: 14px;
+            line-height: 1.35;
+            box-sizing: border-box;
+        }
+        /* td предмета: ширина 226.11px, высота 45.07px, padding: 1px */
+        .dnevnik-marks-table td.subject-name {
+            font-weight: 400;
+            color: #0f3159;
+            font-size: 14px;
+            padding: 1px 8px 1px 12px;
+            height: 45.07px;
+        }
+        /* div.Y1p7l: ширина ~554.38px, margin: 8px 0, высота ~23.09px */
+        .grades-strip-wrap {
+            margin: 8px 0;
+            min-height: 23.09px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+        }
+        .dnevnik-marks-table td.avg-cell { text-align: center; padding: 1px 8px; }
+        .dnevnik-marks-table td.qtr-cell { text-align: center; padding: 1px 8px; }
 
-        /* Оценки в таблице (маленькие квадратики) */
+        /* Квадратики оценок 22x22 в строке Y1p7l */
         .dnevnik-grade-tile-table {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 17px;
+            height: 22px;
+            min-width: 22px;
             box-sizing: border-box;
             color: #fff;
-            padding: 0 4px;
-            font-weight: 400;
-            font-size: 14px;
+            padding: 0 5px;
+            font-weight: 600;
+            font-size: 12px;
             line-height: 1;
-            border-radius: 2px;
+            border-radius: 5px;
             cursor: pointer;
-            margin-right: 4px;
-            margin-bottom: 4px;
+            margin: 0;
             text-align: center;
-            min-width: 17px;
             vertical-align: middle;
             transition: transform 0.1s;
         }
-        .dnevnik-grade-tile-table:hover { transform: scale(1.15); }
+        .dnevnik-grade-tile-table:hover { transform: scale(1.1); }
 
-        /* Кубик среднего балла (в точности как оценка) */
+        /* Плашка среднего балла */
         .dnevnik-avg-tile {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 17px;
+            height: 22px;
+            min-width: 34px;
             box-sizing: border-box;
             color: #fff;
-            padding: 0 4px;
-            font-weight: 400;
-            font-size: 14px;
+            padding: 0 7px;
+            font-weight: 600;
+            font-size: 12px;
             line-height: 1;
-            border-radius: 2px;
+            border-radius: 5px;
             text-align: center;
-            min-width: 17px;
             vertical-align: middle;
         }
 
-        /* Цвета для среднего балла (совпадают с g5, g3, g2) */
         .dnevnik-avg-tile.avg-green { background-color: #4b9a25; }
         .dnevnik-avg-tile.avg-orange { background-color: #ff8f00; }
         .dnevnik-avg-tile.avg-red { background-color: #cf3838; }
 
-        .dnevnik-qtr-tile { display: inline-block; padding: 4px 8px; border-radius: 2px; font-weight: 600; font-size: 14px; color: #fff; line-height: 1; }
+        /* Плашка итоговой оценки за четверть */
+        .dnevnik-qtr-tile {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 22px;
+            min-width: 22px;
+            padding: 0 6px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 12px;
+            color: #fff;
+            line-height: 1;
+            vertical-align: middle;
+        }
         .dnevnik-qtr-tile.g5, .dnevnik-qtr-tile.g4 { background-color: #4b9a25; }
         .dnevnik-qtr-tile.g3 { background-color: #ff8f00; }
         .dnevnik-qtr-tile.g2, .dnevnik-qtr-tile.g1 { background-color: #cf3838; }
         .dnevnik-qtr-tile.gn { background-color: #94acc8; }
-        .dnevnik-qtr-tile.no-grade { background: transparent; color: #999; }
+
 
         /* ===================== МОДАЛКИ И ЧАТ ===================== */
         #subjectModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
