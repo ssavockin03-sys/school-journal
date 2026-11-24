@@ -1032,9 +1032,18 @@
             const className = (CURRENT_CLASS && CURRENT_CLASS.name) || '—';
             const doneHwMap = getCompletedHwMap();
 
+            const presenceText = presenceItems.map(p => getPresenceFullName(p)).join(', ');
             const presenceHtml = presenceItems.length === 0
                 ? `<div class="presence-empty-box">Данные не введены преподавателем.</div>`
-                : `<div class="presence-filled-box">${presenceItems.map(p => `<span class="presence-badge-pill">${escapeHtml(p)}</span> <span>${escapeHtml(getPresenceFullName(p))}</span>`).join('&nbsp;&nbsp;')}</div>`;
+                : `<div class="presence-filled-box">
+                    <table class="presence-status-table">
+                        <tr>
+                            <td class="presence-status-cell">${escapeHtml(presenceText)}</td>
+                            <td class="presence-comment-cell">Комментария нет</td>
+                        </tr>
+                    </table>
+                </div>`;
+
 
             const hwBlockHtml = hwList.length === 0
                 ? `<div class="presence-empty-box">На это занятие не задано ни одного домашнего задания.</div>`
