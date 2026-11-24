@@ -2429,24 +2429,24 @@ async function upg(studentId, gradeKey, inputElement) {
         inputElement.value = (JOURNAL.grades[studentId] || {})[gradeKey] || '';
         return;
     }
+
+    if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
+    JOURNAL.grades[studentId][gradeKey] = up;
+
+    if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
+    if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
+    if (!up) {
+        delete JOURNAL.gradeTimestamps[studentId][gradeKey];
+    } else {
+        JOURNAL.gradeTimestamps[studentId][gradeKey] = getSafeNow();
+    }
+
     const displayLayer = inputElement.previousElementSibling;
     const cellTd = inputElement.closest('td');
     if (cellTd) cellTd.classList.add('saving-outline');
-
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
+
     setTimeout(() => {
-        if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
-        JOURNAL.grades[studentId][gradeKey] = up;
-
-        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
-        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
-        if (!up) {
-            delete JOURNAL.gradeTimestamps[studentId][gradeKey];
-        } else {
-            JOURNAL.gradeTimestamps[studentId][gradeKey] = getSafeNow();
-        }
-
-
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
         enqueueSaveJournal();
@@ -2461,54 +2461,53 @@ async function upqtr(studentId, inputElement) {
         inputElement.value = (JOURNAL.qtrGrades[studentId] || {})[ACTIVE_PERIOD_INDEX] || '';
         return;
     }
+
+    if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
+    JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
+
+    const qKey = 'qtr:' + ACTIVE_PERIOD_INDEX;
+    if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
+    if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
+    if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
+    else JOURNAL.gradeTimestamps[studentId][qKey] = getSafeNow();
+
     const displayLayer = inputElement.previousElementSibling;
     const cellTd = inputElement.closest('td');
     if (cellTd) cellTd.classList.add('saving-outline');
-
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
+
     setTimeout(() => {
-        if (!JOURNAL.qtrGrades[studentId]) JOURNAL.qtrGrades[studentId] = {};
-        JOURNAL.qtrGrades[studentId][ACTIVE_PERIOD_INDEX] = up;
-
-        const qKey = 'qtr:' + ACTIVE_PERIOD_INDEX;
-        if (!JOURNAL.gradeTimestamps) JOURNAL.gradeTimestamps = {};
-        if (!JOURNAL.gradeTimestamps[studentId]) JOURNAL.gradeTimestamps[studentId] = {};
-        if (!up) delete JOURNAL.gradeTimestamps[studentId][qKey];
-        else JOURNAL.gradeTimestamps[studentId][qKey] = getSafeNow();
-
-
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
         enqueueSaveJournal();
     }, EDIT_DELAY_MS);
 }
-
-
 async function saveJournal() {
+    const localGradesSnap = JSON.parse(JSON.stringify(JOURNAL.grades || {}));
+    const localLessonsSnap = JSON.parse(JSON.stringify(JOURNAL.lessons || {}));
+    const localQtrSnap = JSON.parse(JSON.stringify(JOURNAL.qtrGrades || {}));
+    const localTypesSnap = JSON.parse(JSON.stringify(JOURNAL.lessonTypes || {}));
+    const localTsSnap = JSON.parse(JSON.stringify(JOURNAL.gradeTimestamps || {}));
+
     let fresh = null;
     try { fresh = await loadJournalNormalized(); }
     catch (e) { console.warn('loadJournalNormalized failed', e); }
 
     if (fresh) {
-        const visibleKeys = new Set(DATES.map(d => d.gradeKey));
-
         const mergedGrades = {};
-        const allSids = new Set([...Object.keys(fresh.grades), ...Object.keys(JOURNAL.grades)]);
+        const allSids = new Set([...Object.keys(fresh.grades), ...Object.keys(localGradesSnap)]);
         allSids.forEach(sid => {
             const fromFresh = fresh.grades[sid] || {};
-            const fromLocal = JOURNAL.grades[sid] || {};
+            const fromLocal = localGradesSnap[sid] || {};
             const out = {};
 
             Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
 
-            visibleKeys.forEach(k => {
-                if (Object.prototype.hasOwnProperty.call(fromLocal, k)) out[k] = fromLocal[k];
-                else delete out[k];
-            });
-
-            Object.keys(fromFresh).forEach(k => {
-                if (!Object.prototype.hasOwnProperty.call(fromLocal, k)) {
+            Object.keys(fromLocal).forEach(k => {
+                if (fromLocal[k] === '' || fromLocal[k] === null || fromLocal[k] === undefined) {
                     delete out[k];
+                } else {
+                    out[k] = fromLocal[k];
                 }
             });
 
@@ -2521,41 +2520,38 @@ async function saveJournal() {
                 ? { deleted: true }
                 : { t: fresh.lessons[k].t || '', h: normalizeHwList(fresh.lessons[k].h) };
         });
-        Object.keys(JOURNAL.lessons).forEach(k => {
-            mergedLessons[k] = JOURNAL.lessons[k].deleted
+        Object.keys(localLessonsSnap).forEach(k => {
+            mergedLessons[k] = localLessonsSnap[k].deleted
                 ? { deleted: true }
-                : { t: JOURNAL.lessons[k].t || '', h: normalizeHwList(JOURNAL.lessons[k].h) };
-        });
-
-        const localLessonKeys = new Set(Object.keys(JOURNAL.lessons));
-        Object.keys(fresh.lessons).forEach(k => {
-            if (!localLessonKeys.has(k)) delete mergedLessons[k];
+                : { t: localLessonsSnap[k].t || '', h: normalizeHwList(localLessonsSnap[k].h) };
         });
 
         const mergedTypes = {};
         Object.keys(fresh.lessonTypes).forEach(k => { mergedTypes[k] = fresh.lessonTypes[k]; });
-        Object.keys(JOURNAL.lessonTypes).forEach(k => { mergedTypes[k] = JOURNAL.lessonTypes[k]; });
-        const localTypeKeys = new Set(Object.keys(JOURNAL.lessonTypes));
-        Object.keys(fresh.lessonTypes).forEach(k => {
-            if (!localTypeKeys.has(k)) delete mergedTypes[k];
+        Object.keys(localTypesSnap).forEach(k => {
+            if (localTypesSnap[k] === '') delete mergedTypes[k];
+            else mergedTypes[k] = localTypesSnap[k];
         });
 
         const mergedQtr = {};
-        const allQtrSids = new Set([...Object.keys(fresh.qtrGrades), ...Object.keys(JOURNAL.qtrGrades)]);
+        const allQtrSids = new Set([...Object.keys(fresh.qtrGrades), ...Object.keys(localQtrSnap)]);
         allQtrSids.forEach(sid => {
             const fromFresh = fresh.qtrGrades[sid] || {};
-            const fromLocal = JOURNAL.qtrGrades[sid] || {};
+            const fromLocal = localQtrSnap[sid] || {};
             const out = {};
             Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
-            Object.keys(fromLocal).forEach(k => { out[k] = fromLocal[k]; });
+            Object.keys(fromLocal).forEach(k => {
+                if (fromLocal[k] === '' || fromLocal[k] === null || fromLocal[k] === undefined) {
+                    delete out[k];
+                } else {
+                    out[k] = fromLocal[k];
+                }
+            });
             if (Object.keys(out).length > 0) mergedQtr[sid] = out;
         });
-
         const mergedTs = {};
         const freshTs = fresh.gradeTimestamps || {};
-        const localTs = JOURNAL.gradeTimestamps || {};
-
-        let maxDbTs = 0;
+        let maxDbTs = MAX_GRADE_TS;
         try {
             const allJournals = await DB.getAll('journals');
             (allJournals || []).forEach(j => {
@@ -2568,13 +2564,17 @@ async function saveJournal() {
             });
         } catch (e) {}
 
-        const allTsSids = new Set([...Object.keys(freshTs), ...Object.keys(localTs)]);
+        const allTsSids = new Set([...Object.keys(freshTs), ...Object.keys(localTsSnap)]);
         allTsSids.forEach(sid => {
             const fromFresh = freshTs[sid] || {};
-            const fromLocal = localTs[sid] || {};
+            const fromLocal = localTsSnap[sid] || {};
             const out = {};
             Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
             Object.keys(fromLocal).forEach(k => {
+                if (fromLocal[k] === null || fromLocal[k] === undefined) {
+                    delete out[k];
+                    return;
+                }
                 let tsVal = Number(fromLocal[k]);
                 if (!isNaN(tsVal) && Number(fromFresh[k]) !== tsVal && tsVal <= maxDbTs) {
                     maxDbTs += 1;
@@ -2595,12 +2595,6 @@ async function saveJournal() {
         syncMaxGradeTs(mergedTs);
         JOURNAL.gradeTimestamps = mergedTs;
 
-
-        JOURNAL.grades = mergedGrades;
-        JOURNAL.lessons = mergedLessons;
-        JOURNAL.qtrGrades = mergedQtr;
-        JOURNAL.lessonTypes = mergedTypes;
-
         await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
             grades: mergedGrades,
             lessons: mergedLessons,
@@ -2610,14 +2604,15 @@ async function saveJournal() {
         });
     } else {
         await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
-            grades: JOURNAL.grades,
-            lessons: JOURNAL.lessons,
-            qtr_grades: JOURNAL.qtrGrades,
-            lesson_types: JOURNAL.lessonTypes,
-            grade_timestamps: JOURNAL.gradeTimestamps || {}
+            grades: localGradesSnap,
+            lessons: localLessonsSnap,
+            qtr_grades: localQtrSnap,
+            lesson_types: localTypesSnap,
+            grade_timestamps: localTsSnap
         });
     }
 }
+
 
 let currentLessonTypeContext = { gradeKey: null, baseGradeKey: null, date: null };
 let popupJustOpened = false;
