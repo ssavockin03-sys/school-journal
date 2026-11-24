@@ -1287,12 +1287,10 @@
                 const wrap = document.querySelector('.content-wrap');
                 if (wrap) {
                     wrap.classList.toggle('semesters-active', view === 'semesters');
-                    if (view !== 'semesters') {
-                        wrap.style.zoom = (DIARY_ZOOM / 100) * 1.1;
-                    } else {
-                        wrap.style.zoom = 1;
-                    }
+                    const baseFactor = view === 'semesters' ? 1 : 1.1;
+                    wrap.style.zoom = (DIARY_ZOOM / 100) * baseFactor;
                 }
+
             });
         });
     }
