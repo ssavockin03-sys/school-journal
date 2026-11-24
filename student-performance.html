@@ -2035,8 +2035,9 @@
             html += `<td class="subject-name">${escapeHtml(subjectName)}</td>`;
             
             if (displayGrades.length === 0) {
-                html += '<td><div class="grades-strip-wrap"></div></td>';
+                html += '<td><div style="color:#000000;font-family:\'Open Sans\',Arial,sans-serif;font-size:12px;font-weight:400;line-height:18px;margin:5px 0 0 0;">Нет выставленных оценок</div></td>';
             } else {
+
                 html += '<td><div class="grades-strip-wrap">';
                 displayGrades.forEach(item => {
                     const cls = gradeClass(item.val);
