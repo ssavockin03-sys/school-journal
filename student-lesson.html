@@ -272,12 +272,19 @@
             line-height: 1.25;
         }
 
+        /* Контейнер всего содержимого ниже заголовка «Страница занятия» (+5% масштаб, итог 895.24 * 1.05 = 940px ровно по краям шапки) */
+        .lesson-body-zoom {
+            width: 895.24px;
+            zoom: 1.05;
+        }
+
         /* Верхняя двухколоночная сетка: Детали занятия + Преподаватель */
         .lesson-top-grid {
+            width: 895.24px;
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            gap: 24px;
+            gap: 20px;
             margin-bottom: 24px;
         }
         .lesson-details-col {
@@ -285,9 +292,10 @@
             flex-shrink: 0;
         }
         .lesson-teacher-col {
-            width: 298px;
+            width: 257.24px;
             flex-shrink: 0;
         }
+
         .section-heading {
             font-size: 14px;
             font-weight: 400;
