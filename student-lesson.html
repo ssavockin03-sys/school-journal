@@ -1142,65 +1142,67 @@
 
                 <h1 class="page-main-title">Страница занятия</h1>
 
-                <div class="lesson-top-grid">
-                    <div class="lesson-details-col">
-                        <div class="section-heading">Детали занятия</div>
-                        <div class="details-card">
-                            <table class="details-table">
-                                <tr>
-                                    <td class="dt-label">Предмет:</td>
-                                    <td class="dt-val"><a href="student-performance.html">${escapeHtml(subjectName)}</a></td>
-                                </tr>
-                                <tr>
-                                    <td class="dt-label">Дата:</td>
-                                    <td class="dt-val bold-val">${escapeHtml(formatLessonDateLabel(dateStr, lessonNum))}</td>
-                                </tr>
-                                <tr>
-                                    <td class="dt-label">Кто приходит:</td>
-                                    <td class="dt-val"><a href="student-group.html">${escapeHtml(className)}</a></td>
-                                </tr>
-                                <tr>
-                                    <td class="dt-label">Аудитория:</td>
-                                    <td class="dt-val">${escapeHtml(roomText)}</td>
-                                </tr>
-                                <tr>
-                                    <td class="dt-label">Тема занятия:</td>
-                                    <td class="dt-val">${escapeHtml(topicText)}</td>
-                                </tr>
-                            </table>
-                        </div>
-
-                    </div>
-
-                    <div class="lesson-teacher-col">
-                        <div class="section-heading">Преподаватель</div>
-                        <div class="teacher-card">
-                            <div class="teacher-avatar-box">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <a class="teacher-name-link" onclick="if(window.openChatWithTeacher) window.openChatWithTeacher('${escapeHtml(teacherFullName).replace(/'/g, "\\'")}')">${escapeHtml(teacherFullName)}</a>
+                <div class="lesson-body-zoom">
+                    <div class="lesson-top-grid">
+                        <div class="lesson-details-col">
+                            <div class="section-heading">Детали занятия</div>
+                            <div class="details-card">
+                                <table class="details-table">
+                                    <tr>
+                                        <td class="dt-label">Предмет:</td>
+                                        <td class="dt-val"><a href="student-performance.html">${escapeHtml(subjectName)}</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="dt-label">Дата:</td>
+                                        <td class="dt-val bold-val">${escapeHtml(formatLessonDateLabel(dateStr, lessonNum))}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="dt-label">Кто приходит:</td>
+                                        <td class="dt-val"><a href="student-group.html">${escapeHtml(className)}</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="dt-label">Аудитория:</td>
+                                        <td class="dt-val">${escapeHtml(roomText)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="dt-label">Тема занятия:</td>
+                                        <td class="dt-val">${escapeHtml(topicText)}</td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
+
+                        <div class="lesson-teacher-col">
+                            <div class="section-heading">Преподаватель</div>
+                            <div class="teacher-card">
+                                <div class="teacher-avatar-box">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <a class="teacher-name-link" onclick="if(window.openChatWithTeacher) window.openChatWithTeacher('${escapeHtml(teacherFullName).replace(/'/g, "\\'")}')">${escapeHtml(teacherFullName)}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lesson-section-block">
+                        <div class="section-heading">Присутствие на уроке и комментарий преподавателя</div>
+                        ${presenceHtml}
+                    </div>
+
+                    <div class="lesson-section-block">
+                        <div class="section-heading">Домашние задания</div>
+                        ${hwBlockHtml}
+                    </div>
+
+                    <div class="lesson-section-block">
+                        <div class="section-heading">Оценки за работу на занятии</div>
+                        ${gradeBlockHtml}
                     </div>
                 </div>
 
-                <div class="lesson-section-block">
-                    <div class="section-heading">Присутствие на уроке и комментарий преподавателя</div>
-                    ${presenceHtml}
-                </div>
-
-                <div class="lesson-section-block">
-                    <div class="section-heading">Домашние задания</div>
-                    ${hwBlockHtml}
-                </div>
-
-                <div class="lesson-section-block">
-                    <div class="section-heading">Оценки за работу на занятии</div>
-                    ${gradeBlockHtml}
-                </div>
 
             `;
 
