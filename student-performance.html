@@ -1276,11 +1276,15 @@
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
                 e.currentTarget.classList.add('active');
+                const view = e.currentTarget.dataset.view;
                 document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
-                document.getElementById('pane-' + e.currentTarget.dataset.view).classList.add('active');
+                document.getElementById('pane-' + view).classList.add('active');
+                const calWrap = document.getElementById('diaryCalendarWrap');
+                if (calWrap) calWrap.style.visibility = (view === 'current') ? 'visible' : 'hidden';
             });
         });
     }
+
 
 
 
