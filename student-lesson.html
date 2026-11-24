@@ -380,80 +380,114 @@
             text-decoration: underline;
         }
 
-        /* Блок присутствия и комментария преподавателя */
+        /* Блоки левой колонки шириной 620px (div.cparthead + div.rounded) */
         .lesson-section-block {
-            margin-bottom: 24px;
+            width: 620px;
+            margin-bottom: 20px;
+        }
+        .lesson-section-block .section-heading {
+            width: 620px;
+            height: 22px;
+            line-height: 22px;
+            margin-bottom: 6px;
         }
         .presence-empty-box {
+            width: 620px;
             background: #f6f7f9;
             border: 1px solid #e3e6ea;
-            border-radius: 3px;
+            border-radius: 6px;
             padding: 18px 20px;
             text-align: center;
-            color: #9aa6b2;
-            font-size: 13px;
+            font-family: arial, helvetica, sans-serif;
+            color: #666666;
+            font-size: 12px;
+            box-sizing: border-box;
         }
         .presence-filled-box {
+            width: 620px;
             background: #f6f7f9;
             border: 1px solid #e3e6ea;
-            border-radius: 3px;
-            padding: 14px 18px;
+            border-radius: 6px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 13.5px;
-            color: #222;
+            font-family: arial, helvetica, sans-serif;
+            font-size: 12px;
+            color: #333333;
+            box-sizing: border-box;
         }
         .presence-badge-pill {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 24px;
-            height: 22px;
-            padding: 0 6px;
-            border-radius: 3px;
+            min-width: 22px;
+            height: 20px;
+            padding: 0 5px;
+            border-radius: 2px;
             background: #94acc8;
             color: #fff;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
         }
 
-        /* Таблицы ДЗ и оценок за работу на занятии */
+        /* Голубая скруглённая обёртка div.rounded (620px, #F4F8FE) */
+        .lesson-rounded-box {
+            width: 620px;
+            background: #F4F8FE;
+            border: 1px solid #e1ebf7;
+            border-radius: 6px;
+            padding: 6px;
+            box-sizing: border-box;
+        }
         .lesson-grid-table {
             width: 100%;
             border-collapse: collapse;
-            background: #ffffff;
-            border: 1px solid #e3e6ea;
-            border-radius: 3px;
+            background: #FFFFFF;
+            border: 1px solid #e5ecf5;
         }
         .lesson-grid-table th {
-            background: #f6f7f9;
-            border-bottom: 1px solid #e3e6ea;
-            padding: 9px 14px;
+            background: #F4F8FE;
+            border-bottom: 1px solid #e5ecf5;
+            padding: 6px 8px;
+            font-family: arial, helvetica, sans-serif;
             font-size: 12px;
             font-weight: 400;
-            color: #6b7b8c;
+            color: #666666;
             text-align: center;
         }
         .lesson-grid-table th.left {
             text-align: left;
         }
         .lesson-grid-table td {
-            padding: 12px 14px;
-            border-bottom: 1px solid #eef0f3;
-            font-size: 13px;
-            color: #333333;
+            background: #FFFFFF;
+            padding: 4px 8px;
+            border-bottom: 1px solid #eef2f7;
+            font-family: arial, helvetica, sans-serif;
+            font-size: 12px;
+            color: #000000;
             vertical-align: middle;
+            height: 29px;
+            box-sizing: border-box;
         }
         .lesson-grid-table tr:last-child td {
             border-bottom: none;
         }
+        .lesson-work-light {
+            font-family: arial, helvetica, sans-serif;
+            font-size: 12px;
+            line-height: 14px;
+            color: #666666;
+        }
         .hw-task-link {
+            font-family: arial, helvetica, sans-serif;
+            font-size: 12px;
             color: #0273b2;
             text-decoration: none;
-            line-height: 1.45;
+            line-height: 1.4;
             white-space: pre-wrap;
         }
+
         .hw-status-badge {
             display: inline-block;
             padding: 4px 14px;
