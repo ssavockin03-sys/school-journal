@@ -1035,9 +1035,26 @@
     </div>
 
     <div class="view-pane" id="pane-semesters">
-        <div id="warningContainer"></div>
-        <div class="period-tabs-wrapper"><div class="period-tabs-group" id="periodTabs"></div></div>
-        <div id="gradesTableContainer"></div>
+        <div class="semesters-inner-wrap">
+            <div id="warningContainer"></div>
+            <div class="semesters-card">
+                <div class="semesters-top-bar">
+                    <div class="semesters-left-controls">
+                        <div class="year-class-switcher" id="yearClassSwitcher">
+                            <button type="button" class="year-class-arrow" onclick="shiftSchoolYear(-1)" title="Предыдущий учебный год">‹</button>
+                            <span id="yearClassLabel">2026/2027</span>
+                            <button type="button" class="year-class-arrow" onclick="shiftSchoolYear(1)" title="Следующий учебный год">›</button>
+                        </div>
+                        <div class="period-tabs-wrapper"><div class="period-tabs-group" id="periodTabs"></div></div>
+                    </div>
+                    <div class="rating-hint-pill">
+                        <span class="rating-hint-icon">👆</span>
+                        <span>При нажатии на оценку покажется рейтинг</span>
+                    </div>
+                </div>
+                <div id="gradesTableContainer"></div>
+            </div>
+        </div>
     </div>
 
     <div class="view-pane" id="pane-rating">
