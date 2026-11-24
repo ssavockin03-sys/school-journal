@@ -1030,31 +1030,28 @@
                         <div class="details-card">
                             <table class="details-table">
                                 <tr>
-                                    <td class="dt-label">Предмет</td>
+                                    <td class="dt-label">Предмет:</td>
                                     <td class="dt-val"><a href="student-performance.html">${escapeHtml(subjectName)}</a></td>
                                 </tr>
                                 <tr>
-                                    <td class="dt-label">Дата</td>
-                                    <td class="dt-val">${escapeHtml(formatLessonDateLabel(dateStr, lessonNum))}</td>
+                                    <td class="dt-label">Дата:</td>
+                                    <td class="dt-val bold-val">${escapeHtml(formatLessonDateLabel(dateStr, lessonNum))}</td>
                                 </tr>
                                 <tr>
-                                    <td class="dt-label">Кто приходит</td>
+                                    <td class="dt-label">Кто приходит:</td>
                                     <td class="dt-val"><a href="student-group.html">${escapeHtml(className)}</a></td>
                                 </tr>
                                 <tr>
-                                    <td class="dt-label">Аудитория</td>
+                                    <td class="dt-label">Аудитория:</td>
                                     <td class="dt-val">${escapeHtml(roomText)}</td>
                                 </tr>
                                 <tr>
-                                    <td class="dt-label">Тема занятия</td>
+                                    <td class="dt-label">Тема занятия:</td>
                                     <td class="dt-val">${escapeHtml(topicText)}</td>
-                                </tr>
-                                <tr>
-                                    <td class="dt-label">Описание занятия</td>
-                                    <td class="dt-val normal-weight">${hwList.length > 0 ? escapeHtml(hwList.join('; ')) : '—'}</td>
                                 </tr>
                             </table>
                         </div>
+
                     </div>
 
                     <div class="lesson-teacher-col">
