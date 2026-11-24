@@ -289,7 +289,18 @@
 
         .view-pane { display: none; }
         .view-pane.active { display: block; }
-        #pane-semesters, #pane-rating { width: 940px; margin: 0 auto; }
+        #pane-rating { width: 940px; margin: 0 auto; }
+        #pane-semesters {
+            width: 100%;
+            background: #eff6ff;
+            padding: 20px 0 70px;
+            min-height: calc(100vh - 260px);
+        }
+        .semesters-inner-wrap {
+            width: 940px;
+            margin: 0 auto;
+        }
+
 
         /* ===================== ТЕКУЩАЯ (ДНЕВНИК 1-В-1) ===================== */
         .diary-container { background-color: #eff6ff; padding: 0; position: relative; width: 100%; overflow: hidden; }
