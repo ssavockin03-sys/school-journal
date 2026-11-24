@@ -240,12 +240,253 @@
         }
         .header-submenu__link:hover { color: #0273b2; }
         .header-submenu__item_active .header-submenu__link { color: #0273b2; border-bottom-color: #0273b2; }
-        /* ===================== КОНТЕНТ СТРАНИЦЫ ЗАНЯТИЯ ===================== */
+        /* ===================== КОНТЕНТ СТРАНИЦЫ ЗАНЯТИЯ (1-В-1 СО СКРИНШОТОМ) ===================== */
         .lesson-page-wrap {
             width: 940px;
-            margin: 14px auto 60px;
+            margin: 14px auto 70px;
+            font-family: "Open Sans", Arial, sans-serif;
+            color: #333333;
+        }
+        .breadcrumbs-row {
+            font-size: 13px;
+            color: #8c9bab;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .breadcrumbs-row a {
+            color: #0273b2;
+            text-decoration: none;
+        }
+        .breadcrumbs-row a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumbs-row .sep {
+            margin: 0 5px;
+            color: #8c9bab;
+        }
+        .page-main-title {
+            font-size: 26px;
+            font-weight: 400;
+            color: #5c6b7a;
+            margin-bottom: 22px;
+            line-height: 1.25;
         }
 
+        /* Верхняя двухколоночная сетка: Детали занятия + Преподаватель */
+        .lesson-top-grid {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .lesson-details-col {
+            width: 590px;
+            flex-shrink: 0;
+        }
+        .lesson-teacher-col {
+            width: 326px;
+            flex-shrink: 0;
+        }
+        .section-heading {
+            font-size: 14px;
+            font-weight: 400;
+            color: #6b7b8c;
+            margin-bottom: 8px;
+        }
+
+        .details-card {
+            background: #f6f7f9;
+            border: 1px solid #e3e6ea;
+            border-radius: 3px;
+            padding: 14px 18px;
+        }
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .details-table tr td {
+            padding: 6px 0;
+            vertical-align: top;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+        .details-table tr td.dt-label {
+            width: 155px;
+            color: #7d8b99;
+            padding-right: 12px;
+        }
+        .details-table tr td.dt-val {
+            color: #222222;
+            font-weight: 600;
+        }
+        .details-table tr td.dt-val a {
+            color: #0273b2;
+            text-decoration: none;
+            font-weight: 400;
+        }
+        .details-table tr td.dt-val a:hover {
+            text-decoration: underline;
+        }
+        .details-table tr td.dt-val.normal-weight {
+            font-weight: 400;
+        }
+
+        /* Карточка преподавателя справа */
+        .teacher-card {
+            background: #f6f7f9;
+            border: 1px solid #e3e6ea;
+            border-radius: 3px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            min-height: 78px;
+        }
+        .teacher-avatar-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 3px;
+            background: #e8ecf1;
+            border: 1px solid #dcdfe4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #b8c2cc;
+        }
+        .teacher-avatar-box svg {
+            width: 28px;
+            height: 28px;
+        }
+        .teacher-name-link {
+            color: #0273b2;
+            font-size: 13.5px;
+            font-weight: 400;
+            text-decoration: none;
+            line-height: 1.35;
+            cursor: pointer;
+            margin-top: 2px;
+            display: inline-block;
+        }
+        .teacher-name-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Блок присутствия и комментария преподавателя */
+        .lesson-section-block {
+            margin-bottom: 24px;
+        }
+        .presence-empty-box {
+            background: #f6f7f9;
+            border: 1px solid #e3e6ea;
+            border-radius: 3px;
+            padding: 18px 20px;
+            text-align: center;
+            color: #9aa6b2;
+            font-size: 13px;
+        }
+        .presence-filled-box {
+            background: #f6f7f9;
+            border: 1px solid #e3e6ea;
+            border-radius: 3px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13.5px;
+            color: #222;
+        }
+        .presence-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 3px;
+            background: #94acc8;
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Таблицы ДЗ и оценок за работу на занятии */
+        .lesson-grid-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border: 1px solid #e3e6ea;
+            border-radius: 3px;
+        }
+        .lesson-grid-table th {
+            background: #f6f7f9;
+            border-bottom: 1px solid #e3e6ea;
+            padding: 9px 14px;
+            font-size: 12px;
+            font-weight: 400;
+            color: #6b7b8c;
+            text-align: center;
+        }
+        .lesson-grid-table th.left {
+            text-align: left;
+        }
+        .lesson-grid-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #eef0f3;
+            font-size: 13px;
+            color: #333333;
+            vertical-align: middle;
+        }
+        .lesson-grid-table tr:last-child td {
+            border-bottom: none;
+        }
+        .hw-task-link {
+            color: #0273b2;
+            text-decoration: none;
+            line-height: 1.45;
+            white-space: pre-wrap;
+        }
+        .hw-status-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 3px;
+            font-size: 12.5px;
+            font-weight: 400;
+            color: #ffffff;
+            cursor: pointer;
+            user-select: none;
+            text-align: center;
+            min-width: 82px;
+            transition: opacity 0.15s ease;
+        }
+        .hw-status-badge:hover {
+            opacity: 0.9;
+        }
+        .hw-status-badge.issued {
+            background: #d9534f;
+        }
+        .hw-status-badge.done {
+            background: #5cb85c;
+        }
+
+        /* Квадратик оценки в таблице «Оценки за работу на занятии» */
+        .lesson-grade-square {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 24px;
+            padding: 0 6px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        .lesson-grade-square.g5, .lesson-grade-square.g4 { background: #65a30d; }
+        .lesson-grade-square.g3 { background: #ff8f00; }
+        .lesson-grade-square.g2, .lesson-grade-square.g1 { background: #cf3838; }
+        .lesson-grade-square.gn { background: #94acc8; }
         /* ===================== ЧАТ (ВИДЖЕТ ДНЕВНИК.РУ) ===================== */
         #chatPanel {
             display: flex;
@@ -428,10 +669,17 @@
     </header>
 </div>
 
-<main class="lesson-page-wrap" id="lessonPageContent"></main>
+<main class="lesson-page-wrap" id="lessonPageContent">
+    <div style="color:#8c9bab;padding:30px 0;">Загрузка страницы занятия...</div>
+</main>
+
 <div id="chatPanel"></div>
 <script src="supabase-config.js"></script>
 <script>
+    const JS_DAY_MAP = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 0: 'sun' };
+    const MONTHS_GEN = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    const DEFAULT_LESSON_TYPE = 'ОТВ';
+
     let CURRENT_STUDENT = null;
     let CURRENT_CLASS = null;
 
@@ -444,9 +692,104 @@
 
     function formatShortFio(fullName) {
         const parts = (fullName || '').trim().split(/\s+/).filter(Boolean);
-        if (parts.length >= 3) return parts[0] + ' ' + parts[1].charAt(0) + '.' + parts[2].charAt(0) + '.';
-        if (parts.length === 2) return parts[0] + ' ' + parts[1].charAt(0) + '.';
+        if (parts.length >= 3) return parts.at(0) + ' ' + parts.at(1).charAt(0) + '.' + parts.at(2).charAt(0) + '.';
+        if (parts.length === 2) return parts.at(0) + ' ' + parts.at(1).charAt(0) + '.';
         return fullName || '';
+    }
+
+    function parseCell(raw) {
+        if (raw === null || raw === undefined || raw === '') return { grade: '', presence: '' };
+        const s = String(raw).toUpperCase().trim();
+        const m = s.match(/^(СП|Н|О|Б|П)/);
+        let presence = '';
+        let grade = s;
+        if (m) {
+            presence = m.at(0);
+            grade = s.slice(presence.length).trim();
+        }
+        return { grade, presence };
+    }
+
+    function gradeClass(grade) {
+        const s = String(grade == null ? '' : grade);
+        for (let i = 0; i < s.length; i++) {
+            const c = s.charCodeAt(i);
+            if (c >= 49 && c <= 53) {
+                const d = c - 48;
+                if (d === 5 || d === 4) return 'g5';
+                if (d === 3) return 'g3';
+                if (d === 2 || d === 1) return 'g2';
+            }
+        }
+        return 'gn';
+    }
+
+    function getLessonTypeFullName(abbr) {
+        if (!abbr) return 'Ответ на уроке';
+        const key = String(abbr).trim().toUpperCase();
+        const map = {
+            'АК/Р': 'Административная контрольная работа', 'АД': 'Арифметический диктант',
+            'АУД': 'Аудирование', 'ВКР': 'Входная контрольная работа',
+            'ВКД': 'Входной контрольный диктант', 'ГОВОР': 'Говорение',
+            'ГИА': 'Государственная итоговая аттестация', 'ГЗ': 'Грамматическое задание',
+            'ДИАЛ': 'Диалогическая речь', 'Д': 'Диктант', 'ДУ': 'Дистанционный урок',
+            'ДОК': 'Доклад', 'Д/Р': 'Домашняя работа', 'ЗЧТ': 'Зачет',
+            'И': 'Изложение', 'ИПР': 'Индивидуальный проект',
+            'ИК/Р': 'Итоговая контрольная работа', 'ИКД': 'Итоговый контрольный диктант',
+            'КПР': 'Коллективный проект', 'ККР': 'Комплексная контрольная работа',
+            'КАТ': 'Комплексный анализ текста', 'КОНС': 'Консультация',
+            'К/Р': 'Контрольная работа', 'КС': 'Контрольное списывание',
+            'КД': 'Контрольный диктант', 'КОРР': 'Корректированная',
+            'КП': 'Курсовая работа', 'Л/Р': 'Лабораторная работа',
+            'ЛЗ': 'Лабораторное занятие', 'ЛЕК': 'Лекция',
+            'М/Д': 'Математический диктант', 'МЗ': 'Модульный зачет',
+            'МИУД': 'Мониторинг индивидуальных учебных достижений', 'НАИЗ': 'Наизусть',
+            'Н/З': 'Недельное задание', 'ОЗ': 'Обзорное занятие',
+            'ОИ': 'Обучающее изложение', 'ОИКП': 'Обучающее изложение по коллективно составленному плану',
+            'ОС': 'Обучающее сочинение', 'О': 'Опрос', 'ОР': 'Орфографическая работа',
+            'ОТВ': 'Ответ на уроке', 'ПРЗ': 'Практическое занятие',
+            'ПР': 'Проверочная работа', 'ПРЗД': 'Продуктивные задания',
+            'ПР-Т': 'Проект', 'ПА': 'Промежуточная аттестация',
+            'Р/У': 'Работа на уроке', 'РНО': 'Работа над ошибками',
+            'К/К': 'Работа с контурными картами', 'РСТ': 'Работа с таблицами',
+            'Р/Т': 'Рабочая тетрадь', 'РЕФ': 'Реферат', 'С/Р': 'Самостоятельная работа',
+            'СЕМ': 'Семинар', 'СД': 'Словарный диктант', 'СОЧ': 'Сочинение',
+            'СК': 'Сочинение по картине', 'СПИС': 'Списывание', 'ТР': 'Творческая работа',
+            'ТЕСТ': 'Тест', 'ТЧ': 'Техника чтения', 'УР': 'Урок',
+            'У/И': 'Устное изложение', 'У/С': 'Устное сочинение', 'УС': 'Устный счет',
+            'ФВ': 'Факультатив', 'ЧИТ': 'Чтение', 'ЧТ/В': 'Чтение вслух',
+            'ЧТ/М': 'Чтение молча', 'ЭКС': 'Экскурсия', 'Я/Т': 'Языковая тема'
+        };
+        return map[key] || String(abbr).trim() || 'Ответ на уроке';
+    }
+
+    function getPresenceFullName(code) {
+        const key = String(code || '').trim().toUpperCase();
+        const map = { 'Н': 'Неявка', 'Б': 'Болеет', 'О': 'Опоздание', 'СП': 'Свободное посещение', 'П': 'Пропуск' };
+        return map[key] || key;
+    }
+
+    function getCompletedHwMap() {
+        try { return JSON.parse(localStorage.getItem('dnevnik_done_hw_v1') || '{}'); }
+        catch (e) { return {}; }
+    }
+
+    function toggleLessonPageHw(badgeEl, hwKey) {
+        if (!badgeEl || !hwKey) return;
+        const map = getCompletedHwMap();
+        const nextState = !map[hwKey];
+        if (nextState) {
+            map[hwKey] = true;
+            badgeEl.classList.remove('issued');
+            badgeEl.classList.add('done');
+            badgeEl.textContent = 'Выполнено';
+        } else {
+            delete map[hwKey];
+            badgeEl.classList.remove('done');
+            badgeEl.classList.add('issued');
+            badgeEl.textContent = 'Выдано';
+        }
+        try { localStorage.setItem('dnevnik_done_hw_v1', JSON.stringify(map)); } catch (e) {}
     }
 
     function toggleTopUserMenu(e) {
@@ -471,6 +814,25 @@
         try { localStorage.removeItem('sj_session'); } catch (e) {}
         window.location.replace('index.html');
     }
+    function formatLessonDateLabel(dateStr, lessonNum) {
+        const d = new Date(dateStr + 'T00:00:00');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+
+        let dayPart = dateStr;
+        if (!isNaN(d.getTime())) {
+            d.setHours(0, 0, 0, 0);
+            if (d.getTime() === today.getTime()) dayPart = 'Сегодня';
+            else if (d.getTime() === tomorrow.getTime()) dayPart = 'Завтра';
+            else if (d.getTime() === yesterday.getTime()) dayPart = 'Вчера';
+            else dayPart = `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`;
+        }
+        return `${dayPart}, ${lessonNum} занятие`;
+    }
 
     (async function init() {
         try {
@@ -481,10 +843,16 @@
             });
             if (!user) return;
 
-            const login = user.email.split('@')[0];
-            const [students, classes] = await Promise.all([
+            const login = user.email.split('@').at(0);
+            const [students, classes, subjects, teachers, journals, schedules, rooms, periodDocs] = await Promise.all([
                 DB.getAll('students'),
-                DB.getAll('classes')
+                DB.getAll('classes'),
+                DB.getAll('subjects'),
+                DB.getAll('teachers'),
+                DB.getAll('journals'),
+                DB.getAll('class_schedules'),
+                DB.getAll('rooms'),
+                DB.getAll('educational_periods')
             ]);
 
             const student = students.find(s => s.login === login);
@@ -497,13 +865,254 @@
             const userNameEl = document.getElementById('userName');
             if (userNameEl) userNameEl.textContent = formatShortFio(student.full_name);
 
+            const params = new URLSearchParams(window.location.search);
+            const dateStr = params.get('date') || new Date().toISOString().slice(0, 10);
+            const lessonNum = parseInt(params.get('lesson') || '1', 10);
+            const paramSubj = params.get('subject') || '';
+            const occIdx = parseInt(params.get('occ') || '0', 10);
+
+            const pd = periodDocs.at(0) || null;
+            const periods = pd ? (pd.periods || []) : [];
+            let schoolYearStr = '2026/2027';
+            if (periods.length > 0 && periods.at(0).start) {
+                const y = parseInt(String(periods.at(0).start).slice(0, 4), 10);
+                if (!isNaN(y)) schoolYearStr = `${y}/${y + 1}`;
+            }
+
+            const classSchedules = schedules.filter(s => s.class_id === student.class_id);
+            let activeGrid = null;
+            const pIdx = periods.findIndex(p => dateStr >= p.start && dateStr <= p.end);
+            if (pIdx !== -1) {
+                const foundSch = classSchedules.find(s => s.period_index === pIdx);
+                if (foundSch && foundSch.grid) activeGrid = foundSch.grid;
+            }
+            if (!activeGrid && classSchedules.length > 0 && classSchedules.at(0).grid) {
+                activeGrid = classSchedules.at(0).grid;
+            }
+
+            const dObj = new Date(dateStr + 'T00:00:00');
+            const dowKey = !isNaN(dObj.getTime()) ? JS_DAY_MAP[dObj.getDay()] : null;
+            const dayGrid = (activeGrid && dowKey && activeGrid[dowKey]) || {};
+            const lessonInfo = dayGrid[lessonNum] || dayGrid[String(lessonNum)] || {};
+
+            const subjectName = paramSubj || lessonInfo.subject || 'Предмет';
+            const subjLower = subjectName.trim().toLowerCase();
+            const subjObj = subjects.find(s => String(s.name || '').trim().toLowerCase() === subjLower);
+            const classJournals = journals.filter(j => j.class_id === student.class_id);
+            const journal = subjObj
+                ? classJournals.find(j => String(j.subject_id) === String(subjObj.id))
+                : classJournals.find(j => String(j.subject_name || j.subject || '').trim().toLowerCase() === subjLower);
+
+            let roomName = lessonInfo.roomName || '';
+            if (!roomName && lessonInfo.roomId) {
+                const r = rooms.find(x => x.id === lessonInfo.roomId);
+                if (r) roomName = r.number;
+            }
+            const roomText = roomName ? `${roomName} каб.` : '—';
+
+            let teacherObj = null;
+            if (lessonInfo.teacherId) teacherObj = teachers.find(t => String(t.id) === String(lessonInfo.teacherId));
+            if (!teacherObj && lessonInfo.teacherName) {
+                teacherObj = teachers.find(t => String(t.full_name || t.name || '').trim() === String(lessonInfo.teacherName).trim());
+            }
+            const teacherFullName = (teacherObj && (teacherObj.full_name || teacherObj.name)) || lessonInfo.teacherName || '—';
+            const dateKeysSet = new Set();
+            if (journal) {
+                [journal.lessons, journal.homework, journal.lesson_types].forEach(obj => {
+                    if (!obj) return;
+                    Object.keys(obj).forEach(k => { if (String(k).startsWith(dateStr)) dateKeysSet.add(k); });
+                });
+                if (journal.grades && journal.grades[student.id]) {
+                    Object.keys(journal.grades[student.id]).forEach(k => { if (String(k).startsWith(dateStr)) dateKeysSet.add(k); });
+                }
+            }
+
+            const lessonGroupsMap = new Map();
+            Array.from(dateKeysSet).forEach(k => {
+                const parts = String(k).split('_');
+                const baseKey = parts.length >= 2 ? `${parts.at(0)}_${parts.at(1)}` : parts.at(0);
+                if (!lessonGroupsMap.has(baseKey)) lessonGroupsMap.set(baseKey, []);
+                lessonGroupsMap.get(baseKey).push(k);
+            });
+
+            const sortedGroups = Array.from(lessonGroupsMap.entries()).sort((a, b) => {
+                const nA = parseInt(String(a.at(0)).split('_').at(1), 10);
+                const nB = parseInt(String(b.at(0)).split('_').at(1), 10);
+                if (!isNaN(nA) && !isNaN(nB)) return nA - nB;
+                return String(a.at(0)).localeCompare(String(b.at(0)));
+            });
+            sortedGroups.forEach(([, arr]) => {
+                arr.sort((a, b) => {
+                    const sA = parseInt(String(a).split('_').at(2) || '0', 10);
+                    const sB = parseInt(String(b).split('_').at(2) || '0', 10);
+                    return (isNaN(sA) ? 0 : sA) - (isNaN(sB) ? 0 : sB);
+                });
+            });
+
+            const exactBase = `${dateStr}_${lessonNum}`;
+            const matchedKeys = lessonGroupsMap.has(exactBase)
+                ? lessonGroupsMap.get(exactBase)
+                : (sortedGroups.at(occIdx) ? sortedGroups.at(occIdx).at(1) : []);
+
+            const primaryKey = matchedKeys.find(k => String(k).endsWith('_0')) || matchedKeys.at(0) || null;
+            const lessonRecord = (journal && journal.lessons && primaryKey && journal.lessons[primaryKey]) || {};
+            const topicText = (lessonRecord && typeof lessonRecord.t === 'string' && lessonRecord.t.trim()) ? lessonRecord.t.trim() : '—';
+
+            const extractHw = (val) => {
+                if (!val) return [];
+                if (typeof val === 'string') return val.trim() ? [val.trim()] : [];
+                if (Array.isArray(val)) return val.flatMap(extractHw).filter(Boolean);
+                const raw = val.h ?? val.hw ?? val.homework ?? val.text ?? val.task ?? '';
+                return extractHw(raw);
+            };
+            let hwList = extractHw(lessonRecord);
+            if (hwList.length === 0 && journal && journal.homework && primaryKey) {
+                hwList = extractHw(journal.homework[primaryKey]);
+            }
+
+            const sg = (journal && journal.grades && journal.grades[student.id]) || {};
+            const presenceItems = [];
+            const gradeItems = [];
+            matchedKeys.forEach(k => {
+                const raw = sg[k];
+                if (raw === '' || raw === null || raw === undefined) return;
+                const cell = parseCell(raw);
+                if (cell.presence) presenceItems.push(cell.presence);
+                if (cell.grade) {
+                    const rawType = (journal && journal.lesson_types && journal.lesson_types[k]) || DEFAULT_LESSON_TYPE;
+                    gradeItems.push({ grade: cell.grade, typeFull: getLessonTypeFullName(rawType) });
+                }
+            });
+            const className = (CURRENT_CLASS && CURRENT_CLASS.name) || '—';
+            const doneHwMap = getCompletedHwMap();
+
+            const presenceHtml = presenceItems.length === 0
+                ? `<div class="presence-empty-box">Данные не введены преподавателем</div>`
+                : `<div class="presence-filled-box">${presenceItems.map(p => `<span class="presence-badge-pill">${escapeHtml(p)}</span> <span>${escapeHtml(getPresenceFullName(p))}</span>`).join('&nbsp;&nbsp;')}</div>`;
+
+            const hwRowsHtml = hwList.length === 0
+                ? `<tr><td colspan="3" style="text-align:center;color:#9aa6b2;padding:16px;">Домашнее задание не задано</td></tr>`
+                : hwList.map((hwText, hwIdx) => {
+                    const hwKey = `${student.id}_${dateStr}_${subjLower}_${lessonNum}_${hwIdx}`;
+                    const isDone = Boolean(doneHwMap[hwKey]);
+                    const safeKey = escapeHtml(hwKey).replace(/'/g, "\\'");
+                    return `<tr>
+                        <td style="width:74%;"><span class="hw-task-link">${escapeHtml(hwText)}</span></td>
+                        <td style="width:13%;text-align:center;color:#7d8b99;">нет</td>
+                        <td style="width:13%;text-align:center;">
+                            <span class="hw-status-badge ${isDone ? 'done' : 'issued'}" onclick="toggleLessonPageHw(this, '${safeKey}')">${isDone ? 'Выполнено' : 'Выдано'}</span>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+            const gradeRowsHtml = gradeItems.length === 0
+                ? `<tr><td colspan="2" style="text-align:center;color:#9aa6b2;padding:16px;">Оценки за работу на занятии не выставлены</td></tr>`
+                : gradeItems.map(g => `<tr>
+                    <td style="width:87%;">${escapeHtml(g.typeFull)}</td>
+                    <td style="width:13%;text-align:center;"><span class="lesson-grade-square ${gradeClass(g.grade)}">${escapeHtml(g.grade)}</span></td>
+                </tr>`).join('');
+
+            const container = document.getElementById('lessonPageContent');
+            container.innerHTML = `
+                <div class="breadcrumbs-row">
+                    <a href="student.html">Школа ТЕСТ</a>
+                    <span class="sep">›</span>
+                    <a href="student-schedule.html">Расписание занятий</a>
+                    <span class="sep">›</span>
+                    <span>${escapeHtml(className)} (${escapeHtml(schoolYearStr)})</span>
+                </div>
+
+                <h1 class="page-main-title">Страница занятия</h1>
+
+                <div class="lesson-top-grid">
+                    <div class="lesson-details-col">
+                        <div class="section-heading">Детали занятия</div>
+                        <div class="details-card">
+                            <table class="details-table">
+                                <tr>
+                                    <td class="dt-label">Предмет</td>
+                                    <td class="dt-val"><a href="student-performance.html">${escapeHtml(subjectName)}</a></td>
+                                </tr>
+                                <tr>
+                                    <td class="dt-label">Дата</td>
+                                    <td class="dt-val">${escapeHtml(formatLessonDateLabel(dateStr, lessonNum))}</td>
+                                </tr>
+                                <tr>
+                                    <td class="dt-label">Кто приходит</td>
+                                    <td class="dt-val"><a href="student-group.html">${escapeHtml(className)}</a></td>
+                                </tr>
+                                <tr>
+                                    <td class="dt-label">Аудитория</td>
+                                    <td class="dt-val">${escapeHtml(roomText)}</td>
+                                </tr>
+                                <tr>
+                                    <td class="dt-label">Тема занятия</td>
+                                    <td class="dt-val">${escapeHtml(topicText)}</td>
+                                </tr>
+                                <tr>
+                                    <td class="dt-label">Описание занятия</td>
+                                    <td class="dt-val normal-weight">${hwList.length > 0 ? escapeHtml(hwList.join('; ')) : '—'}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="lesson-teacher-col">
+                        <div class="section-heading">Преподаватель</div>
+                        <div class="teacher-card">
+                            <div class="teacher-avatar-box">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <a class="teacher-name-link" onclick="if(window.openChatWithTeacher) window.openChatWithTeacher('${escapeHtml(teacherFullName).replace(/'/g, "\\'")}')">${escapeHtml(teacherFullName)}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section-block">
+                    <div class="section-heading">Присутствие на уроке и комментарий преподавателя</div>
+                    ${presenceHtml}
+                </div>
+
+                <div class="lesson-section-block">
+                    <div class="section-heading">Домашние задания</div>
+                    <table class="lesson-grid-table">
+                        <thead>
+                            <tr>
+                                <th class="left" style="width:74%;">Задание</th>
+                                <th style="width:13%;">Оценка</th>
+                                <th style="width:13%;">Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>${hwRowsHtml}</tbody>
+                    </table>
+                </div>
+
+                <div class="lesson-section-block">
+                    <div class="section-heading">Оценки за работу на занятии</div>
+                    <table class="lesson-grid-table">
+                        <thead>
+                            <tr>
+                                <th class="left" style="width:87%;"></th>
+                                <th style="width:13%;">Оценка</th>
+                            </tr>
+                        </thead>
+                        <tbody>${gradeRowsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+
+            document.title = `${subjectName} — Страница занятия — Дневник.ру`;
             initChat();
         } catch (err) {
             console.error(err);
         }
     })();
     /* ============================================================ */
-    /* ЧАТ (1-В-1 КАК В STUDENT-PERFORMANCE)                        */
+    /* ЧАТ (1-В-1 КАК В STUDENT-PERFORMANCE + КЛИК ПО УЧИТЕЛЮ)      */
     /* ============================================================ */
     (function () {
         let contacts = [], contactsLoaded = false, activeContact = null, lastSeenTs = null, pollTimer = null, unreadByContact = {}, panelOpen = false;
@@ -580,7 +1189,6 @@
             contactsLoaded = true;
             return list;
         }
-
         async function refreshUnread() {
             const myId = getMyId(); if (!myId) return;
             const all = await DB.getAll('chat_messages'); const counts = {};
@@ -614,6 +1222,7 @@
                 await DB.update('chat_messages', m.id, { read_by: readBy });
             }
         }
+
         function renderContactsList() {
             const panel = document.getElementById('chatPanel');
             if (!panel) return;
@@ -680,7 +1289,6 @@
                 });
             });
         }
-
         async function renderMessages() {
             const panel = document.getElementById('chatPanel');
             const myId = getMyId();
@@ -734,6 +1342,22 @@
             box.scrollTop = box.scrollHeight;
             lastSeenTs = msgs.length ? msgs[msgs.length - 1].created_at : null;
         }
+        window.openChatWithTeacher = async function (teacherName) {
+            if (!contactsLoaded) await loadContacts();
+            const target = contacts.find(c => c.role === 'teacher' && c.name.trim() === String(teacherName || '').trim())
+                || contacts.find(c => c.role === 'teacher');
+            panelOpen = true;
+            document.getElementById('chatPanel').classList.add('show');
+            if (target) {
+                activeContact = target;
+                await markRead(target.id);
+                await renderMessages();
+            } else {
+                activeContact = null;
+                renderContactsList();
+            }
+            refreshUnread();
+        };
 
         window.initChat = async function initChat() {
             renderContactsList();
