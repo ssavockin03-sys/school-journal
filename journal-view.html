@@ -2443,15 +2443,14 @@ async function upg(studentId, gradeKey, inputElement) {
 
     const displayLayer = inputElement.previousElementSibling;
     const cellTd = inputElement.closest('td');
+    if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     if (cellTd) cellTd.classList.add('saving-outline');
-    if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
-
+    enqueueSaveJournal();
     setTimeout(() => {
-        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
-        enqueueSaveJournal();
     }, EDIT_DELAY_MS);
 }
+
 
 async function upqtr(studentId, inputElement) {
     const v = inputElement.value.trim();
