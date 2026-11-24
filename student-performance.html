@@ -1418,10 +1418,11 @@
         const lbl = document.getElementById('diaryZoomLabel');
         if (lbl) lbl.textContent = DIARY_ZOOM + ' %';
         const content = document.querySelector('.content-wrap');
-        if (content) {
+        if (content && !content.classList.contains('semesters-active')) {
             content.style.zoom = (DIARY_ZOOM / 100) * 1.1;
         }
     }
+
     const MONTHS_NOM = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
     let CAL_VIEW_YEAR = new Date().getFullYear();
     let CAL_VIEW_MONTH = new Date().getMonth();
