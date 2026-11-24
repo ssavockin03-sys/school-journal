@@ -1768,16 +1768,18 @@
 
 
 
+                        const lessonUrl = `student-lesson.html?date=${encodeURIComponent(dateStr)}&lesson=${encodeURIComponent(n)}&subject=${encodeURIComponent(lesson.subject)}&occ=${occurrenceIdx}`;
                         lessonsHtml += `<div class="lesson-card">
                             <div class="lesson-top-row">
                                 <div class="lesson-info-col">
-                                    <div class="lesson-title"><b>${n}.</b> ${lesson.subject}</div>
+                                    <a class="lesson-title" href="${lessonUrl}"><b>${n}.</b> ${escapeHtml(lesson.subject)}</a>
                                     <div class="lesson-meta">${metaText}</div>
                                 </div>
                                 ${gradesWrap}
                             </div>
                             ${hwHtml}
                         </div>`;
+
 
                     }
 
