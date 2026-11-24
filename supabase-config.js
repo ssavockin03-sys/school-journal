@@ -101,18 +101,28 @@ const DB = {
             const fb = await loadFirebase();
             const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'journals'), fb.where('class_id', '==', classId), fb.where('subject_id', '==', subjectId)));
             if (snap.empty) return null;
-            const d = snap.docs.at(0);
-            return { id: d.id, ...d.data() };
+            const docs = [];
+            snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+            docs.sort((a, b) => String(b.updated_at || '').localeCompare(String(a.updated_at || '')));
+            return docs.at(0);
         } catch (e) { console.error('DB.getJournal:', e); return null; }
     },
     async upsertJournal(classId, subjectId, payload) {
         try {
             const fb = await loadFirebase();
-            const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'journals'), fb.where('class_id', '==', classId), fb.where('subject_id', '==', subjectId)));
+            const compositeId = classId + '__' + subjectId;
             const data = { class_id: classId, subject_id: subjectId, ...payload, updated_at: new Date().toISOString() };
-            const docId = !snap.empty ? snap.docs.at(0).id : (classId + '__' + subjectId);
-            await fb.setDoc(fb.doc(fb.db, 'journals', docId), data);
-            return { id: docId, ...data };
+            await fb.setDoc(fb.doc(fb.db, 'journals', compositeId), data);
+
+            // Удаляем возможные старые дубликаты с другими ID для этого же класса и предмета
+            const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'journals'), fb.where('class_id', '==', classId), fb.where('subject_id', '==', subjectId)));
+            snap.forEach(d => {
+                if (d.id !== compositeId) {
+                    fb.deleteDoc(fb.doc(fb.db, 'journals', d.id)).catch(() => {});
+                }
+            });
+
+            return { id: compositeId, ...data };
         } catch (e) { console.error('DB.upsertJournal:', e); return null; }
     }
 };
