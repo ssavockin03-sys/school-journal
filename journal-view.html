@@ -2431,6 +2431,7 @@ async function upg(studentId, gradeKey, inputElement) {
         return;
     }
 
+    // Данные записываются в JOURNAL сразу, чтобы ни одна оценка не пропала
     if (!JOURNAL.grades[studentId]) JOURNAL.grades[studentId] = {};
     JOURNAL.grades[studentId][gradeKey] = up;
 
@@ -2442,16 +2443,19 @@ async function upg(studentId, gradeKey, inputElement) {
         JOURNAL.gradeTimestamps[studentId][gradeKey] = getSafeNow();
     }
 
+    // Оригинальная визуальная задержка (серый текст + рамка на 150 мс -> цветной квадратик)
     const displayLayer = inputElement.previousElementSibling;
     const cellTd = inputElement.closest('td');
-    if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
     if (cellTd) cellTd.classList.add('saving-outline');
+    if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569; font-weight:400; font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
+
     enqueueSaveJournal();
+
     setTimeout(() => {
+        if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
     }, EDIT_DELAY_MS);
 }
-
 
 async function upqtr(studentId, inputElement) {
     const v = inputElement.value.trim();
@@ -2476,12 +2480,14 @@ async function upqtr(studentId, inputElement) {
     if (cellTd) cellTd.classList.add('saving-outline');
     if (displayLayer) displayLayer.innerHTML = !up ? '' : '<div class="grade-display"><div style="color:#475569;font-weight:400;font-size:13.5px;">' + escapeHtml(up) + '</div></div>';
 
+    enqueueSaveJournal();
+
     setTimeout(() => {
         if (displayLayer) displayLayer.innerHTML = makeGradeDisplay(up);
         if (cellTd) cellTd.classList.remove('saving-outline');
-        enqueueSaveJournal();
     }, EDIT_DELAY_MS);
 }
+
 async function saveJournal() {
     const cleanGrades = {};
     Object.keys(JOURNAL.grades || {}).forEach(sid => {
