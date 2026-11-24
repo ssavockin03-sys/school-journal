@@ -2482,135 +2482,65 @@ async function upqtr(studentId, inputElement) {
     }, EDIT_DELAY_MS);
 }
 async function saveJournal() {
-    const localGradesSnap = JSON.parse(JSON.stringify(JOURNAL.grades || {}));
-    const localLessonsSnap = JSON.parse(JSON.stringify(JOURNAL.lessons || {}));
-    const localQtrSnap = JSON.parse(JSON.stringify(JOURNAL.qtrGrades || {}));
-    const localTypesSnap = JSON.parse(JSON.stringify(JOURNAL.lessonTypes || {}));
-    const localTsSnap = JSON.parse(JSON.stringify(JOURNAL.gradeTimestamps || {}));
-
-    let fresh = null;
-    try { fresh = await loadJournalNormalized(); }
-    catch (e) { console.warn('loadJournalNormalized failed', e); }
-
-    if (fresh) {
-        const mergedGrades = {};
-        const allSids = new Set([...Object.keys(fresh.grades), ...Object.keys(localGradesSnap)]);
-        allSids.forEach(sid => {
-            const fromFresh = fresh.grades[sid] || {};
-            const fromLocal = localGradesSnap[sid] || {};
-            const out = {};
-
-            Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
-
-            Object.keys(fromLocal).forEach(k => {
-                if (fromLocal[k] === '' || fromLocal[k] === null || fromLocal[k] === undefined) {
-                    delete out[k];
-                } else {
-                    out[k] = fromLocal[k];
-                }
-            });
-
-            if (Object.keys(out).length > 0) mergedGrades[sid] = out;
+    const cleanGrades = {};
+    Object.keys(JOURNAL.grades || {}).forEach(sid => {
+        const src = JOURNAL.grades[sid] || {};
+        const out = {};
+        Object.keys(src).forEach(k => {
+            if (src[k] !== '' && src[k] !== null && src[k] !== undefined) out[k] = src[k];
         });
+        if (Object.keys(out).length > 0) cleanGrades[sid] = out;
+    });
 
-        const mergedLessons = {};
-        Object.keys(fresh.lessons).forEach(k => {
-            mergedLessons[k] = fresh.lessons[k].deleted
-                ? { deleted: true }
-                : { t: fresh.lessons[k].t || '', h: normalizeHwList(fresh.lessons[k].h) };
+    const cleanQtr = {};
+    Object.keys(JOURNAL.qtrGrades || {}).forEach(sid => {
+        const src = JOURNAL.qtrGrades[sid] || {};
+        const out = {};
+        Object.keys(src).forEach(k => {
+            if (src[k] !== '' && src[k] !== null && src[k] !== undefined) out[k] = src[k];
         });
-        Object.keys(localLessonsSnap).forEach(k => {
-            mergedLessons[k] = localLessonsSnap[k].deleted
-                ? { deleted: true }
-                : { t: localLessonsSnap[k].t || '', h: normalizeHwList(localLessonsSnap[k].h) };
-        });
+        if (Object.keys(out).length > 0) cleanQtr[sid] = out;
+    });
 
-        const mergedTypes = {};
-        Object.keys(fresh.lessonTypes).forEach(k => { mergedTypes[k] = fresh.lessonTypes[k]; });
-        Object.keys(localTypesSnap).forEach(k => {
-            if (localTypesSnap[k] === '') delete mergedTypes[k];
-            else mergedTypes[k] = localTypesSnap[k];
-        });
+    const cleanLessons = {};
+    Object.keys(JOURNAL.lessons || {}).forEach(k => {
+        const item = JOURNAL.lessons[k];
+        if (!item) return;
+        cleanLessons[k] = item.deleted
+            ? { deleted: true }
+            : { t: item.t || '', h: normalizeHwList(item.h) };
+    });
 
-        const mergedQtr = {};
-        const allQtrSids = new Set([...Object.keys(fresh.qtrGrades), ...Object.keys(localQtrSnap)]);
-        allQtrSids.forEach(sid => {
-            const fromFresh = fresh.qtrGrades[sid] || {};
-            const fromLocal = localQtrSnap[sid] || {};
-            const out = {};
-            Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
-            Object.keys(fromLocal).forEach(k => {
-                if (fromLocal[k] === '' || fromLocal[k] === null || fromLocal[k] === undefined) {
-                    delete out[k];
-                } else {
-                    out[k] = fromLocal[k];
-                }
-            });
-            if (Object.keys(out).length > 0) mergedQtr[sid] = out;
-        });
-        const mergedTs = {};
-        const freshTs = fresh.gradeTimestamps || {};
-        let maxDbTs = MAX_GRADE_TS;
-        try {
-            const allJournals = await DB.getAll('journals');
-            (allJournals || []).forEach(j => {
-                Object.values(j.grade_timestamps || {}).forEach(map => {
-                    Object.values(map || {}).forEach(v => {
-                        const n = Number(v);
-                        if (!isNaN(n) && n > maxDbTs) maxDbTs = n;
-                    });
-                });
-            });
-        } catch (e) {}
+    const cleanTypes = {};
+    Object.keys(JOURNAL.lessonTypes || {}).forEach(k => {
+        if (JOURNAL.lessonTypes[k]) cleanTypes[k] = JOURNAL.lessonTypes[k];
+    });
 
-        const allTsSids = new Set([...Object.keys(freshTs), ...Object.keys(localTsSnap)]);
-        allTsSids.forEach(sid => {
-            const fromFresh = freshTs[sid] || {};
-            const fromLocal = localTsSnap[sid] || {};
-            const out = {};
-            Object.keys(fromFresh).forEach(k => { out[k] = fromFresh[k]; });
-            Object.keys(fromLocal).forEach(k => {
-                if (fromLocal[k] === null || fromLocal[k] === undefined) {
-                    delete out[k];
-                    return;
-                }
-                let tsVal = Number(fromLocal[k]);
-                if (!isNaN(tsVal) && Number(fromFresh[k]) !== tsVal && tsVal <= maxDbTs) {
-                    maxDbTs += 1;
-                    tsVal = maxDbTs;
-                }
-                out[k] = tsVal;
-            });
+    const cleanTs = {};
+    Object.keys(JOURNAL.gradeTimestamps || {}).forEach(sid => {
+        const src = JOURNAL.gradeTimestamps[sid] || {};
+        const out = {};
+        Object.keys(src).forEach(k => {
+            const val = src[k];
+            if (val === null || val === undefined) return;
+            if (k.startsWith('qtr:')) {
+                if (cleanQtr[sid] && cleanQtr[sid][k.slice(4)]) out[k] = val;
+            } else {
+                if (cleanGrades[sid] && cleanGrades[sid][k]) out[k] = val;
+            }
+        });
+        if (Object.keys(out).length > 0) cleanTs[sid] = out;
+    });
 
-            Object.keys(out).forEach(k => {
-                if (k.startsWith('qtr:')) {
-                    if (!(mergedQtr[sid] && mergedQtr[sid][k.slice(4)])) delete out[k];
-                } else {
-                    if (!(mergedGrades[sid] && mergedGrades[sid][k])) delete out[k];
-                }
-            });
-            if (Object.keys(out).length > 0) mergedTs[sid] = out;
-        });
-        syncMaxGradeTs(mergedTs);
-        JOURNAL.gradeTimestamps = mergedTs;
-
-        await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
-            grades: mergedGrades,
-            lessons: mergedLessons,
-            qtr_grades: mergedQtr,
-            lesson_types: mergedTypes,
-            grade_timestamps: mergedTs
-        });
-    } else {
-        await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
-            grades: localGradesSnap,
-            lessons: localLessonsSnap,
-            qtr_grades: localQtrSnap,
-            lesson_types: localTypesSnap,
-            grade_timestamps: localTsSnap
-        });
-    }
+    await DB.upsertJournal(CLASS_ID, SUBJECT_ID, {
+        grades: cleanGrades,
+        lessons: cleanLessons,
+        qtr_grades: cleanQtr,
+        lesson_types: cleanTypes,
+        grade_timestamps: cleanTs
+    });
 }
+
 
 
 let currentLessonTypeContext = { gradeKey: null, baseGradeKey: null, date: null };
