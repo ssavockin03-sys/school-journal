@@ -19,10 +19,11 @@ function loadFirebase() {
 
     _firebaseReady = new Promise((resolve, reject) => {
         const configJson = JSON.stringify(firebaseConfig);
+        const cdnBase = "https://www." + "://gstatic.com";
         const blob = new Blob([`
-            import { initializeApp } from 'https://gstatic.com';
-            import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, setDoc } from 'https://gstatic.com';
-            import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://gstatic.com';
+            import { initializeApp } from '${cdnBase}firebase-app.js';
+            import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, setDoc } from '${cdnBase}firebase-firestore.js';
+            import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from '${cdnBase}firebase-auth.js';
 
             const app = initializeApp(${configJson});
             const db = getFirestore(app);
