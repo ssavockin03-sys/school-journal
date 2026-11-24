@@ -1132,30 +1132,14 @@
 
                 <div class="lesson-section-block">
                     <div class="section-heading">Домашние задания</div>
-                    <table class="lesson-grid-table">
-                        <thead>
-                            <tr>
-                                <th class="left" style="width:74%;">Задание</th>
-                                <th style="width:13%;">Оценка</th>
-                                <th style="width:13%;">Статус</th>
-                            </tr>
-                        </thead>
-                        <tbody>${hwRowsHtml}</tbody>
-                    </table>
+                    ${hwBlockHtml}
                 </div>
 
                 <div class="lesson-section-block">
                     <div class="section-heading">Оценки за работу на занятии</div>
-                    <table class="lesson-grid-table">
-                        <thead>
-                            <tr>
-                                <th class="left" style="width:87%;"></th>
-                                <th style="width:13%;">Оценка</th>
-                            </tr>
-                        </thead>
-                        <tbody>${gradeRowsHtml}</tbody>
-                    </table>
+                    ${gradeBlockHtml}
                 </div>
+
             `;
 
             document.title = `${subjectName} — Страница занятия — Дневник.ру`;
