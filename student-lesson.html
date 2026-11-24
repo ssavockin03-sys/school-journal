@@ -819,11 +819,31 @@
         return map[key] || String(abbr).trim() || 'Ответ на уроке';
     }
 
+    function isFemaleStudent(student) {
+        if (!student) return false;
+        const g = String(student.gender || student.sex || '').trim().toLowerCase();
+        if (g === 'f' || g === 'female' || g === 'ж' || g === 'жен' || g === 'женский') return true;
+        if (g === 'm' || g === 'male' || g === 'м' || g === 'муж' || g === 'мужской') return false;
+
+        const parts = String(student.full_name || '').trim().split(/\s+/).filter(Boolean);
+        const patronymic = (parts.at(2) || '').toLowerCase();
+        if (/(вна|чна|шна)$/.test(patronymic)) return true;
+        if (/(вич|мич)$/.test(patronymic)) return false;
+
+        const firstName = (parts.at(1) || '').toLowerCase();
+        if (!firstName) return false;
+        const maleExceptions = ['никита', 'илья', 'данила', 'даниил', 'лука', 'кузьма', 'фома', 'савва', 'лёва', 'лева'];
+        if (maleExceptions.includes(firstName)) return false;
+        return /[ая]$/.test(firstName);
+    }
+
     function getPresenceFullName(code) {
         const key = String(code || '').trim().toUpperCase();
-        const map = { 'Н': 'Неявка', 'Б': 'Болеет', 'О': 'Опоздание', 'СП': 'Свободное посещение', 'П': 'Пропуск' };
+        const lateLabel = isFemaleStudent(CURRENT_STUDENT) ? 'Опоздала' : 'Опоздал';
+        const map = { 'Н': 'Неявка', 'Б': 'Болеет', 'О': lateLabel, 'СП': 'Свободное посещение', 'П': 'Пропуск' };
         return map[key] || key;
     }
+
 
     function getCompletedHwMap() {
         try { return JSON.parse(localStorage.getItem('dnevnik_done_hw_v1') || '{}'); }
