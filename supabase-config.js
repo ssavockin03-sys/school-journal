@@ -108,16 +108,8 @@ const DB = {
             const fb = await loadFirebase();
             const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'journals'), fb.where('class_id', '==', classId), fb.where('subject_id', '==', subjectId)));
             const data = { class_id: classId, subject_id: subjectId, ...payload, updated_at: new Date().toISOString() };
-            if (!snap.empty) {
-                const docId = snap.docs[0].id;
-                await fb.setDoc(fb.doc(fb.db, 'journals', docId), data, { merge: true });
-                return { id: docId, ...data };
-            } else {
-                const compositeId = classId + '__' + subjectId;
-                await fb.setDoc(fb.doc(fb.db, 'journals', compositeId), data);
-                return { id: compositeId, ...data };
-            }
+            const docId = !snap.empty ? snap.docs[0].id : (classId + '__' + subjectId);
+            await fb.setDoc(fb.doc(fb.db, 'journals', docId), data);
+            return { id: docId, ...data };
         } catch (e) { console.error('DB.upsertJournal:', e); return null; }
     }
-};
-window.DB = DB;
