@@ -1276,19 +1276,12 @@
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
                 e.currentTarget.classList.add('active');
-                const view = e.currentTarget.dataset.view;
                 document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
-                document.getElementById('pane-' + view).classList.add('active');
-                const wrap = document.querySelector('.content-wrap');
-                if (wrap) {
-                    wrap.classList.toggle('semesters-active', view === 'semesters');
-                    const baseFactor = view === 'semesters' ? 1 : 1.1;
-                    wrap.style.zoom = (DIARY_ZOOM / 100) * baseFactor;
-                }
-
+                document.getElementById('pane-' + e.currentTarget.dataset.view).classList.add('active');
             });
         });
     }
+
 
 
     function getPeriodForDate(date) {
