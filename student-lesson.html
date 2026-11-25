@@ -1013,12 +1013,15 @@
             const teacherFullName = (teacherObj && (teacherObj.full_name || teacherObj.name)) || lessonInfo.teacherName || '—';
             const dateKeysSet = new Set();
             if (journal) {
-                [journal.lessons, journal.homework, journal.lesson_types].forEach(obj => {
-                    if (!obj) return;
+                [journal.lessons, journal.homework, journal.lesson_types, journal.columns, journal.work_types].forEach(obj => {
+                    if (!obj || typeof obj !== 'object') return;
                     Object.keys(obj).forEach(k => { if (String(k).startsWith(dateStr)) dateKeysSet.add(k); });
                 });
-                if (journal.grades && journal.grades[student.id]) {
-                    Object.keys(journal.grades[student.id]).forEach(k => { if (String(k).startsWith(dateStr)) dateKeysSet.add(k); });
+                if (journal.grades && typeof journal.grades === 'object') {
+                    Object.values(journal.grades).forEach(stGrades => {
+                        if (!stGrades || typeof stGrades !== 'object') return;
+                        Object.keys(stGrades).forEach(k => { if (String(k).startsWith(dateStr)) dateKeysSet.add(k); });
+                    });
                 }
             }
 
@@ -1029,6 +1032,7 @@
                 if (!lessonGroupsMap.has(baseKey)) lessonGroupsMap.set(baseKey, []);
                 lessonGroupsMap.get(baseKey).push(k);
             });
+
 
             const sortedGroups = Array.from(lessonGroupsMap.entries()).sort((a, b) => {
                 const nA = parseInt(String(a.at(0)).split('_').at(1), 10);
