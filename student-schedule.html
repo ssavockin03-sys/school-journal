@@ -374,7 +374,8 @@
         }
         .schedule-table thead th.sat,
         .schedule-table thead th.sun { color: #D9534F; }
-        .schedule-table thead th.corner { background: #F4F7FA; border: 1px solid #D5DCE4; }
+        .schedule-table thead th.corner { background: #F4F7FA; border: 1px solid #D5DCE4; border-right: none; }
+        .schedule-table thead th:nth-child(2) { border-left: none; }
 
         .schedule-table tbody td {
             border: 1px solid #D5DCE4;
@@ -392,7 +393,10 @@
             color: #666666;
             font-size: 12px;
             padding: 0;
+            border-right: none;
         }
+        .schedule-table tbody td:nth-child(2) { border-left: none; }
+
         .schedule-table tbody td.empty-day,
         .schedule-table tbody td.sun { background: #F2F2F2; }
 
