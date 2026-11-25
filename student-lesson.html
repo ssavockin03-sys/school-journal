@@ -1127,15 +1127,14 @@
 
 
             const renderGradeSquares = (rawGrade) => {
-                const parts = String(rawGrade == null ? '' : rawGrade)
-                    .split(/\s*[-–—/]+\s*(?=\d)/)
-                    .map(p => p.trim())
-                    .filter(Boolean);
-                const list = parts.length > 0 ? parts : [String(rawGrade || '')];
+                const str = String(rawGrade == null ? '' : rawGrade).trim();
+                const parts = str.match(/\d\s*[+-]?/g);
+                const list = parts && parts.length > 0 ? parts.map(p => p.replace(/\s+/g, '')) : [str];
                 return `<span style="display:inline-flex;align-items:center;gap:3px;">${list.map(p =>
                     `<span class="lesson-grade-square ${gradeClass(p)}">${escapeHtml(p)}</span>`
                 ).join('')}</span>`;
             };
+
 
 
 
