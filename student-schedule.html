@@ -248,41 +248,54 @@
         .page-h1 { font-size: 26px; font-weight: 400; color: #7B4D96; margin-bottom: 16px; line-height: 1.2; font-family: "Open Sans", Arial, sans-serif; }
         .page-h1 b { font-weight: 600; color: #7B4D96; }
 
-        /* Вкладки семестров и звонков (ul.switch 940x40) */
+        /* Вкладки периодов и звонков (ul.old-tabs__list 940x27) */
         .sem-tabs {
             display: flex;
             align-items: flex-end;
             width: 940px;
-            height: 40px;
+            height: 27px;
             list-style: none;
-            margin: 0 0 12px 0;
+            margin: 0 0 14px 0;
             padding: 0;
-            border-bottom: 1px solid #D8DFE6;
-            gap: 4px;
+            border-bottom: 1px solid #D6DEE6;
+            gap: 0;
+            font-family: arial, helvetica, sans-serif;
         }
         .sem-tab {
-            height: 30px;
+            height: 25px;
+            line-height: 24px;
             padding: 0 12px;
             font-family: arial, helvetica, sans-serif;
             font-size: 13px;
             font-weight: 400;
             color: #2291BE;
-            background: #FFFFFF;
-            border: 1px solid #D8DFE6;
+            background: linear-gradient(180deg, #FFFFFF 0%, #EDF5FA 100%);
+            border: 1px solid #D6DEE6;
             border-bottom: none;
-            border-radius: 3px 3px 0 0;
+            border-radius: 5px 5px 0 0;
             cursor: pointer;
-            margin-bottom: -1px;
+            margin: 0 -1px -1px 0;
+            box-sizing: border-box;
         }
-        .sem-tab:hover { background: #F5F9FC; }
+        .sem-tab:hover {
+            background: linear-gradient(180deg, #FFFFFF 0%, #E3F0F8 100%);
+            text-decoration: underline;
+        }
         .sem-tab.active {
-            height: 31px;
-            color: #E58C24;
-            font-weight: 400;
+            height: 26px;
+            line-height: 25px;
+            color: #EB8601;
+            font-weight: 700;
             background: #FFFFFF;
-            border-color: #D8DFE6;
+            border-color: #D6DEE6;
             border-bottom: 1px solid #FFFFFF;
+            position: relative;
+            z-index: 2;
         }
+        .sem-tab.active:hover {
+            text-decoration: none;
+        }
+
 
         /* Блок навигации недели и переключателя (div.player 940x50) */
         .player {
