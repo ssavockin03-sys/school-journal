@@ -843,14 +843,20 @@
         const d1 = start.getDate(); const d2 = end.getDate();
         const m1 = MONTHS_GEN[start.getMonth()]; const m2 = MONTHS_GEN[end.getMonth()];
         const y = end.getFullYear();
-        if (m1 === m2) return d1 + ' – ' + d2 + ' ' + m1 + ' ' + y;
-        return d1 + ' ' + m1 + ' – ' + d2 + ' ' + m2 + ' ' + y;
+        if (m1 === m2) return d1 + ' — ' + d2 + ' ' + m1 + ' ' + y;
+        return d1 + ' ' + m1 + ' — ' + d2 + ' ' + m2 + ' ' + y;
     }
     function formatDayHeader(d, idx) {
         const dayName = DAYS_RU[idx];
         const dd = d.getDate();
-        const mm = MONTHS_GEN[d.getMonth()].slice(0, 3);
+        const mm = MONTHS_GEN[d.getMonth()].slice(0, 4) + '.';
         return dayName + ', ' + dd + ' ' + mm;
+    }
+    function toIsoDate(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return y + '-' + m + '-' + day;
     }
     function renderSchedule() {
         const container = document.getElementById('scheduleContainer');
@@ -861,11 +867,9 @@
         document.getElementById('weekRange').textContent = formatWeekRange(weekStart, weekEnd);
         let totalCount = 0;
         weekDays.forEach(d => { if (d.getDay() !== 0) totalCount += getLessonsForDate(d).length; });
-        document.getElementById('weekCount').innerHTML = '<b>' + totalCount + '</b> по плану, <span class="z">0</span> замен/переносов, <span class="o">0</span> отмен';
-        let maxNum = 0;
+        document.getElementById('weekCount').innerHTML = '(всего <b>' + totalCount + '</b> занятий: <span class="p">' + totalCount + '</span> по плану, <span class="z">0</span> замены/переноса, <span class="o">0</span> отмен)';
+        let maxNum = 12;
         weekDays.forEach(d => { const ls = getLessonsForDate(d); if (ls.length) maxNum = Math.max(maxNum, Math.max(...ls.map(l => l.num))); });
-        if (maxNum === 0) maxNum = 7;
-        if (maxNum < 12) maxNum = Math.max(maxNum, 7);
         const anyInPeriod = weekDays.some(d => findPeriodIndexByDate(d) >= 0);
         if (!anyInPeriod) {
             container.innerHTML = '<div class="empty-schedule"><b>Каникулы</b>На этой неделе занятий нет. Расписание появится, когда начнётся учебный период.</div>';
@@ -874,7 +878,10 @@
         let html = '<div class="schedule-wrap"><table class="schedule-table"><colgroup><col class="lesson-col">';
         for (let i = 0; i < 7; i++) html += '<col class="day-col">';
         html += '</colgroup><thead><tr><th class="corner"></th>';
-        weekDays.forEach((d, i) => { const cls = i === 6 ? 'sun' : ''; html += '<th class="' + cls + '">' + formatDayHeader(d, i) + '</th>'; });
+        weekDays.forEach((d, i) => {
+            const cls = i === 5 ? 'sat' : (i === 6 ? 'sun' : '');
+            html += '<th class="' + cls + '">' + formatDayHeader(d, i) + '</th>';
+        });
         html += '</tr></thead><tbody>';
         for (let n = 1; n <= maxNum; n++) {
             html += '<tr><td class="num">' + n + '</td>';
@@ -884,12 +891,14 @@
                 const cellCls = isSunday ? 'empty-day sun' : '';
                 if (lessonsAtN.length === 0) html += '<td class="' + cellCls + '"></td>';
                 else {
+                    const isoDate = toIsoDate(d);
                     let inner = '';
                     lessonsAtN.forEach(l => {
-                        const colorIdx = (l.subject.charCodeAt(0) || 0) % 6;
-                        inner += '<div class="lesson-card c' + colorIdx + '">';
+                        const shortTeacher = l.teacherName ? formatShortFio(l.teacherName) : '';
+                        const href = 'student-lesson.html?date=' + encodeURIComponent(isoDate) + '&lesson=' + encodeURIComponent(l.num) + '&subject=' + encodeURIComponent(l.subject);
+                        inner += '<div class="lesson-card" onclick="window.location.href=\'' + href.replace(/'/g, "\\'") + '\'">';
                         inner += '<span class="subj">' + escapeHtml(l.subject) + '</span>';
-                        if (l.teacherName) inner += '<span class="teacher">' + escapeHtml(l.teacherName) + '</span>';
+                        if (shortTeacher) inner += '<span class="teacher">' + escapeHtml(shortTeacher) + '</span>';
                         if (l.start || l.end) inner += '<span class="time">' + escapeHtml(l.start) + ' - ' + escapeHtml(l.end) + '</span>';
                         if (l.roomName) inner += '<span class="room">' + escapeHtml(l.roomName) + '</span>';
                         inner += '</div>';
@@ -916,6 +925,14 @@
         renderSemesterTabs();
         renderSchedule();
     });
+    document.getElementById('todayWeekBtn').addEventListener('click', () => {
+        CURRENT_WEEK_START = getMondayOf(new Date());
+        const newIdx = findPeriodIndexByDate(CURRENT_WEEK_START);
+        if (newIdx >= 0) ACTIVE_SEM_INDEX = newIdx;
+        renderSemesterTabs();
+        renderSchedule();
+    });
+
     document.querySelectorAll('.week-mode-btn').forEach(b => {
         b.addEventListener('click', () => {
             CURRENT_MODE = b.dataset.mode;
