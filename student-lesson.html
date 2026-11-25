@@ -1133,9 +1133,11 @@
                 ).join('')}</span>`;
             };
 
-            const gradeBlockHtml = gradeItems.length === 0
-                ? `<div class="presence-empty-box">Оценки за работу на занятии не выставлены.</div>`
-                : `<div class="lesson-rounded-box">
+            const displayGradeItems = gradeItems.length > 0
+                ? gradeItems
+                : [{ grade: '', typeFull: getLessonTypeFullName(DEFAULT_LESSON_TYPE) }];
+
+            const gradeBlockHtml = `<div class="lesson-rounded-box">
                     <table class="lesson-grid-table">
                         <thead>
                             <tr>
@@ -1143,12 +1145,13 @@
                                 <th style="width:94px;">Оценка</th>
                             </tr>
                         </thead>
-                        <tbody>${gradeItems.map(g => `<tr>
+                        <tbody>${displayGradeItems.map(g => `<tr>
                             <td style="width:512px;"><div class="lesson-work-light">${escapeHtml(g.typeFull)}</div></td>
-                            <td style="width:94px;text-align:center;">${renderGradeSquares(g.grade)}</td>
+                            <td style="width:94px;text-align:center;color:#666666;">${g.grade ? renderGradeSquares(g.grade) : 'нет'}</td>
                         </tr>`).join('')}</tbody>
                     </table>
                 </div>`;
+
 
 
 
