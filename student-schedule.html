@@ -500,7 +500,7 @@
             window.CURRENT_STUDENT = student;
             CURRENT_CLASS = classes.find(c => c.id === student.class_id) || null;
             ALL_TEACHERS = teachers; ALL_ROOMS = rooms;
-            document.getElementById('userName').textContent = student.full_name.split(' ').slice(0, 2).join(' ');
+            document.getElementById('userName').textContent = formatShortFio(student.full_name);
             ALL_SCHEDULES = schedules.filter(s => s.class_id === student.class_id);
             const shiftName = (CURRENT_CLASS && CURRENT_CLASS.shift) || 'Первая смена';
             const shifts = await DB.getAll('bell_shifts');
