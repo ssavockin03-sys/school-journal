@@ -412,6 +412,7 @@
             line-height: 1.25;
             color: #555555;
             box-sizing: border-box;
+            overflow: hidden;
             cursor: pointer;
         }
         .lesson-card:last-child { margin-bottom: 0; }
@@ -428,8 +429,9 @@
         }
         .lesson-card:hover .subj { text-decoration: underline; }
         .lesson-card .teacher { color: #555555; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .lesson-card .time { color: #555555; display: block; white-space: nowrap; }
-        .lesson-card .room { color: #555555; display: block; white-space: nowrap; }
+        .lesson-card .time { color: #555555; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lesson-card .room { color: #555555; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 
         .empty-schedule { text-align: center; padding: 40px 20px; color: #666666; font-size: 13px; border: 1px solid #D5DCE4; background: #F9FAFB; }
         .empty-schedule b { display: block; font-size: 15px; color: #333333; margin-bottom: 6px; }
