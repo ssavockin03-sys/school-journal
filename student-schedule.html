@@ -1022,8 +1022,8 @@
                     lessonsAtN.forEach(l => {
                         const shortTeacher = l.teacherName ? formatShortFio(l.teacherName) : '';
                         const href = 'student-lesson.html?date=' + encodeURIComponent(isoDate) + '&lesson=' + encodeURIComponent(l.num) + '&subject=' + encodeURIComponent(l.subject);
-                        inner += '<div class="lesson-card" onclick="window.location.href=\'' + href.replace(/'/g, "\\'") + '\'">';
-                        inner += '<span class="subj">' + escapeHtml(l.subject) + '</span>';
+                        inner += '<div class="lesson-card">';
+                        inner += '<span class="subj" onclick="window.location.href=\'' + href.replace(/'/g, "\\'") + '\'">' + escapeHtml(l.subject) + '</span>';
                         if (shortTeacher) inner += '<span class="teacher">' + escapeHtml(shortTeacher) + '</span>';
                         if (l.start || l.end) inner += '<span class="time">' + escapeHtml(l.start) + ' - ' + escapeHtml(l.end) + '</span>';
                         if (l.roomName) inner += '<span class="room">' + escapeHtml(l.roomName) + '</span>';
