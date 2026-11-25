@@ -1048,13 +1048,104 @@
         renderSemesterTabs();
         renderSchedule();
     });
-    document.getElementById('todayWeekBtn').addEventListener('click', () => {
-        CURRENT_WEEK_START = getMondayOf(new Date());
+    const MONTHS_NOM = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+    let CAL_VIEW_YEAR = new Date().getFullYear();
+    let CAL_VIEW_MONTH = new Date().getMonth();
+    let CAL_SELECTED_ISO = toIsoDate(new Date());
+
+    function jumpToDateWeek(dateObj) {
+        CAL_SELECTED_ISO = toIsoDate(dateObj);
+        CURRENT_WEEK_START = getMondayOf(dateObj);
         const newIdx = findPeriodIndexByDate(CURRENT_WEEK_START);
         if (newIdx >= 0) ACTIVE_SEM_INDEX = newIdx;
         renderSemesterTabs();
         renderSchedule();
+        document.getElementById('miniCalPopup').classList.remove('open');
+    }
+
+    function renderMiniCalendar() {
+        const popup = document.getElementById('miniCalPopup');
+        const firstDay = new Date(CAL_VIEW_YEAR, CAL_VIEW_MONTH, 1);
+        const startOffset = (firstDay.getDay() + 6) % 7;
+        const gridStart = new Date(CAL_VIEW_YEAR, CAL_VIEW_MONTH, 1 - startOffset);
+        const today = new Date();
+        const todayLabel = today.getDate() + ' ' + MONTHS_NOM[today.getMonth()] + ' ' + today.getFullYear() + ' г.';
+
+        let html = '<div class="mini-cal-head">';
+        html += '<button type="button" class="mini-cal-nav" id="miniCalPrev">&lt;</button>';
+        html += '<span>' + MONTHS_NOM[CAL_VIEW_MONTH] + ', ' + CAL_VIEW_YEAR + '</span>';
+        html += '<button type="button" class="mini-cal-nav" id="miniCalNext">&gt;</button>';
+        html += '</div>';
+        html += '<table class="mini-cal-table"><thead><tr>';
+        DAYS_RU.forEach((d, idx) => {
+            html += '<th class="' + (idx >= 5 ? 'wknd' : '') + '">' + d + '</th>';
+        });
+        html += '</tr></thead><tbody>';
+
+        let cur = new Date(gridStart);
+        for (let row = 0; row < 6; row++) {
+            html += '<tr>';
+            for (let col = 0; col < 7; col++) {
+                const iso = toIsoDate(cur);
+                const isOther = cur.getMonth() !== CAL_VIEW_MONTH;
+                const isSel = iso === CAL_SELECTED_ISO;
+                const cls = [isOther ? 'other-month' : '', isSel ? 'selected-day' : ''].filter(Boolean).join(' ');
+                html += '<td class="' + cls + '" data-iso="' + iso + '">' + cur.getDate() + '</td>';
+                cur.setDate(cur.getDate() + 1);
+            }
+            html += '</tr>';
+        }
+        html += '</tbody></table>';
+        html += '<div class="mini-cal-footer" id="miniCalToday">Сегодня: ' + todayLabel + '</div>';
+        popup.innerHTML = html;
+
+        document.getElementById('miniCalPrev').addEventListener('click', (e) => {
+            e.stopPropagation();
+            CAL_VIEW_MONTH--;
+            if (CAL_VIEW_MONTH < 0) { CAL_VIEW_MONTH = 11; CAL_VIEW_YEAR--; }
+            renderMiniCalendar();
+        });
+        document.getElementById('miniCalNext').addEventListener('click', (e) => {
+            e.stopPropagation();
+            CAL_VIEW_MONTH++;
+            if (CAL_VIEW_MONTH > 11) { CAL_VIEW_MONTH = 0; CAL_VIEW_YEAR++; }
+            renderMiniCalendar();
+        });
+        popup.querySelectorAll('td[data-iso]').forEach(td => {
+            td.addEventListener('click', (e) => {
+                e.stopPropagation();
+                jumpToDateWeek(new Date(td.dataset.iso + 'T00:00:00'));
+            });
+        });
+        document.getElementById('miniCalToday').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const now = new Date();
+            CAL_VIEW_YEAR = now.getFullYear();
+            CAL_VIEW_MONTH = now.getMonth();
+            jumpToDateWeek(now);
+        });
+    }
+
+    document.getElementById('todayWeekBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const popup = document.getElementById('miniCalPopup');
+        if (popup.classList.contains('open')) {
+            popup.classList.remove('open');
+        } else {
+            const base = CURRENT_WEEK_START || new Date();
+            CAL_VIEW_YEAR = base.getFullYear();
+            CAL_VIEW_MONTH = base.getMonth();
+            renderMiniCalendar();
+            popup.classList.add('open');
+        }
     });
+
+    document.addEventListener('click', (e) => {
+        const anchor = document.getElementById('calendarAnchor');
+        const popup = document.getElementById('miniCalPopup');
+        if (anchor && popup && !anchor.contains(e.target)) popup.classList.remove('open');
+    });
+
 
     document.querySelectorAll('.week-mode-btn').forEach(b => {
         b.addEventListener('click', () => {
