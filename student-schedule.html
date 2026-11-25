@@ -348,6 +348,81 @@
             margin-left: 2px;
         }
         .week-calendar-btn:hover { opacity: 0.85; }
+        .calendar-anchor { position: relative; display: inline-flex; align-items: center; }
+        .mini-cal-popup {
+            display: none;
+            position: absolute;
+            top: 38px;
+            left: -6px;
+            width: 224px;
+            background: #FFFFFF;
+            border: 6px solid #005B8E;
+            border-radius: 5px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            z-index: 120;
+            font-family: arial, helvetica, sans-serif;
+            user-select: none;
+        }
+        .mini-cal-popup.open { display: block; }
+        .mini-cal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            background: #FFFFFF;
+            color: #2291BE;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .mini-cal-nav {
+            background: none;
+            border: none;
+            color: #2291BE;
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .mini-cal-nav:hover { color: #005B8E; }
+        .mini-cal-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .mini-cal-table th {
+            height: 20px;
+            background: #005B8E;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            padding: 0;
+        }
+        .mini-cal-table th.wknd { background: #FF0000; }
+        .mini-cal-table td {
+            height: 23px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 12.5px;
+            color: #222222;
+            border-bottom: 1px solid #F0F2F5;
+            cursor: pointer;
+            padding: 0;
+        }
+        .mini-cal-table td:hover { background: #E6F4FA; }
+        .mini-cal-table td.other-month { color: #A0A8B0; }
+        .mini-cal-table td.selected-day {
+            background: #F3921F;
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+        .mini-cal-footer {
+            padding: 6px 6px 7px;
+            text-align: center;
+            font-size: 12px;
+            color: #2291BE;
+            background: #FFFFFF;
+            cursor: pointer;
+        }
+        .mini-cal-footer:hover { text-decoration: underline; }
+
 
 
         .week-mode { display: flex; align-items: center; gap: 6px; padding-left: 56px; }
