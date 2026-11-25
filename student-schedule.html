@@ -334,37 +334,70 @@
 
 <div class="app-shell">
     <header class="header">
-        <div class="header-inner">
-            <div class="logo"><span class="logo-bold">Журнальчик</span><span class="logo-sub">.ру</span></div>
-            <div class="d-user-profile-zone">
-                <div class="d-user-info">
-                    <span class="d-user-name" id="userName">&nbsp;</span>
-                    <span class="d-user-role">Ученик</span>
+        <div class="header-top">
+            <a href="student.html" class="logo" title="Дневник.ру">
+                <img src="https://dnevnik.ru"
+                     alt="Дневник"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <svg style="display:none" viewBox="0 0 286 100" width="169" height="59" xmlns="http://w3.org">
+                    <rect x="7" y="54" width="11" height="32" rx="5.5" transform="rotate(-33 12 70)" fill="#b86cb4"/>
+                    <rect x="25" y="7" width="12" height="36" rx="6" transform="rotate(-7 31 25)" fill="#f3921f"/>
+                    <rect x="44" y="2" width="12" height="40" rx="6" transform="rotate(4 50 22)" fill="#f8d218"/>
+                    <rect x="62" y="10" width="12" height="36" rx="6" transform="rotate(18 68 28)" fill="#b3d335"/>
+                    <rect x="75" y="29" width="11" height="30" rx="5.5" transform="rotate(33 80 44)" fill="#4dc3e8"/>
+                    <path d="M23 50 C37 44, 67 48, 72 68 C77 87, 58 97, 37 96 C22 95, 19 88, 21 72 C22 61, 26 55, 34 55 L30 78 C29 84, 34 87, 42 86 C55 85, 62 77, 59 66 C56 56, 39 52, 24 55 Z" fill="#006eb3"/>
+                    <text x="77" y="93" font-family="'Open Sans', 'Comic Sans MS', Arial, sans-serif" font-size="52" font-weight="700" letter-spacing="-1.5" fill="#006eb3">невник</text>
+                </svg>
+            </a>
+
+            <div class="user-zone">
+                <div class="user-profile-box" id="topUserProfileBox" onclick="toggleTopUserMenu(event)">
+                    <div class="user-profile-box__avatar" id="topUserAvatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9.5"></circle>
+                            <circle cx="9" cy="9.5" r="0.9" fill="currentColor" stroke="none"></circle>
+                            <circle cx="15" cy="9.5" r="0.9" fill="currentColor" stroke="none"></circle>
+                            <path d="M8.5 14.2c.9 1.4 2.1 2.1 3.5 2.1s2.6-.7 3.5-2.1"></path>
+                        </svg>
+                    </div>
+                    <div class="user-profile-box__info">
+                        <div class="user-profile-box__row">
+                            <span class="user-name" id="userName">&nbsp;</span>
+                            <span class="user-profile-box__caret"></span>
+                        </div>
+                        <span class="user-profile-box__category">Ученик</span>
+                    </div>
+
+                    <div class="top-profile-menu" onclick="event.stopPropagation()">
+                        <a href="student.html">Мой профиль</a>
+                        <a href="#" onclick="event.preventDefault(); closeTopUserMenu();">Настройки</a>
+                        <a href="#" onclick="event.preventDefault(); logout()">Выход</a>
+                    </div>
                 </div>
-                <div class="d-user-actions">
-                    <button class="d-action-link" onclick="return false">Помощь</button>
-                    <button class="d-action-link logout" onclick="logout()">Выход</button>
+
+                <div class="user-actions">
+                    <a href="#" onclick="event.preventDefault();">Помощь</a>
+                    <a href="#" class="logout" onclick="event.preventDefault(); logout()">Выход</a>
                 </div>
             </div>
         </div>
+
+        <div class="header-inner-wrap">
+            <ul class="header-menu">
+                <li><a href="#" class="active" onclick="return false">ОБРАЗОВАНИЕ</a></li>
+                <li><a href="#" onclick="return false">ОБЩЕНИЕ</a></li>
+                <li><a href="#" onclick="return false">ПРИЛОЖЕНИЯ</a></li>
+
+                <ul class="header-submenu">
+                    <li class="header-submenu__item"><a href="student.html" class="header-submenu__link">Сегодня</a></li>
+                    <li class="header-submenu__item"><a href="student-performance.html" class="header-submenu__link">Успеваемость</a></li>
+                    <li class="header-submenu__item"><a href="student-group.html" class="header-submenu__link">Моя группа</a></li>
+                    <li class="header-submenu__item header-submenu__item_active"><a href="student-schedule.html" class="header-submenu__link">Расписание</a></li>
+                </ul>
+            </ul>
+        </div>
     </header>
 
-    <div class="d-top-blue-bar">
-        <div class="d-top-blue-inner">
-            <a href="#" class="d-nav-item active" onclick="return false">ОБРАЗОВАНИЕ</a>
-            <a href="#" class="d-nav-item" onclick="return false">ОБЩЕНИЕ</a>
-            <a href="#" class="d-nav-item" onclick="return false">ПРИЛОЖЕНИЯ</a>
-        </div>
-    </div>
-
-    <div class="d-sub-menu-bar">
-<div class="d-sub-menu-inner">
-    <a href="student.html"             class="d-sub-item">Сегодня</a>
-    <a href="student-performance.html" class="d-sub-item">Успеваемость</a>
-    <a href="student-group.html"       class="d-sub-item">Моя группа</a>
-    <a href="student-schedule.html"    class="d-sub-item">Расписание</a>
-</div>
-    </div>
 
     <div class="container">
         <div class="crumbs"><a href="#">ГОУ ЛНР «АСШ № 6»</a> &nbsp;»&nbsp; Расписания занятий</div>
