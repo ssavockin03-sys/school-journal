@@ -461,10 +461,10 @@
         }
 
         /* Сетка расписания */
-        .schedule-wrap { width: 940px; border: 1px solid #D5DCE4; background: #FFFFFF; }
-        .schedule-table { width: 940px; border-collapse: collapse; table-layout: fixed; font-family: arial, helvetica, sans-serif; }
+        .schedule-wrap { width: 100%; border: 1px solid #D5DCE4; background: #FFFFFF; }
+        .schedule-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-family: arial, helvetica, sans-serif; }
         .schedule-table col.lesson-col { width: 32px; }
-        .schedule-table col.day-col { width: 129.7px; }
+        .schedule-table col.day-col { width: calc((100% - 32px) / 7); }
         .schedule-table thead th {
             background: #F2F2F2;
             border: none;
