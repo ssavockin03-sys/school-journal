@@ -762,12 +762,26 @@
                 </div>
                 <div class="week-tools-right">
                     <button type="button" class="week-tool-icon" title="Экспорт в Excel" onclick="return false">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="19"/><line x1="15" y1="13" x2="9" y2="19"/></svg>
+                        <img src="https://dnevnik.ru" width="24" height="24" alt="Excel" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                        <svg style="display:none" width="22" height="22" viewBox="0 0 24 24" xmlns="http://w3.org">
+                            <rect x="2" y="2" width="20" height="20" rx="1.5" fill="#E8F5E9" stroke="#3D7A37" stroke-width="1.6"/>
+                            <rect x="3.5" y="3.5" width="17" height="17" fill="none" stroke="#7CB342" stroke-width="1"/>
+                            <path d="M7 6.5 L10.3 6.5 L12.2 10.2 L14.2 6.5 L17.3 6.5 L13.8 12 L17.6 17.5 L14.3 17.5 L12.1 13.7 L9.9 17.5 L6.7 17.5 L10.5 12 Z" fill="#3B8734" stroke="#23541E" stroke-width="0.6"/>
+                        </svg>
                     </button>
                     <button type="button" class="week-tool-icon" title="Печать" onclick="window.print()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555555" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        <img src="https://dnevnik.ru" width="24" height="24" alt="Печать" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                        <svg style="display:none" width="24" height="24" viewBox="0 0 24 24" xmlns="http://w3.org">
+                            <polygon points="7,2 16,2 17.5,9.5 8.5,9.5" fill="#E3F2FD" stroke="#607D8B" stroke-width="1.1"/>
+                            <path d="M4,10.5 L19,10.5 L21,12.5 L21,17.5 L4,17.5 L2.5,15.5 L2.5,12.5 Z" fill="#ECEFF1" stroke="#546E7A" stroke-width="1.1"/>
+                            <rect x="5" y="12.5" width="14" height="3.5" fill="#CFD8DC"/>
+                            <polygon points="8,16.5 16.5,16.5 18.5,20.5 9.5,20.5" fill="#FFFFFF" stroke="#546E7A" stroke-width="1.1"/>
+                            <line x1="10" y1="18" x2="15.5" y2="18" stroke="#90A4AE" stroke-width="0.9"/>
+                            <circle cx="18.5" cy="13.5" r="0.9" fill="#66BB6A"/>
+                        </svg>
                     </button>
                 </div>
+
             </div>
             <div class="week-mode">
                 <a class="week-mode-btn active" data-mode="week" onclick="return false">Текущая неделя</a>
