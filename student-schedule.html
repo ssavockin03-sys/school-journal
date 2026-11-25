@@ -451,8 +451,28 @@
     let CURRENT_MODE = 'week';
 
     function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
+    function formatShortFio(fullName) {
+        const parts = (fullName || '').trim().split(/\s+/).filter(Boolean);
+        if (parts.length >= 3) return parts.at(0) + ' ' + parts.at(1).charAt(0) + '.' + parts.at(2).charAt(0) + '.';
+        if (parts.length === 2) return parts.at(0) + ' ' + parts.at(1).charAt(0) + '.';
+        return fullName || '';
+    }
     function addDays(date, n) { const d = new Date(date); d.setDate(d.getDate() + n); return d; }
     function getMondayOf(date) { const d = new Date(date); d.setHours(0,0,0,0); const dow = d.getDay(); const diff = (dow === 0 ? -6 : 1 - dow); d.setDate(d.getDate() + diff); return d; }
+
+    function toggleTopUserMenu(e) {
+        if (e) e.stopPropagation();
+        const box = document.getElementById('topUserProfileBox');
+        if (box) box.classList.toggle('open');
+    }
+    function closeTopUserMenu() {
+        const box = document.getElementById('topUserProfileBox');
+        if (box) box.classList.remove('open');
+    }
+    document.addEventListener('click', function (e) {
+        const box = document.getElementById('topUserProfileBox');
+        if (box && !box.contains(e.target)) closeTopUserMenu();
+    });
 
     async function logout() {
         if (!confirm('Выйти из кабинета?')) return;
@@ -460,6 +480,7 @@
         try { localStorage.removeItem('sj_session'); } catch (e) {}
         window.location.replace('index.html');
     }
+
 
     (async function init() {
         try {
