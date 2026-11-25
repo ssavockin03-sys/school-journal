@@ -382,12 +382,16 @@
 
 
         .schedule-table tbody td {
-            border: 1px solid #D5DCE4;
+            border: none;
+            border-bottom: 1px solid #D5DCE4;
             padding: 5px;
             vertical-align: top;
             background: #F2F2F2;
             height: 28.28px;
             box-sizing: border-box;
+        }
+        .schedule-table tbody tr:last-child td {
+            border-bottom: none;
         }
         .schedule-table tbody td.num {
             background: #F2F2F2;
@@ -397,9 +401,8 @@
             color: #666666;
             font-size: 12px;
             padding: 0;
-            border-right: none;
         }
-        .schedule-table tbody td:nth-child(2) { border-left: none; }
+
 
         .schedule-table tbody td.empty-day,
         .schedule-table tbody td.sun { background: #F2F2F2; }
