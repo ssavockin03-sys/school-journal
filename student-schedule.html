@@ -738,7 +738,13 @@
             const periodDoc = periodDocs[0] || null;
             PERIODS = periodDoc ? (periodDoc.periods || []) : [];
             PERIOD_SYSTEM = periodDoc ? (periodDoc.system || '') : '';
-            document.getElementById('pageH1').innerHTML = 'Расписание <b>' + escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '') + '</b>' + (CURRENT_CLASS && CURRENT_CLASS.year ? ' (' + escapeHtml(CURRENT_CLASS.year) + ')' : '');
+            let yearStr = (CURRENT_CLASS && CURRENT_CLASS.year) ? String(CURRENT_CLASS.year) : '';
+            if (!yearStr && PERIODS.length > 0 && PERIODS[0].start) {
+                const y = parseInt(String(PERIODS[0].start).slice(0, 4), 10);
+                if (!isNaN(y)) yearStr = y + '/' + (y + 1);
+            }
+            document.getElementById('pageH1').innerHTML = 'Расписание <b>' + escapeHtml(CURRENT_CLASS ? CURRENT_CLASS.name : '') + '</b>' + (yearStr ? ' (' + escapeHtml(yearStr) + ')' : '');
+
             ACTIVE_SEM_INDEX = findPeriodIndexByDate(new Date());
             if (ACTIVE_SEM_INDEX < 0) ACTIVE_SEM_INDEX = 0;
             CURRENT_WEEK_START = getMondayOf(new Date());
