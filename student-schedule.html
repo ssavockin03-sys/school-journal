@@ -359,23 +359,27 @@
         /* Сетка расписания */
         .schedule-wrap { width: 940px; border: 1px solid #D5DCE4; background: #FFFFFF; }
         .schedule-table { width: 940px; border-collapse: collapse; table-layout: fixed; font-family: arial, helvetica, sans-serif; }
-        .schedule-table col.lesson-col { width: 41px; }
-        .schedule-table col.day-col { width: 128.4px; }
+        .schedule-table col.lesson-col { width: 32px; }
+        .schedule-table col.day-col { width: 129.7px; }
         .schedule-table thead th {
-            background: #F4F7FA;
-            border: 1px solid #D5DCE4;
-            height: 28px;
-            padding: 4px 6px;
+            background: #F2F2F2;
+            border: none;
+            border-bottom: 1px solid #D5DCE4;
+            height: 15px;
+            padding: 4px 0;
+            font-family: arial, helvetica, sans-serif;
             font-size: 12px;
             font-weight: 700;
+            line-height: 14px;
             color: #666666;
             text-align: center;
             white-space: nowrap;
+            box-sizing: content-box;
         }
         .schedule-table thead th.sat,
         .schedule-table thead th.sun { color: #D9534F; }
-        .schedule-table thead th.corner { background: #F4F7FA; border: 1px solid #D5DCE4; border-right: none; }
-        .schedule-table thead th:nth-child(2) { border-left: none; }
+        .schedule-table thead th.corner { background: #F2F2F2; border: none; border-bottom: 1px solid #D5DCE4; }
+
 
         .schedule-table tbody td {
             border: 1px solid #D5DCE4;
