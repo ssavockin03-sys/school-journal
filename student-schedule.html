@@ -618,23 +618,39 @@
 
 
     <div class="container">
-        <div class="crumbs"><a href="#">ГОУ ЛНР «АСШ № 6»</a> &nbsp;»&nbsp; Расписания занятий</div>
+        <div class="crumbs"><a href="student.html">Школа ТЕСТ</a> &nbsp;›&nbsp; Расписания занятий</div>
         <h1 class="page-h1" id="pageH1">Расписание</h1>
-        <div class="sem-tabs" id="semTabs"></div>
-        <div class="week-nav">
-            <div class="week-arrows">
-                <button type="button" class="week-arrow" id="prevWeekBtn">◀</button>
-                <button type="button" class="week-arrow" id="nextWeekBtn">▶</button>
+        <ul class="sem-tabs" id="semTabs"></ul>
+        <div class="player">
+            <div class="week-nav">
+                <div class="week-nav-left">
+                    <div class="week-arrows">
+                        <button type="button" class="week-arrow" id="prevWeekBtn" title="Предыдущая неделя">◀</button>
+                        <button type="button" class="week-arrow" id="nextWeekBtn" title="Следующая неделя">▶</button>
+                    </div>
+                    <strong class="week-range" id="weekRange">—</strong>
+                    <div class="week-count" id="weekCount"></div>
+                    <button type="button" class="week-tool-icon" id="todayWeekBtn" title="Текущая неделя">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2291BE" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </button>
+                </div>
+                <div class="week-tools-right">
+                    <button type="button" class="week-tool-icon" title="Экспорт в Excel" onclick="return false">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="19"/><line x1="15" y1="13" x2="9" y2="19"/></svg>
+                    </button>
+                    <button type="button" class="week-tool-icon" title="Печать" onclick="window.print()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555555" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    </button>
+                </div>
             </div>
-            <div class="week-range" id="weekRange">—</div>
-            <div class="week-count" id="weekCount"></div>
-        </div>
-        <div class="week-mode">
-            <button type="button" class="week-mode-btn active" data-mode="week">Текущая неделя</button>
-            <button type="button" class="week-mode-btn" data-mode="all">Расписание на весь период</button>
+            <div class="week-mode">
+                <a class="week-mode-btn active" data-mode="week" onclick="return false">Текущая неделя</a>
+                <a class="week-mode-btn" data-mode="all" onclick="return false">Расписание на весь период</a>
+            </div>
         </div>
         <div id="scheduleContainer"></div>
     </div>
+
 </div>
 
 <div id="chatPanel"></div>
