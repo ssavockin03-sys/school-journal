@@ -1070,14 +1070,14 @@
             const gradeItems = [];
             matchedKeys.forEach(k => {
                 const raw = sg[k];
-                if (raw === '' || raw === null || raw === undefined) return;
-                const cell = parseCell(raw);
+                const cell = (raw !== '' && raw !== null && raw !== undefined)
+                    ? parseCell(raw)
+                    : { grade: '', presence: '' };
                 if (cell.presence) presenceItems.push(cell.presence);
-                if (cell.grade) {
-                    const rawType = (journal && journal.lesson_types && journal.lesson_types[k]) || DEFAULT_LESSON_TYPE;
-                    gradeItems.push({ grade: cell.grade, typeFull: getLessonTypeFullName(rawType) });
-                }
+                const rawType = (journal && journal.lesson_types && journal.lesson_types[k]) || DEFAULT_LESSON_TYPE;
+                gradeItems.push({ grade: cell.grade, typeFull: getLessonTypeFullName(rawType) });
             });
+
             const className = (CURRENT_CLASS && CURRENT_CLASS.name) || '—';
             const doneHwMap = getCompletedHwMap();
 
