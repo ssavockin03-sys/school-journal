@@ -241,53 +241,197 @@
         .header-submenu__link:hover { color: #0273b2; }
         .header-submenu__item_active .header-submenu__link { color: #0273b2; border-bottom-color: #0273b2; }
 
-        .container { width: 940px; margin: 0 auto; padding: 16px 0 60px; }
+        .container { width: 940px; margin: 0 auto; padding: 12px 0 60px; font-family: arial, helvetica, sans-serif; }
+        .crumbs { font-size: 12px; color: #666666; margin-bottom: 6px; line-height: 1.4; }
+        .crumbs a { color: #2291BE; text-decoration: none; }
+        .crumbs a:hover { text-decoration: underline; }
+        .page-h1 { font-size: 26px; font-weight: 400; color: #7B4D96; margin-bottom: 16px; line-height: 1.2; font-family: "Open Sans", Arial, sans-serif; }
+        .page-h1 b { font-weight: 600; color: #7B4D96; }
 
-        .crumbs { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-        .crumbs a { color: #94a3b8; text-decoration: none; }
-        .crumbs a:hover { color: #1976d2; }
-        .page-h1 { font-size: 32px; font-weight: 400; color: #5a3d7a; margin-bottom: 20px; line-height: 1.2; }
-        .page-h1 b { font-weight: 700; color: #4a2a6a; }
+        /* Вкладки семестров и звонков (ul.switch 940x40) */
+        .sem-tabs {
+            display: flex;
+            align-items: flex-end;
+            width: 940px;
+            height: 40px;
+            list-style: none;
+            margin: 0 0 12px 0;
+            padding: 0;
+            border-bottom: 1px solid #D8DFE6;
+            gap: 4px;
+        }
+        .sem-tab {
+            height: 30px;
+            padding: 0 12px;
+            font-family: arial, helvetica, sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: #2291BE;
+            background: #FFFFFF;
+            border: 1px solid #D8DFE6;
+            border-bottom: none;
+            border-radius: 3px 3px 0 0;
+            cursor: pointer;
+            margin-bottom: -1px;
+        }
+        .sem-tab:hover { background: #F5F9FC; }
+        .sem-tab.active {
+            height: 31px;
+            color: #E58C24;
+            font-weight: 400;
+            background: #FFFFFF;
+            border-color: #D8DFE6;
+            border-bottom: 1px solid #FFFFFF;
+        }
 
-        .sem-tabs { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; border-bottom: 1px solid #e8eef5; padding-bottom: 0; }
-        .sem-tab { padding: 8px 16px; font-size: 14px; font-weight: 500; color: #1976d2; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-family: inherit; margin-bottom: -1px; }
-        .sem-tab:hover { background: #f0f7ff; border-radius: 6px 6px 0 0; }
-        .sem-tab.active { color: #d97706; border-bottom-color: #d97706; background: #fff7ed; border-radius: 6px 6px 0 0; }
+        /* Блок навигации недели и переключателя (div.player 940x50) */
+        .player {
+            width: 940px;
+            min-height: 50px;
+            margin: 0 0 10px 0;
+            font-family: arial, helvetica, sans-serif;
+            font-size: 12px;
+            color: #000000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .week-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+        .week-nav-left { display: flex; align-items: center; gap: 8px; }
+        .week-arrows { display: flex; gap: 4px; }
+        .week-arrow {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #D5DCE4;
+            background: #FFFFFF;
+            border-radius: 2px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #2291BE;
+            font-size: 11px;
+            padding: 0;
+        }
+        .week-arrow:hover { background: #F0F7FC; border-color: #2291BE; }
+        .week-range { font-size: 14.4px; font-weight: 700; color: #666666; font-family: arial, helvetica, sans-serif; }
+        .week-count { font-size: 12px; color: #666666; font-weight: 400; }
+        .week-count b { color: #333333; font-weight: 700; }
+        .week-count .p { color: #2291BE; font-weight: 400; }
+        .week-count .z { color: #65A832; font-weight: 400; }
+        .week-count .o { color: #D9534F; font-weight: 400; }
 
-        .week-nav { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; flex-wrap: wrap; }
-        .week-arrows { display: flex; gap: 6px; }
-        .week-arrow { width: 34px; height: 34px; border: 1px solid #d0dce8; background: #fff; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1976d2; font-size: 14px; font-family: inherit; }
-        .week-arrow:hover { background: #f0f7ff; border-color: #1976d2; }
-        .week-range { font-size: 17px; font-weight: 700; color: #1a2b4a; }
-        .week-count { font-size: 12px; color: #7a8aa3; font-weight: 400; }
-        .week-count b { color: #2a3a52; font-weight: 700; }
-        .week-count .z { color: #d97706; font-weight: 700; }
-        .week-count .o { color: #d9534f; font-weight: 700; }
+        .week-tools-right { display: flex; align-items: center; gap: 8px; }
+        .week-tool-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #D5DCE4;
+            border-radius: 2px;
+            background: #FFFFFF;
+            color: #4A5A72;
+            cursor: pointer;
+        }
+        .week-tool-icon:hover { background: #F0F7FC; border-color: #2291BE; }
 
-        .week-mode { display: inline-flex; gap: 4px; margin-bottom: 14px; }
-        .week-mode-btn { padding: 6px 14px; font-size: 13px; font-weight: 500; color: #1976d2; background: none; border: none; cursor: pointer; font-family: inherit; border-bottom: 2px solid transparent; }
-        .week-mode-btn.active { background: #e3f2fd; color: #0d47a1; border-radius: 6px 6px 0 0; border-bottom-color: #1976d2; }
+        .week-mode { display: flex; align-items: center; gap: 6px; padding-left: 56px; }
+        .week-mode-btn {
+            font-family: arial, helvetica, sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #2291BE;
+            background: none;
+            border: none;
+            padding: 1px 6px;
+            margin: 0 0 2px 0;
+            cursor: pointer;
+            line-height: 16px;
+        }
+        .week-mode-btn:hover { text-decoration: underline; }
+        .week-mode-btn.active {
+            background: #32A1CE;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
 
-        .schedule-wrap { overflow-x: auto; border: 1px solid #d0dce8; border-radius: 4px; background: #fff; }
-        .schedule-table { width: 100%; border-collapse: collapse; min-width: 900px; table-layout: fixed; }
-        .schedule-table col.lesson-col { width: 40px; }
-        .schedule-table col.day-col { width: calc((100% - 40px) / 7); }
-        .schedule-table thead th { background: #f7fafc; border: 1px solid #d0dce8; padding: 8px 6px; font-size: 12px; font-weight: 600; color: #4a5a72; text-align: center; white-space: nowrap; }
-        .schedule-table thead th.sun { color: #d9534f; }
-        .schedule-table thead th.corner { background: #fff; border: 1px solid #d0dce8; }
-        .schedule-table tbody td { border: 1px solid #d0dce8; padding: 0; vertical-align: top; background: #fff; height: 60px; position: relative; }
-        .schedule-table tbody td.num { background: #f7fafc; text-align: center; vertical-align: middle; font-weight: 400; color: #4a5a72; font-size: 13px; }
-        .schedule-table tbody td.empty-day { background: #f0f2f5; }
-        .schedule-table tbody td.sun { background: #f0f2f5; }
-        .lesson-card { padding: 6px 8px; margin: 3px; background: #fff; border: 1px solid #e2e8f0; border-radius: 3px; font-size: 11.5px; line-height: 1.35; color: #2a3a52; }
-        .lesson-card .subj { font-weight: 700; color: #1976d2; font-size: 12px; display: block; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .lesson-card .teacher { color: #2a3a52; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .lesson-card .time { color: #2a3a52; display: block; white-space: nowrap; }
-        .lesson-card .room { color: #2a3a52; display: block; white-space: nowrap; }
-        .lesson-card.c0 { background: #f0f7ff; } .lesson-card.c1 { background: #f0faf0; } .lesson-card.c2 { background: #fff8e6; } .lesson-card.c3 { background: #f8f0ff; } .lesson-card.c4 { background: #fff0f3; } .lesson-card.c5 { background: #f0faf8; }
+        /* Сетка расписания */
+        .schedule-wrap { width: 940px; border: 1px solid #D5DCE4; background: #FFFFFF; }
+        .schedule-table { width: 940px; border-collapse: collapse; table-layout: fixed; font-family: arial, helvetica, sans-serif; }
+        .schedule-table col.lesson-col { width: 41px; }
+        .schedule-table col.day-col { width: 128.4px; }
+        .schedule-table thead th {
+            background: #F4F7FA;
+            border: 1px solid #D5DCE4;
+            height: 28px;
+            padding: 4px 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #666666;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .schedule-table thead th.sat,
+        .schedule-table thead th.sun { color: #D9534F; }
+        .schedule-table thead th.corner { background: #F4F7FA; border: 1px solid #D5DCE4; }
 
-        .empty-schedule { text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 14px; border: 1px solid #d0dce8; border-radius: 6px; background: #f8fafc; }
-        .empty-schedule b { display: block; font-size: 16px; color: #5a6a85; margin-bottom: 8px; }
+        .schedule-table tbody td {
+            border: 1px solid #D5DCE4;
+            padding: 5px;
+            vertical-align: top;
+            background: #FFFFFF;
+            height: 28.28px;
+            box-sizing: border-box;
+        }
+        .schedule-table tbody td.num {
+            background: #F4F7FA;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: 700;
+            color: #666666;
+            font-size: 12px;
+            padding: 0;
+        }
+        .schedule-table tbody td.empty-day,
+        .schedule-table tbody td.sun { background: #F4F5F7; }
+
+        /* Белая карточка урока внутри ячейки (118.67 x 62, padding 2px 4px) */
+        .lesson-card {
+            width: 100%;
+            min-height: 62px;
+            padding: 2px 4px;
+            margin: 0 0 4px 0;
+            background: #FFFFFF;
+            border: 1px solid #DCE3EC;
+            border-radius: 0;
+            font-family: arial, helvetica, sans-serif;
+            font-size: 11.5px;
+            line-height: 1.25;
+            color: #555555;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .lesson-card:last-child { margin-bottom: 0; }
+        .lesson-card:hover { background: #FFF8DC; border-color: #C5D1DF; }
+        .lesson-card .subj {
+            font-weight: 400;
+            color: #2291BE;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .lesson-card:hover .subj { text-decoration: underline; }
+        .lesson-card .teacher { color: #555555; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lesson-card .time { color: #555555; display: block; white-space: nowrap; }
+        .lesson-card .room { color: #555555; display: block; white-space: nowrap; }
+
+        .empty-schedule { text-align: center; padding: 40px 20px; color: #666666; font-size: 13px; border: 1px solid #D5DCE4; background: #F9FAFB; }
+        .empty-schedule b { display: block; font-size: 15px; color: #333333; margin-bottom: 6px; }
+
 
         /* ===================== ЧАТ (ВИДЖЕТ ДНЕВНИК.РУ) ===================== */
         #chatPanel {
