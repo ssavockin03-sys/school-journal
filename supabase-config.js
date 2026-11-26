@@ -11,6 +11,31 @@ const SB_HEADERS = {
     'Content-Type': 'application/json'
 };
 
+async function sbFetch(url, options = {}, timeoutMs = 4000, retries = 2) {
+    let lastErr;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
+        try {
+            const res = await fetch(url, {
+                ...options,
+                cache: 'no-store',
+                signal: controller.signal
+            });
+            clearTimeout(timer);
+            return res;
+        } catch (err) {
+            clearTimeout(timer);
+            lastErr = err;
+            if (attempt < retries) {
+                await new Promise(r => setTimeout(r, 150));
+            }
+        }
+    }
+    throw lastErr;
+}
+
+
 function getStoredUser() {
     try {
         const raw = localStorage.getItem(_SB_SESSION_KEY);
