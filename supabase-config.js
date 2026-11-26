@@ -3,7 +3,7 @@
 // ============================================================
 const SUPABASE_URL = 'https://' + 'ljnghnhznvlxhxuzstmh' + '.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_BKIpSEuY0iQJ5bm5qOU_Ww_5ceIs1UA';
-const SESSION_KEY = 'sj_supabase_user_v1';
+const _SB_SESSION_KEY = 'sj_supabase_user_v1';
 
 const SB_HEADERS = {
     'apikey': SUPABASE_KEY,
@@ -13,7 +13,7 @@ const SB_HEADERS = {
 
 function getStoredUser() {
     try {
-        const raw = localStorage.getItem(SESSION_KEY);
+        const raw = localStorage.getItem(_SB_SESSION_KEY);
         return raw ? JSON.parse(raw) : null;
     } catch (_) {
         return null;
@@ -23,12 +23,13 @@ function getStoredUser() {
 function setStoredUser(userObj) {
     try {
         if (userObj) {
-            localStorage.setItem(SESSION_KEY, JSON.stringify(userObj));
+            localStorage.setItem(_SB_SESSION_KEY, JSON.stringify(userObj));
         } else {
-            localStorage.removeItem(SESSION_KEY);
+            localStorage.removeItem(_SB_SESSION_KEY);
         }
     } catch (_) {}
 }
+
 
 // ============================================================
 // DB (полная совместимость со всеми страницами проекта)
