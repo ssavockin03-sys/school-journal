@@ -903,8 +903,10 @@
     let PERIODS = [];
     let PERIOD_SYSTEM = '';
     let ACTIVE_SEM_INDEX = 0;
+    let IS_BELLS_TAB = false;
     let CURRENT_WEEK_START = null;
     let CURRENT_MODE = 'week';
+
 
     function escapeHtml(text) { if (text === null || text === undefined) return ''; const div = document.createElement('div'); div.textContent = String(text); return div.innerHTML; }
     function formatShortFio(fullName) {
