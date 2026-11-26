@@ -84,14 +84,18 @@ function setStoredUser(userObj) {
 // ============================================================
 // DB (полная совместимость со всеми страницами проекта)
 // ============================================================
+const _shortCache = new Map();
+
 const DB = {
     async getAll(table) {
+        const hit = _shortCache.get(table);
+        if (hit && Date.now() - hit.ts < 4000) return hit.data;
+
         try {
             const res = await sbFetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?select=id,data,updated_at`, {
                 method: 'GET',
                 headers: SB_HEADERS
             });
-
             if (!res.ok) {
                 console.error('DB.getAll(' + table + ') HTTP:', res.status);
                 return [];
@@ -111,15 +115,19 @@ const DB = {
                         latestByKey.set(key, item);
                     }
                 });
-                return Array.from(latestByKey.values());
+                const resJournals = Array.from(latestByKey.values());
+                _shortCache.set(table, { ts: Date.now(), data: resJournals });
+                return resJournals;
             }
 
+            _shortCache.set(table, { ts: Date.now(), data: list });
             return list;
         } catch (e) {
             console.error('DB.getAll(' + table + '):', e);
             return [];
         }
     },
+
 
     async insert(table, row) {
         try {
