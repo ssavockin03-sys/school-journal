@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Перенос базы Firebase → Supabase</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 720px; margin: 40px auto; padding: 20px; background: #f5f7f9; }
+        .card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        button { background: #0273b2; color: #fff; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:disabled { background: #94a3b8; cursor: not-allowed; }
+        pre { background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 6px; max-height: 360px; overflow-y: auto; font-size: 13px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Перенос данных в Supabase</h2>
+    <p>Нажмите кнопку ниже — скрипт скачает все таблицы из старого Firebase и загрузит их в ваш новый Supabase.</p>
+    <button id="startBtn" onclick="runMigration()">Начать перенос данных</button>
+    <pre id="log">Ожидание запуска...</pre>
+</div>
+
+<!-- Подключаем ваш текущий (старый) supabase-config.js для чтения из Firebase -->
+<script src="supabase-config.js"></script>
+<script>
+    const SUPABASE_URL = 'https://supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_BKIpSEuY0iQJ5bm5qOU_Ww_5ceIs1UA';
+
+    const TABLES = [
+        'students', 'teachers', 'admins', 'users',
+        'classes', 'subjects', 'rooms', 'workloads',
+        'class_schedules', 'bell_schedules', 'bell_shifts',
+        'educational_periods', 'lessons', 'homework',
+        'announcements', 'chat_messages', 'journals'
+    ];
+
+    const logEl = document.getElementById('log');
+    function log(msg) {
+        logEl.textContent += '\n' + msg;
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    async function upsertRowsToSupabase(table, rows) {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': 'Bearer ' + SUPABASE_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': 'resolution=merge-duplicates'
+            },
+            body: JSON.stringify(rows)
+        });
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`HTTP ${res.status}: ${errText}`);
+        }
+    }
+
+    async function runMigration() {
+        const btn = document.getElementById('startBtn');
+        btn.disabled = true;
+        logEl.textContent = 'Подключаемся к старому Firebase...';
+
+        try {
+            await window._fbReady;
+            log('Firebase подключён. Начинаем перенос таблиц:\n');
+
+            for (const table of TABLES) {
+                log(`⏳ Читаем таблицу "${table}"...`);
+                const items = await window.DB.getAll(table);
+                if (!items || items.length === 0) {
+                    log(`   — пусто (0 записей), пропускаем.`);
+                    continue;
+                }
+
+                const formatted = items.map(item => {
+                    const id = String(item.id || ('row_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)));
+                    if (table === 'journals') {
+                        return {
+                            id,
+                            class_id: item.class_id || null,
+                            subject_id: item.subject_id || null,
+                            data: item,
+                            updated_at: item.updated_at || new Date().toISOString()
+                        };
+                    }
+                    return { id, data: item };
+                });
+
+                await upsertRowsToSupabase(table, formatted);
+                log(`   ✅ Перенесено записей: ${formatted.length}`);
+            }
+
+            log('\n🎉 ГОТОВО! Все данные успешно перенесены в Supabase.');
+            log('Теперь файл migrate.html можно удалить и заменить supabase-config.js.');
+        } catch (err) {
+            log('\n❌ ОШИБКА: ' + err.message);
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>
