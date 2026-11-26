@@ -1463,15 +1463,133 @@
     });
 
 
+    function formatShortDateHeader(d) {
+        const monthsShort = ['янв.','февр.','марта','апр.','мая','июня','июля','авг.','сент.','окт.','нояб.','дек.'];
+        return d.getDate() + ' ' + monthsShort[d.getMonth()];
+    }
+
+    function renderPeriodSchedule() {
+        const player = document.getElementById('weekPlayer');
+        if (player) player.style.display = '';
+        document.getElementById('prevWeekBtn').classList.add('disabled');
+        document.getElementById('nextWeekBtn').classList.add('disabled');
+
+        const container = document.getElementById('scheduleContainer');
+        const period = PERIODS[ACTIVE_SEM_INDEX];
+
+        if (!period || !period.start || !period.end) {
+            document.getElementById('weekRange').textContent = '—';
+            document.getElementById('weekCount').innerHTML = '';
+            container.innerHTML = '<div class="empty-schedule"><b>Период не задан</b>Не указаны даты начала и окончания учебного периода.</div>';
+            return;
+        }
+
+        const pStart = new Date(period.start + 'T00:00:00');
+        const pEnd = new Date(period.end + 'T23:59:59');
+        const pEndDay = new Date(period.end + 'T00:00:00');
+
+        document.getElementById('weekRange').textContent = formatWeekRange(pStart, pEndDay);
+
+        const firstMonday = getMondayOf(pStart);
+        const lastMonday = getMondayOf(pEndDay);
+
+        const weeks = [];
+        let curMon = new Date(firstMonday);
+        let totalLessons = 0;
+        let maxLessonSlot = 7;
+
+        while (curMon <= lastMonday) {
+            const days = [];
+            for (let i = 0; i < 7; i++) {
+                const d = addDays(curMon, i);
+                const inPeriod = (d >= pStart && d <= pEnd);
+                const lessons = inPeriod && d.getDay() !== 0 ? getLessonsForDate(d) : [];
+                if (inPeriod) {
+                    totalLessons += lessons.length;
+                    lessons.forEach(l => {
+                        if (l.num > maxLessonSlot) maxLessonSlot = l.num;
+                    });
+                }
+                days.push({ date: d, inPeriod, lessons });
+            }
+            weeks.push(days);
+            curMon = addDays(curMon, 7);
+        }
+
+        document.getElementById('weekCount').innerHTML =
+            '(всего <b>' + totalLessons + '</b> занятий: <span class="p">' + totalLessons + '</span> по плану, <span class="z">0</span> замены/переноса, <span class="o">0</span> отмен)';
+
+        const verticalWord = ['н','е','д','е','л','я'].join('<br>');
+
+        let html = '<div class="period-wrap"><table class="period-table"><colgroup><col class="p-week-col">';
+        for (let i = 0; i < 7; i++) html += '<col class="p-day-col">';
+        html += '</colgroup><thead><tr><th></th>';
+        DAYS_RU.forEach((dayName, idx) => {
+            html += '<th class="' + (idx >= 5 ? 'wknd' : '') + '">' + dayName + '</th>';
+        });
+        html += '</tr></thead><tbody>';
+
+        weeks.forEach((weekDays, wIdx) => {
+            // Строка с датами (верхняя плашка недели)
+            html += '<tr>';
+            html += '<td class="period-week-label" rowspan="2"><b>' + (wIdx + 1) + '</b>' + verticalWord + '</td>';
+            weekDays.forEach((dayObj, dIdx) => {
+                const isWknd = dIdx >= 5;
+                const cls = ['period-date-head', isWknd ? 'wknd' : '', !dayObj.inPeriod ? 'out-period' : ''].filter(Boolean).join(' ');
+                html += '<td class="' + cls + '">' + formatShortDateHeader(dayObj.date) + '</td>';
+            });
+            html += '</tr>';
+
+            // Строка со списками уроков по дням
+            html += '<tr>';
+            weekDays.forEach((dayObj) => {
+                if (!dayObj.inPeriod) {
+                    html += '<td class="period-day-cell out-period">';
+                    for (let s = 1; s <= maxLessonSlot; s++) {
+                        html += '<div class="period-lesson-slot empty"></div>';
+                    }
+                    html += '</td>';
+                    return;
+                }
+
+                const isoDate = toIsoDate(dayObj.date);
+                const byNum = {};
+                dayObj.lessons.forEach(l => { byNum[l.num] = l; });
+
+                html += '<td class="period-day-cell">';
+                for (let s = 1; s <= maxLessonSlot; s++) {
+                    const lesson = byNum[s];
+                    if (lesson) {
+                        const href = 'student-lesson.html?date=' + encodeURIComponent(isoDate) + '&lesson=' + encodeURIComponent(lesson.num) + '&subject=' + encodeURIComponent(lesson.subject);
+                        html += '<div class="period-lesson-slot" title="' + escapeHtml(lesson.subject) + '"><a href="' + href + '">' + escapeHtml(lesson.subject) + '</a></div>';
+                    } else {
+                        html += '<div class="period-lesson-slot empty"></div>';
+                    }
+                }
+                html += '</td>';
+            });
+            html += '</tr>';
+
+            // Разделитель между неделями
+            if (wIdx < weeks.length - 1) {
+                html += '<tr class="period-week-spacer"><td colspan="8"></td></tr>';
+            }
+        });
+
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+    }
+
     document.querySelectorAll('.week-mode-btn').forEach(b => {
         b.addEventListener('click', () => {
             CURRENT_MODE = b.dataset.mode;
             document.querySelectorAll('.week-mode-btn').forEach(x => x.classList.remove('active'));
             b.classList.add('active');
-            if (CURRENT_MODE === 'all') document.getElementById('scheduleContainer').innerHTML = '<div class="empty-schedule"><b>В разработке</b>Функция «Расписание на весь период» появится позже.</div>';
+            if (CURRENT_MODE === 'all') renderPeriodSchedule();
             else renderSchedule();
         });
     });
+
 
     /* ============================================================ */
     /* ЧАТ (1-В-1 КАК В STUDENT-PERFORMANCE И STUDENT-LESSON)       */
