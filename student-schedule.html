@@ -1294,7 +1294,10 @@
     function renderSchedule() {
         const player = document.getElementById('weekPlayer');
         if (player) player.style.display = '';
+        document.getElementById('prevWeekBtn').classList.remove('disabled');
+        document.getElementById('nextWeekBtn').classList.remove('disabled');
         const container = document.getElementById('scheduleContainer');
+
 
         const weekStart = CURRENT_WEEK_START;
         const weekEnd = addDays(weekStart, 6);
