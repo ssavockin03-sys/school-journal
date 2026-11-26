@@ -740,8 +740,127 @@
             margin: 0 4px;
         }
 
+        /* ===================== РАСПИСАНИЕ НА ВЕСЬ ПЕРИОД ===================== */
+        .week-arrow.disabled {
+            opacity: 0.45;
+            cursor: default;
+            pointer-events: none;
+        }
+        .period-wrap {
+            width: 100%;
+            background: #FFFFFF;
+            font-family: arial, helvetica, sans-serif;
+        }
+        .period-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        .period-table col.p-week-col { width: 24px; }
+        .period-table col.p-day-col { width: calc((100% - 24px) / 7); }
+
+        .period-table thead th {
+            height: 22px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #666666;
+            text-align: center;
+            background: #FFFFFF;
+            padding: 2px 0 4px;
+        }
+        .period-table thead th.wknd {
+            color: #E21A1A;
+        }
+
+        /* Левая вертикальная колонка "1 н е д е л я" */
+        .period-week-label {
+            background: #E9ECEF;
+            border: 1px solid #D5DCE4;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 11px;
+            font-weight: 400;
+            color: #666666;
+            line-height: 1.05;
+            padding: 4px 2px;
+            user-select: none;
+        }
+        .period-week-label b {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 3px;
+            color: #555555;
+        }
+
+        /* Заголовок даты (серая/красная плашка) */
+        .period-date-head {
+            height: 20px;
+            background: #7A828A;
+            color: #FFFFFF;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-align: center;
+            vertical-align: middle;
+            border-left: 1px solid #FFFFFF;
+            border-right: 1px solid #FFFFFF;
+            border-top: 1px solid #6C747C;
+            padding: 0 4px;
+        }
+        .period-date-head.wknd {
+            background: #E21A1A;
+            border-top-color: #C81414;
+        }
+        .period-date-head.out-period {
+            background: #B8C0C8;
+            color: #F4F6F8;
+            border-top-color: #AAB2BA;
+        }
+
+        /* Ячейка дня со списком уроков */
+        .period-day-cell {
+            border: 1px solid #D5DCE4;
+            border-top: none;
+            background: #FFFFFF;
+            vertical-align: top;
+            padding: 0;
+        }
+        .period-day-cell.out-period {
+            background: #F2F2F2;
+        }
+        .period-lesson-slot {
+            height: 18px;
+            line-height: 18px;
+            padding: 0 5px;
+            border-bottom: 1px solid #ECEFF3;
+            font-size: 11.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background: #FFFFFF;
+        }
+        .period-lesson-slot:last-child {
+            border-bottom: none;
+        }
+        .period-lesson-slot.empty {
+            background: #F4F5F7;
+        }
+        .period-lesson-slot a {
+            color: #2291BE;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .period-lesson-slot a:hover {
+            color: #E58C24;
+            text-decoration: underline;
+        }
+        .period-week-spacer td {
+            height: 10px;
+            background: #FFFFFF;
+            border: none;
+        }
 
     </style>
+
 
 </head>
 <body>
