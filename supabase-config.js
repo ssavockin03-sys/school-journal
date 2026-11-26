@@ -241,14 +241,16 @@ const _sbCompat = {
         const cleanEmail = String(email || '').trim().toLowerCase();
         const login = cleanEmail.split('@')[0];
 
-        const [students, teachers, admins, users] = await Promise.all([
+        const [students, teachers, admins, users, people] = await Promise.all([
             DB.getAll('students'),
             DB.getAll('teachers'),
             DB.getAll('admins'),
-            DB.getAll('users')
+            DB.getAll('users'),
+            DB.getAll('people')
         ]);
 
-        const allAccounts = [...students, ...teachers, ...admins, ...users];
+        const allAccounts = [...students, ...teachers, ...admins, ...users, ...people];
+
         const found = allAccounts.find(acc => {
             const accLogin = String(acc.login || '').trim().toLowerCase();
             const accEmail = String(acc.email || '').trim().toLowerCase();
