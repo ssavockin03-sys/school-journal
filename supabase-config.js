@@ -152,6 +152,7 @@ const DB = {
             const docs = rows.map(r => ({ ...(r.data || {}), id: r.id, updated_at: r.updated_at || (r.data && r.data.updated_at) }));
             docs.sort((a, b) => String(b.updated_at || '').localeCompare(String(a.updated_at || '')));
             return docs[0];
+
         } catch (e) {
             console.error('DB.getJournal:', e);
             return null;
