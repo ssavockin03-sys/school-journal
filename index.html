@@ -174,7 +174,17 @@ async function loginFlow(rawLogin, password) {
     }
 }
 
-form.addEventListener('submit', (e) => { e.preventDefault(); loginFlow(loginInput.value, passInput.value); });
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+        await loginFlow(loginInput.value, passInput.value);
+    } catch (err) {
+        console.error('Ошибка входа:', err);
+        showError('Ошибка соединения с сервером. Нажмите «Войти» ещё раз.');
+        resetButton();
+    }
+});
+
 
 // ================================================================
 // АВТОВХОД (ЕСЛИ СЕССИЯ ЕСТЬ)
