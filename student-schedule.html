@@ -850,15 +850,27 @@
             background: #F2F2F2;
         }
 
+        .period-lesson-slot:not(.empty) {
+            cursor: pointer;
+        }
+        .period-lesson-slot:not(.empty):hover {
+            background: #F3921F;
+        }
         .period-lesson-slot a {
+            display: block;
+            width: 100%;
+            height: 100%;
             color: #2291BE;
             text-decoration: none;
             cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .period-lesson-slot a:hover {
-            color: #E58C24;
-            text-decoration: underline;
+        .period-lesson-slot:not(.empty):hover a {
+            color: #FFFFFF;
+            text-decoration: none;
         }
+
         .period-week-spacer td {
             height: 10px;
             background: #FFFFFF;
