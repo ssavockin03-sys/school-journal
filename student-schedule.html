@@ -1006,15 +1006,16 @@
         const container = document.getElementById('semTabs');
         container.innerHTML = '';
         if (PERIODS.length === 0) {
-            const b = document.createElement('button'); b.type = 'button'; b.className = 'sem-tab active'; b.textContent = 'Периоды не созданы'; b.disabled = true; container.appendChild(b);
+            const b = document.createElement('button'); b.type = 'button'; b.className = 'sem-tab' + (!IS_BELLS_TAB ? ' active' : ''); b.textContent = 'Периоды не созданы'; b.disabled = true; container.appendChild(b);
         } else {
             const titles = PERIOD_TITLES[PERIOD_SYSTEM] || PERIODS.map((_, i) => (i+1) + ' период');
             PERIODS.forEach((p, i) => {
                 const b = document.createElement('button'); b.type = 'button';
-                b.className = 'sem-tab' + (i === ACTIVE_SEM_INDEX ? ' active' : '');
+                b.className = 'sem-tab' + (!IS_BELLS_TAB && i === ACTIVE_SEM_INDEX ? ' active' : '');
                 b.textContent = titles[i] || (i + 1) + ' период';
                 b.title = p.start + ' — ' + p.end;
                 b.addEventListener('click', () => {
+                    IS_BELLS_TAB = false;
                     ACTIVE_SEM_INDEX = i;
                     const start = new Date(p.start + 'T00:00:00');
                     CURRENT_WEEK_START = getMondayOf(start);
@@ -1025,21 +1026,100 @@
             });
         }
         const bellsBtn = document.createElement('button');
-        bellsBtn.type = 'button'; bellsBtn.className = 'sem-tab'; bellsBtn.textContent = 'Звонки';
-        bellsBtn.addEventListener('click', () => alert('Расписание звонков:\n\n' + formatBellSchedule()));
+        bellsBtn.type = 'button';
+        bellsBtn.className = 'sem-tab' + (IS_BELLS_TAB ? ' active' : '');
+        bellsBtn.textContent = 'Звонки';
+        bellsBtn.addEventListener('click', () => {
+            IS_BELLS_TAB = true;
+            renderSemesterTabs();
+            renderBellsView();
+        });
         container.appendChild(bellsBtn);
     }
-    function formatBellSchedule() {
-        if (!CURRENT_BELLS || !CURRENT_BELLS.times) return 'Нет данных о звонках';
-        const nums = [1,2,3,4,5,6,7,8,9,10,11,12];
-        const lines = [];
-        nums.forEach(n => {
-            const st = CURRENT_BELLS.times['mon_' + n + '_start'];
-            const en = CURRENT_BELLS.times['mon_' + n + '_end'];
-            if (st && en) lines.push(n + ' урок:  ' + st + ' — ' + en);
+
+    function renderBellsView() {
+        const player = document.getElementById('weekPlayer');
+        if (player) player.style.display = 'none';
+        const container = document.getElementById('scheduleContainer');
+
+        const toolbarHtml = `
+            <div class="bells-toolbar">
+                <div class="week-tools-right">
+                    <button type="button" class="week-tool-icon" title="Экспорт в Excel" onclick="return false">
+                        <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://w3.org">
+                            <rect x="2" y="2" width="20" height="20" rx="1.5" fill="#E8F5E9" stroke="#3D7A37" stroke-width="1.6"/>
+                            <rect x="3.5" y="3.5" width="17" height="17" fill="none" stroke="#7CB342" stroke-width="1"/>
+                            <path d="M7 6.5 L10.3 6.5 L12.2 10.2 L14.2 6.5 L17.3 6.5 L13.8 12 L17.6 17.5 L14.3 17.5 L12.1 13.7 L9.9 17.5 L6.7 17.5 L10.5 12 Z" fill="#3B8734" stroke="#23541E" stroke-width="0.6"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="week-tool-icon" title="Печать" onclick="window.print()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://w3.org">
+                            <polygon points="7,2 16,2 17.5,9.5 8.5,9.5" fill="#E3F2FD" stroke="#607D8B" stroke-width="1.1"/>
+                            <path d="M4,10.5 L19,10.5 L21,12.5 L21,17.5 L4,17.5 L2.5,15.5 L2.5,12.5 Z" fill="#ECEFF1" stroke="#546E7A" stroke-width="1.1"/>
+                            <rect x="5" y="12.5" width="14" height="3.5" fill="#CFD8DC"/>
+                            <polygon points="8,16.5 16.5,16.5 18.5,20.5 9.5,20.5" fill="#FFFFFF" stroke="#546E7A" stroke-width="1.1"/>
+                            <line x1="10" y1="18" x2="15.5" y2="18" stroke="#90A4AE" stroke-width="0.9"/>
+                            <circle cx="18.5" cy="13.5" r="0.9" fill="#66BB6A"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        if (!CURRENT_BELLS || !CURRENT_BELLS.times) {
+            container.innerHTML = toolbarHtml + '<div class="empty-schedule"><b>Нет данных о звонках</b>Расписание звонков для этой смены ещё не заполнено.</div>';
+            return;
+        }
+
+        const times = CURRENT_BELLS.times;
+        const DAYS_BELLS = [
+            { key: 'mon', title: 'Понедельник' },
+            { key: 'tue', title: 'Вторник' },
+            { key: 'wed', title: 'Среда' },
+            { key: 'thu', title: 'Четверг' },
+            { key: 'fri', title: 'Пятница' },
+            { key: 'sat', title: 'Суббота' },
+            { key: 'sun', title: 'Воскресенье' }
+        ];
+
+        const hasSeparateDays = ['tue', 'wed', 'thu', 'fri', 'sat', 'sun'].some(k =>
+            [1,2,3,4,5,6,7,8,9,10,11,12].some(n => times[k + '_' + n + '_start'] && times[k + '_' + n + '_end'])
+        );
+
+        let cardsHtml = '';
+        DAYS_BELLS.forEach(day => {
+            const rows = [];
+            for (let n = 1; n <= 12; n++) {
+                let st = times[day.key + '_' + n + '_start'];
+                let en = times[day.key + '_' + n + '_end'];
+                if ((!st || !en) && !hasSeparateDays && day.key !== 'sun') {
+                    st = times['mon_' + n + '_start'];
+                    en = times['mon_' + n + '_end'];
+                }
+                if (st && en) rows.push({ num: n, start: st, end: en });
+            }
+            if (rows.length === 0) return;
+
+            cardsHtml += '<div class="bells-day-block">';
+            cardsHtml += '<div class="bells-day-title">' + escapeHtml(day.title) + '</div>';
+            cardsHtml += '<div class="bells-card">';
+            rows.forEach(r => {
+                cardsHtml += '<div class="bells-row">';
+                cardsHtml += '<div class="bells-row-num"><b>' + r.num + '</b><span>занятие</span></div>';
+                cardsHtml += '<div class="bells-row-time">' + escapeHtml(r.start) + ' <span class="dash">—</span> ' + escapeHtml(r.end) + '</div>';
+                cardsHtml += '</div>';
+            });
+            cardsHtml += '</div></div>';
         });
-        return lines.length ? lines.join('\n') : 'Нет данных о звонках';
+
+        if (!cardsHtml) {
+            container.innerHTML = toolbarHtml + '<div class="empty-schedule"><b>Нет данных о звонках</b>Расписание звонков ещё не настроено.</div>';
+            return;
+        }
+
+        container.innerHTML = toolbarHtml + '<div class="bells-grid">' + cardsHtml + '</div>';
     }
+
     function getLessonsForDate(date) {
         const periodIdx = findPeriodIndexByDate(date);
         if (periodIdx < 0) return [];
