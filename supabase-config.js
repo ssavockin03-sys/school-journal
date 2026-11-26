@@ -32,7 +32,8 @@ function releaseSlot() {
     }
 }
 
-async function sbFetch(url, options = {}, timeoutMs = 5000, retries = 4) {
+async function sbFetch(url, options = {}, timeoutMs = 2000, retries = 2) {
+
     let lastErr;
     for (let attempt = 0; attempt <= retries; attempt++) {
         await acquireSlot();
