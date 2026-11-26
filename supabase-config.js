@@ -62,10 +62,11 @@ function setStoredUser(userObj) {
 const DB = {
     async getAll(table) {
         try {
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?select=id,data,updated_at`, {
+            const res = await sbFetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?select=id,data,updated_at`, {
                 method: 'GET',
                 headers: SB_HEADERS
             });
+
             if (!res.ok) {
                 console.error('DB.getAll(' + table + ') HTTP:', res.status);
                 return [];
