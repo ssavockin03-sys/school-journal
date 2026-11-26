@@ -667,7 +667,79 @@
         .chat-send-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #166a94, #1d82b5); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
         .chat-send-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
+        /* ===================== ВКЛАДКА ЗВОНКИ ===================== */
+        .bells-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin: 0 0 10px 0;
+        }
+        .bells-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px 24px;
+            margin-top: 4px;
+            font-family: arial, helvetica, sans-serif;
+        }
+        .bells-day-title {
+            font-size: 14px;
+            font-weight: 400;
+            color: #666666;
+            margin-bottom: 6px;
+        }
+        .bells-card {
+            background: #FFFFFF;
+            border: 1px solid #D5DCE4;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .bells-row {
+            display: flex;
+            align-items: center;
+            height: 36px;
+            border-bottom: 1px solid #E5E9EE;
+        }
+        .bells-row:last-child {
+            border-bottom: none;
+        }
+        .bells-row:nth-child(even) {
+            background: #F4F5F7;
+        }
+        .bells-row-num {
+            width: 68px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #E5E9EE;
+            color: #666666;
+            line-height: 1.1;
+            flex-shrink: 0;
+        }
+        .bells-row-num b {
+            font-size: 13px;
+            font-weight: 700;
+            color: #555555;
+        }
+        .bells-row-num span {
+            font-size: 10px;
+            color: #888888;
+        }
+        .bells-row-time {
+            flex: 1;
+            text-align: center;
+            font-size: 15px;
+            color: #333333;
+            letter-spacing: 0.2px;
+        }
+        .bells-row-time .dash {
+            color: #777777;
+            margin: 0 4px;
+        }
+
     </style>
+
 </head>
 <body>
 
