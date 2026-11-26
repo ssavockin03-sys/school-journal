@@ -6,20 +6,25 @@
     <style>
         body { font-family: Arial, sans-serif; max-width: 720px; margin: 40px auto; padding: 20px; background: #f5f7f9; }
         .card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
-        button { background: #0273b2; color: #fff; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+        input { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 14px; flex: 1; min-width: 180px; }
+        button { background: #0273b2; color: #fff; border: none; padding: 12px 24px; font-size: 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
         button:disabled { background: #94a3b8; cursor: not-allowed; }
-        pre { background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 6px; max-height: 360px; overflow-y: auto; font-size: 13px; line-height: 1.5; }
+        pre { background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 6px; max-height: 360px; overflow-y: auto; font-size: 13px; line-height: 1.5; margin-top: 14px; }
     </style>
 </head>
 <body>
 <div class="card">
     <h2>Перенос данных в Supabase</h2>
-    <p>Нажмите кнопку ниже — скрипт скачает все таблицы из старого Firebase и загрузит их в ваш новый Supabase.</p>
-    <button id="startBtn" onclick="runMigration()">Начать перенос данных</button>
+    <p>Введите логин и пароль от любого аккаунта в журнале (чтобы Firebase разрешил чтение таблиц) и нажмите кнопку:</p>
+    <div class="row">
+        <input type="text" id="loginInput" placeholder="Логин (или email)">
+        <input type="password" id="passInput" placeholder="Пароль">
+    </div>
+    <button id="startBtn" onclick="runMigration()">Войти и перенести данные</button>
     <pre id="log">Ожидание запуска...</pre>
 </div>
 
-<!-- Подключаем ваш текущий (старый) supabase-config.js для чтения из Firebase -->
 <script src="supabase-config.js"></script>
 <script>
     const SUPABASE_URL = 'https://supabase.co';
@@ -52,29 +57,46 @@
         });
         if (!res.ok) {
             const errText = await res.text();
-            throw new Error(`HTTP ${res.status}: ${errText}`);
+            throw new Error(`Supabase HTTP ${res.status}: ${errText}`);
         }
     }
 
     async function runMigration() {
         const btn = document.getElementById('startBtn');
         btn.disabled = true;
-        logEl.textContent = 'Подключаемся к старому Firebase...';
+        logEl.textContent = 'Подключаемся к Firebase...';
 
         try {
-            await window._fbReady;
-            log('Firebase подключён. Начинаем перенос таблиц:\n');
+            const fb = await window._fbReady;
+            log('Firebase SDK загружен.');
+
+            const rawLogin = document.getElementById('loginInput').value.trim();
+            const pass = document.getElementById('passInput').value;
+
+            if (rawLogin && pass) {
+                const email = rawLogin.includes('@') ? rawLogin : (rawLogin + '@school.local');
+                log(`Авторизуемся как ${email}...`);
+                await fb.signInWithEmailAndPassword(fb.auth, email, pass);
+                log('✅ Вход выполнен успешно!');
+            } else {
+                log('Логин/пароль не введены — пробуем читать с текущей сессией...');
+            }
+
+            let totalMoved = 0;
 
             for (const table of TABLES) {
                 log(`⏳ Читаем таблицу "${table}"...`);
-                const items = await window.DB.getAll(table);
-                if (!items || items.length === 0) {
-                    log(`   — пусто (0 записей), пропускаем.`);
+                const snap = await fb.getDocs(fb.collection(fb.db, table));
+                const items = [];
+                snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+
+                if (items.length === 0) {
+                    log(`   — пусто (0 записей).`);
                     continue;
                 }
 
                 const formatted = items.map(item => {
-                    const id = String(item.id || ('row_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)));
+                    const id = String(item.id);
                     if (table === 'journals') {
                         return {
                             id,
@@ -88,13 +110,14 @@
                 });
 
                 await upsertRowsToSupabase(table, formatted);
+                totalMoved += formatted.length;
                 log(`   ✅ Перенесено записей: ${formatted.length}`);
             }
 
-            log('\n🎉 ГОТОВО! Все данные успешно перенесены в Supabase.');
-            log('Теперь файл migrate.html можно удалить и заменить supabase-config.js.');
+            log(`\n🎉 ГОТОВО! Всего перенесено записей: ${totalMoved}.`);
+            btn.disabled = false;
         } catch (err) {
-            log('\n❌ ОШИБКА: ' + err.message);
+            log('\n❌ ОШИБКА: ' + (err.code ? `[${err.code}] ` : '') + err.message);
             btn.disabled = false;
         }
     }
