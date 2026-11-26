@@ -1,74 +1,58 @@
 // ============================================================
-// FIREBASE (Firestore + Auth)
+// SUPABASE REST API + AUTH (мгновенная работа без Firebase)
 // ============================================================
-const firebaseConfig = {
-    apiKey: "AIzaSyD1d1JQioGL8lHON8ydgtpHU1EXEwD00SY",
-    authDomain: "://firebaseapp.com",
-    projectId: "school-journal-8f39a",
-    storageBucket: "school-journal-8f39a.firebasestorage.app",
-    messagingSenderId: "254973926699",
-    appId: "1:254973926699:web:43a7d8109df5366163396e"
+const SUPABASE_URL = 'https://' + 'ljnghnhznvlxhxuzstmh' + '.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_BKIpSEuY0iQJ5bm5qOU_Ww_5ceIs1UA';
+const SESSION_KEY = 'sj_supabase_user_v1';
+
+const SB_HEADERS = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY,
+    'Content-Type': 'application/json'
 };
 
-let _fb = null;
-let _firebaseReady = null;
-
-function loadFirebase() {
-    if (_fb) return Promise.resolve(_fb);
-    if (_firebaseReady) return _firebaseReady;
-
-    _firebaseReady = new Promise((resolve, reject) => {
-        const configJson = JSON.stringify(firebaseConfig);
-        const host = ["www", "gstatic", "com"].join(".");
-        const cdnBase = "https://" + [host, "firebasejs", "10.7.1"].join("/") + "/";
-        const blob = new Blob([`
-            import { initializeApp } from '${cdnBase}firebase-app.js';
-            import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, setDoc } from '${cdnBase}firebase-firestore.js';
-            import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from '${cdnBase}firebase-auth.js';
-
-            const app = initializeApp(${configJson});
-            const db = getFirestore(app);
-            const auth = getAuth(app);
-            setPersistence(auth, browserLocalPersistence).catch(() => {});
-
-            window._fb = {
-                db, auth, collection, getDocs, addDoc, updateDoc, deleteDoc,
-                doc, query, where, setDoc,
-                signInWithEmailAndPassword, createUserWithEmailAndPassword,
-                signOut, onAuthStateChanged
-            };
-            window.dispatchEvent(new Event('firebase-ready'));
-        `], { type: 'application/javascript' });
-
-        window.addEventListener('firebase-ready', () => resolve(window._fb), { once: true });
-        const interval = setInterval(() => { if (window._fb) { clearInterval(interval); resolve(window._fb); } }, 50);
-        setTimeout(() => clearInterval(interval), 20000);
-
-        const script = document.createElement('script');
-        script.type = 'module';
-        script.src = URL.createObjectURL(blob);
-        script.onerror = () => reject(new Error('Не удалось загрузить Firebase SDK'));
-        document.head.appendChild(script);
-    });
-
-    return _firebaseReady;
+function getStoredUser() {
+    try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+        return null;
+    }
 }
 
-window._fbReady = loadFirebase();
+function setStoredUser(userObj) {
+    try {
+        if (userObj) {
+            localStorage.setItem(SESSION_KEY, JSON.stringify(userObj));
+        } else {
+            localStorage.removeItem(SESSION_KEY);
+        }
+    } catch (_) {}
+}
 
 // ============================================================
-// DB
+// DB (полная совместимость со всеми страницами проекта)
 // ============================================================
 const DB = {
     async getAll(table) {
         try {
-            const fb = await loadFirebase();
-            const snap = await fb.getDocs(fb.collection(fb.db, table));
-            const res = [];
-            snap.forEach(d => res.push({ id: d.id, ...d.data() }));
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?select=id,data,updated_at`, {
+                method: 'GET',
+                headers: SB_HEADERS
+            });
+            if (!res.ok) {
+                console.error('DB.getAll(' + table + ') HTTP:', res.status);
+                return [];
+            }
+            const rows = await res.json();
+            const list = (rows || []).map(r => ({
+                ...(r.data || {}),
+                id: r.id
+            }));
+
             if (table === 'journals') {
                 const latestByKey = new Map();
-                res.forEach(item => {
+                list.forEach(item => {
                     const key = item.class_id + '__' + item.subject_id;
                     const prev = latestByKey.get(key);
                     if (!prev || String(item.updated_at || '') >= String(prev.updated_at || '')) {
@@ -77,64 +61,207 @@ const DB = {
                 });
                 return Array.from(latestByKey.values());
             }
-            return res;
-        } catch (e) { console.error('DB.getAll(' + table + '):', e); return []; }
+
+            return list;
+        } catch (e) {
+            console.error('DB.getAll(' + table + '):', e);
+            return [];
+        }
     },
 
     async insert(table, row) {
         try {
-            const fb = await loadFirebase();
-            if (row.id) {
-                const { id, ...data } = row;
-                await fb.setDoc(fb.doc(fb.db, table, id), data, { merge: true });
-                return { id, ...data };
-            } else {
-                const ref = await fb.addDoc(fb.collection(fb.db, table), row);
-                return { id: ref.id, ...row };
-            }
-        } catch (e) { console.error('DB.insert(' + table + '):', e); return null; }
+            const id = String(row.id || ('row_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)));
+            const payloadData = { ...row, id };
+            const body = table === 'journals'
+                ? {
+                    id,
+                    class_id: row.class_id || null,
+                    subject_id: row.subject_id || null,
+                    data: payloadData,
+                    updated_at: row.updated_at || new Date().toISOString()
+                }
+                : { id, data: payloadData };
+
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}`, {
+                method: 'POST',
+                headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates,return=representation' },
+                body: JSON.stringify(body)
+            });
+            if (!res.ok) return null;
+            return payloadData;
+        } catch (e) {
+            console.error('DB.insert(' + table + '):', e);
+            return null;
+        }
     },
+
     async update(table, id, row) {
         try {
-            const fb = await loadFirebase();
-            await fb.updateDoc(fb.doc(fb.db, table, id), row);
-            return { id, ...row };
-        } catch (e) { console.error('DB.update(' + table + '):', e); return null; }
+            const getRes = await fetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}&select=data`, {
+                method: 'GET',
+                headers: SB_HEADERS
+            });
+            let existing = {};
+            if (getRes.ok) {
+                const arr = await getRes.json();
+                if (arr && arr.length > 0 && arr[0].data) existing = arr[0].data;
+            }
+            const merged = { ...existing, ...row, id: String(id) };
+            const patchBody = table === 'journals'
+                ? {
+                    class_id: merged.class_id || null,
+                    subject_id: merged.subject_id || null,
+                    data: merged,
+                    updated_at: merged.updated_at || new Date().toISOString()
+                }
+                : { data: merged, updated_at: new Date().toISOString() };
+
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, {
+                method: 'PATCH',
+                headers: SB_HEADERS,
+                body: JSON.stringify(patchBody)
+            });
+            if (!res.ok) return null;
+            return merged;
+        } catch (e) {
+            console.error('DB.update(' + table + '):', e);
+            return null;
+        }
     },
+
     async remove(table, id) {
         try {
-            const fb = await loadFirebase();
-            await fb.deleteDoc(fb.doc(fb.db, table, id));
-            return true;
-        } catch (e) { console.error('DB.remove(' + table + '):', e); return false; }
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, {
+                method: 'DELETE',
+                headers: SB_HEADERS
+            });
+            return res.ok;
+        } catch (e) {
+            console.error('DB.remove(' + table + '):', e);
+            return false;
+        }
     },
     async getJournal(classId, subjectId) {
         try {
-            const fb = await loadFirebase();
-            const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'journals'), fb.where('class_id', '==', classId), fb.where('subject_id', '==', subjectId)));
-            if (snap.empty) return null;
-            const docs = [];
-            snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+            const url = `${SUPABASE_URL}/rest/v1/journals?class_id=eq.${encodeURIComponent(classId)}&subject_id=eq.${encodeURIComponent(subjectId)}&select=id,data,updated_at`;
+            const res = await fetch(url, { method: 'GET', headers: SB_HEADERS });
+            if (!res.ok) return null;
+            const rows = await res.json();
+            if (!rows || rows.length === 0) return null;
+            const docs = rows.map(r => ({ ...(r.data || {}), id: r.id, updated_at: r.updated_at || (r.data && r.data.updated_at) }));
             docs.sort((a, b) => String(b.updated_at || '').localeCompare(String(a.updated_at || '')));
-            return docs.at(0);
-        } catch (e) { console.error('DB.getJournal:', e); return null; }
+            return docs[0];
+        } catch (e) {
+            console.error('DB.getJournal:', e);
+            return null;
+        }
     },
+
     async upsertJournal(classId, subjectId, payload) {
         try {
-            const fb = await loadFirebase();
             const compositeId = classId + '__' + subjectId;
-            const data = { class_id: classId, subject_id: subjectId, ...payload, updated_at: new Date().toISOString() };
-            await fb.setDoc(fb.doc(fb.db, 'journals', compositeId), data);
+            const nowIso = new Date().toISOString();
+            const fullData = { id: compositeId, class_id: classId, subject_id: subjectId, ...payload, updated_at: nowIso };
 
-            const snap = await fb.getDocs(fb.query(fb.collection(fb.db, 'journals'), fb.where('class_id', '==', classId), fb.where('subject_id', '==', subjectId)));
-            snap.forEach(d => {
-                if (d.id !== compositeId) {
-                    fb.deleteDoc(fb.doc(fb.db, 'journals', d.id)).catch(() => {});
-                }
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/journals`, {
+                method: 'POST',
+                headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+                body: JSON.stringify({
+                    id: compositeId,
+                    class_id: classId,
+                    subject_id: subjectId,
+                    data: fullData,
+                    updated_at: nowIso
+                })
             });
+            if (!res.ok) return null;
 
-            return { id: compositeId, ...data };
-        } catch (e) { console.error('DB.upsertJournal:', e); return null; }
+            const delUrl = `${SUPABASE_URL}/rest/v1/journals?class_id=eq.${encodeURIComponent(classId)}&subject_id=eq.${encodeURIComponent(subjectId)}&id=neq.${encodeURIComponent(compositeId)}`;
+            fetch(delUrl, { method: 'DELETE', headers: SB_HEADERS }).catch(() => {});
+
+            return fullData;
+        } catch (e) {
+            console.error('DB.upsertJournal:', e);
+            return null;
+        }
     }
 };
 window.DB = DB;
+
+// ============================================================
+// СОВМЕСТИМЫЙ AUTH-ИНТЕРФЕЙС (замена Firebase Auth)
+// ============================================================
+const _authListeners = new Set();
+
+function notifyAuthListeners(user) {
+    _authListeners.forEach(cb => {
+        try { cb(user); } catch (_) {}
+    });
+}
+
+const _sbCompat = {
+    auth: {
+        get currentUser() { return getStoredUser(); }
+    },
+    onAuthStateChanged(authObj, callback) {
+        _authListeners.add(callback);
+        setTimeout(() => callback(getStoredUser()), 0);
+        return () => _authListeners.delete(callback);
+    },
+    async signInWithEmailAndPassword(authObj, email, password) {
+        const cleanEmail = String(email || '').trim().toLowerCase();
+        const login = cleanEmail.split('@')[0];
+
+        const [students, teachers, admins, users] = await Promise.all([
+            DB.getAll('students'),
+            DB.getAll('teachers'),
+            DB.getAll('admins'),
+            DB.getAll('users')
+        ]);
+
+        const allAccounts = [...students, ...teachers, ...admins, ...users];
+        const found = allAccounts.find(acc => {
+            const accLogin = String(acc.login || '').trim().toLowerCase();
+            const accEmail = String(acc.email || '').trim().toLowerCase();
+            return accLogin === login || accEmail === cleanEmail;
+        });
+
+        if (!found) {
+            const err = new Error('Пользователь не найден');
+            err.code = 'auth/user-not-found';
+            throw err;
+        }
+
+        if (found.password && String(found.password) !== String(password)) {
+            const err = new Error('Неверный пароль');
+            err.code = 'auth/wrong-password';
+            throw err;
+        }
+
+        const userObj = {
+            uid: String(found.id),
+            email: cleanEmail.includes('@') ? cleanEmail : (login + '@school.local')
+        };
+        setStoredUser(userObj);
+        notifyAuthListeners(userObj);
+        return { user: userObj };
+    },
+    async createUserWithEmailAndPassword(authObj, email, password) {
+        const cleanEmail = String(email || '').trim().toLowerCase();
+        const login = cleanEmail.split('@')[0];
+        const userObj = { uid: 'u_' + Date.now(), email: cleanEmail };
+        await DB.insert('users', { id: userObj.uid, login, email: cleanEmail, password: String(password || '') });
+        setStoredUser(userObj);
+        notifyAuthListeners(userObj);
+        return { user: userObj };
+    },
+    async signOut() {
+        setStoredUser(null);
+        notifyAuthListeners(null);
+    }
+};
+
+window._fb = _sbCompat;
+window._fbReady = Promise.resolve(_sbCompat);
+window.dispatchEvent(new Event('firebase-ready'));
