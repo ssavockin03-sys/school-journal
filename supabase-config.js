@@ -11,8 +11,7 @@ const SB_HEADERS = {
     'Content-Type': 'application/json'
 };
 
-async function sbFetch(url, options = {}, timeoutMs = 2500, retries = 2) {
-    let lastErr;
+async function sbFetch(url, options = {}, timeoutMs = 4500, retries = 2) {
     for (let attempt = 0; attempt <= retries; attempt++) {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeoutMs);
