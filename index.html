@@ -16,8 +16,37 @@ body { min-height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298);
 .form-group label { display: block; font-size: 13px; font-weight: 600; color: #4a5a72; margin-bottom: 7px; }
 .form-group input { width: 100%; height: 50px; padding: 0 16px; font-size: 15px; color: #1a2b4a; background: #f7f9fc; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; font-family: inherit; }
 .form-group input:focus { border-color: #2a5298; background: #fff; }
-.btn { width: 100%; height: 52px; margin-top: 8px; background: linear-gradient(135deg,#2a5298,#3b7dd8); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; }
-.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn {
+    width: 100%;
+    height: 49px;
+    margin-top: 10px;
+    padding: 0;
+    background-color: #6db62e;
+    background-image: linear-gradient(to bottom, #afd652, #6db62e);
+    border: 1px solid #649e26;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+    font-family: 'Open Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    opacity: 0.9;
+    cursor: pointer;
+    transition: opacity 0.15s ease, filter 0.15s ease;
+}
+.btn:hover:not(:disabled) {
+    opacity: 1;
+}
+.btn:active:not(:disabled) {
+    background-image: linear-gradient(to top, #afd652, #6db62e);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+.btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
 .error { background: #fff0f0; color: #d32f2f; padding: 12px 14px; border-radius: 10px; font-size: 13px; font-weight: 500; margin-bottom: 16px; display: none; border: 1px solid #ffd6d6; }
 .error.show { display: block; }
 .hint { margin-top: 20px; padding: 14px; background: #f0f5ff; border-radius: 12px; font-size: 12px; color: #4a5a72; line-height: 1.5; text-align: center; }
