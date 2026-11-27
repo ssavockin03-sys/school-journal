@@ -1,7 +1,7 @@
 // ============================================================
 // SUPABASE REST API + AUTH (мгновенная работа без Firebase)
 // ============================================================
-const SUPABASE_URL = 'https://' + 'ljnghnhznvlxhxuzstmh' + '.supabase.co';
+const SUPABASE_URL = 'https://' + 'functions.yandexcloud.net/d4engb4kaibq0llp59qm';
 const SUPABASE_KEY = 'sb_publishable_BKIpSEuY0iQJ5bm5qOU_Ww_5ceIs1UA';
 const _SB_SESSION_KEY = 'sj_supabase_user_v1';
 
