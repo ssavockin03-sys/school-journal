@@ -11,7 +11,7 @@ const SB_HEADERS = {
     'Content-Type': 'application/json'
 };
 
-async function sbFetch(url, options = {}, timeoutMs = 1800, retries = 2) {
+async function sbFetch(url, options = {}, timeoutMs = 2500, retries = 2) {
     let lastErr;
     for (let attempt = 0; attempt <= retries; attempt++) {
         const controller = new AbortController();
@@ -28,14 +28,12 @@ async function sbFetch(url, options = {}, timeoutMs = 1800, retries = 2) {
             clearTimeout(timer);
             lastErr = err;
             if (attempt < retries) {
-                await new Promise(r => setTimeout(r, 120));
+                await new Promise(r => setTimeout(r, 150));
             }
         }
     }
     throw lastErr;
 }
-
-
 
 function getStoredUser() {
     try {
@@ -56,57 +54,59 @@ function setStoredUser(userObj) {
     } catch (_) {}
 }
 
-
 // ============================================================
 // DB (полная совместимость со всеми страницами проекта)
 // ============================================================
 const _shortCache = new Map();
 
 const DB = {
-    async getAll(table) {
+    async _fetchTableRaw(table) {
         const hit = _shortCache.get(table);
         if (hit && Date.now() - hit.ts < 4000) return hit.data;
 
-        try {
-            const res = await sbFetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?select=id,data,updated_at`, {
-                method: 'GET',
-                headers: SB_HEADERS
+        const res = await sbFetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?select=id,data,updated_at`, {
+            method: 'GET',
+            headers: SB_HEADERS
+        });
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status} при чтении ${table}`);
+        }
+        const rows = await res.json();
+        const list = (rows || []).map(r => ({
+            ...(r.data || {}),
+            id: r.id
+        }));
+
+        if (table === 'journals') {
+            const latestByKey = new Map();
+            list.forEach(item => {
+                const key = item.class_id + '__' + item.subject_id;
+                const prev = latestByKey.get(key);
+                if (!prev || String(item.updated_at || '') >= String(prev.updated_at || '')) {
+                    latestByKey.set(key, item);
+                }
             });
-            if (!res.ok) {
-                console.error('DB.getAll(' + table + ') HTTP:', res.status);
-                return [];
-            }
-            const rows = await res.json();
-            const list = (rows || []).map(r => ({
-                ...(r.data || {}),
-                id: r.id
-            }));
+            const resJournals = Array.from(latestByKey.values());
+            _shortCache.set(table, { ts: Date.now(), data: resJournals });
+            return resJournals;
+        }
 
-            if (table === 'journals') {
-                const latestByKey = new Map();
-                list.forEach(item => {
-                    const key = item.class_id + '__' + item.subject_id;
-                    const prev = latestByKey.get(key);
-                    if (!prev || String(item.updated_at || '') >= String(prev.updated_at || '')) {
-                        latestByKey.set(key, item);
-                    }
-                });
-                const resJournals = Array.from(latestByKey.values());
-                _shortCache.set(table, { ts: Date.now(), data: resJournals });
-                return resJournals;
-            }
+        _shortCache.set(table, { ts: Date.now(), data: list });
+        return list;
+    },
 
-            _shortCache.set(table, { ts: Date.now(), data: list });
-            return list;
+    async getAll(table) {
+        try {
+            return await this._fetchTableRaw(table);
         } catch (e) {
             console.error('DB.getAll(' + table + '):', e);
             return [];
         }
     },
 
-
     async insert(table, row) {
         try {
+            _shortCache.delete(table);
             const id = String(row.id || ('row_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)));
             const payloadData = { ...row, id };
             const body = table === 'journals'
@@ -119,7 +119,7 @@ const DB = {
                 }
                 : { id, data: payloadData };
 
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}`, {
+            const res = await sbFetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}`, {
                 method: 'POST',
                 headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates,return=representation' },
                 body: JSON.stringify(body)
@@ -131,10 +131,10 @@ const DB = {
             return null;
         }
     },
-
     async update(table, id, row) {
         try {
-            const getRes = await fetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}&select=data`, {
+            _shortCache.delete(table);
+            const getRes = await sbFetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}&select=data`, {
                 method: 'GET',
                 headers: SB_HEADERS
             });
@@ -153,7 +153,7 @@ const DB = {
                 }
                 : { data: merged, updated_at: new Date().toISOString() };
 
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, {
+            const res = await sbFetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, {
                 method: 'PATCH',
                 headers: SB_HEADERS,
                 body: JSON.stringify(patchBody)
@@ -168,7 +168,8 @@ const DB = {
 
     async remove(table, id) {
         try {
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, {
+            _shortCache.delete(table);
+            const res = await sbFetch(`${SUPABASE_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, {
                 method: 'DELETE',
                 headers: SB_HEADERS
             });
@@ -178,17 +179,17 @@ const DB = {
             return false;
         }
     },
+
     async getJournal(classId, subjectId) {
         try {
             const url = `${SUPABASE_URL}/rest/v1/journals?class_id=eq.${encodeURIComponent(classId)}&subject_id=eq.${encodeURIComponent(subjectId)}&select=id,data,updated_at`;
-            const res = await fetch(url, { method: 'GET', headers: SB_HEADERS });
+            const res = await sbFetch(url, { method: 'GET', headers: SB_HEADERS });
             if (!res.ok) return null;
             const rows = await res.json();
             if (!rows || rows.length === 0) return null;
             const docs = rows.map(r => ({ ...(r.data || {}), id: r.id, updated_at: r.updated_at || (r.data && r.data.updated_at) }));
             docs.sort((a, b) => String(b.updated_at || '').localeCompare(String(a.updated_at || '')));
             return docs[0];
-
         } catch (e) {
             console.error('DB.getJournal:', e);
             return null;
@@ -197,11 +198,12 @@ const DB = {
 
     async upsertJournal(classId, subjectId, payload) {
         try {
+            _shortCache.delete('journals');
             const compositeId = classId + '__' + subjectId;
             const nowIso = new Date().toISOString();
             const fullData = { id: compositeId, class_id: classId, subject_id: subjectId, ...payload, updated_at: nowIso };
 
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/journals`, {
+            const res = await sbFetch(`${SUPABASE_URL}/rest/v1/journals`, {
                 method: 'POST',
                 headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates' },
                 body: JSON.stringify({
@@ -215,7 +217,7 @@ const DB = {
             if (!res.ok) return null;
 
             const delUrl = `${SUPABASE_URL}/rest/v1/journals?class_id=eq.${encodeURIComponent(classId)}&subject_id=eq.${encodeURIComponent(subjectId)}&id=neq.${encodeURIComponent(compositeId)}`;
-            fetch(delUrl, { method: 'DELETE', headers: SB_HEADERS }).catch(() => {});
+            sbFetch(delUrl, { method: 'DELETE', headers: SB_HEADERS }).catch(() => {});
 
             return fullData;
         } catch (e) {
@@ -250,16 +252,22 @@ const _sbCompat = {
         const cleanEmail = String(email || '').trim().toLowerCase();
         const login = cleanEmail.split('@')[0];
 
-        const [students, teachers, admins, users, people] = await Promise.all([
-            DB.getAll('students'),
-            DB.getAll('teachers'),
-            DB.getAll('admins'),
-            DB.getAll('users'),
-            DB.getAll('people')
-        ]);
+        let students, teachers, admins, users, people;
+        try {
+            [students, teachers, admins, users, people] = await Promise.all([
+                DB._fetchTableRaw('students'),
+                DB._fetchTableRaw('teachers'),
+                DB._fetchTableRaw('admins'),
+                DB._fetchTableRaw('users'),
+                DB._fetchTableRaw('people')
+            ]);
+        } catch (netErr) {
+            const err = new Error('Ошибка сети при подключении к базе');
+            err.code = 'auth/network-request-failed';
+            throw err;
+        }
 
         const allAccounts = [...students, ...teachers, ...admins, ...users, ...people];
-
         const found = allAccounts.find(acc => {
             const accLogin = String(acc.login || '').trim().toLowerCase();
             const accEmail = String(acc.email || '').trim().toLowerCase();
