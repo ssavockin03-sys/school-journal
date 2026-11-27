@@ -11,25 +11,29 @@ const SB_HEADERS = {
     'Content-Type': 'application/json'
 };
 
-function toProxyUrl(rawUrl) {
+function toProxyUrl(rawUrl, method, headers) {
     if (!rawUrl.startsWith(SUPABASE_URL)) return rawUrl;
     const tail = rawUrl.slice(SUPABASE_URL.length);
     const qIdx = tail.indexOf('?');
     const pathPart = qIdx === -1 ? tail : tail.slice(0, qIdx);
     const queryPart = qIdx === -1 ? '' : '&' + tail.slice(qIdx + 1);
-    return `${SUPABASE_URL}?_p=${encodeURIComponent(pathPart)}${queryPart}`;
+    const prefer = (headers && headers['Prefer']) ? `&_prefer=${encodeURIComponent(headers['Prefer'])}` : '';
+    return `${SUPABASE_URL}?_p=${encodeURIComponent(pathPart)}&_k=${encodeURIComponent(SUPABASE_KEY)}&_m=${encodeURIComponent(method || 'GET')}${prefer}${queryPart}`;
 }
 
 async function sbFetch(url, options = {}, timeoutMs = 6000, retries = 2) {
-    const finalUrl = toProxyUrl(url);
+    const origMethod = (options.method || 'GET').toUpperCase();
+    const finalUrl = toProxyUrl(url, origMethod, options.headers);
+    const safeMethod = origMethod === 'GET' ? 'GET' : 'POST';
     let lastErr;
     for (let attempt = 0; attempt <= retries; attempt++) {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeoutMs);
         try {
             const res = await fetch(finalUrl, {
-
-                ...options,
+                method: safeMethod,
+                headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+                body: options.body,
                 cache: 'no-store',
                 signal: controller.signal
             });
@@ -39,12 +43,13 @@ async function sbFetch(url, options = {}, timeoutMs = 6000, retries = 2) {
             clearTimeout(timer);
             lastErr = err;
             if (attempt < retries) {
-                await new Promise(r => setTimeout(r, 150));
+                await new Promise(r => setTimeout(r, 120));
             }
         }
     }
     throw lastErr;
 }
+
 
 function getStoredUser() {
     try {
