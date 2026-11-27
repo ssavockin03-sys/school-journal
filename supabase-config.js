@@ -11,12 +11,24 @@ const SB_HEADERS = {
     'Content-Type': 'application/json'
 };
 
-async function sbFetch(url, options = {}, timeoutMs = 4500, retries = 2) {
+function toProxyUrl(rawUrl) {
+    if (!rawUrl.startsWith(SUPABASE_URL)) return rawUrl;
+    const tail = rawUrl.slice(SUPABASE_URL.length);
+    const qIdx = tail.indexOf('?');
+    const pathPart = qIdx === -1 ? tail : tail.slice(0, qIdx);
+    const queryPart = qIdx === -1 ? '' : '&' + tail.slice(qIdx + 1);
+    return `${SUPABASE_URL}?_p=${encodeURIComponent(pathPart)}${queryPart}`;
+}
+
+async function sbFetch(url, options = {}, timeoutMs = 6000, retries = 2) {
+    const finalUrl = toProxyUrl(url);
+    let lastErr;
     for (let attempt = 0; attempt <= retries; attempt++) {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeoutMs);
         try {
-            const res = await fetch(url, {
+            const res = await fetch(finalUrl, {
+
                 ...options,
                 cache: 'no-store',
                 signal: controller.signal
