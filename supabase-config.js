@@ -11,32 +11,9 @@ const SB_HEADERS = {
     'Content-Type': 'application/json'
 };
 
-// Ограничитель параллельных соединений (не более 2 одновременно, чтобы провайдер не делал ERR_CONNECTION_RESET)
-let _activeRequests = 0;
-const _requestQueue = [];
-
-function acquireSlot() {
-    if (_activeRequests < 2) {
-        _activeRequests++;
-        return Promise.resolve();
-    }
-    return new Promise(resolve => _requestQueue.push(resolve));
-}
-
-function releaseSlot() {
-    _activeRequests--;
-    if (_requestQueue.length > 0) {
-        _activeRequests++;
-        const next = _requestQueue.shift();
-        next();
-    }
-}
-
-async function sbFetch(url, options = {}, timeoutMs = 2000, retries = 2) {
-
+async function sbFetch(url, options = {}, timeoutMs = 1800, retries = 2) {
     let lastErr;
     for (let attempt = 0; attempt <= retries; attempt++) {
-        await acquireSlot();
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeoutMs);
         try {
@@ -46,14 +23,12 @@ async function sbFetch(url, options = {}, timeoutMs = 2000, retries = 2) {
                 signal: controller.signal
             });
             clearTimeout(timer);
-            releaseSlot();
             return res;
         } catch (err) {
             clearTimeout(timer);
-            releaseSlot();
             lastErr = err;
             if (attempt < retries) {
-                await new Promise(r => setTimeout(r, 250 * (attempt + 1)));
+                await new Promise(r => setTimeout(r, 120));
             }
         }
     }
